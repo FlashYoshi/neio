@@ -26,7 +26,7 @@ This is the title for this slide
   The text and image will be split so that they both use 50% of the space.
 
   --
-  !(image6)
+  !(image5)
 }
 
 --
@@ -37,7 +37,7 @@ This is the title for this slide
   --
   !h(
     --
-    * These items
+    * These![label2}( )items
     * are placed
     * in the bottom
     * left
@@ -48,4 +48,7 @@ This is the title for this slide
     * in the bottom
     * right
   )
+
+  !--
+  label1 [magenta]-> label2
 )

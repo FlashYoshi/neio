@@ -51,7 +51,7 @@ This is the title for this slide
   // A new item is created and will thus be placed to the right
   // As there are two items both will take 50% of the space
   --
-  !(image6)
+  !(image5)
 }
 
 // Slide 7
@@ -66,7 +66,7 @@ This is the title for this slide
   // Nesting of vertical/horizontal boxes is ofcourse possible
   !h(
     --
-    * These items
+    * These![label2}( )items
     * are placed
     * in the bottom
     * left
@@ -77,4 +77,9 @@ This is the title for this slide
     * in the bottom
     * right
   )
+
+  // This is syntax for the drawing mode
+  // In the drawing mode we can draw arrows,.. between labels:q
+  !--
+  label1 [magenta]-> label2
 )
