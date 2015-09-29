@@ -1,0 +1,82 @@
+\documentclass{beamer}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{arrows,shapes}
+\newcommand{\tikzmark}[1]{\tikz[remember picture] \node[coordinate] (#1) {#1};}
+\begin{document}
+% plain: blank slide
+% c: center in slide
+% Slide 1
+\begin{frame}[plain, c]
+    \begin{center}
+        \Huge Zeus WPI
+    \end{center}
+\end{frame}
+% Slide 2
+\begin{frame}[plain, c]
+    \begin{itemize}
+        \item ACTIVITEITEN
+            \begin{itemize}
+                \item PROJECTEN
+                    \begin{itemize}
+                        \item SFEER
+                    \end{itemize}
+            \end{itemize}
+    \end{itemize}
+\end{frame}
+% Slide 3
+\begin{frame}[plain, c]
+    \includegraphics[width=\linewidth]{image1.png}
+\end{frame}
+% Slide 4
+\begin{frame}[plain, c]
+    \includegraphics[width=.5\linewidth]{image2.png}
+    ~
+    \includegraphics[width=.5\linewidth]{image3.png}
+\end{frame}
+% Slide 5
+\begin{frame}[plain, c]
+    \begin{figure}
+        \includegraphics[width=\linewidth]{image4.png}
+        \caption{This is the caption of the fourth image}
+    \end{figure}
+\end{frame}
+% Slide 6
+\begin{frame}[plain, c]{This is the title for this slide}
+    \begin{columns}[c]
+        \column{.5\textwidth}
+        This text will be on the left while the image will be to the right of it.
+        The text and image will be split so that they both use 50\% of the space.
+        \column{.5\textwidth}
+        \includegraphics[width=\linewidth]{image5.png}
+    \end{columns}
+\end{frame}
+% Slide 7
+\begin{frame}[plain, c]
+    \begin{block}{}
+    	\centering
+        \tikzmark{label1} This is the first label in this slideshow.
+    \end{block}
+    \begin{block}{}
+        \begin{columns}[c]
+            \column{.5\textwidth}
+            \begin{itemize}
+                \item These\tikzmark{label2} items
+                \item are placed
+                \item in the bottom
+                \item left
+            \end{itemize}
+            \column{.5\textwidth}
+            \begin{itemize}
+                \item Whilst these
+                \item are placed
+                \item in the bottom
+                \item right
+            \end{itemize}
+        \end{columns}
+    \end{block}
+    \begin{tikzpicture}[remember picture,overlay]
+   		\path[draw=magenta,thick,->](label1) -- ([yshift=4mm]label2);
+	\end{tikzpicture}
+\end{frame}
+\end{document}

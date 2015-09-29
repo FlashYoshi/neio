@@ -1,0 +1,51 @@
+[Slides]
+--
+# Zeus WPI
+
+--
+* ACTIVITEITEN
+** PROJECTEN
+*** SFEER
+
+--
+!(image1)
+
+--
+!(image2)
+!(image3)
+
+--
+![This is the caption of the fourth image](image4)
+
+--
+This is the title for this slide
+--------------------------------
+!h{
+  --
+  This text will be on the left while the image will be to the right of it.
+  The text and image will be split so that they both use 50% of the space.
+
+  --
+  !(image6)
+}
+
+--
+!v(
+  --
+  ![label1](This) is the first label in this slideshow.
+
+  --
+  !h(
+    --
+    * These items
+    * are placed
+    * in the bottom
+    * left
+
+    --
+    * Whilst these
+    * are placed
+    * in the bottom
+    * right
+  )
+)
