@@ -40,4 +40,5 @@ Ten slotte kunnen wij, de sysadmins (Silox, Procrat en FlashYoshi), u eindelijk 
 *ANSIBLE IS AF!*
 
 // Use underscores for smaller text
-_P.S.: Onze Ansible-configuratie is openbaar beschikbaar op GitHub._
+// Use markdown syntax for links
+_P.S.: Onze Ansible-configuratie is openbaar beschikbaar op [GitHub](https://zeus.ugent.be/git/ansible-config)._
