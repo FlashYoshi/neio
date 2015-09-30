@@ -26,18 +26,18 @@ This is the title for this slide
   The text and image will be split so that they both use 50% of the space.
 
   --
-  !(image5)
+  ![label=label1, caption=This is also a caption](image5)
 )
 
 --
 !v(
   --
-  [label1](This) is the first label in this slideshow.
+  [label2](This) is the first label we will use in this slideshow.
 
   --
   !h(
     --
-    * These[label2]( )items
+    * These[label3]( )items
     * are placed
     * in the bottom
     * left
@@ -50,5 +50,5 @@ This is the title for this slide
   )
 
   !--
-  label1 [magenta]-> label2
+  label2 [magenta]-> label3
 )
