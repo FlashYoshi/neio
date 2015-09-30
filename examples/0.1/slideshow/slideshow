@@ -51,7 +51,7 @@ This is the title for this slide
   // A new item is created and will thus be placed to the right
   // As there are two items both will take 50% of the space
   --
-  !(image5)
+  ![label=label1, caption=This is also a caption](image5)
 )
 
 // Slide 7
@@ -60,13 +60,13 @@ This is the title for this slide
 !v(
   --
   // Here we label an item which also creates a bounding box for the item
-  [label1](This) is the first label in this slideshow.
+  [label2](This) is the first label we will use in this slideshow.
 
   --
   // Nesting of vertical/horizontal boxes is ofcourse possible
   !h(
     --
-    * These[label2]( )items
+    * These[label3]( )items
     * are placed
     * in the bottom
     * left
@@ -81,5 +81,5 @@ This is the title for this slide
   // This is syntax for the drawing mode
   // In the drawing mode we can draw arrows,.. between labels
   !--
-  label1 [magenta]-> label2
+  label2 [magenta]-> label3
 )
