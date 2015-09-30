@@ -41,7 +41,7 @@
 This is the title for this slide
 --------------------------------
 // This is the syntax for creating a horizonal box
-!h{
+!h(
   // The first item in the horizontal box,
   // it will be placed as far as possible to the left and will take 100/#items space
   --
@@ -52,7 +52,7 @@ This is the title for this slide
   // As there are two items both will take 50% of the space
   --
   !(image5)
-}
+)
 
 // Slide 7
 --
@@ -60,13 +60,13 @@ This is the title for this slide
 !v(
   --
   // Here we label an item which also creates a bounding box for the item
-  ![label1](This) is the first label in this slideshow.
+  [label1](This) is the first label in this slideshow.
 
   --
   // Nesting of vertical/horizontal boxes is ofcourse possible
   !h(
     --
-    * These![label2}( )items
+    * These[label2]( )items
     * are placed
     * in the bottom
     * left
@@ -79,7 +79,7 @@ This is the title for this slide
   )
 
   // This is syntax for the drawing mode
-  // In the drawing mode we can draw arrows,.. between labels:q
+  // In the drawing mode we can draw arrows,.. between labels
   !--
   label1 [magenta]-> label2
 )

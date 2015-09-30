@@ -20,24 +20,24 @@
 --
 This is the title for this slide
 --------------------------------
-!h{
+!h(
   --
   This text will be on the left while the image will be to the right of it.
   The text and image will be split so that they both use 50% of the space.
 
   --
   !(image5)
-}
+)
 
 --
 !v(
   --
-  ![label1](This) is the first label in this slideshow.
+  [label1](This) is the first label in this slideshow.
 
   --
   !h(
     --
-    * These![label2}( )items
+    * These[label2]( )items
     * are placed
     * in the bottom
     * left
