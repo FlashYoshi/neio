@@ -39,7 +39,7 @@
 // Slide 6
 --
 This is the title for this slide
---------------------------------
+================================
 // This is the syntax for creating a horizonal box
 !h(
   // The first item in the horizontal box,
