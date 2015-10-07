@@ -37,7 +37,8 @@ This is the title for this slide
   --
   !h(
     --
-    * These[label3]( )items
+    [itemize1]{Itemize}
+    * These items
     * are placed
     * in the bottom
     * left
@@ -50,5 +51,5 @@ This is the title for this slide
   )
 
   !--
-  label2 [magenta]-> label3
+  label2 [magenta]-> itemize1
 )

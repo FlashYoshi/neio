@@ -66,7 +66,8 @@ This is the title for this slide
   // Nesting of vertical/horizontal boxes is ofcourse possible
   !h(
     --
-    * These[label3]( )items
+    [itemize1]{Itemize}
+    * These items
     * are placed
     * in the bottom
     * left
@@ -81,5 +82,5 @@ This is the title for this slide
   // This is syntax for the drawing mode
   // In the drawing mode we can draw arrows,.. between labels
   !--
-  label2 [magenta]-> label3
+  label2 [magenta]-> itemize1
 )
