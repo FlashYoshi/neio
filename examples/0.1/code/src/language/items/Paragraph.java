@@ -2,6 +2,8 @@ package language.items;
 import language.content.Content;
 import language.content.Link;
 import language.content.Text;
+import language.util.Color;
+import language.util.Font;
 
 /**
  * @author Titouan Vervack
@@ -39,6 +41,29 @@ public class Paragraph extends Item {
 
     public Paragraph setLiteral() {
         literal = true;
+        return this;
+    }
+
+    public Paragraph color(Color color) {
+        if (!content.isEmpty()) {
+            for (Content c : content) {
+                // c.property("color", color);
+                // voorzie mapping van attribute -> functienaam
+                //c.color(color);
+            }
+        }
+
+        return this;
+    }
+
+    public Paragraph font(Font font) {
+        if (!content.isEmpty()) {
+            for (Content c : content) {
+                //
+                //c.font(font);
+            }
+        }
+
         return this;
     }
 }
