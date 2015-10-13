@@ -1,0 +1,86 @@
+// Single line comments can be written by starting of the line with //
+/* Multiline comments are also available as you see here.
+   Every document should start out with either [Slides]
+   or [document].
+   More types could be added later on.
+*/
+
+[Slides]
+// -- Indicate the start of a new item
+// Slide 1
+--
+// # can be used for headers as in markdown
+# Zeus WPI
+
+// Slide 2
+--
+/* * creates an unordered list item 
+   while ** creates an unordered list item that has a higher indentation level
+*/
+* ACTIVITEITEN
+** PROJECTEN
+*** SFEER
+
+// Slide 3
+--
+// Images are inserted as in markdown but the alt text is omitted
+!(image1)
+
+// Slide 4
+--
+!(image2)
+!(image3)
+
+// Slide 5
+--
+// We can use the omitted alt text to insert captions
+![This is the caption of the fourth image](image4)
+
+// Slide 6
+--
+This is the title for this slide
+================================
+// This is the syntax for creating a horizonal box
+!h(
+  // The first item in the horizontal box,
+  // it will be placed as far as possible to the left and will take 100/#items space
+  --
+  This text will be on the left while the image will be to the right of it.
+  The text and image will be split so that they both use 50% of the space.
+
+  // A new item is created and will thus be placed to the right
+  // As there are two items both will take 50% of the space
+  --
+  ![label=label1, caption=This is also a caption](image5)
+)
+
+// Slide 7
+--
+// This creates a vertical box
+!v(
+  --
+  // Here we label an item which also creates a bounding box for the item
+  [label2](This) is the first label we will use in this slideshow.
+
+  --
+  // Nesting of vertical/horizontal boxes is ofcourse possible
+  !h(
+    --
+    [itemize1]{Itemize}
+    * These items
+    * are placed
+    * in the bottom
+    * left
+
+    --
+    - Whilst these
+    - are placed
+    - in the bottom
+    - right
+  )
+
+  // This is syntax for the drawing mode
+  // In the drawing mode we can draw arrows,.. between labels
+  !--
+  label2 [magenta]-> itemize1
+)
