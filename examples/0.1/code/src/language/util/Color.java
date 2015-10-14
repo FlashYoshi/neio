@@ -5,4 +5,9 @@ package language.util;
  */
 public class Color {
     public static final String blue = "#0000FF";
+    private String color;
+
+    public Color(String color) {
+        this.color = color;
+    }
 }

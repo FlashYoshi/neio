@@ -2,13 +2,13 @@
 
 \textcolor{red}{Dag iedereen,}
 
-[text](Paragraph)
+[par](Paragraph)
 Na wat spannende momenten (blijkbaar had onze backupserver het ook begeven) kon Silox de data herstellen en wist hij ook aan reserveonderdelen te raken (bedankt Ruben!).
 De schade bleef dus gelukkig beperkt tot een week downtime.
 
 !--
-text.color(blue)
-text.font.size(12)
+par.text.color(blue)
+par.text.font.size(12)
 
 ![position=inline, caption=This image is inline](image1)
 King is onze server in het datacenter te S10.

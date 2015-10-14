@@ -11,8 +11,8 @@ public class TextContent extends Content {
     public Color color = null;
     public Font font = null;
 
-    public TextContent color(Color color) {
-        this.color = color;
+    public TextContent color(String color) {
+        this.color = new Color(color);
 
         return this;
     }

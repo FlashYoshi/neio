@@ -2,8 +2,7 @@ package language.items;
 import language.content.Content;
 import language.content.Link;
 import language.content.Text;
-import language.util.Color;
-import language.util.Font;
+import language.content.layout.HorizontalBox;
 
 /**
  * @author Titouan Vervack
@@ -39,31 +38,14 @@ public class Paragraph extends Item {
         return this;
     }
 
+    public Paragraph horizontalBox(Content[] content) {
+        HorizontalBox hbox = new HorizontalBox(content);
+        this.content.add(hbox);
+        return this;
+    }
+
     public Paragraph setLiteral() {
         literal = true;
-        return this;
-    }
-
-    public Paragraph color(Color color) {
-        if (!content.isEmpty()) {
-            for (Content c : content) {
-                // c.property("color", color);
-                // voorzie mapping van attribute -> functienaam
-                //c.color(color);
-            }
-        }
-
-        return this;
-    }
-
-    public Paragraph font(Font font) {
-        if (!content.isEmpty()) {
-            for (Content c : content) {
-                //
-                //c.font(font);
-            }
-        }
-
         return this;
     }
 }
