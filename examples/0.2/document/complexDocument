@@ -10,6 +10,7 @@ De schade bleef dus gelukkig beperkt tot een week downtime.
 par.text.color(blue)
 par.text.font.size(12)
 
+// inline should not be defined in the image
 ![position=inline, caption=This image is inline](image1)
 King is onze server in het datacenter te S10.
 Het is een Dell PowerEdge 2850, die machines worden zelfs niet meer verscheept als donatie naar onze partners in het Zuiden wegens te oud (cfr. DICT).
@@ -29,10 +30,10 @@ Op deze manier verdwenen af en toe enkele (of alle) websites van de live server,
 Over het algemeen was het zeker een goede ervaring en liet het ons toe om van enkele hacks af te geraken, zoals het gebruik van Apache enkel en alleen voor de Kerberos-login van de wiki, en het vernieuwen van de software, zoals de wiki, die er nu veel beter uit ziet.
 
 !h(
+![This is image2](image2)
+
 Aan het einde van het vorige academiejaar liet onze belangrijkste server, genaamd King, zijn leeftijd zien: zijn RAID-controller had het namelijk begeven, met een hoop corrupte data als gevolg.
 Ansible werd niet alleen maar gebruikt om King te configureren maar ook Abyss, onze NAS die in kelder naast Tweek gesitueerd is, werd door Ansible geconfigureerd.
-
-![This is image2](image2)
 )
 
 --[l]
