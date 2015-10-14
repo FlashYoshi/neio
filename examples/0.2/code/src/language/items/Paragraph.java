@@ -2,6 +2,7 @@ package language.items;
 import language.content.Content;
 import language.content.Link;
 import language.content.Text;
+import language.content.layout.HorizontalBox;
 
 /**
  * @author Titouan Vervack
@@ -34,6 +35,12 @@ public class Paragraph extends Item {
 
     public Paragraph addText(Text text) {
         content.add(text);
+        return this;
+    }
+
+    public Paragraph horizontalBox(Content[] content) {
+        HorizontalBox hbox = new HorizontalBox(content);
+        this.content.add(hbox);
         return this;
     }
 
