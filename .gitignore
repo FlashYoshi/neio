@@ -20,6 +20,9 @@ gradlew*
 *.dvi
 *.synctex.gz
 
+# ANTLR4
+*.tokens
+
 # IntelliJ
 .idea
 *.iml
