@@ -17,7 +17,7 @@ public class DocumentParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		T__0=1, WORD=2, NEWLINE=3, HEADER=4, COMMENT=5, MULTILINE_COMMENT=6;
+		T__0=1, HEADER=2, COMMENT=3, MULTILINE_COMMENT=4, WORD=5, NEWLINE=6;
 	public static final int
 		RULE_section = 0, RULE_paragraph = 1;
 	public static final String[] ruleNames = {
@@ -25,10 +25,10 @@ public class DocumentParser extends Parser {
 	};
 
 	private static final String[] _LITERAL_NAMES = {
-		null, "'#'", null, "'\r\n'"
+		null, "'#'"
 	};
 	private static final String[] _SYMBOLIC_NAMES = {
-		null, null, "WORD", "NEWLINE", "HEADER", "COMMENT", "MULTILINE_COMMENT"
+		null, null, "HEADER", "COMMENT", "MULTILINE_COMMENT", "WORD", "NEWLINE"
 	};
 	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
 
@@ -194,9 +194,9 @@ public class DocumentParser extends Parser {
 		"\t\3\3\2\3\2\7\2\t\n\2\f\2\16\2\f\13\2\3\3\3\3\7\3\20\n\3\f\3\16\3\23"+
 		"\13\3\3\3\3\3\3\3\4\n\21\2\4\2\4\2\2\26\2\6\3\2\2\2\4\r\3\2\2\2\6\n\7"+
 		"\3\2\2\7\t\13\2\2\2\b\7\3\2\2\2\t\f\3\2\2\2\n\13\3\2\2\2\n\b\3\2\2\2\13"+
-		"\3\3\2\2\2\f\n\3\2\2\2\r\21\7\4\2\2\16\20\13\2\2\2\17\16\3\2\2\2\20\23"+
+		"\3\3\2\2\2\f\n\3\2\2\2\r\21\7\7\2\2\16\20\13\2\2\2\17\16\3\2\2\2\20\23"+
 		"\3\2\2\2\21\22\3\2\2\2\21\17\3\2\2\2\22\24\3\2\2\2\23\21\3\2\2\2\24\25"+
-		"\7\5\2\2\25\5\3\2\2\2\4\n\21";
+		"\7\b\2\2\25\5\3\2\2\2\4\n\21";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {
