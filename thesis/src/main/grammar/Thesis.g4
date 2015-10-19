@@ -1,11 +1,13 @@
 lexer grammar Thesis;
 
-HEADER : '[Document]'
-       | '[Slides]';
+HEADER : '[' DOCUMENT_TYPE ']';
+DOCUMENT_TYPE : 'Document'
+              | 'Slides';
 
-COMMENT : '//' ~[\r\n]* -> skip;
+COMMENT : '//' ~[\r\n]*? -> skip;
 MULTILINE_COMMENT : '/*' .*? '*/' -> skip;
 
-WORD : [a-zA-Z0-9]+;
-
+WORD : ~[\r\n\t #]+;
+WORDS : (WS* WORD WS*)+;
+WS : [\t ]+;
 NEWLINE : '\r'? '\n';

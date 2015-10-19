@@ -2,6 +2,6 @@ grammar Document;
 
 import Thesis;
 
-section : '#' .*?;
+section : '#' WORDS;
 
-paragraph : WORD .*? NEWLINE ;
+paragraph : WORDS;

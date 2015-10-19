@@ -17,7 +17,8 @@ public class DocumentParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		T__0=1, HEADER=2, COMMENT=3, MULTILINE_COMMENT=4, WORD=5, NEWLINE=6;
+		T__0=1, HEADER=2, DOCUMENT_TYPE=3, COMMENT=4, MULTILINE_COMMENT=5, WORD=6, 
+		WORDS=7, WS=8, NEWLINE=9;
 	public static final int
 		RULE_section = 0, RULE_paragraph = 1;
 	public static final String[] ruleNames = {
@@ -28,7 +29,8 @@ public class DocumentParser extends Parser {
 		null, "'#'"
 	};
 	private static final String[] _SYMBOLIC_NAMES = {
-		null, null, "HEADER", "COMMENT", "MULTILINE_COMMENT", "WORD", "NEWLINE"
+		null, null, "HEADER", "DOCUMENT_TYPE", "COMMENT", "MULTILINE_COMMENT", 
+		"WORD", "WORDS", "WS", "NEWLINE"
 	};
 	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
 
@@ -80,6 +82,7 @@ public class DocumentParser extends Parser {
 		_interp = new ParserATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
 	public static class SectionContext extends ParserRuleContext {
+		public TerminalNode WORDS() { return getToken(DocumentParser.WORDS, 0); }
 		public SectionContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -98,27 +101,12 @@ public class DocumentParser extends Parser {
 		SectionContext _localctx = new SectionContext(_ctx, getState());
 		enterRule(_localctx, 0, RULE_section);
 		try {
-			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(4);
 			match(T__0);
-			setState(8);
-			_errHandler.sync(this);
-			_alt = getInterpreter().adaptivePredict(_input,0,_ctx);
-			while ( _alt!=1 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
-				if ( _alt==1+1 ) {
-					{
-					{
-					setState(5);
-					matchWildcard();
-					}
-					} 
-				}
-				setState(10);
-				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,0,_ctx);
-			}
+			setState(5);
+			match(WORDS);
 			}
 		}
 		catch (RecognitionException re) {
@@ -133,8 +121,7 @@ public class DocumentParser extends Parser {
 	}
 
 	public static class ParagraphContext extends ParserRuleContext {
-		public TerminalNode WORD() { return getToken(DocumentParser.WORD, 0); }
-		public TerminalNode NEWLINE() { return getToken(DocumentParser.NEWLINE, 0); }
+		public TerminalNode WORDS() { return getToken(DocumentParser.WORDS, 0); }
 		public ParagraphContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -153,29 +140,10 @@ public class DocumentParser extends Parser {
 		ParagraphContext _localctx = new ParagraphContext(_ctx, getState());
 		enterRule(_localctx, 2, RULE_paragraph);
 		try {
-			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(11);
-			match(WORD);
-			setState(15);
-			_errHandler.sync(this);
-			_alt = getInterpreter().adaptivePredict(_input,1,_ctx);
-			while ( _alt!=1 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
-				if ( _alt==1+1 ) {
-					{
-					{
-					setState(12);
-					matchWildcard();
-					}
-					} 
-				}
-				setState(17);
-				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,1,_ctx);
-			}
-			setState(18);
-			match(NEWLINE);
+			setState(7);
+			match(WORDS);
 			}
 		}
 		catch (RecognitionException re) {
@@ -190,13 +158,9 @@ public class DocumentParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\b\27\4\2\t\2\4\3"+
-		"\t\3\3\2\3\2\7\2\t\n\2\f\2\16\2\f\13\2\3\3\3\3\7\3\20\n\3\f\3\16\3\23"+
-		"\13\3\3\3\3\3\3\3\4\n\21\2\4\2\4\2\2\26\2\6\3\2\2\2\4\r\3\2\2\2\6\n\7"+
-		"\3\2\2\7\t\13\2\2\2\b\7\3\2\2\2\t\f\3\2\2\2\n\13\3\2\2\2\n\b\3\2\2\2\13"+
-		"\3\3\2\2\2\f\n\3\2\2\2\r\21\7\7\2\2\16\20\13\2\2\2\17\16\3\2\2\2\20\23"+
-		"\3\2\2\2\21\22\3\2\2\2\21\17\3\2\2\2\22\24\3\2\2\2\23\21\3\2\2\2\24\25"+
-		"\7\b\2\2\25\5\3\2\2\2\4\n\21";
+		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\13\f\4\2\t\2\4\3"+
+		"\t\3\3\2\3\2\3\2\3\3\3\3\3\3\2\2\4\2\4\2\2\t\2\6\3\2\2\2\4\t\3\2\2\2\6"+
+		"\7\7\3\2\2\7\b\7\t\2\2\b\3\3\2\2\2\t\n\7\t\2\2\n\5\3\2\2\2\2";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {
