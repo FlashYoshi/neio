@@ -3,5 +3,9 @@ lexer grammar Thesis;
 HEADER : '[Document]'
        | '[Slides]';
 
-COMMENT : '//' ~[\r\n]* -> channel(HIDDEN);
-MULTILINE_COMMENT : '/*' .*? '*/' -> channel(HIDDEN);
+COMMENT : '//' ~[\r\n]* -> skip;
+MULTILINE_COMMENT : '/*' .*? '*/' -> skip;
+
+WORD : [a-zA-Z0-9]+;
+
+NEWLINE : '\r'? '\n';
