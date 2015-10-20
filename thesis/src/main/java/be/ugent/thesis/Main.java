@@ -1,11 +1,11 @@
 package be.ugent.thesis;
 
-import be.ugent.thesis.parsing.DocumentLexer;
-import be.ugent.thesis.parsing.DocumentParser;
+import be.ugent.thesis.parsing.*;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 
+import javax.tools.DocumentationTool;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -34,7 +34,8 @@ public class Main {
             DocumentLexer lexer = new DocumentLexer(input);
             CommonTokenStream tokens = new CommonTokenStream(lexer);
             DocumentParser parser = new DocumentParser(tokens);
-            parser.getParseInfo();
+            DocumentConvertor convertor = new DocumentConvertor();
+            System.out.println(convertor.visitDocument(parser.document()));
         } catch (IOException e) {
             e.printStackTrace();
         }

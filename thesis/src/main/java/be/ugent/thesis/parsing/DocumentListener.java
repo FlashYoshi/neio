@@ -8,6 +8,26 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
  */
 public interface DocumentListener extends ParseTreeListener {
 	/**
+	 * Enter a parse tree produced by {@link DocumentParser#document}.
+	 * @param ctx the parse tree
+	 */
+	void enterDocument(DocumentParser.DocumentContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DocumentParser#document}.
+	 * @param ctx the parse tree
+	 */
+	void exitDocument(DocumentParser.DocumentContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DocumentParser#body}.
+	 * @param ctx the parse tree
+	 */
+	void enterBody(DocumentParser.BodyContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DocumentParser#body}.
+	 * @param ctx the parse tree
+	 */
+	void exitBody(DocumentParser.BodyContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link DocumentParser#section}.
 	 * @param ctx the parse tree
 	 */
