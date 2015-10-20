@@ -9,7 +9,8 @@ public class Paragraph extends Content {
     private String text;
 
     public Paragraph(String text) {
-        this.text = text;
+        this.text = text.trim();
+        System.out.println(this.text);
     }
 
     @Override

@@ -16,7 +16,7 @@ public class DocumentConvertor extends DocumentBaseVisitor<Object> {
 
     public Section visitSection(SectionContext ctx) {
         if (ctx != null) {
-            return new Section(visit(ctx.WORDS()).toString());
+            return new Section(ctx.WORDS().toString());
         } else {
             System.err.println("SectionContext is null: ");
             return null;
@@ -25,7 +25,7 @@ public class DocumentConvertor extends DocumentBaseVisitor<Object> {
 
     public Paragraph visitParagraph(ParagraphContext ctx) {
         if (ctx != null) {
-            return new Paragraph(visit(ctx.WORDS()).toString());
+            return new Paragraph(ctx.WORDS().toString());
         } else {
             System.err.println("SectionContext is null: ");
             return null;
@@ -44,13 +44,13 @@ public class DocumentConvertor extends DocumentBaseVisitor<Object> {
     }
 
     public Content visitBody(BodyContext ctx) {
-        Section s = visitSection(ctx.section());
-        Paragraph p = visitParagraph(ctx.paragraph());
+        SectionContext s = ctx.section();
+        ParagraphContext p = ctx.paragraph();
 
         if (s != null) {
-            return s;
+            return visitSection(s);
         } else if (p != null) {
-            return p;
+            return visitParagraph(p);
         } else {
             System.err.println("Unknown body type found: " + ctx.getText());
             return null;
