@@ -2,6 +2,13 @@ grammar Document;
 
 import Thesis;
 
-section : '#' WORDS;
+document : HEADER
+           body*
+           EOF;
+
+body : section
+     | paragraph;
+
+section : HASH+ WORDS;
 
 paragraph : WORDS;

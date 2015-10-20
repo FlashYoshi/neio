@@ -22,6 +22,7 @@ gradlew*
 
 # ANTLR4
 *.tokens
+thesis/src/main/grammar/*.java
 
 # IntelliJ
 .idea
