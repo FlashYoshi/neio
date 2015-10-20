@@ -11,4 +11,4 @@ body : section
 
 section : HASH+ WORDS;
 
-paragraph : WORDS;
+paragraph : WORDS; //NEWLINE)+ {keepNewLine = true;};

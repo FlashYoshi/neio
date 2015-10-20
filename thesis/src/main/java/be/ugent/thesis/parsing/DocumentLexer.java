@@ -114,8 +114,8 @@ public class DocumentLexer extends Lexer {
 		"\2LJ\3\2\2\2MQ\5\13\6\2NP\5\17\b\2ON\3\2\2\2PS\3\2\2\2QO\3\2\2\2QR\3\2"+
 		"\2\2RU\3\2\2\2SQ\3\2\2\2TJ\3\2\2\2UV\3\2\2\2VT\3\2\2\2VW\3\2\2\2W\16\3"+
 		"\2\2\2XY\t\4\2\2Y\20\3\2\2\2Z\\\7\17\2\2[Z\3\2\2\2[\\\3\2\2\2\\]\3\2\2"+
-		"\2]^\7\f\2\2^_\3\2\2\2_`\b\t\3\2`\22\3\2\2\2ab\7%\2\2b\24\3\2\2\2\13\2"+
-		"\'/:EJQV[\4\b\2\2\2\3\2";
+		"\2]^\7\f\2\2^_\3\2\2\2_`\b\t\2\2`\22\3\2\2\2ab\7%\2\2b\24\3\2\2\2\13\2"+
+		"\'/:EJQV[\3\b\2\2";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {
