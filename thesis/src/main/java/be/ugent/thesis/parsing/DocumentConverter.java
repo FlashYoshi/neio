@@ -1,9 +1,9 @@
 package be.ugent.thesis.parsing;
 
 import be.ugent.thesis.container.Document;
-import be.ugent.thesis.content.document.Paragraph;
-import be.ugent.thesis.content.document.Section;
-import be.ugent.thesis.content.general.Content;
+import be.ugent.thesis.vm.document.Paragraph;
+import be.ugent.thesis.vm.document.Section;
+import be.ugent.thesis.vm.general.Content;
 import be.ugent.thesis.parsing.DocumentParser.BodyContext;
 import be.ugent.thesis.parsing.DocumentParser.DocumentContext;
 import be.ugent.thesis.parsing.DocumentParser.ParagraphContext;
