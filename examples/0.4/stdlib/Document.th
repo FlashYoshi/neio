@@ -1,0 +1,11 @@
+extend lang.BaseContainer;
+
+Text title;
+
+#(String title) {
+	title = new Text(title);
+}
+
+newline(String paragraph) {
+	content.add(new Paragraph(paragraph));
+}

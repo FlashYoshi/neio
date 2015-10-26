@@ -1,0 +1,7 @@
+extend lang.Content;
+
+String text;
+
+Text(String text) {
+	this.text = text;
+}
