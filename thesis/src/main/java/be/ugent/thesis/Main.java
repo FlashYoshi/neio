@@ -34,8 +34,8 @@ public class Main {
             DocumentLexer lexer = new DocumentLexer(input);
             CommonTokenStream tokens = new CommonTokenStream(lexer);
             DocumentParser parser = new DocumentParser(tokens);
-            DocumentConvertor convertor = new DocumentConvertor();
-            Document document = convertor.visitDocument(parser.document());
+            DocumentConverter converter = new DocumentConverter();
+            Document document = converter.visitDocument(parser.document());
             System.out.println(document.toLatex());
             System.out.println();
             System.out.println();

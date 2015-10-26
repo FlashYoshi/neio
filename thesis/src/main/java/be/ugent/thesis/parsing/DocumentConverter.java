@@ -14,7 +14,7 @@ import java.util.Stack;
 /**
  * @author Titouan Vervack
  */
-public class DocumentConvertor extends DocumentBaseVisitor<Object> {
+public class DocumentConverter extends DocumentBaseVisitor<Object> {
 
     private Stack<Content> structure = new Stack<>();
 
