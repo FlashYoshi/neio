@@ -1,6 +1,5 @@
 package be.ugent.thesis;
 
-import be.ugent.thesis.container.Document;
 import be.ugent.thesis.parsing.*;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CharStream;
@@ -35,11 +34,6 @@ public class Main {
             CommonTokenStream tokens = new CommonTokenStream(lexer);
             DocumentParser parser = new DocumentParser(tokens);
             DocumentConverter converter = new DocumentConverter();
-            Document document = converter.visitDocument(parser.document());
-            System.out.println(document.toLatex());
-            System.out.println();
-            System.out.println();
-            System.out.println(document.toTree());
         } catch (IOException e) {
             e.printStackTrace();
         }
