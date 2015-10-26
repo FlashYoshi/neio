@@ -1,0 +1,21 @@
+group 'be.ugent'
+version '0.1'
+
+apply plugin: 'java'
+apply plugin: 'antlr'
+
+jar {
+    manifest {
+        attributes 'Main-class': 'be.ugent.thesis.Main'
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven { url "http://users.ugent.be/~mcvdoore/repository" }
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit'
+    antlr "org.antlr:antlr4:4.5"
+}
