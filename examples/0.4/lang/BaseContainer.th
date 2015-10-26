@@ -1,5 +1,1 @@
-List<Content> content;
-
-BaseContainer() {
-	content = new List;
-}
+extend Content;

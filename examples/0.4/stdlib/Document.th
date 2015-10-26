@@ -2,10 +2,16 @@ extend lang.BaseContainer;
 
 Text title;
 
-#(String title) {
-	title = new Text(title);
+#(String title, Integer level) {
+	new Chapter(title, level) chapter;
+	content.add(chapter);
+	
+	return chapter;
 }
 
-newline(String paragraph) {
-	content.add(new Paragraph(paragraph));
+newline(String parText) {
+	new Paragraph(parText) p;
+	content.add(p);
+	
+	return p;
 }

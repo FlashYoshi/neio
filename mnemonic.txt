@@ -1,0 +1,11 @@
+Builder methoden maken een nieuw object aan en geven dit terug (oproepen met ".") of ze geven de parent terug (oproepen met ":")
+Builder methoden zijn de standaard want in een opmaaktaal build je een document.
+Maar wat met andere methoden? Dit zijn utility methoden, deze maak je aan door "utility" in het begin van de methodedeclaratie te zetten.
+
+
+new Constructor(arg1, arg2) varName;
+ObjectName varName = new Constructor(arg1, arg2);
+Are the two ways of creating new objects and assigning them to a variable.
+
+`has package1.package2.class1.class2.methode;`
+Dit zorgt voor een import van de methode in een andere klasse (moet waarschijnlijk worden aangeduid dat dit kan op de een of andere manier).

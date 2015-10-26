@@ -1,0 +1,16 @@
+extend lang.Content;
+
+String title;
+Integer level;
+
+Chapter(String title, Integer level) {
+	this.title = title;
+	this.level = level;
+}
+
+#(String title, Integer level) {
+	new Chapter(title, level) chapter;
+	content.add(chapter);
+	
+	return chapter;
+}
