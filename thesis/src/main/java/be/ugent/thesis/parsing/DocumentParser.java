@@ -17,7 +17,7 @@ public class DocumentParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		HEADER=1, DOCUMENT_TYPE=2, COMMENT=3, MULTILINE_COMMENT=4, WORD=5, WORDS=6, 
+		HEADER=1, HEADER_CONTENT=2, COMMENT=3, MULTILINE_COMMENT=4, WORD=5, WORDS=6, 
 		WS=7, NEWLINE=8, HASH=9;
 	public static final int
 		RULE_document = 0, RULE_body = 1, RULE_section = 2, RULE_paragraph = 3;
@@ -29,7 +29,7 @@ public class DocumentParser extends Parser {
 		null, null, null, null, null, null, null, null, null, "'#'"
 	};
 	private static final String[] _SYMBOLIC_NAMES = {
-		null, "HEADER", "DOCUMENT_TYPE", "COMMENT", "MULTILINE_COMMENT", "WORD", 
+		null, "HEADER", "HEADER_CONTENT", "COMMENT", "MULTILINE_COMMENT", "WORD", 
 		"WORDS", "WS", "NEWLINE", "HASH"
 	};
 	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
