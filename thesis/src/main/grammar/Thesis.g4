@@ -4,9 +4,8 @@ lexer grammar Thesis;
   private boolean keepNewLine = false;
 }*/
 
-HEADER : '[' DOCUMENT_TYPE ']';
-DOCUMENT_TYPE : 'Document'
-              | 'Slides';
+HEADER : '[' HEADER_CONTENT ']';
+HEADER_CONTENT : ~[\[\]]+;
 
 COMMENT : '//' ~[\r\n]* -> skip;
 MULTILINE_COMMENT : '/*' .*? '*/' -> skip;
