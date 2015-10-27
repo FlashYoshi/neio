@@ -2,7 +2,13 @@ extends thesis.lang.BaseContainer;
 
 Text title;
 
-regex #+(String title, Integer level) {
+regex #+(String title) {
+	Chapter #(title, methodName.size()) chapter;
+	
+	return chapter;
+}
+
+#(String title, Integer level) {
 	new Chapter(title, level) chapter;
 	content.add(chapter);
 	
