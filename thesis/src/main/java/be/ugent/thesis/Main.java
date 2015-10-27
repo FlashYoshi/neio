@@ -1,6 +1,7 @@
 package be.ugent.thesis;
 
 import be.ugent.thesis.parsing.*;
+import be.ugent.thesis.util.Constants;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -14,6 +15,7 @@ public class Main {
     /**
      * Exit code 1: Invalid call to program
      * Exit code 2: Input file can not be read or does not exist
+     * Exit code 3: Input file has the wrong extension
      */
     public static void main(String[] args) {
         if (args.length < 1) {
@@ -28,12 +30,18 @@ public class Main {
             System.exit(2);
         }
 
+        if (!file.getName().endsWith(Constants.EXTENSION)) {
+            System.err.println(fileName + " doesn't have the right extension.\nThe right extension is: " + Constants.EXTENSION);
+            System.exit(3);
+        }
+
         try {
             CharStream input = new ANTLRInputStream(new FileInputStream(file));
             DocumentLexer lexer = new DocumentLexer(input);
             CommonTokenStream tokens = new CommonTokenStream(lexer);
             DocumentParser parser = new DocumentParser(tokens);
             DocumentConverter converter = new DocumentConverter();
+            converter.visitDocument(parser.document());
         } catch (IOException e) {
             e.printStackTrace();
         }
