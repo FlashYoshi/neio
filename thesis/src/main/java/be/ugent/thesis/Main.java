@@ -37,9 +37,9 @@ public class Main {
 
         try {
             CharStream input = new ANTLRInputStream(new FileInputStream(file));
-            DocumentLexer lexer = new DocumentLexer(input);
+            ThesisLexer lexer = new ThesisLexer(input);
             CommonTokenStream tokens = new CommonTokenStream(lexer);
-            DocumentParser parser = new DocumentParser(tokens);
+            ThesisParser parser = new ThesisParser(tokens);
             DocumentConverter converter = new DocumentConverter();
             converter.visitDocument(parser.document());
         } catch (IOException e) {
