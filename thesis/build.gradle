@@ -12,7 +12,6 @@ jar {
 
 repositories {
     mavenCentral()
-    maven { url "http://users.ugent.be/~mcvdoore/repository" }
 }
 
 dependencies {
