@@ -53,6 +53,18 @@ public interface ThesisParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitField(ThesisParser.FieldContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link ThesisParser#fieldName}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFieldName(ThesisParser.FieldNameContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ThesisParser#var}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitVar(ThesisParser.VarContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link ThesisParser#method}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -70,12 +82,6 @@ public interface ThesisParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitMethodName(ThesisParser.MethodNameContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link ThesisParser#var}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitVar(ThesisParser.VarContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link ThesisParser#arguments}.
 	 * @param ctx the parse tree

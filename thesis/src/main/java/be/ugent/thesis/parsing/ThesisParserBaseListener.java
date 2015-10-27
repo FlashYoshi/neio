@@ -100,6 +100,30 @@ public class ThesisParserBaseListener implements ThesisParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterFieldName(ThesisParser.FieldNameContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitFieldName(ThesisParser.FieldNameContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterVar(ThesisParser.VarContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitVar(ThesisParser.VarContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterMethod(ThesisParser.MethodContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -131,18 +155,6 @@ public class ThesisParserBaseListener implements ThesisParserListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitMethodName(ThesisParser.MethodNameContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterVar(ThesisParser.VarContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitVar(ThesisParser.VarContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

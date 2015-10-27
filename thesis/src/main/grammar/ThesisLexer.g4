@@ -1,18 +1,17 @@
 lexer grammar ThesisLexer;
 
 HEADER : '[' HEADER_CONTENT ']';
-fragment HEADER_CONTENT : ~[\[\]]+;
+fragment HEADER_CONTENT : CHAR+;
 
 COMMENT : '//' ~[\r\n]* -> channel(HIDDEN);
 MULTILINE_COMMENT : '/*' .*? '*/' -> channel(HIDDEN);
 
-fragment WORD : ~[\r\n\t ]+;
-fragment WORDS : WORD+;
-PACKAGE : [a-z]+ (PERIOD[a-z]+)+;
+PACKAGE : CHAR+ (PERIOD CHAR+)+;
 WS : [\t ] -> channel(HIDDEN);
 NEWLINE : '\r'? '\n' -> skip;
-CAPITAL : [A-Z];
-LETTER : [a-z];
+fragment CAPITAL : [A-Z];
+fragment LETTER : [a-z];
+fragment CHAR : [a-zA-Z0-9];
 
 
 ////////////START KEYWORDS////////////

@@ -78,6 +78,26 @@ public interface ThesisParserListener extends ParseTreeListener {
 	 */
 	void exitField(ThesisParser.FieldContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link ThesisParser#fieldName}.
+	 * @param ctx the parse tree
+	 */
+	void enterFieldName(ThesisParser.FieldNameContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ThesisParser#fieldName}.
+	 * @param ctx the parse tree
+	 */
+	void exitFieldName(ThesisParser.FieldNameContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ThesisParser#var}.
+	 * @param ctx the parse tree
+	 */
+	void enterVar(ThesisParser.VarContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ThesisParser#var}.
+	 * @param ctx the parse tree
+	 */
+	void exitVar(ThesisParser.VarContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link ThesisParser#method}.
 	 * @param ctx the parse tree
 	 */
@@ -107,16 +127,6 @@ public interface ThesisParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitMethodName(ThesisParser.MethodNameContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ThesisParser#var}.
-	 * @param ctx the parse tree
-	 */
-	void enterVar(ThesisParser.VarContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ThesisParser#var}.
-	 * @param ctx the parse tree
-	 */
-	void exitVar(ThesisParser.VarContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link ThesisParser#arguments}.
 	 * @param ctx the parse tree

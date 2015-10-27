@@ -22,20 +22,22 @@ extension : ( EXTENDS PACKAGE
             | IMPLEMENTS PACKAGE)
             SEMICOLON;
 
-field : VAR_WITH_TYPE CAMEL_CASE SEMICOLON;
+field : var SEMICOLON;
+fieldName : CLASS_NAME
+          | VAR_WITH_TYPE;
+var : fieldName CAMEL_CASE;
 
-method : METHOD_OPTION* call LEFT_CURLY_BRACE block* RIGHT_CURLY_BRACE;
+method : METHOD_OPTION? call LEFT_CURLY_BRACE block? RIGHT_CURLY_BRACE;
 call : methodName LEFT_BRACE arguments RIGHT_BRACE;
 methodName: CLASS_NAME
           | CAMEL_CASE
           | METHOD_NAME;
 
-var : VAR_WITH_TYPE CAMEL_CASE ;
 arguments : (var COMMA)* var
           | ;
 
 block : statement+
-        returnCall*;
+        returnCall?;
 
 statement : ( assignment
             | methodCall
