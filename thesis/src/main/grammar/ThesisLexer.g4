@@ -6,7 +6,7 @@ fragment HEADER_CONTENT : CHAR+;
 COMMENT : '//' ~[\r\n]* -> channel(HIDDEN);
 MULTILINE_COMMENT : '/*' .*? '*/' -> channel(HIDDEN);
 
-PACKAGE : CHAR+ (PERIOD CHAR+)+;
+CHAIN : CHAR+ (PERIOD CHAR+)+;
 WS : [\t ] -> channel(HIDDEN);
 NEWLINE : '\r'? '\n' -> skip;
 fragment CAPITAL : [A-Z];
@@ -19,6 +19,7 @@ EXTENDS : 'extends';
 IMPLEMENTS : 'implements';
 RETURN : 'return';
 NEW : 'new';
+THIS : 'this';
 METHOD_OPTION : 'builder'
                | 'regex'
                | 'util';

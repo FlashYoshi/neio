@@ -42,9 +42,9 @@ public class DocumentConverter extends ThesisParserBaseVisitor<Object> {
         for (ExtensionContext extension : body.extension()) {
             // Do not need double check because if they are both null the method would not have been called
             if (extension.IMPLEMENTS() != null) {
-                System.out.println(extension.IMPLEMENTS().getText() + " " + extension.PACKAGE().getText());
+                System.out.println(extension.IMPLEMENTS().getText() + " " + extension.CHAIN().getText());
             } else {
-                System.out.println(extension.EXTENDS().getText() + " " + extension.PACKAGE().getText());
+                System.out.println(extension.EXTENDS().getText() + " " + extension.CHAIN().getText());
             }
         }
     }

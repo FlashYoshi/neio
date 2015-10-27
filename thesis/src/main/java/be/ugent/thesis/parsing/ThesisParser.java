@@ -17,12 +17,11 @@ public class ThesisParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		HEADER=1, COMMENT=2, MULTILINE_COMMENT=3, PACKAGE=4, WS=5, NEWLINE=6, 
-		EXTENDS=7, IMPLEMENTS=8, RETURN=9, NEW=10, METHOD_OPTION=11, STUB=12, 
-		CLASS_NAME=13, CAMEL_CASE=14, VAR_WITH_TYPE=15, PERIOD=16, COMMA=17, COLON=18, 
-		SEMICOLON=19, EQUALS=20, PLUS=21, MINUS=22, STAR=23, SMALLER=24, BIGGER=25, 
-		LEFT_BRACE=26, RIGHT_BRACE=27, LEFT_CURLY_BRACE=28, RIGHT_CURLY_BRACE=29, 
-		METHOD_NAME=30;
+		HEADER=1, COMMENT=2, MULTILINE_COMMENT=3, CHAIN=4, WS=5, NEWLINE=6, EXTENDS=7, 
+		IMPLEMENTS=8, RETURN=9, NEW=10, THIS=11, METHOD_OPTION=12, STUB=13, CLASS_NAME=14, 
+		CAMEL_CASE=15, VAR_WITH_TYPE=16, PERIOD=17, COMMA=18, COLON=19, SEMICOLON=20, 
+		EQUALS=21, PLUS=22, MINUS=23, STAR=24, SMALLER=25, BIGGER=26, LEFT_BRACE=27, 
+		RIGHT_BRACE=28, LEFT_CURLY_BRACE=29, RIGHT_CURLY_BRACE=30, METHOD_NAME=31;
 	public static final int
 		RULE_document = 0, RULE_body = 1, RULE_classBody = 2, RULE_interfaceBody = 3, 
 		RULE_scriptBody = 4, RULE_extension = 5, RULE_field = 6, RULE_fieldName = 7, 
@@ -37,15 +36,15 @@ public class ThesisParser extends Parser {
 
 	private static final String[] _LITERAL_NAMES = {
 		null, null, null, null, null, null, null, "'extends'", "'implements'", 
-		"'return'", "'new'", null, "'stub'", null, null, null, "'.'", "','", "':'", 
-		"';'", "'='", "'+'", "'-'", "'*'", "'<'", "'>'", "'('", "')'", "'{'", 
-		"'}'"
+		"'return'", "'new'", "'this'", null, "'stub'", null, null, null, "'.'", 
+		"','", "':'", "';'", "'='", "'+'", "'-'", "'*'", "'<'", "'>'", "'('", 
+		"')'", "'{'", "'}'"
 	};
 	private static final String[] _SYMBOLIC_NAMES = {
-		null, "HEADER", "COMMENT", "MULTILINE_COMMENT", "PACKAGE", "WS", "NEWLINE", 
-		"EXTENDS", "IMPLEMENTS", "RETURN", "NEW", "METHOD_OPTION", "STUB", "CLASS_NAME", 
-		"CAMEL_CASE", "VAR_WITH_TYPE", "PERIOD", "COMMA", "COLON", "SEMICOLON", 
-		"EQUALS", "PLUS", "MINUS", "STAR", "SMALLER", "BIGGER", "LEFT_BRACE", 
+		null, "HEADER", "COMMENT", "MULTILINE_COMMENT", "CHAIN", "WS", "NEWLINE", 
+		"EXTENDS", "IMPLEMENTS", "RETURN", "NEW", "THIS", "METHOD_OPTION", "STUB", 
+		"CLASS_NAME", "CAMEL_CASE", "VAR_WITH_TYPE", "PERIOD", "COMMA", "COLON", 
+		"SEMICOLON", "EQUALS", "PLUS", "MINUS", "STAR", "SMALLER", "BIGGER", "LEFT_BRACE", 
 		"RIGHT_BRACE", "LEFT_CURLY_BRACE", "RIGHT_CURLY_BRACE", "METHOD_NAME"
 	};
 	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
@@ -400,7 +399,7 @@ public class ThesisParser extends Parser {
 	public static class ExtensionContext extends ParserRuleContext {
 		public TerminalNode SEMICOLON() { return getToken(ThesisParser.SEMICOLON, 0); }
 		public TerminalNode EXTENDS() { return getToken(ThesisParser.EXTENDS, 0); }
-		public TerminalNode PACKAGE() { return getToken(ThesisParser.PACKAGE, 0); }
+		public TerminalNode CHAIN() { return getToken(ThesisParser.CHAIN, 0); }
 		public TerminalNode IMPLEMENTS() { return getToken(ThesisParser.IMPLEMENTS, 0); }
 		public ExtensionContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -434,7 +433,7 @@ public class ThesisParser extends Parser {
 				setState(64);
 				match(EXTENDS);
 				setState(65);
-				match(PACKAGE);
+				match(CHAIN);
 				}
 				break;
 			case IMPLEMENTS:
@@ -442,7 +441,7 @@ public class ThesisParser extends Parser {
 				setState(66);
 				match(IMPLEMENTS);
 				setState(67);
-				match(PACKAGE);
+				match(CHAIN);
 				}
 				break;
 			default:
@@ -657,7 +656,7 @@ public class ThesisParser extends Parser {
 			match(LEFT_CURLY_BRACE);
 			setState(86);
 			_la = _input.LA(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << NEW) | (1L << CLASS_NAME) | (1L << CAMEL_CASE) | (1L << VAR_WITH_TYPE))) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << CHAIN) | (1L << NEW) | (1L << THIS) | (1L << CLASS_NAME) | (1L << CAMEL_CASE) | (1L << VAR_WITH_TYPE))) != 0)) {
 				{
 				setState(85);
 				block();
@@ -916,7 +915,7 @@ public class ThesisParser extends Parser {
 				setState(112); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << NEW) | (1L << CLASS_NAME) | (1L << CAMEL_CASE) | (1L << VAR_WITH_TYPE))) != 0) );
+			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << CHAIN) | (1L << NEW) | (1L << THIS) | (1L << CLASS_NAME) | (1L << CAMEL_CASE) | (1L << VAR_WITH_TYPE))) != 0) );
 			setState(115);
 			_la = _input.LA(1);
 			if (_la==RETURN) {
@@ -1075,14 +1074,17 @@ public class ThesisParser extends Parser {
 	}
 
 	public static class AssignmentContext extends ParserRuleContext {
-		public VarContext var() {
-			return getRuleContext(VarContext.class,0);
-		}
 		public TerminalNode EQUALS() { return getToken(ThesisParser.EQUALS, 0); }
 		public List<TerminalNode> CAMEL_CASE() { return getTokens(ThesisParser.CAMEL_CASE); }
 		public TerminalNode CAMEL_CASE(int i) {
 			return getToken(ThesisParser.CAMEL_CASE, i);
 		}
+		public TerminalNode CHAIN() { return getToken(ThesisParser.CHAIN, 0); }
+		public VarContext var() {
+			return getRuleContext(VarContext.class,0);
+		}
+		public TerminalNode THIS() { return getToken(ThesisParser.THIS, 0); }
+		public TerminalNode PERIOD() { return getToken(ThesisParser.PERIOD, 0); }
 		public AssignmentContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -1105,29 +1107,60 @@ public class ThesisParser extends Parser {
 	public final AssignmentContext assignment() throws RecognitionException {
 		AssignmentContext _localctx = new AssignmentContext(_ctx, getState());
 		enterRule(_localctx, 32, RULE_assignment);
+		int _la;
 		try {
-			setState(135);
+			setState(141);
 			switch (_input.LA(1)) {
+			case CHAIN:
+			case THIS:
 			case CLASS_NAME:
 			case VAR_WITH_TYPE:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(128);
-				var();
-				setState(129);
+				setState(134);
+				switch (_input.LA(1)) {
+				case CHAIN:
+				case THIS:
+					{
+					setState(130);
+					_la = _input.LA(1);
+					if (_la==THIS) {
+						{
+						setState(128);
+						match(THIS);
+						setState(129);
+						match(PERIOD);
+						}
+					}
+
+					setState(132);
+					match(CHAIN);
+					}
+					break;
+				case CLASS_NAME:
+				case VAR_WITH_TYPE:
+					{
+					setState(133);
+					var();
+					}
+					break;
+				default:
+					throw new NoViableAltException(this);
+				}
+				setState(136);
 				match(EQUALS);
-				setState(130);
+				setState(137);
 				match(CAMEL_CASE);
 				}
 				break;
 			case CAMEL_CASE:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(132);
+				setState(138);
 				match(CAMEL_CASE);
-				setState(133);
+				setState(139);
 				match(EQUALS);
-				setState(134);
+				setState(140);
 				match(CAMEL_CASE);
 				}
 				break;
@@ -1183,22 +1216,22 @@ public class ThesisParser extends Parser {
 		NewCallContext _localctx = new NewCallContext(_ctx, getState());
 		enterRule(_localctx, 34, RULE_newCall);
 		try {
-			setState(155);
+			setState(161);
 			switch (_input.LA(1)) {
 			case NEW:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(137);
+				setState(143);
 				match(NEW);
-				setState(138);
+				setState(144);
 				match(VAR_WITH_TYPE);
-				setState(139);
+				setState(145);
 				match(LEFT_BRACE);
-				setState(140);
+				setState(146);
 				arguments();
-				setState(141);
+				setState(147);
 				match(RIGHT_BRACE);
-				setState(142);
+				setState(148);
 				match(CAMEL_CASE);
 				}
 				break;
@@ -1207,35 +1240,35 @@ public class ThesisParser extends Parser {
 			case VAR_WITH_TYPE:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(146);
+				setState(152);
 				switch (_input.LA(1)) {
 				case CLASS_NAME:
 				case VAR_WITH_TYPE:
 					{
-					setState(144);
+					setState(150);
 					var();
 					}
 					break;
 				case CAMEL_CASE:
 					{
-					setState(145);
+					setState(151);
 					match(CAMEL_CASE);
 					}
 					break;
 				default:
 					throw new NoViableAltException(this);
 				}
-				setState(148);
+				setState(154);
 				match(EQUALS);
-				setState(149);
+				setState(155);
 				match(NEW);
-				setState(150);
+				setState(156);
 				match(CLASS_NAME);
-				setState(151);
+				setState(157);
 				match(LEFT_BRACE);
-				setState(152);
+				setState(158);
 				arguments();
-				setState(153);
+				setState(159);
 				match(RIGHT_BRACE);
 				}
 				break;
@@ -1286,26 +1319,26 @@ public class ThesisParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(161);
-			switch ( getInterpreter().adaptivePredict(_input,15,_ctx) ) {
+			setState(167);
+			switch ( getInterpreter().adaptivePredict(_input,17,_ctx) ) {
 			case 1:
 				{
-				setState(157);
+				setState(163);
 				match(RETURN);
-				setState(158);
+				setState(164);
 				statement();
 				}
 				break;
 			case 2:
 				{
-				setState(159);
+				setState(165);
 				match(RETURN);
-				setState(160);
+				setState(166);
 				match(CAMEL_CASE);
 				}
 				break;
 			}
-			setState(163);
+			setState(169);
 			match(SEMICOLON);
 			}
 		}
@@ -1321,7 +1354,7 @@ public class ThesisParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3 \u00a8\4\2\t\2\4"+
+		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3!\u00ae\4\2\t\2\4"+
 		"\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t"+
 		"\13\4\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22"+
 		"\4\23\t\23\4\24\t\24\3\2\3\2\3\2\3\2\3\3\3\3\3\3\5\3\60\n\3\3\4\7\4\63"+
@@ -1330,44 +1363,47 @@ public class ThesisParser extends Parser {
 		"\5\13T\n\13\3\13\3\13\3\13\5\13Y\n\13\3\13\3\13\3\f\3\f\3\f\3\f\3\f\3"+
 		"\r\3\r\3\16\3\16\3\16\7\16g\n\16\f\16\16\16j\13\16\3\16\3\16\5\16n\n\16"+
 		"\3\17\6\17q\n\17\r\17\16\17r\3\17\5\17v\n\17\3\20\3\20\3\20\5\20{\n\20"+
-		"\3\20\3\20\3\21\3\21\3\21\3\21\3\22\3\22\3\22\3\22\3\22\3\22\3\22\5\22"+
-		"\u008a\n\22\3\23\3\23\3\23\3\23\3\23\3\23\3\23\3\23\3\23\5\23\u0095\n"+
-		"\23\3\23\3\23\3\23\3\23\3\23\3\23\3\23\5\23\u009e\n\23\3\24\3\24\3\24"+
-		"\3\24\5\24\u00a4\n\24\3\24\3\24\3\24\2\2\25\2\4\6\b\n\f\16\20\22\24\26"+
-		"\30\32\34\36 \"$&\2\6\4\2\17\17\21\21\4\2\17\20  \3\2\17\20\4\2\22\22"+
-		"\25\25\u00a6\2(\3\2\2\2\4/\3\2\2\2\6\64\3\2\2\2\b>\3\2\2\2\n@\3\2\2\2"+
-		"\fF\3\2\2\2\16J\3\2\2\2\20M\3\2\2\2\22O\3\2\2\2\24S\3\2\2\2\26\\\3\2\2"+
-		"\2\30a\3\2\2\2\32m\3\2\2\2\34p\3\2\2\2\36z\3\2\2\2 ~\3\2\2\2\"\u0089\3"+
-		"\2\2\2$\u009d\3\2\2\2&\u00a3\3\2\2\2()\7\3\2\2)*\5\4\3\2*+\7\2\2\3+\3"+
-		"\3\2\2\2,\60\5\6\4\2-\60\5\b\5\2.\60\5\n\6\2/,\3\2\2\2/-\3\2\2\2/.\3\2"+
-		"\2\2\60\5\3\2\2\2\61\63\5\f\7\2\62\61\3\2\2\2\63\66\3\2\2\2\64\62\3\2"+
-		"\2\2\64\65\3\2\2\2\65;\3\2\2\2\66\64\3\2\2\2\67:\5\16\b\28:\5\24\13\2"+
-		"9\67\3\2\2\298\3\2\2\2:=\3\2\2\2;9\3\2\2\2;<\3\2\2\2<\7\3\2\2\2=;\3\2"+
-		"\2\2>?\7\16\2\2?\t\3\2\2\2@A\7\16\2\2A\13\3\2\2\2BC\7\t\2\2CG\7\6\2\2"+
-		"DE\7\n\2\2EG\7\6\2\2FB\3\2\2\2FD\3\2\2\2GH\3\2\2\2HI\7\25\2\2I\r\3\2\2"+
-		"\2JK\5\22\n\2KL\7\25\2\2L\17\3\2\2\2MN\t\2\2\2N\21\3\2\2\2OP\5\20\t\2"+
-		"PQ\7\20\2\2Q\23\3\2\2\2RT\7\r\2\2SR\3\2\2\2ST\3\2\2\2TU\3\2\2\2UV\5\26"+
-		"\f\2VX\7\36\2\2WY\5\34\17\2XW\3\2\2\2XY\3\2\2\2YZ\3\2\2\2Z[\7\37\2\2["+
-		"\25\3\2\2\2\\]\5\30\r\2]^\7\34\2\2^_\5\32\16\2_`\7\35\2\2`\27\3\2\2\2"+
-		"ab\t\3\2\2b\31\3\2\2\2cd\5\22\n\2de\7\23\2\2eg\3\2\2\2fc\3\2\2\2gj\3\2"+
-		"\2\2hf\3\2\2\2hi\3\2\2\2ik\3\2\2\2jh\3\2\2\2kn\5\22\n\2ln\3\2\2\2mh\3"+
-		"\2\2\2ml\3\2\2\2n\33\3\2\2\2oq\5\36\20\2po\3\2\2\2qr\3\2\2\2rp\3\2\2\2"+
-		"rs\3\2\2\2su\3\2\2\2tv\5&\24\2ut\3\2\2\2uv\3\2\2\2v\35\3\2\2\2w{\5\"\22"+
-		"\2x{\5 \21\2y{\5$\23\2zw\3\2\2\2zx\3\2\2\2zy\3\2\2\2{|\3\2\2\2|}\7\25"+
-		"\2\2}\37\3\2\2\2~\177\t\4\2\2\177\u0080\t\5\2\2\u0080\u0081\5\26\f\2\u0081"+
-		"!\3\2\2\2\u0082\u0083\5\22\n\2\u0083\u0084\7\26\2\2\u0084\u0085\7\20\2"+
-		"\2\u0085\u008a\3\2\2\2\u0086\u0087\7\20\2\2\u0087\u0088\7\26\2\2\u0088"+
-		"\u008a\7\20\2\2\u0089\u0082\3\2\2\2\u0089\u0086\3\2\2\2\u008a#\3\2\2\2"+
-		"\u008b\u008c\7\f\2\2\u008c\u008d\7\21\2\2\u008d\u008e\7\34\2\2\u008e\u008f"+
-		"\5\32\16\2\u008f\u0090\7\35\2\2\u0090\u0091\7\20\2\2\u0091\u009e\3\2\2"+
-		"\2\u0092\u0095\5\22\n\2\u0093\u0095\7\20\2\2\u0094\u0092\3\2\2\2\u0094"+
-		"\u0093\3\2\2\2\u0095\u0096\3\2\2\2\u0096\u0097\7\26\2\2\u0097\u0098\7"+
-		"\f\2\2\u0098\u0099\7\17\2\2\u0099\u009a\7\34\2\2\u009a\u009b\5\32\16\2"+
-		"\u009b\u009c\7\35\2\2\u009c\u009e\3\2\2\2\u009d\u008b\3\2\2\2\u009d\u0094"+
-		"\3\2\2\2\u009e%\3\2\2\2\u009f\u00a0\7\13\2\2\u00a0\u00a4\5\36\20\2\u00a1"+
-		"\u00a2\7\13\2\2\u00a2\u00a4\7\20\2\2\u00a3\u009f\3\2\2\2\u00a3\u00a1\3"+
-		"\2\2\2\u00a4\u00a5\3\2\2\2\u00a5\u00a6\7\25\2\2\u00a6\'\3\2\2\2\22/\64"+
-		"9;FSXhmruz\u0089\u0094\u009d\u00a3";
+		"\3\20\3\20\3\21\3\21\3\21\3\21\3\22\3\22\5\22\u0085\n\22\3\22\3\22\5\22"+
+		"\u0089\n\22\3\22\3\22\3\22\3\22\3\22\5\22\u0090\n\22\3\23\3\23\3\23\3"+
+		"\23\3\23\3\23\3\23\3\23\3\23\5\23\u009b\n\23\3\23\3\23\3\23\3\23\3\23"+
+		"\3\23\3\23\5\23\u00a4\n\23\3\24\3\24\3\24\3\24\5\24\u00aa\n\24\3\24\3"+
+		"\24\3\24\2\2\25\2\4\6\b\n\f\16\20\22\24\26\30\32\34\36 \"$&\2\6\4\2\20"+
+		"\20\22\22\4\2\20\21!!\3\2\20\21\4\2\23\23\26\26\u00ae\2(\3\2\2\2\4/\3"+
+		"\2\2\2\6\64\3\2\2\2\b>\3\2\2\2\n@\3\2\2\2\fF\3\2\2\2\16J\3\2\2\2\20M\3"+
+		"\2\2\2\22O\3\2\2\2\24S\3\2\2\2\26\\\3\2\2\2\30a\3\2\2\2\32m\3\2\2\2\34"+
+		"p\3\2\2\2\36z\3\2\2\2 ~\3\2\2\2\"\u008f\3\2\2\2$\u00a3\3\2\2\2&\u00a9"+
+		"\3\2\2\2()\7\3\2\2)*\5\4\3\2*+\7\2\2\3+\3\3\2\2\2,\60\5\6\4\2-\60\5\b"+
+		"\5\2.\60\5\n\6\2/,\3\2\2\2/-\3\2\2\2/.\3\2\2\2\60\5\3\2\2\2\61\63\5\f"+
+		"\7\2\62\61\3\2\2\2\63\66\3\2\2\2\64\62\3\2\2\2\64\65\3\2\2\2\65;\3\2\2"+
+		"\2\66\64\3\2\2\2\67:\5\16\b\28:\5\24\13\29\67\3\2\2\298\3\2\2\2:=\3\2"+
+		"\2\2;9\3\2\2\2;<\3\2\2\2<\7\3\2\2\2=;\3\2\2\2>?\7\17\2\2?\t\3\2\2\2@A"+
+		"\7\17\2\2A\13\3\2\2\2BC\7\t\2\2CG\7\6\2\2DE\7\n\2\2EG\7\6\2\2FB\3\2\2"+
+		"\2FD\3\2\2\2GH\3\2\2\2HI\7\26\2\2I\r\3\2\2\2JK\5\22\n\2KL\7\26\2\2L\17"+
+		"\3\2\2\2MN\t\2\2\2N\21\3\2\2\2OP\5\20\t\2PQ\7\21\2\2Q\23\3\2\2\2RT\7\16"+
+		"\2\2SR\3\2\2\2ST\3\2\2\2TU\3\2\2\2UV\5\26\f\2VX\7\37\2\2WY\5\34\17\2X"+
+		"W\3\2\2\2XY\3\2\2\2YZ\3\2\2\2Z[\7 \2\2[\25\3\2\2\2\\]\5\30\r\2]^\7\35"+
+		"\2\2^_\5\32\16\2_`\7\36\2\2`\27\3\2\2\2ab\t\3\2\2b\31\3\2\2\2cd\5\22\n"+
+		"\2de\7\24\2\2eg\3\2\2\2fc\3\2\2\2gj\3\2\2\2hf\3\2\2\2hi\3\2\2\2ik\3\2"+
+		"\2\2jh\3\2\2\2kn\5\22\n\2ln\3\2\2\2mh\3\2\2\2ml\3\2\2\2n\33\3\2\2\2oq"+
+		"\5\36\20\2po\3\2\2\2qr\3\2\2\2rp\3\2\2\2rs\3\2\2\2su\3\2\2\2tv\5&\24\2"+
+		"ut\3\2\2\2uv\3\2\2\2v\35\3\2\2\2w{\5\"\22\2x{\5 \21\2y{\5$\23\2zw\3\2"+
+		"\2\2zx\3\2\2\2zy\3\2\2\2{|\3\2\2\2|}\7\26\2\2}\37\3\2\2\2~\177\t\4\2\2"+
+		"\177\u0080\t\5\2\2\u0080\u0081\5\26\f\2\u0081!\3\2\2\2\u0082\u0083\7\r"+
+		"\2\2\u0083\u0085\7\23\2\2\u0084\u0082\3\2\2\2\u0084\u0085\3\2\2\2\u0085"+
+		"\u0086\3\2\2\2\u0086\u0089\7\6\2\2\u0087\u0089\5\22\n\2\u0088\u0084\3"+
+		"\2\2\2\u0088\u0087\3\2\2\2\u0089\u008a\3\2\2\2\u008a\u008b\7\27\2\2\u008b"+
+		"\u0090\7\21\2\2\u008c\u008d\7\21\2\2\u008d\u008e\7\27\2\2\u008e\u0090"+
+		"\7\21\2\2\u008f\u0088\3\2\2\2\u008f\u008c\3\2\2\2\u0090#\3\2\2\2\u0091"+
+		"\u0092\7\f\2\2\u0092\u0093\7\22\2\2\u0093\u0094\7\35\2\2\u0094\u0095\5"+
+		"\32\16\2\u0095\u0096\7\36\2\2\u0096\u0097\7\21\2\2\u0097\u00a4\3\2\2\2"+
+		"\u0098\u009b\5\22\n\2\u0099\u009b\7\21\2\2\u009a\u0098\3\2\2\2\u009a\u0099"+
+		"\3\2\2\2\u009b\u009c\3\2\2\2\u009c\u009d\7\27\2\2\u009d\u009e\7\f\2\2"+
+		"\u009e\u009f\7\20\2\2\u009f\u00a0\7\35\2\2\u00a0\u00a1\5\32\16\2\u00a1"+
+		"\u00a2\7\36\2\2\u00a2\u00a4\3\2\2\2\u00a3\u0091\3\2\2\2\u00a3\u009a\3"+
+		"\2\2\2\u00a4%\3\2\2\2\u00a5\u00a6\7\13\2\2\u00a6\u00aa\5\36\20\2\u00a7"+
+		"\u00a8\7\13\2\2\u00a8\u00aa\7\21\2\2\u00a9\u00a5\3\2\2\2\u00a9\u00a7\3"+
+		"\2\2\2\u00aa\u00ab\3\2\2\2\u00ab\u00ac\7\26\2\2\u00ac\'\3\2\2\2\24/\64"+
+		"9;FSXhmruz\u0084\u0088\u008f\u009a\u00a3\u00a9";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

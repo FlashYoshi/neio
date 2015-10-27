@@ -18,8 +18,8 @@ interfaceBody : STUB;
 scriptBody : STUB;
 
 ////////////UTIL////////////
-extension : ( EXTENDS PACKAGE
-            | IMPLEMENTS PACKAGE)
+extension : ( EXTENDS CHAIN
+            | IMPLEMENTS CHAIN)
             SEMICOLON;
 
 field : var SEMICOLON;
@@ -46,7 +46,7 @@ statement : ( assignment
 
 methodCall : (CLASS_NAME | CAMEL_CASE) (SEMICOLON | PERIOD) call;
 
-assignment : var EQUALS CAMEL_CASE
+assignment : ((THIS PERIOD)? CHAIN | var) EQUALS CAMEL_CASE
            | CAMEL_CASE EQUALS CAMEL_CASE;
 
 newCall : NEW VAR_WITH_TYPE LEFT_BRACE arguments RIGHT_BRACE CAMEL_CASE
