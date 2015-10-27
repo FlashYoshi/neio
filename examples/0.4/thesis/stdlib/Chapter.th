@@ -10,7 +10,7 @@ Chapter(String title, Integer level) {
 }
 
 regex #+(String title) {
-	Chapter #(title, methodName.size()) chapter;
+	Chapter chapter = #(title, methodName.size());
 	
 	return chapter;
 }
