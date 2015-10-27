@@ -1,4 +1,4 @@
-extend thesis.lang.Content;
+extends thesis.lang.Content;
 
 String title;
 Integer level;
@@ -8,7 +8,7 @@ Chapter(String title, Integer level) {
 	this.level = level;
 }
 
-#(String title, Integer level) {
+regex #+(String title, Integer level) {
 	new Chapter(title, level) chapter;
 	content.add(chapter);
 	

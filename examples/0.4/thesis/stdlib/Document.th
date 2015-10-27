@@ -1,8 +1,8 @@
-extend thesis.lang.BaseContainer;
+extends thesis.lang.BaseContainer;
 
 Text title;
 
-#(String title, Integer level) {
+regex #+(String title, Integer level) {
 	new Chapter(title, level) chapter;
 	content.add(chapter);
 	
