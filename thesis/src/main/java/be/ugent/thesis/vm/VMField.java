@@ -6,7 +6,7 @@ import org.aikodi.chameleon.oo.variable.RegularMemberVariable;
 /**
  * @author Titouan Vervack
  */
-public class VMField extends RegularMemberVariable {
+public class VMField extends RegularMemberVariable implements VMObject {
     public VMField(String name, TypeReference type) {
         super(name, type);
     }

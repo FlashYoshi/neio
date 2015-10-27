@@ -5,5 +5,5 @@ import org.aikodi.chameleon.support.modifier.Constructor;
 /**
  * @author Titouan Vervack
  */
-public class VMConstructor extends Constructor {
+public class VMConstructor extends Constructor implements VMObject {
 }

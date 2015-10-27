@@ -8,7 +8,7 @@ import org.aikodi.chameleon.oo.variable.RegularVariable;
 /**
  * @author Titouan Vervack
  */
-public class VMVariable extends RegularVariable {
+public class VMVariable extends RegularVariable implements VMObject {
     public VMVariable(String name, TypeReference typeRef, Expression init) {
         super(name, typeRef, init);
     }

@@ -5,7 +5,7 @@ import org.aikodi.chameleon.core.namespace.RegularNamespace;
 /**
  * @author Titouan Vervack
  */
-public class VMNamespace extends RegularNamespace {
+public class VMNamespace extends RegularNamespace implements VMObject {
     public VMNamespace(String name) {
         super(name);
     }

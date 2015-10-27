@@ -1,8 +1,11 @@
 package be.ugent.thesis.vm;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author Titouan Vervack
  */
-public class VMObject {
-
+public interface VMObject {
+    List<VMObject> objects = new ArrayList<>();
 }

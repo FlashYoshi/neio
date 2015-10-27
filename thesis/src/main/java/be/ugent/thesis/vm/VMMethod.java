@@ -8,7 +8,7 @@ import org.aikodi.chameleon.oo.method.RegularMethod;
 /**
  * @author Titouan Vervack
  */
-public class VMMethod extends RegularMethod {
+public class VMMethod extends RegularMethod implements VMObject {
 
     public VMMethod(MethodHeader header) {
         super(header);
