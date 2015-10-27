@@ -178,6 +178,16 @@ public interface ThesisParserListener extends ParseTreeListener {
 	 */
 	void exitAssignment(ThesisParser.AssignmentContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link ThesisParser#thisChain}.
+	 * @param ctx the parse tree
+	 */
+	void enterThisChain(ThesisParser.ThisChainContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ThesisParser#thisChain}.
+	 * @param ctx the parse tree
+	 */
+	void exitThisChain(ThesisParser.ThisChainContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link ThesisParser#newCall}.
 	 * @param ctx the parse tree
 	 */

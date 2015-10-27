@@ -220,6 +220,18 @@ public class ThesisParserBaseListener implements ThesisParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterThisChain(ThesisParser.ThisChainContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitThisChain(ThesisParser.ThisChainContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterNewCall(ThesisParser.NewCallContext ctx) { }
 	/**
 	 * {@inheritDoc}

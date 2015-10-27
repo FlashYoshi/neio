@@ -113,6 +113,12 @@ public interface ThesisParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitAssignment(ThesisParser.AssignmentContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link ThesisParser#thisChain}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitThisChain(ThesisParser.ThisChainContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link ThesisParser#newCall}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
