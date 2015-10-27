@@ -1,5 +1,5 @@
 [class]
-extends thesis.lang.BaseContainer;
+extends thesis.lang.Container;
 
 Text title;
 
