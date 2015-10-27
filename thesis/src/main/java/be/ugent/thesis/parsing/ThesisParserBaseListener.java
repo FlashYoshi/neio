@@ -124,6 +124,42 @@ public class ThesisParserBaseListener implements ThesisParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterArguments(ThesisParser.ArgumentsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitArguments(ThesisParser.ArgumentsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterParameter(ThesisParser.ParameterContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitParameter(ThesisParser.ParameterContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterParameters(ThesisParser.ParametersContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitParameters(ThesisParser.ParametersContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterMethod(ThesisParser.MethodContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -131,6 +167,18 @@ public class ThesisParserBaseListener implements ThesisParserListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitMethod(ThesisParser.MethodContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterDecl(ThesisParser.DeclContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitDecl(ThesisParser.DeclContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -155,18 +203,6 @@ public class ThesisParserBaseListener implements ThesisParserListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitMethodName(ThesisParser.MethodNameContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterArguments(ThesisParser.ArgumentsContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitArguments(ThesisParser.ArgumentsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -227,6 +263,18 @@ public class ThesisParserBaseListener implements ThesisParserListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitThisChain(ThesisParser.ThisChainContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterChain(ThesisParser.ChainContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitChain(ThesisParser.ChainContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

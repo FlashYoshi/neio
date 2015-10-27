@@ -17,35 +17,36 @@ public class ThesisParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		HEADER=1, COMMENT=2, MULTILINE_COMMENT=3, CHAIN=4, WS=5, NEWLINE=6, EXTENDS=7, 
-		IMPLEMENTS=8, RETURN=9, NEW=10, THIS=11, METHOD_OPTION=12, STUB=13, CLASS_NAME=14, 
-		CAMEL_CASE=15, VAR_WITH_TYPE=16, PERIOD=17, COMMA=18, COLON=19, SEMICOLON=20, 
-		EQUALS=21, PLUS=22, MINUS=23, STAR=24, SMALLER=25, BIGGER=26, LEFT_BRACE=27, 
-		RIGHT_BRACE=28, LEFT_CURLY_BRACE=29, RIGHT_CURLY_BRACE=30, METHOD_NAME=31;
+		HEADER=1, COMMENT=2, MULTILINE_COMMENT=3, WS=4, NEWLINE=5, EXTENDS=6, 
+		IMPLEMENTS=7, RETURN=8, NEW=9, THIS=10, METHOD_OPTION=11, STUB=12, CLASS_NAME=13, 
+		CAMEL_CASE=14, VAR_WITH_TYPE=15, PERIOD=16, COMMA=17, COLON=18, SEMICOLON=19, 
+		EQUALS=20, PLUS=21, MINUS=22, STAR=23, SMALLER=24, BIGGER=25, LEFT_BRACE=26, 
+		RIGHT_BRACE=27, LEFT_CURLY_BRACE=28, RIGHT_CURLY_BRACE=29, METHOD_NAME=30;
 	public static final int
 		RULE_document = 0, RULE_body = 1, RULE_classBody = 2, RULE_interfaceBody = 3, 
 		RULE_scriptBody = 4, RULE_extension = 5, RULE_field = 6, RULE_fieldName = 7, 
-		RULE_var = 8, RULE_method = 9, RULE_call = 10, RULE_methodName = 11, RULE_arguments = 12, 
-		RULE_block = 13, RULE_statement = 14, RULE_methodCall = 15, RULE_assignment = 16, 
-		RULE_thisChain = 17, RULE_newCall = 18, RULE_returnCall = 19;
+		RULE_var = 8, RULE_arguments = 9, RULE_parameter = 10, RULE_parameters = 11, 
+		RULE_method = 12, RULE_decl = 13, RULE_call = 14, RULE_methodName = 15, 
+		RULE_block = 16, RULE_statement = 17, RULE_methodCall = 18, RULE_assignment = 19, 
+		RULE_thisChain = 20, RULE_chain = 21, RULE_newCall = 22, RULE_returnCall = 23;
 	public static final String[] ruleNames = {
 		"document", "body", "classBody", "interfaceBody", "scriptBody", "extension", 
-		"field", "fieldName", "var", "method", "call", "methodName", "arguments", 
-		"block", "statement", "methodCall", "assignment", "thisChain", "newCall", 
-		"returnCall"
+		"field", "fieldName", "var", "arguments", "parameter", "parameters", "method", 
+		"decl", "call", "methodName", "block", "statement", "methodCall", "assignment", 
+		"thisChain", "chain", "newCall", "returnCall"
 	};
 
 	private static final String[] _LITERAL_NAMES = {
-		null, null, null, null, null, null, null, "'extends'", "'implements'", 
-		"'return'", "'new'", "'this'", null, "'stub'", null, null, null, "'.'", 
-		"','", "':'", "';'", "'='", "'+'", "'-'", "'*'", "'<'", "'>'", "'('", 
-		"')'", "'{'", "'}'"
+		null, null, null, null, null, null, "'extends'", "'implements'", "'return'", 
+		"'new'", "'this'", null, "'stub'", null, null, null, "'.'", "','", "':'", 
+		"';'", "'='", "'+'", "'-'", "'*'", "'<'", "'>'", "'('", "')'", "'{'", 
+		"'}'"
 	};
 	private static final String[] _SYMBOLIC_NAMES = {
-		null, "HEADER", "COMMENT", "MULTILINE_COMMENT", "CHAIN", "WS", "NEWLINE", 
-		"EXTENDS", "IMPLEMENTS", "RETURN", "NEW", "THIS", "METHOD_OPTION", "STUB", 
-		"CLASS_NAME", "CAMEL_CASE", "VAR_WITH_TYPE", "PERIOD", "COMMA", "COLON", 
-		"SEMICOLON", "EQUALS", "PLUS", "MINUS", "STAR", "SMALLER", "BIGGER", "LEFT_BRACE", 
+		null, "HEADER", "COMMENT", "MULTILINE_COMMENT", "WS", "NEWLINE", "EXTENDS", 
+		"IMPLEMENTS", "RETURN", "NEW", "THIS", "METHOD_OPTION", "STUB", "CLASS_NAME", 
+		"CAMEL_CASE", "VAR_WITH_TYPE", "PERIOD", "COMMA", "COLON", "SEMICOLON", 
+		"EQUALS", "PLUS", "MINUS", "STAR", "SMALLER", "BIGGER", "LEFT_BRACE", 
 		"RIGHT_BRACE", "LEFT_CURLY_BRACE", "RIGHT_CURLY_BRACE", "METHOD_NAME"
 	};
 	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
@@ -128,11 +129,11 @@ public class ThesisParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(40);
+			setState(48);
 			match(HEADER);
-			setState(41);
+			setState(49);
 			body();
-			setState(42);
+			setState(50);
 			match(EOF);
 			}
 		}
@@ -180,26 +181,26 @@ public class ThesisParser extends Parser {
 		BodyContext _localctx = new BodyContext(_ctx, getState());
 		enterRule(_localctx, 2, RULE_body);
 		try {
-			setState(47);
+			setState(55);
 			switch ( getInterpreter().adaptivePredict(_input,0,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(44);
+				setState(52);
 				classBody();
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(45);
+				setState(53);
 				interfaceBody();
 				}
 				break;
 			case 3:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(46);
+				setState(54);
 				scriptBody();
 				}
 				break;
@@ -261,42 +262,42 @@ public class ThesisParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(52);
+			setState(60);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==EXTENDS || _la==IMPLEMENTS) {
 				{
 				{
-				setState(49);
+				setState(57);
 				extension();
 				}
 				}
-				setState(54);
+				setState(62);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			setState(59);
+			setState(67);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << METHOD_OPTION) | (1L << CLASS_NAME) | (1L << CAMEL_CASE) | (1L << VAR_WITH_TYPE) | (1L << METHOD_NAME))) != 0)) {
 				{
-				setState(57);
+				setState(65);
 				switch ( getInterpreter().adaptivePredict(_input,2,_ctx) ) {
 				case 1:
 					{
-					setState(55);
+					setState(63);
 					field();
 					}
 					break;
 				case 2:
 					{
-					setState(56);
+					setState(64);
 					method();
 					}
 					break;
 				}
 				}
-				setState(61);
+				setState(69);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -340,7 +341,7 @@ public class ThesisParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(62);
+			setState(70);
 			match(STUB);
 			}
 		}
@@ -382,7 +383,7 @@ public class ThesisParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(64);
+			setState(72);
 			match(STUB);
 			}
 		}
@@ -400,7 +401,9 @@ public class ThesisParser extends Parser {
 	public static class ExtensionContext extends ParserRuleContext {
 		public TerminalNode SEMICOLON() { return getToken(ThesisParser.SEMICOLON, 0); }
 		public TerminalNode EXTENDS() { return getToken(ThesisParser.EXTENDS, 0); }
-		public TerminalNode CHAIN() { return getToken(ThesisParser.CHAIN, 0); }
+		public ChainContext chain() {
+			return getRuleContext(ChainContext.class,0);
+		}
 		public TerminalNode IMPLEMENTS() { return getToken(ThesisParser.IMPLEMENTS, 0); }
 		public ExtensionContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -427,28 +430,28 @@ public class ThesisParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(70);
+			setState(78);
 			switch (_input.LA(1)) {
 			case EXTENDS:
 				{
-				setState(66);
+				setState(74);
 				match(EXTENDS);
-				setState(67);
-				match(CHAIN);
+				setState(75);
+				chain();
 				}
 				break;
 			case IMPLEMENTS:
 				{
-				setState(68);
+				setState(76);
 				match(IMPLEMENTS);
-				setState(69);
-				match(CHAIN);
+				setState(77);
+				chain();
 				}
 				break;
 			default:
 				throw new NoViableAltException(this);
 			}
-			setState(72);
+			setState(80);
 			match(SEMICOLON);
 			}
 		}
@@ -493,9 +496,9 @@ public class ThesisParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(74);
+			setState(82);
 			var();
-			setState(75);
+			setState(83);
 			match(SEMICOLON);
 			}
 		}
@@ -539,7 +542,7 @@ public class ThesisParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(77);
+			setState(85);
 			_la = _input.LA(1);
 			if ( !(_la==CLASS_NAME || _la==VAR_WITH_TYPE) ) {
 			_errHandler.recoverInline(this);
@@ -589,188 +592,10 @@ public class ThesisParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(79);
+			setState(87);
 			fieldName();
-			setState(80);
-			match(CAMEL_CASE);
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			_errHandler.reportError(this, re);
-			_errHandler.recover(this, re);
-		}
-		finally {
-			exitRule();
-		}
-		return _localctx;
-	}
-
-	public static class MethodContext extends ParserRuleContext {
-		public CallContext call() {
-			return getRuleContext(CallContext.class,0);
-		}
-		public TerminalNode LEFT_CURLY_BRACE() { return getToken(ThesisParser.LEFT_CURLY_BRACE, 0); }
-		public TerminalNode RIGHT_CURLY_BRACE() { return getToken(ThesisParser.RIGHT_CURLY_BRACE, 0); }
-		public TerminalNode METHOD_OPTION() { return getToken(ThesisParser.METHOD_OPTION, 0); }
-		public BlockContext block() {
-			return getRuleContext(BlockContext.class,0);
-		}
-		public MethodContext(ParserRuleContext parent, int invokingState) {
-			super(parent, invokingState);
-		}
-		@Override public int getRuleIndex() { return RULE_method; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).enterMethod(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).exitMethod(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ThesisParserVisitor ) return ((ThesisParserVisitor<? extends T>)visitor).visitMethod(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-
-	public final MethodContext method() throws RecognitionException {
-		MethodContext _localctx = new MethodContext(_ctx, getState());
-		enterRule(_localctx, 18, RULE_method);
-		int _la;
-		try {
-			enterOuterAlt(_localctx, 1);
-			{
-			setState(83);
-			_la = _input.LA(1);
-			if (_la==METHOD_OPTION) {
-				{
-				setState(82);
-				match(METHOD_OPTION);
-				}
-			}
-
-			setState(85);
-			call();
-			setState(86);
-			match(LEFT_CURLY_BRACE);
 			setState(88);
-			_la = _input.LA(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << CHAIN) | (1L << NEW) | (1L << THIS) | (1L << CLASS_NAME) | (1L << CAMEL_CASE) | (1L << VAR_WITH_TYPE) | (1L << METHOD_NAME))) != 0)) {
-				{
-				setState(87);
-				block();
-				}
-			}
-
-			setState(90);
-			match(RIGHT_CURLY_BRACE);
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			_errHandler.reportError(this, re);
-			_errHandler.recover(this, re);
-		}
-		finally {
-			exitRule();
-		}
-		return _localctx;
-	}
-
-	public static class CallContext extends ParserRuleContext {
-		public MethodNameContext methodName() {
-			return getRuleContext(MethodNameContext.class,0);
-		}
-		public TerminalNode LEFT_BRACE() { return getToken(ThesisParser.LEFT_BRACE, 0); }
-		public ArgumentsContext arguments() {
-			return getRuleContext(ArgumentsContext.class,0);
-		}
-		public TerminalNode RIGHT_BRACE() { return getToken(ThesisParser.RIGHT_BRACE, 0); }
-		public CallContext(ParserRuleContext parent, int invokingState) {
-			super(parent, invokingState);
-		}
-		@Override public int getRuleIndex() { return RULE_call; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).enterCall(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).exitCall(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ThesisParserVisitor ) return ((ThesisParserVisitor<? extends T>)visitor).visitCall(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-
-	public final CallContext call() throws RecognitionException {
-		CallContext _localctx = new CallContext(_ctx, getState());
-		enterRule(_localctx, 20, RULE_call);
-		try {
-			enterOuterAlt(_localctx, 1);
-			{
-			setState(92);
-			methodName();
-			setState(93);
-			match(LEFT_BRACE);
-			setState(94);
-			arguments();
-			setState(95);
-			match(RIGHT_BRACE);
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			_errHandler.reportError(this, re);
-			_errHandler.recover(this, re);
-		}
-		finally {
-			exitRule();
-		}
-		return _localctx;
-	}
-
-	public static class MethodNameContext extends ParserRuleContext {
-		public TerminalNode CLASS_NAME() { return getToken(ThesisParser.CLASS_NAME, 0); }
-		public TerminalNode CAMEL_CASE() { return getToken(ThesisParser.CAMEL_CASE, 0); }
-		public TerminalNode METHOD_NAME() { return getToken(ThesisParser.METHOD_NAME, 0); }
-		public MethodNameContext(ParserRuleContext parent, int invokingState) {
-			super(parent, invokingState);
-		}
-		@Override public int getRuleIndex() { return RULE_methodName; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).enterMethodName(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).exitMethodName(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ThesisParserVisitor ) return ((ThesisParserVisitor<? extends T>)visitor).visitMethodName(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-
-	public final MethodNameContext methodName() throws RecognitionException {
-		MethodNameContext _localctx = new MethodNameContext(_ctx, getState());
-		enterRule(_localctx, 22, RULE_methodName);
-		int _la;
-		try {
-			enterOuterAlt(_localctx, 1);
-			{
-			setState(97);
-			_la = _input.LA(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << CLASS_NAME) | (1L << CAMEL_CASE) | (1L << METHOD_NAME))) != 0)) ) {
-			_errHandler.recoverInline(this);
-			} else {
-				consume();
-			}
+			match(CAMEL_CASE);
 			}
 		}
 		catch (RecognitionException re) {
@@ -816,34 +641,34 @@ public class ThesisParser extends Parser {
 
 	public final ArgumentsContext arguments() throws RecognitionException {
 		ArgumentsContext _localctx = new ArgumentsContext(_ctx, getState());
-		enterRule(_localctx, 24, RULE_arguments);
+		enterRule(_localctx, 18, RULE_arguments);
 		try {
 			int _alt;
-			setState(109);
+			setState(100);
 			switch (_input.LA(1)) {
 			case CLASS_NAME:
 			case VAR_WITH_TYPE:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(104);
+				setState(95);
 				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,7,_ctx);
+				_alt = getInterpreter().adaptivePredict(_input,5,_ctx);
 				while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 					if ( _alt==1 ) {
 						{
 						{
-						setState(99);
+						setState(90);
 						var();
-						setState(100);
+						setState(91);
 						match(COMMA);
 						}
 						} 
 					}
-					setState(106);
+					setState(97);
 					_errHandler.sync(this);
-					_alt = getInterpreter().adaptivePredict(_input,7,_ctx);
+					_alt = getInterpreter().adaptivePredict(_input,5,_ctx);
 				}
-				setState(107);
+				setState(98);
 				var();
 				}
 				break;
@@ -854,6 +679,380 @@ public class ThesisParser extends Parser {
 				break;
 			default:
 				throw new NoViableAltException(this);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class ParameterContext extends ParserRuleContext {
+		public TerminalNode CAMEL_CASE() { return getToken(ThesisParser.CAMEL_CASE, 0); }
+		public MethodCallContext methodCall() {
+			return getRuleContext(MethodCallContext.class,0);
+		}
+		public ParameterContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_parameter; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).enterParameter(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).exitParameter(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ThesisParserVisitor ) return ((ThesisParserVisitor<? extends T>)visitor).visitParameter(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final ParameterContext parameter() throws RecognitionException {
+		ParameterContext _localctx = new ParameterContext(_ctx, getState());
+		enterRule(_localctx, 20, RULE_parameter);
+		try {
+			setState(104);
+			switch ( getInterpreter().adaptivePredict(_input,7,_ctx) ) {
+			case 1:
+				enterOuterAlt(_localctx, 1);
+				{
+				setState(102);
+				match(CAMEL_CASE);
+				}
+				break;
+			case 2:
+				enterOuterAlt(_localctx, 2);
+				{
+				setState(103);
+				methodCall();
+				}
+				break;
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class ParametersContext extends ParserRuleContext {
+		public List<ParameterContext> parameter() {
+			return getRuleContexts(ParameterContext.class);
+		}
+		public ParameterContext parameter(int i) {
+			return getRuleContext(ParameterContext.class,i);
+		}
+		public List<TerminalNode> COMMA() { return getTokens(ThesisParser.COMMA); }
+		public TerminalNode COMMA(int i) {
+			return getToken(ThesisParser.COMMA, i);
+		}
+		public ParametersContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_parameters; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).enterParameters(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).exitParameters(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ThesisParserVisitor ) return ((ThesisParserVisitor<? extends T>)visitor).visitParameters(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final ParametersContext parameters() throws RecognitionException {
+		ParametersContext _localctx = new ParametersContext(_ctx, getState());
+		enterRule(_localctx, 22, RULE_parameters);
+		try {
+			int _alt;
+			setState(116);
+			switch (_input.LA(1)) {
+			case CLASS_NAME:
+			case CAMEL_CASE:
+			case METHOD_NAME:
+				enterOuterAlt(_localctx, 1);
+				{
+				setState(111);
+				_errHandler.sync(this);
+				_alt = getInterpreter().adaptivePredict(_input,8,_ctx);
+				while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
+					if ( _alt==1 ) {
+						{
+						{
+						setState(106);
+						parameter();
+						setState(107);
+						match(COMMA);
+						}
+						} 
+					}
+					setState(113);
+					_errHandler.sync(this);
+					_alt = getInterpreter().adaptivePredict(_input,8,_ctx);
+				}
+				setState(114);
+				parameter();
+				}
+				break;
+			case RIGHT_BRACE:
+				enterOuterAlt(_localctx, 2);
+				{
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class MethodContext extends ParserRuleContext {
+		public DeclContext decl() {
+			return getRuleContext(DeclContext.class,0);
+		}
+		public TerminalNode LEFT_CURLY_BRACE() { return getToken(ThesisParser.LEFT_CURLY_BRACE, 0); }
+		public TerminalNode RIGHT_CURLY_BRACE() { return getToken(ThesisParser.RIGHT_CURLY_BRACE, 0); }
+		public TerminalNode METHOD_OPTION() { return getToken(ThesisParser.METHOD_OPTION, 0); }
+		public BlockContext block() {
+			return getRuleContext(BlockContext.class,0);
+		}
+		public MethodContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_method; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).enterMethod(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).exitMethod(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ThesisParserVisitor ) return ((ThesisParserVisitor<? extends T>)visitor).visitMethod(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final MethodContext method() throws RecognitionException {
+		MethodContext _localctx = new MethodContext(_ctx, getState());
+		enterRule(_localctx, 24, RULE_method);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(119);
+			_la = _input.LA(1);
+			if (_la==METHOD_OPTION) {
+				{
+				setState(118);
+				match(METHOD_OPTION);
+				}
+			}
+
+			setState(121);
+			decl();
+			setState(122);
+			match(LEFT_CURLY_BRACE);
+			setState(124);
+			_la = _input.LA(1);
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << NEW) | (1L << THIS) | (1L << CLASS_NAME) | (1L << CAMEL_CASE) | (1L << VAR_WITH_TYPE) | (1L << METHOD_NAME))) != 0)) {
+				{
+				setState(123);
+				block();
+				}
+			}
+
+			setState(126);
+			match(RIGHT_CURLY_BRACE);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class DeclContext extends ParserRuleContext {
+		public MethodNameContext methodName() {
+			return getRuleContext(MethodNameContext.class,0);
+		}
+		public TerminalNode LEFT_BRACE() { return getToken(ThesisParser.LEFT_BRACE, 0); }
+		public ArgumentsContext arguments() {
+			return getRuleContext(ArgumentsContext.class,0);
+		}
+		public TerminalNode RIGHT_BRACE() { return getToken(ThesisParser.RIGHT_BRACE, 0); }
+		public DeclContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_decl; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).enterDecl(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).exitDecl(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ThesisParserVisitor ) return ((ThesisParserVisitor<? extends T>)visitor).visitDecl(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final DeclContext decl() throws RecognitionException {
+		DeclContext _localctx = new DeclContext(_ctx, getState());
+		enterRule(_localctx, 26, RULE_decl);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(128);
+			methodName();
+			setState(129);
+			match(LEFT_BRACE);
+			setState(130);
+			arguments();
+			setState(131);
+			match(RIGHT_BRACE);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class CallContext extends ParserRuleContext {
+		public MethodNameContext methodName() {
+			return getRuleContext(MethodNameContext.class,0);
+		}
+		public TerminalNode LEFT_BRACE() { return getToken(ThesisParser.LEFT_BRACE, 0); }
+		public ParametersContext parameters() {
+			return getRuleContext(ParametersContext.class,0);
+		}
+		public TerminalNode RIGHT_BRACE() { return getToken(ThesisParser.RIGHT_BRACE, 0); }
+		public CallContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_call; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).enterCall(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).exitCall(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ThesisParserVisitor ) return ((ThesisParserVisitor<? extends T>)visitor).visitCall(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final CallContext call() throws RecognitionException {
+		CallContext _localctx = new CallContext(_ctx, getState());
+		enterRule(_localctx, 28, RULE_call);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(133);
+			methodName();
+			setState(134);
+			match(LEFT_BRACE);
+			setState(135);
+			parameters();
+			setState(136);
+			match(RIGHT_BRACE);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class MethodNameContext extends ParserRuleContext {
+		public TerminalNode CLASS_NAME() { return getToken(ThesisParser.CLASS_NAME, 0); }
+		public TerminalNode CAMEL_CASE() { return getToken(ThesisParser.CAMEL_CASE, 0); }
+		public TerminalNode METHOD_NAME() { return getToken(ThesisParser.METHOD_NAME, 0); }
+		public MethodNameContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_methodName; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).enterMethodName(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).exitMethodName(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ThesisParserVisitor ) return ((ThesisParserVisitor<? extends T>)visitor).visitMethodName(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final MethodNameContext methodName() throws RecognitionException {
+		MethodNameContext _localctx = new MethodNameContext(_ctx, getState());
+		enterRule(_localctx, 30, RULE_methodName);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(138);
+			_la = _input.LA(1);
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << CLASS_NAME) | (1L << CAMEL_CASE) | (1L << METHOD_NAME))) != 0)) ) {
+			_errHandler.recoverInline(this);
+			} else {
+				consume();
+			}
 			}
 		}
 		catch (RecognitionException re) {
@@ -898,30 +1097,30 @@ public class ThesisParser extends Parser {
 
 	public final BlockContext block() throws RecognitionException {
 		BlockContext _localctx = new BlockContext(_ctx, getState());
-		enterRule(_localctx, 26, RULE_block);
+		enterRule(_localctx, 32, RULE_block);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(112); 
+			setState(141); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
 				{
 				{
-				setState(111);
+				setState(140);
 				statement();
 				}
 				}
-				setState(114); 
+				setState(143); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << CHAIN) | (1L << NEW) | (1L << THIS) | (1L << CLASS_NAME) | (1L << CAMEL_CASE) | (1L << VAR_WITH_TYPE) | (1L << METHOD_NAME))) != 0) );
-			setState(117);
+			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << NEW) | (1L << THIS) | (1L << CLASS_NAME) | (1L << CAMEL_CASE) | (1L << VAR_WITH_TYPE) | (1L << METHOD_NAME))) != 0) );
+			setState(146);
 			_la = _input.LA(1);
 			if (_la==RETURN) {
 				{
-				setState(116);
+				setState(145);
 				returnCall();
 				}
 			}
@@ -971,32 +1170,32 @@ public class ThesisParser extends Parser {
 
 	public final StatementContext statement() throws RecognitionException {
 		StatementContext _localctx = new StatementContext(_ctx, getState());
-		enterRule(_localctx, 28, RULE_statement);
+		enterRule(_localctx, 34, RULE_statement);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(122);
-			switch ( getInterpreter().adaptivePredict(_input,11,_ctx) ) {
+			setState(151);
+			switch ( getInterpreter().adaptivePredict(_input,14,_ctx) ) {
 			case 1:
 				{
-				setState(119);
+				setState(148);
 				assignment();
 				}
 				break;
 			case 2:
 				{
-				setState(120);
+				setState(149);
 				methodCall();
 				}
 				break;
 			case 3:
 				{
-				setState(121);
+				setState(150);
 				newCall();
 				}
 				break;
 			}
-			setState(124);
+			setState(153);
 			match(SEMICOLON);
 			}
 		}
@@ -1040,23 +1239,23 @@ public class ThesisParser extends Parser {
 
 	public final MethodCallContext methodCall() throws RecognitionException {
 		MethodCallContext _localctx = new MethodCallContext(_ctx, getState());
-		enterRule(_localctx, 30, RULE_methodCall);
+		enterRule(_localctx, 36, RULE_methodCall);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(128);
-			switch ( getInterpreter().adaptivePredict(_input,12,_ctx) ) {
+			setState(157);
+			switch ( getInterpreter().adaptivePredict(_input,15,_ctx) ) {
 			case 1:
 				{
-				setState(126);
+				setState(155);
 				_la = _input.LA(1);
 				if ( !(_la==CLASS_NAME || _la==CAMEL_CASE) ) {
 				_errHandler.recoverInline(this);
 				} else {
 					consume();
 				}
-				setState(127);
+				setState(156);
 				_la = _input.LA(1);
 				if ( !(_la==PERIOD || _la==SEMICOLON) ) {
 				_errHandler.recoverInline(this);
@@ -1066,7 +1265,7 @@ public class ThesisParser extends Parser {
 				}
 				break;
 			}
-			setState(130);
+			setState(159);
 			call();
 			}
 		}
@@ -1120,54 +1319,50 @@ public class ThesisParser extends Parser {
 
 	public final AssignmentContext assignment() throws RecognitionException {
 		AssignmentContext _localctx = new AssignmentContext(_ctx, getState());
-		enterRule(_localctx, 32, RULE_assignment);
+		enterRule(_localctx, 38, RULE_assignment);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(135);
-			switch (_input.LA(1)) {
-			case CHAIN:
-			case THIS:
+			setState(164);
+			switch ( getInterpreter().adaptivePredict(_input,16,_ctx) ) {
+			case 1:
 				{
-				setState(132);
+				setState(161);
 				thisChain();
 				}
 				break;
-			case CLASS_NAME:
-			case VAR_WITH_TYPE:
+			case 2:
 				{
-				setState(133);
+				setState(162);
 				var();
 				}
 				break;
-			case CAMEL_CASE:
+			case 3:
 				{
-				setState(134);
+				setState(163);
 				match(CAMEL_CASE);
 				}
 				break;
-			default:
-				throw new NoViableAltException(this);
 			}
-			setState(137);
+			setState(166);
 			match(EQUALS);
-			setState(141);
-			switch ( getInterpreter().adaptivePredict(_input,14,_ctx) ) {
+			setState(170);
+			switch ( getInterpreter().adaptivePredict(_input,17,_ctx) ) {
 			case 1:
 				{
-				setState(138);
+				setState(167);
 				match(CAMEL_CASE);
 				}
 				break;
 			case 2:
 				{
-				setState(139);
+				setState(168);
 				thisChain();
 				}
 				break;
 			case 3:
 				{
-				setState(140);
+				setState(169);
 				methodCall();
 				}
 				break;
@@ -1186,9 +1381,13 @@ public class ThesisParser extends Parser {
 	}
 
 	public static class ThisChainContext extends ParserRuleContext {
-		public TerminalNode CHAIN() { return getToken(ThesisParser.CHAIN, 0); }
+		public ChainContext chain() {
+			return getRuleContext(ChainContext.class,0);
+		}
 		public TerminalNode THIS() { return getToken(ThesisParser.THIS, 0); }
 		public TerminalNode PERIOD() { return getToken(ThesisParser.PERIOD, 0); }
+		public TerminalNode CLASS_NAME() { return getToken(ThesisParser.CLASS_NAME, 0); }
+		public TerminalNode CAMEL_CASE() { return getToken(ThesisParser.CAMEL_CASE, 0); }
 		public ThisChainContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -1210,24 +1409,122 @@ public class ThesisParser extends Parser {
 
 	public final ThisChainContext thisChain() throws RecognitionException {
 		ThisChainContext _localctx = new ThisChainContext(_ctx, getState());
-		enterRule(_localctx, 34, RULE_thisChain);
+		enterRule(_localctx, 40, RULE_thisChain);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(145);
+			setState(174);
 			_la = _input.LA(1);
 			if (_la==THIS) {
 				{
-				setState(143);
+				setState(172);
 				match(THIS);
-				setState(144);
+				setState(173);
 				match(PERIOD);
 				}
 			}
 
-			setState(147);
-			match(CHAIN);
+			setState(178);
+			switch ( getInterpreter().adaptivePredict(_input,19,_ctx) ) {
+			case 1:
+				{
+				setState(176);
+				chain();
+				}
+				break;
+			case 2:
+				{
+				setState(177);
+				_la = _input.LA(1);
+				if ( !(_la==CLASS_NAME || _la==CAMEL_CASE) ) {
+				_errHandler.recoverInline(this);
+				} else {
+					consume();
+				}
+				}
+				break;
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class ChainContext extends ParserRuleContext {
+		public List<TerminalNode> CLASS_NAME() { return getTokens(ThesisParser.CLASS_NAME); }
+		public TerminalNode CLASS_NAME(int i) {
+			return getToken(ThesisParser.CLASS_NAME, i);
+		}
+		public List<TerminalNode> CAMEL_CASE() { return getTokens(ThesisParser.CAMEL_CASE); }
+		public TerminalNode CAMEL_CASE(int i) {
+			return getToken(ThesisParser.CAMEL_CASE, i);
+		}
+		public List<TerminalNode> PERIOD() { return getTokens(ThesisParser.PERIOD); }
+		public TerminalNode PERIOD(int i) {
+			return getToken(ThesisParser.PERIOD, i);
+		}
+		public ChainContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_chain; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).enterChain(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).exitChain(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof ThesisParserVisitor ) return ((ThesisParserVisitor<? extends T>)visitor).visitChain(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final ChainContext chain() throws RecognitionException {
+		ChainContext _localctx = new ChainContext(_ctx, getState());
+		enterRule(_localctx, 42, RULE_chain);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(180);
+			_la = _input.LA(1);
+			if ( !(_la==CLASS_NAME || _la==CAMEL_CASE) ) {
+			_errHandler.recoverInline(this);
+			} else {
+				consume();
+			}
+			setState(183); 
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			do {
+				{
+				{
+				setState(181);
+				match(PERIOD);
+				setState(182);
+				_la = _input.LA(1);
+				if ( !(_la==CLASS_NAME || _la==CAMEL_CASE) ) {
+				_errHandler.recoverInline(this);
+				} else {
+					consume();
+				}
+				}
+				}
+				setState(185); 
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+			} while ( _la==PERIOD );
 			}
 		}
 		catch (RecognitionException re) {
@@ -1243,15 +1540,15 @@ public class ThesisParser extends Parser {
 
 	public static class NewCallContext extends ParserRuleContext {
 		public TerminalNode NEW() { return getToken(ThesisParser.NEW, 0); }
-		public TerminalNode VAR_WITH_TYPE() { return getToken(ThesisParser.VAR_WITH_TYPE, 0); }
 		public TerminalNode LEFT_BRACE() { return getToken(ThesisParser.LEFT_BRACE, 0); }
-		public ArgumentsContext arguments() {
-			return getRuleContext(ArgumentsContext.class,0);
+		public ParametersContext parameters() {
+			return getRuleContext(ParametersContext.class,0);
 		}
 		public TerminalNode RIGHT_BRACE() { return getToken(ThesisParser.RIGHT_BRACE, 0); }
 		public TerminalNode CAMEL_CASE() { return getToken(ThesisParser.CAMEL_CASE, 0); }
-		public TerminalNode EQUALS() { return getToken(ThesisParser.EQUALS, 0); }
 		public TerminalNode CLASS_NAME() { return getToken(ThesisParser.CLASS_NAME, 0); }
+		public TerminalNode VAR_WITH_TYPE() { return getToken(ThesisParser.VAR_WITH_TYPE, 0); }
+		public TerminalNode EQUALS() { return getToken(ThesisParser.EQUALS, 0); }
 		public VarContext var() {
 			return getRuleContext(VarContext.class,0);
 		}
@@ -1276,24 +1573,30 @@ public class ThesisParser extends Parser {
 
 	public final NewCallContext newCall() throws RecognitionException {
 		NewCallContext _localctx = new NewCallContext(_ctx, getState());
-		enterRule(_localctx, 36, RULE_newCall);
+		enterRule(_localctx, 44, RULE_newCall);
+		int _la;
 		try {
-			setState(167);
+			setState(205);
 			switch (_input.LA(1)) {
 			case NEW:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(149);
+				setState(187);
 				match(NEW);
-				setState(150);
-				match(VAR_WITH_TYPE);
-				setState(151);
+				setState(188);
+				_la = _input.LA(1);
+				if ( !(_la==CLASS_NAME || _la==VAR_WITH_TYPE) ) {
+				_errHandler.recoverInline(this);
+				} else {
+					consume();
+				}
+				setState(189);
 				match(LEFT_BRACE);
-				setState(152);
-				arguments();
-				setState(153);
+				setState(190);
+				parameters();
+				setState(191);
 				match(RIGHT_BRACE);
-				setState(154);
+				setState(192);
 				match(CAMEL_CASE);
 				}
 				break;
@@ -1302,35 +1605,35 @@ public class ThesisParser extends Parser {
 			case VAR_WITH_TYPE:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(158);
+				setState(196);
 				switch (_input.LA(1)) {
 				case CLASS_NAME:
 				case VAR_WITH_TYPE:
 					{
-					setState(156);
+					setState(194);
 					var();
 					}
 					break;
 				case CAMEL_CASE:
 					{
-					setState(157);
+					setState(195);
 					match(CAMEL_CASE);
 					}
 					break;
 				default:
 					throw new NoViableAltException(this);
 				}
-				setState(160);
+				setState(198);
 				match(EQUALS);
-				setState(161);
+				setState(199);
 				match(NEW);
-				setState(162);
+				setState(200);
 				match(CLASS_NAME);
-				setState(163);
+				setState(201);
 				match(LEFT_BRACE);
-				setState(164);
-				arguments();
-				setState(165);
+				setState(202);
+				parameters();
+				setState(203);
 				match(RIGHT_BRACE);
 				}
 				break;
@@ -1356,6 +1659,9 @@ public class ThesisParser extends Parser {
 			return getRuleContext(StatementContext.class,0);
 		}
 		public TerminalNode CAMEL_CASE() { return getToken(ThesisParser.CAMEL_CASE, 0); }
+		public MethodCallContext methodCall() {
+			return getRuleContext(MethodCallContext.class,0);
+		}
 		public ReturnCallContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -1377,30 +1683,38 @@ public class ThesisParser extends Parser {
 
 	public final ReturnCallContext returnCall() throws RecognitionException {
 		ReturnCallContext _localctx = new ReturnCallContext(_ctx, getState());
-		enterRule(_localctx, 38, RULE_returnCall);
+		enterRule(_localctx, 46, RULE_returnCall);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(173);
-			switch ( getInterpreter().adaptivePredict(_input,18,_ctx) ) {
+			setState(213);
+			switch ( getInterpreter().adaptivePredict(_input,23,_ctx) ) {
 			case 1:
 				{
-				setState(169);
+				setState(207);
 				match(RETURN);
-				setState(170);
+				setState(208);
 				statement();
 				}
 				break;
 			case 2:
 				{
-				setState(171);
+				setState(209);
 				match(RETURN);
-				setState(172);
+				setState(210);
 				match(CAMEL_CASE);
 				}
 				break;
+			case 3:
+				{
+				setState(211);
+				match(RETURN);
+				setState(212);
+				methodCall();
+				}
+				break;
 			}
-			setState(175);
+			setState(215);
 			match(SEMICOLON);
 			}
 		}
@@ -1416,59 +1730,75 @@ public class ThesisParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3!\u00b4\4\2\t\2\4"+
+		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3 \u00dc\4\2\t\2\4"+
 		"\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t"+
 		"\13\4\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22"+
-		"\4\23\t\23\4\24\t\24\4\25\t\25\3\2\3\2\3\2\3\2\3\3\3\3\3\3\5\3\62\n\3"+
-		"\3\4\7\4\65\n\4\f\4\16\48\13\4\3\4\3\4\7\4<\n\4\f\4\16\4?\13\4\3\5\3\5"+
-		"\3\6\3\6\3\7\3\7\3\7\3\7\5\7I\n\7\3\7\3\7\3\b\3\b\3\b\3\t\3\t\3\n\3\n"+
-		"\3\n\3\13\5\13V\n\13\3\13\3\13\3\13\5\13[\n\13\3\13\3\13\3\f\3\f\3\f\3"+
-		"\f\3\f\3\r\3\r\3\16\3\16\3\16\7\16i\n\16\f\16\16\16l\13\16\3\16\3\16\5"+
-		"\16p\n\16\3\17\6\17s\n\17\r\17\16\17t\3\17\5\17x\n\17\3\20\3\20\3\20\5"+
-		"\20}\n\20\3\20\3\20\3\21\3\21\5\21\u0083\n\21\3\21\3\21\3\22\3\22\3\22"+
-		"\5\22\u008a\n\22\3\22\3\22\3\22\3\22\5\22\u0090\n\22\3\23\3\23\5\23\u0094"+
-		"\n\23\3\23\3\23\3\24\3\24\3\24\3\24\3\24\3\24\3\24\3\24\3\24\5\24\u00a1"+
-		"\n\24\3\24\3\24\3\24\3\24\3\24\3\24\3\24\5\24\u00aa\n\24\3\25\3\25\3\25"+
-		"\3\25\5\25\u00b0\n\25\3\25\3\25\3\25\2\2\26\2\4\6\b\n\f\16\20\22\24\26"+
-		"\30\32\34\36 \"$&(\2\6\4\2\20\20\22\22\4\2\20\21!!\3\2\20\21\4\2\23\23"+
-		"\26\26\u00b6\2*\3\2\2\2\4\61\3\2\2\2\6\66\3\2\2\2\b@\3\2\2\2\nB\3\2\2"+
-		"\2\fH\3\2\2\2\16L\3\2\2\2\20O\3\2\2\2\22Q\3\2\2\2\24U\3\2\2\2\26^\3\2"+
-		"\2\2\30c\3\2\2\2\32o\3\2\2\2\34r\3\2\2\2\36|\3\2\2\2 \u0082\3\2\2\2\""+
-		"\u0089\3\2\2\2$\u0093\3\2\2\2&\u00a9\3\2\2\2(\u00af\3\2\2\2*+\7\3\2\2"+
-		"+,\5\4\3\2,-\7\2\2\3-\3\3\2\2\2.\62\5\6\4\2/\62\5\b\5\2\60\62\5\n\6\2"+
-		"\61.\3\2\2\2\61/\3\2\2\2\61\60\3\2\2\2\62\5\3\2\2\2\63\65\5\f\7\2\64\63"+
-		"\3\2\2\2\658\3\2\2\2\66\64\3\2\2\2\66\67\3\2\2\2\67=\3\2\2\28\66\3\2\2"+
-		"\29<\5\16\b\2:<\5\24\13\2;9\3\2\2\2;:\3\2\2\2<?\3\2\2\2=;\3\2\2\2=>\3"+
-		"\2\2\2>\7\3\2\2\2?=\3\2\2\2@A\7\17\2\2A\t\3\2\2\2BC\7\17\2\2C\13\3\2\2"+
-		"\2DE\7\t\2\2EI\7\6\2\2FG\7\n\2\2GI\7\6\2\2HD\3\2\2\2HF\3\2\2\2IJ\3\2\2"+
-		"\2JK\7\26\2\2K\r\3\2\2\2LM\5\22\n\2MN\7\26\2\2N\17\3\2\2\2OP\t\2\2\2P"+
-		"\21\3\2\2\2QR\5\20\t\2RS\7\21\2\2S\23\3\2\2\2TV\7\16\2\2UT\3\2\2\2UV\3"+
-		"\2\2\2VW\3\2\2\2WX\5\26\f\2XZ\7\37\2\2Y[\5\34\17\2ZY\3\2\2\2Z[\3\2\2\2"+
-		"[\\\3\2\2\2\\]\7 \2\2]\25\3\2\2\2^_\5\30\r\2_`\7\35\2\2`a\5\32\16\2ab"+
-		"\7\36\2\2b\27\3\2\2\2cd\t\3\2\2d\31\3\2\2\2ef\5\22\n\2fg\7\24\2\2gi\3"+
-		"\2\2\2he\3\2\2\2il\3\2\2\2jh\3\2\2\2jk\3\2\2\2km\3\2\2\2lj\3\2\2\2mp\5"+
-		"\22\n\2np\3\2\2\2oj\3\2\2\2on\3\2\2\2p\33\3\2\2\2qs\5\36\20\2rq\3\2\2"+
-		"\2st\3\2\2\2tr\3\2\2\2tu\3\2\2\2uw\3\2\2\2vx\5(\25\2wv\3\2\2\2wx\3\2\2"+
-		"\2x\35\3\2\2\2y}\5\"\22\2z}\5 \21\2{}\5&\24\2|y\3\2\2\2|z\3\2\2\2|{\3"+
-		"\2\2\2}~\3\2\2\2~\177\7\26\2\2\177\37\3\2\2\2\u0080\u0081\t\4\2\2\u0081"+
-		"\u0083\t\5\2\2\u0082\u0080\3\2\2\2\u0082\u0083\3\2\2\2\u0083\u0084\3\2"+
-		"\2\2\u0084\u0085\5\26\f\2\u0085!\3\2\2\2\u0086\u008a\5$\23\2\u0087\u008a"+
-		"\5\22\n\2\u0088\u008a\7\21\2\2\u0089\u0086\3\2\2\2\u0089\u0087\3\2\2\2"+
-		"\u0089\u0088\3\2\2\2\u008a\u008b\3\2\2\2\u008b\u008f\7\27\2\2\u008c\u0090"+
-		"\7\21\2\2\u008d\u0090\5$\23\2\u008e\u0090\5 \21\2\u008f\u008c\3\2\2\2"+
-		"\u008f\u008d\3\2\2\2\u008f\u008e\3\2\2\2\u0090#\3\2\2\2\u0091\u0092\7"+
-		"\r\2\2\u0092\u0094\7\23\2\2\u0093\u0091\3\2\2\2\u0093\u0094\3\2\2\2\u0094"+
-		"\u0095\3\2\2\2\u0095\u0096\7\6\2\2\u0096%\3\2\2\2\u0097\u0098\7\f\2\2"+
-		"\u0098\u0099\7\22\2\2\u0099\u009a\7\35\2\2\u009a\u009b\5\32\16\2\u009b"+
-		"\u009c\7\36\2\2\u009c\u009d\7\21\2\2\u009d\u00aa\3\2\2\2\u009e\u00a1\5"+
-		"\22\n\2\u009f\u00a1\7\21\2\2\u00a0\u009e\3\2\2\2\u00a0\u009f\3\2\2\2\u00a1"+
-		"\u00a2\3\2\2\2\u00a2\u00a3\7\27\2\2\u00a3\u00a4\7\f\2\2\u00a4\u00a5\7"+
-		"\20\2\2\u00a5\u00a6\7\35\2\2\u00a6\u00a7\5\32\16\2\u00a7\u00a8\7\36\2"+
-		"\2\u00a8\u00aa\3\2\2\2\u00a9\u0097\3\2\2\2\u00a9\u00a0\3\2\2\2\u00aa\'"+
-		"\3\2\2\2\u00ab\u00ac\7\13\2\2\u00ac\u00b0\5\36\20\2\u00ad\u00ae\7\13\2"+
-		"\2\u00ae\u00b0\7\21\2\2\u00af\u00ab\3\2\2\2\u00af\u00ad\3\2\2\2\u00b0"+
-		"\u00b1\3\2\2\2\u00b1\u00b2\7\26\2\2\u00b2)\3\2\2\2\25\61\66;=HUZjotw|"+
-		"\u0082\u0089\u008f\u0093\u00a0\u00a9\u00af";
+		"\4\23\t\23\4\24\t\24\4\25\t\25\4\26\t\26\4\27\t\27\4\30\t\30\4\31\t\31"+
+		"\3\2\3\2\3\2\3\2\3\3\3\3\3\3\5\3:\n\3\3\4\7\4=\n\4\f\4\16\4@\13\4\3\4"+
+		"\3\4\7\4D\n\4\f\4\16\4G\13\4\3\5\3\5\3\6\3\6\3\7\3\7\3\7\3\7\5\7Q\n\7"+
+		"\3\7\3\7\3\b\3\b\3\b\3\t\3\t\3\n\3\n\3\n\3\13\3\13\3\13\7\13`\n\13\f\13"+
+		"\16\13c\13\13\3\13\3\13\5\13g\n\13\3\f\3\f\5\fk\n\f\3\r\3\r\3\r\7\rp\n"+
+		"\r\f\r\16\rs\13\r\3\r\3\r\5\rw\n\r\3\16\5\16z\n\16\3\16\3\16\3\16\5\16"+
+		"\177\n\16\3\16\3\16\3\17\3\17\3\17\3\17\3\17\3\20\3\20\3\20\3\20\3\20"+
+		"\3\21\3\21\3\22\6\22\u0090\n\22\r\22\16\22\u0091\3\22\5\22\u0095\n\22"+
+		"\3\23\3\23\3\23\5\23\u009a\n\23\3\23\3\23\3\24\3\24\5\24\u00a0\n\24\3"+
+		"\24\3\24\3\25\3\25\3\25\5\25\u00a7\n\25\3\25\3\25\3\25\3\25\5\25\u00ad"+
+		"\n\25\3\26\3\26\5\26\u00b1\n\26\3\26\3\26\5\26\u00b5\n\26\3\27\3\27\3"+
+		"\27\6\27\u00ba\n\27\r\27\16\27\u00bb\3\30\3\30\3\30\3\30\3\30\3\30\3\30"+
+		"\3\30\3\30\5\30\u00c7\n\30\3\30\3\30\3\30\3\30\3\30\3\30\3\30\5\30\u00d0"+
+		"\n\30\3\31\3\31\3\31\3\31\3\31\3\31\5\31\u00d8\n\31\3\31\3\31\3\31\2\2"+
+		"\32\2\4\6\b\n\f\16\20\22\24\26\30\32\34\36 \"$&(*,.\60\2\6\4\2\17\17\21"+
+		"\21\4\2\17\20  \3\2\17\20\4\2\22\22\25\25\u00e0\2\62\3\2\2\2\49\3\2\2"+
+		"\2\6>\3\2\2\2\bH\3\2\2\2\nJ\3\2\2\2\fP\3\2\2\2\16T\3\2\2\2\20W\3\2\2\2"+
+		"\22Y\3\2\2\2\24f\3\2\2\2\26j\3\2\2\2\30v\3\2\2\2\32y\3\2\2\2\34\u0082"+
+		"\3\2\2\2\36\u0087\3\2\2\2 \u008c\3\2\2\2\"\u008f\3\2\2\2$\u0099\3\2\2"+
+		"\2&\u009f\3\2\2\2(\u00a6\3\2\2\2*\u00b0\3\2\2\2,\u00b6\3\2\2\2.\u00cf"+
+		"\3\2\2\2\60\u00d7\3\2\2\2\62\63\7\3\2\2\63\64\5\4\3\2\64\65\7\2\2\3\65"+
+		"\3\3\2\2\2\66:\5\6\4\2\67:\5\b\5\28:\5\n\6\29\66\3\2\2\29\67\3\2\2\29"+
+		"8\3\2\2\2:\5\3\2\2\2;=\5\f\7\2<;\3\2\2\2=@\3\2\2\2><\3\2\2\2>?\3\2\2\2"+
+		"?E\3\2\2\2@>\3\2\2\2AD\5\16\b\2BD\5\32\16\2CA\3\2\2\2CB\3\2\2\2DG\3\2"+
+		"\2\2EC\3\2\2\2EF\3\2\2\2F\7\3\2\2\2GE\3\2\2\2HI\7\16\2\2I\t\3\2\2\2JK"+
+		"\7\16\2\2K\13\3\2\2\2LM\7\b\2\2MQ\5,\27\2NO\7\t\2\2OQ\5,\27\2PL\3\2\2"+
+		"\2PN\3\2\2\2QR\3\2\2\2RS\7\25\2\2S\r\3\2\2\2TU\5\22\n\2UV\7\25\2\2V\17"+
+		"\3\2\2\2WX\t\2\2\2X\21\3\2\2\2YZ\5\20\t\2Z[\7\20\2\2[\23\3\2\2\2\\]\5"+
+		"\22\n\2]^\7\23\2\2^`\3\2\2\2_\\\3\2\2\2`c\3\2\2\2a_\3\2\2\2ab\3\2\2\2"+
+		"bd\3\2\2\2ca\3\2\2\2dg\5\22\n\2eg\3\2\2\2fa\3\2\2\2fe\3\2\2\2g\25\3\2"+
+		"\2\2hk\7\20\2\2ik\5&\24\2jh\3\2\2\2ji\3\2\2\2k\27\3\2\2\2lm\5\26\f\2m"+
+		"n\7\23\2\2np\3\2\2\2ol\3\2\2\2ps\3\2\2\2qo\3\2\2\2qr\3\2\2\2rt\3\2\2\2"+
+		"sq\3\2\2\2tw\5\26\f\2uw\3\2\2\2vq\3\2\2\2vu\3\2\2\2w\31\3\2\2\2xz\7\r"+
+		"\2\2yx\3\2\2\2yz\3\2\2\2z{\3\2\2\2{|\5\34\17\2|~\7\36\2\2}\177\5\"\22"+
+		"\2~}\3\2\2\2~\177\3\2\2\2\177\u0080\3\2\2\2\u0080\u0081\7\37\2\2\u0081"+
+		"\33\3\2\2\2\u0082\u0083\5 \21\2\u0083\u0084\7\34\2\2\u0084\u0085\5\24"+
+		"\13\2\u0085\u0086\7\35\2\2\u0086\35\3\2\2\2\u0087\u0088\5 \21\2\u0088"+
+		"\u0089\7\34\2\2\u0089\u008a\5\30\r\2\u008a\u008b\7\35\2\2\u008b\37\3\2"+
+		"\2\2\u008c\u008d\t\3\2\2\u008d!\3\2\2\2\u008e\u0090\5$\23\2\u008f\u008e"+
+		"\3\2\2\2\u0090\u0091\3\2\2\2\u0091\u008f\3\2\2\2\u0091\u0092\3\2\2\2\u0092"+
+		"\u0094\3\2\2\2\u0093\u0095\5\60\31\2\u0094\u0093\3\2\2\2\u0094\u0095\3"+
+		"\2\2\2\u0095#\3\2\2\2\u0096\u009a\5(\25\2\u0097\u009a\5&\24\2\u0098\u009a"+
+		"\5.\30\2\u0099\u0096\3\2\2\2\u0099\u0097\3\2\2\2\u0099\u0098\3\2\2\2\u009a"+
+		"\u009b\3\2\2\2\u009b\u009c\7\25\2\2\u009c%\3\2\2\2\u009d\u009e\t\4\2\2"+
+		"\u009e\u00a0\t\5\2\2\u009f\u009d\3\2\2\2\u009f\u00a0\3\2\2\2\u00a0\u00a1"+
+		"\3\2\2\2\u00a1\u00a2\5\36\20\2\u00a2\'\3\2\2\2\u00a3\u00a7\5*\26\2\u00a4"+
+		"\u00a7\5\22\n\2\u00a5\u00a7\7\20\2\2\u00a6\u00a3\3\2\2\2\u00a6\u00a4\3"+
+		"\2\2\2\u00a6\u00a5\3\2\2\2\u00a7\u00a8\3\2\2\2\u00a8\u00ac\7\26\2\2\u00a9"+
+		"\u00ad\7\20\2\2\u00aa\u00ad\5*\26\2\u00ab\u00ad\5&\24\2\u00ac\u00a9\3"+
+		"\2\2\2\u00ac\u00aa\3\2\2\2\u00ac\u00ab\3\2\2\2\u00ad)\3\2\2\2\u00ae\u00af"+
+		"\7\f\2\2\u00af\u00b1\7\22\2\2\u00b0\u00ae\3\2\2\2\u00b0\u00b1\3\2\2\2"+
+		"\u00b1\u00b4\3\2\2\2\u00b2\u00b5\5,\27\2\u00b3\u00b5\t\4\2\2\u00b4\u00b2"+
+		"\3\2\2\2\u00b4\u00b3\3\2\2\2\u00b5+\3\2\2\2\u00b6\u00b9\t\4\2\2\u00b7"+
+		"\u00b8\7\22\2\2\u00b8\u00ba\t\4\2\2\u00b9\u00b7\3\2\2\2\u00ba\u00bb\3"+
+		"\2\2\2\u00bb\u00b9\3\2\2\2\u00bb\u00bc\3\2\2\2\u00bc-\3\2\2\2\u00bd\u00be"+
+		"\7\13\2\2\u00be\u00bf\t\2\2\2\u00bf\u00c0\7\34\2\2\u00c0\u00c1\5\30\r"+
+		"\2\u00c1\u00c2\7\35\2\2\u00c2\u00c3\7\20\2\2\u00c3\u00d0\3\2\2\2\u00c4"+
+		"\u00c7\5\22\n\2\u00c5\u00c7\7\20\2\2\u00c6\u00c4\3\2\2\2\u00c6\u00c5\3"+
+		"\2\2\2\u00c7\u00c8\3\2\2\2\u00c8\u00c9\7\26\2\2\u00c9\u00ca\7\13\2\2\u00ca"+
+		"\u00cb\7\17\2\2\u00cb\u00cc\7\34\2\2\u00cc\u00cd\5\30\r\2\u00cd\u00ce"+
+		"\7\35\2\2\u00ce\u00d0\3\2\2\2\u00cf\u00bd\3\2\2\2\u00cf\u00c6\3\2\2\2"+
+		"\u00d0/\3\2\2\2\u00d1\u00d2\7\n\2\2\u00d2\u00d8\5$\23\2\u00d3\u00d4\7"+
+		"\n\2\2\u00d4\u00d8\7\20\2\2\u00d5\u00d6\7\n\2\2\u00d6\u00d8\5&\24\2\u00d7"+
+		"\u00d1\3\2\2\2\u00d7\u00d3\3\2\2\2\u00d7\u00d5\3\2\2\2\u00d8\u00d9\3\2"+
+		"\2\2\u00d9\u00da\7\25\2\2\u00da\61\3\2\2\2\329>CEPafjqvy~\u0091\u0094"+
+		"\u0099\u009f\u00a6\u00ac\u00b0\u00b4\u00bb\u00c6\u00cf\u00d7";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

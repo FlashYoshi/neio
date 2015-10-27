@@ -98,6 +98,36 @@ public interface ThesisParserListener extends ParseTreeListener {
 	 */
 	void exitVar(ThesisParser.VarContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link ThesisParser#arguments}.
+	 * @param ctx the parse tree
+	 */
+	void enterArguments(ThesisParser.ArgumentsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ThesisParser#arguments}.
+	 * @param ctx the parse tree
+	 */
+	void exitArguments(ThesisParser.ArgumentsContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ThesisParser#parameter}.
+	 * @param ctx the parse tree
+	 */
+	void enterParameter(ThesisParser.ParameterContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ThesisParser#parameter}.
+	 * @param ctx the parse tree
+	 */
+	void exitParameter(ThesisParser.ParameterContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ThesisParser#parameters}.
+	 * @param ctx the parse tree
+	 */
+	void enterParameters(ThesisParser.ParametersContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ThesisParser#parameters}.
+	 * @param ctx the parse tree
+	 */
+	void exitParameters(ThesisParser.ParametersContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link ThesisParser#method}.
 	 * @param ctx the parse tree
 	 */
@@ -107,6 +137,16 @@ public interface ThesisParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitMethod(ThesisParser.MethodContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ThesisParser#decl}.
+	 * @param ctx the parse tree
+	 */
+	void enterDecl(ThesisParser.DeclContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ThesisParser#decl}.
+	 * @param ctx the parse tree
+	 */
+	void exitDecl(ThesisParser.DeclContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link ThesisParser#call}.
 	 * @param ctx the parse tree
@@ -127,16 +167,6 @@ public interface ThesisParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitMethodName(ThesisParser.MethodNameContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ThesisParser#arguments}.
-	 * @param ctx the parse tree
-	 */
-	void enterArguments(ThesisParser.ArgumentsContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ThesisParser#arguments}.
-	 * @param ctx the parse tree
-	 */
-	void exitArguments(ThesisParser.ArgumentsContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link ThesisParser#block}.
 	 * @param ctx the parse tree
@@ -187,6 +217,16 @@ public interface ThesisParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitThisChain(ThesisParser.ThisChainContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ThesisParser#chain}.
+	 * @param ctx the parse tree
+	 */
+	void enterChain(ThesisParser.ChainContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ThesisParser#chain}.
+	 * @param ctx the parse tree
+	 */
+	void exitChain(ThesisParser.ChainContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link ThesisParser#newCall}.
 	 * @param ctx the parse tree

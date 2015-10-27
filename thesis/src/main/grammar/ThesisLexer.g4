@@ -6,7 +6,6 @@ fragment HEADER_CONTENT : CHAR+;
 COMMENT : '//' ~[\r\n]* -> channel(HIDDEN);
 MULTILINE_COMMENT : '/*' .*? '*/' -> channel(HIDDEN);
 
-CHAIN : CHAR+ (PERIOD CHAR+)+;
 WS : [\t ] -> channel(HIDDEN);
 NEWLINE : '\r'? '\n' -> skip;
 fragment CAPITAL : [A-Z];
@@ -48,4 +47,4 @@ LEFT_CURLY_BRACE : '{';
 RIGHT_CURLY_BRACE : '}';
 
 
-METHOD_NAME : ~[()\r\n \t;]+;
+METHOD_NAME : ~[()\r\n \t;.,:]+;

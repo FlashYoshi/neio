@@ -42,9 +42,9 @@ public class DocumentConverter extends ThesisParserBaseVisitor<Object> {
         for (ExtensionContext extension : body.extension()) {
             // Do not need double check because if they are both null the method would not have been called
             if (extension.IMPLEMENTS() != null) {
-                System.out.println(extension.IMPLEMENTS().getText() + " " + extension.CHAIN().getText());
+                System.out.println(extension.IMPLEMENTS().getText() + " " + extension.chain().getText());
             } else {
-                System.out.println(extension.EXTENDS().getText() + " " + extension.CHAIN().getText());
+                System.out.println(extension.EXTENDS().getText() + " " + extension.chain().getText());
             }
         }
     }
@@ -69,7 +69,7 @@ public class DocumentConverter extends ThesisParserBaseVisitor<Object> {
             System.out.print(method.METHOD_OPTION().getText());
         }
 
-        System.out.println(method.call().getText() + " {");
+        System.out.println(method.decl().getText() + " {");
         visitMethodBlock(method.block());
         System.out.println("}");
         return null;
@@ -81,7 +81,7 @@ public class DocumentConverter extends ThesisParserBaseVisitor<Object> {
         }
 
         if (block.returnCall() != null) {
-            System.out.println(block.returnCall());
+            System.out.println(block.returnCall().getText());
         }
     }
 }

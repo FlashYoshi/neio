@@ -65,11 +65,35 @@ public interface ThesisParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitVar(ThesisParser.VarContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link ThesisParser#arguments}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitArguments(ThesisParser.ArgumentsContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ThesisParser#parameter}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitParameter(ThesisParser.ParameterContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ThesisParser#parameters}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitParameters(ThesisParser.ParametersContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link ThesisParser#method}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitMethod(ThesisParser.MethodContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ThesisParser#decl}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDecl(ThesisParser.DeclContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link ThesisParser#call}.
 	 * @param ctx the parse tree
@@ -82,12 +106,6 @@ public interface ThesisParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitMethodName(ThesisParser.MethodNameContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link ThesisParser#arguments}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitArguments(ThesisParser.ArgumentsContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link ThesisParser#block}.
 	 * @param ctx the parse tree
@@ -118,6 +136,12 @@ public interface ThesisParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitThisChain(ThesisParser.ThisChainContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ThesisParser#chain}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitChain(ThesisParser.ChainContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link ThesisParser#newCall}.
 	 * @param ctx the parse tree
