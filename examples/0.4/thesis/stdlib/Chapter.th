@@ -1,6 +1,12 @@
-extend lang.BaseContainer;
+extend thesis.lang.Content;
 
-Text title;
+String title;
+Integer level;
+
+Chapter(String title, Integer level) {
+	this.title = title;
+	this.level = level;
+}
 
 #(String title, Integer level) {
 	new Chapter(title, level) chapter;

@@ -1,4 +1,4 @@
-extend lang.Content;
+extend thesis.lang.Content;
 
 String text;
 
