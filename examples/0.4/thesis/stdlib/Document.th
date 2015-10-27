@@ -1,3 +1,4 @@
+[class]
 extends thesis.lang.BaseContainer;
 
 Text title;
