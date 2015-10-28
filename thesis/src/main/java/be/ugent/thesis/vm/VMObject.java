@@ -8,4 +8,8 @@ import java.util.List;
  */
 public interface VMObject {
     List<VMObject> objects = new ArrayList<>();
+
+    default void add(VMObject v) {
+        objects.add(v);
+    }
 }
