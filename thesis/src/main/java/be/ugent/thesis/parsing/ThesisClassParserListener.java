@@ -119,17 +119,6 @@ public interface ThesisClassParserListener extends ParseTreeListener {
 	void exitDocument(@NotNull ThesisClassParser.DocumentContext ctx);
 
 	/**
-	 * Enter a parse tree produced by {@link ThesisClassParser#scriptBody}.
-	 * @param ctx the parse tree
-	 */
-	void enterScriptBody(@NotNull ThesisClassParser.ScriptBodyContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ThesisClassParser#scriptBody}.
-	 * @param ctx the parse tree
-	 */
-	void exitScriptBody(@NotNull ThesisClassParser.ScriptBodyContext ctx);
-
-	/**
 	 * Enter a parse tree produced by {@link ThesisClassParser#methodName}.
 	 * @param ctx the parse tree
 	 */

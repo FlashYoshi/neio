@@ -82,13 +82,6 @@ public interface ThesisClassParserVisitor<T> extends ParseTreeVisitor<T> {
 	T visitDocument(@NotNull ThesisClassParser.DocumentContext ctx);
 
 	/**
-	 * Visit a parse tree produced by {@link ThesisClassParser#scriptBody}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitScriptBody(@NotNull ThesisClassParser.ScriptBodyContext ctx);
-
-	/**
 	 * Visit a parse tree produced by {@link ThesisClassParser#methodName}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

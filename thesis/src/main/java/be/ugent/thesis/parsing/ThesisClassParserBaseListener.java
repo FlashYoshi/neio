@@ -147,19 +147,6 @@ public class ThesisClassParserBaseListener implements ThesisClassParserListener 
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterScriptBody(@NotNull ThesisClassParser.ScriptBodyContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitScriptBody(@NotNull ThesisClassParser.ScriptBodyContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterMethodName(@NotNull ThesisClassParser.MethodNameContext ctx) { }
 	/**
 	 * {@inheritDoc}

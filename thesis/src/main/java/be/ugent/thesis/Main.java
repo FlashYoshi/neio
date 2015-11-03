@@ -35,7 +35,7 @@ public class Main {
             System.exit(3);
         }
 
-        visitClass(file, fileName);
+        visitScript(file);
     }
 
     public static void printHelp(String programName) {
@@ -57,4 +57,16 @@ public class Main {
         }
     }
 
+    public static void visitScript(File file) {
+        try {
+            CharStream input = new ANTLRInputStream(new FileInputStream(file));
+            ThesisScriptLexer lexer = new ThesisScriptLexer(input);
+            CommonTokenStream tokens = new CommonTokenStream(lexer);
+            ThesisScriptParser parser = new ThesisScriptParser(tokens);
+            ScriptConverter converter = new ScriptConverter();
+            converter.visitDocument(parser.document());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

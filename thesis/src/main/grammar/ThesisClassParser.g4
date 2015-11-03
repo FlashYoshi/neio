@@ -7,15 +7,12 @@ document : HEADER
            EOF;
 
 body : classBody
-     | interfaceBody
-     | scriptBody;
+     | interfaceBody;
 
 classBody : extension*
             (field | method)*;
 
 interfaceBody : STUB;
-
-scriptBody : STUB;
 
 ////////////UTIL////////////
 extension : ( EXTENDS chain
