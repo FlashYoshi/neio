@@ -1,5 +1,6 @@
-// Generated from ThesisParser.g4 by ANTLR 4.5.1
+// Generated from B:\Documents\GitHub\Thesis\thesis\src\main\grammar\ThesisParser.g4 by ANTLR 4.2.2
 package be.ugent.thesis.parsing;
+import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**
@@ -8,243 +9,266 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
  */
 public interface ThesisParserListener extends ParseTreeListener {
 	/**
-	 * Enter a parse tree produced by {@link ThesisParser#document}.
-	 * @param ctx the parse tree
-	 */
-	void enterDocument(ThesisParser.DocumentContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ThesisParser#document}.
-	 * @param ctx the parse tree
-	 */
-	void exitDocument(ThesisParser.DocumentContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ThesisParser#body}.
-	 * @param ctx the parse tree
-	 */
-	void enterBody(ThesisParser.BodyContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ThesisParser#body}.
-	 * @param ctx the parse tree
-	 */
-	void exitBody(ThesisParser.BodyContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ThesisParser#classBody}.
-	 * @param ctx the parse tree
-	 */
-	void enterClassBody(ThesisParser.ClassBodyContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ThesisParser#classBody}.
-	 * @param ctx the parse tree
-	 */
-	void exitClassBody(ThesisParser.ClassBodyContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link ThesisParser#interfaceBody}.
 	 * @param ctx the parse tree
 	 */
-	void enterInterfaceBody(ThesisParser.InterfaceBodyContext ctx);
+	void enterInterfaceBody(@NotNull ThesisParser.InterfaceBodyContext ctx);
 	/**
 	 * Exit a parse tree produced by {@link ThesisParser#interfaceBody}.
 	 * @param ctx the parse tree
 	 */
-	void exitInterfaceBody(ThesisParser.InterfaceBodyContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ThesisParser#scriptBody}.
-	 * @param ctx the parse tree
-	 */
-	void enterScriptBody(ThesisParser.ScriptBodyContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ThesisParser#scriptBody}.
-	 * @param ctx the parse tree
-	 */
-	void exitScriptBody(ThesisParser.ScriptBodyContext ctx);
+	void exitInterfaceBody(@NotNull ThesisParser.InterfaceBodyContext ctx);
+
 	/**
 	 * Enter a parse tree produced by {@link ThesisParser#extension}.
 	 * @param ctx the parse tree
 	 */
-	void enterExtension(ThesisParser.ExtensionContext ctx);
+	void enterExtension(@NotNull ThesisParser.ExtensionContext ctx);
 	/**
 	 * Exit a parse tree produced by {@link ThesisParser#extension}.
 	 * @param ctx the parse tree
 	 */
-	void exitExtension(ThesisParser.ExtensionContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ThesisParser#field}.
-	 * @param ctx the parse tree
-	 */
-	void enterField(ThesisParser.FieldContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ThesisParser#field}.
-	 * @param ctx the parse tree
-	 */
-	void exitField(ThesisParser.FieldContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ThesisParser#fieldName}.
-	 * @param ctx the parse tree
-	 */
-	void enterFieldName(ThesisParser.FieldNameContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ThesisParser#fieldName}.
-	 * @param ctx the parse tree
-	 */
-	void exitFieldName(ThesisParser.FieldNameContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ThesisParser#var}.
-	 * @param ctx the parse tree
-	 */
-	void enterVar(ThesisParser.VarContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ThesisParser#var}.
-	 * @param ctx the parse tree
-	 */
-	void exitVar(ThesisParser.VarContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ThesisParser#arguments}.
-	 * @param ctx the parse tree
-	 */
-	void enterArguments(ThesisParser.ArgumentsContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ThesisParser#arguments}.
-	 * @param ctx the parse tree
-	 */
-	void exitArguments(ThesisParser.ArgumentsContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ThesisParser#parameter}.
-	 * @param ctx the parse tree
-	 */
-	void enterParameter(ThesisParser.ParameterContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ThesisParser#parameter}.
-	 * @param ctx the parse tree
-	 */
-	void exitParameter(ThesisParser.ParameterContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ThesisParser#parameters}.
-	 * @param ctx the parse tree
-	 */
-	void enterParameters(ThesisParser.ParametersContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ThesisParser#parameters}.
-	 * @param ctx the parse tree
-	 */
-	void exitParameters(ThesisParser.ParametersContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ThesisParser#method}.
-	 * @param ctx the parse tree
-	 */
-	void enterMethod(ThesisParser.MethodContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ThesisParser#method}.
-	 * @param ctx the parse tree
-	 */
-	void exitMethod(ThesisParser.MethodContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ThesisParser#decl}.
-	 * @param ctx the parse tree
-	 */
-	void enterDecl(ThesisParser.DeclContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ThesisParser#decl}.
-	 * @param ctx the parse tree
-	 */
-	void exitDecl(ThesisParser.DeclContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ThesisParser#call}.
-	 * @param ctx the parse tree
-	 */
-	void enterCall(ThesisParser.CallContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ThesisParser#call}.
-	 * @param ctx the parse tree
-	 */
-	void exitCall(ThesisParser.CallContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ThesisParser#methodName}.
-	 * @param ctx the parse tree
-	 */
-	void enterMethodName(ThesisParser.MethodNameContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ThesisParser#methodName}.
-	 * @param ctx the parse tree
-	 */
-	void exitMethodName(ThesisParser.MethodNameContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ThesisParser#block}.
-	 * @param ctx the parse tree
-	 */
-	void enterBlock(ThesisParser.BlockContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ThesisParser#block}.
-	 * @param ctx the parse tree
-	 */
-	void exitBlock(ThesisParser.BlockContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ThesisParser#statement}.
-	 * @param ctx the parse tree
-	 */
-	void enterStatement(ThesisParser.StatementContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ThesisParser#statement}.
-	 * @param ctx the parse tree
-	 */
-	void exitStatement(ThesisParser.StatementContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ThesisParser#methodCall}.
-	 * @param ctx the parse tree
-	 */
-	void enterMethodCall(ThesisParser.MethodCallContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ThesisParser#methodCall}.
-	 * @param ctx the parse tree
-	 */
-	void exitMethodCall(ThesisParser.MethodCallContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ThesisParser#assignment}.
-	 * @param ctx the parse tree
-	 */
-	void enterAssignment(ThesisParser.AssignmentContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ThesisParser#assignment}.
-	 * @param ctx the parse tree
-	 */
-	void exitAssignment(ThesisParser.AssignmentContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ThesisParser#thisChain}.
-	 * @param ctx the parse tree
-	 */
-	void enterThisChain(ThesisParser.ThisChainContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ThesisParser#thisChain}.
-	 * @param ctx the parse tree
-	 */
-	void exitThisChain(ThesisParser.ThisChainContext ctx);
+	void exitExtension(@NotNull ThesisParser.ExtensionContext ctx);
+
 	/**
 	 * Enter a parse tree produced by {@link ThesisParser#chain}.
 	 * @param ctx the parse tree
 	 */
-	void enterChain(ThesisParser.ChainContext ctx);
+	void enterChain(@NotNull ThesisParser.ChainContext ctx);
 	/**
 	 * Exit a parse tree produced by {@link ThesisParser#chain}.
 	 * @param ctx the parse tree
 	 */
-	void exitChain(ThesisParser.ChainContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ThesisParser#newCall}.
-	 * @param ctx the parse tree
-	 */
-	void enterNewCall(ThesisParser.NewCallContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ThesisParser#newCall}.
-	 * @param ctx the parse tree
-	 */
-	void exitNewCall(ThesisParser.NewCallContext ctx);
+	void exitChain(@NotNull ThesisParser.ChainContext ctx);
+
 	/**
 	 * Enter a parse tree produced by {@link ThesisParser#returnCall}.
 	 * @param ctx the parse tree
 	 */
-	void enterReturnCall(ThesisParser.ReturnCallContext ctx);
+	void enterReturnCall(@NotNull ThesisParser.ReturnCallContext ctx);
 	/**
 	 * Exit a parse tree produced by {@link ThesisParser#returnCall}.
 	 * @param ctx the parse tree
 	 */
-	void exitReturnCall(ThesisParser.ReturnCallContext ctx);
+	void exitReturnCall(@NotNull ThesisParser.ReturnCallContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link ThesisParser#fieldName}.
+	 * @param ctx the parse tree
+	 */
+	void enterFieldName(@NotNull ThesisParser.FieldNameContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ThesisParser#fieldName}.
+	 * @param ctx the parse tree
+	 */
+	void exitFieldName(@NotNull ThesisParser.FieldNameContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link ThesisParser#method}.
+	 * @param ctx the parse tree
+	 */
+	void enterMethod(@NotNull ThesisParser.MethodContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ThesisParser#method}.
+	 * @param ctx the parse tree
+	 */
+	void exitMethod(@NotNull ThesisParser.MethodContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link ThesisParser#decl}.
+	 * @param ctx the parse tree
+	 */
+	void enterDecl(@NotNull ThesisParser.DeclContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ThesisParser#decl}.
+	 * @param ctx the parse tree
+	 */
+	void exitDecl(@NotNull ThesisParser.DeclContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link ThesisParser#var}.
+	 * @param ctx the parse tree
+	 */
+	void enterVar(@NotNull ThesisParser.VarContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ThesisParser#var}.
+	 * @param ctx the parse tree
+	 */
+	void exitVar(@NotNull ThesisParser.VarContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link ThesisParser#assignment}.
+	 * @param ctx the parse tree
+	 */
+	void enterAssignment(@NotNull ThesisParser.AssignmentContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ThesisParser#assignment}.
+	 * @param ctx the parse tree
+	 */
+	void exitAssignment(@NotNull ThesisParser.AssignmentContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link ThesisParser#document}.
+	 * @param ctx the parse tree
+	 */
+	void enterDocument(@NotNull ThesisParser.DocumentContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ThesisParser#document}.
+	 * @param ctx the parse tree
+	 */
+	void exitDocument(@NotNull ThesisParser.DocumentContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link ThesisParser#scriptBody}.
+	 * @param ctx the parse tree
+	 */
+	void enterScriptBody(@NotNull ThesisParser.ScriptBodyContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ThesisParser#scriptBody}.
+	 * @param ctx the parse tree
+	 */
+	void exitScriptBody(@NotNull ThesisParser.ScriptBodyContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link ThesisParser#methodName}.
+	 * @param ctx the parse tree
+	 */
+	void enterMethodName(@NotNull ThesisParser.MethodNameContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ThesisParser#methodName}.
+	 * @param ctx the parse tree
+	 */
+	void exitMethodName(@NotNull ThesisParser.MethodNameContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link ThesisParser#thisChain}.
+	 * @param ctx the parse tree
+	 */
+	void enterThisChain(@NotNull ThesisParser.ThisChainContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ThesisParser#thisChain}.
+	 * @param ctx the parse tree
+	 */
+	void exitThisChain(@NotNull ThesisParser.ThisChainContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link ThesisParser#body}.
+	 * @param ctx the parse tree
+	 */
+	void enterBody(@NotNull ThesisParser.BodyContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ThesisParser#body}.
+	 * @param ctx the parse tree
+	 */
+	void exitBody(@NotNull ThesisParser.BodyContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link ThesisParser#newCall}.
+	 * @param ctx the parse tree
+	 */
+	void enterNewCall(@NotNull ThesisParser.NewCallContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ThesisParser#newCall}.
+	 * @param ctx the parse tree
+	 */
+	void exitNewCall(@NotNull ThesisParser.NewCallContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link ThesisParser#call}.
+	 * @param ctx the parse tree
+	 */
+	void enterCall(@NotNull ThesisParser.CallContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ThesisParser#call}.
+	 * @param ctx the parse tree
+	 */
+	void exitCall(@NotNull ThesisParser.CallContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link ThesisParser#field}.
+	 * @param ctx the parse tree
+	 */
+	void enterField(@NotNull ThesisParser.FieldContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ThesisParser#field}.
+	 * @param ctx the parse tree
+	 */
+	void exitField(@NotNull ThesisParser.FieldContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link ThesisParser#parameter}.
+	 * @param ctx the parse tree
+	 */
+	void enterParameter(@NotNull ThesisParser.ParameterContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ThesisParser#parameter}.
+	 * @param ctx the parse tree
+	 */
+	void exitParameter(@NotNull ThesisParser.ParameterContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link ThesisParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterStatement(@NotNull ThesisParser.StatementContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ThesisParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitStatement(@NotNull ThesisParser.StatementContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link ThesisParser#classBody}.
+	 * @param ctx the parse tree
+	 */
+	void enterClassBody(@NotNull ThesisParser.ClassBodyContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ThesisParser#classBody}.
+	 * @param ctx the parse tree
+	 */
+	void exitClassBody(@NotNull ThesisParser.ClassBodyContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link ThesisParser#arguments}.
+	 * @param ctx the parse tree
+	 */
+	void enterArguments(@NotNull ThesisParser.ArgumentsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ThesisParser#arguments}.
+	 * @param ctx the parse tree
+	 */
+	void exitArguments(@NotNull ThesisParser.ArgumentsContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link ThesisParser#block}.
+	 * @param ctx the parse tree
+	 */
+	void enterBlock(@NotNull ThesisParser.BlockContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ThesisParser#block}.
+	 * @param ctx the parse tree
+	 */
+	void exitBlock(@NotNull ThesisParser.BlockContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link ThesisParser#parameters}.
+	 * @param ctx the parse tree
+	 */
+	void enterParameters(@NotNull ThesisParser.ParametersContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ThesisParser#parameters}.
+	 * @param ctx the parse tree
+	 */
+	void exitParameters(@NotNull ThesisParser.ParametersContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link ThesisParser#methodCall}.
+	 * @param ctx the parse tree
+	 */
+	void enterMethodCall(@NotNull ThesisParser.MethodCallContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ThesisParser#methodCall}.
+	 * @param ctx the parse tree
+	 */
+	void exitMethodCall(@NotNull ThesisParser.MethodCallContext ctx);
 }

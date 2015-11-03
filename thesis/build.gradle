@@ -1,8 +1,11 @@
+plugins {
+    id "me.champeau.gradle.antlr4" version "0.1"
+    id "java"
+    id "antlr"
+}
+
 group 'be.ugent'
 version '0.1'
-
-apply plugin: 'java'
-apply plugin: 'antlr'
 
 jar {
     manifest {
@@ -20,6 +23,31 @@ repositories {
 dependencies {
     testCompile group: 'junit', name: 'junit'
     antlr "org.antlr:antlr4:4.5"
-
     compile group: 'markovandooren', name: 'chameleon', version: '1.2.1'
 }
+
+// Antlr4 Configuration
+antlr4 {
+    source = file('src/main/grammar')
+    output = file('src/main/java/be/ugent/thesis/parsing')
+    extraArgs = ['-package', 'be.ugent.thesis.parsing']
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src'
+        }
+    }
+}
+// Make the Java compile task depend on the Antlr4 task
+compileJava.dependsOn antlr4
+
+// Add the generated source files to the list of java sources
+sourceSets.main.java.srcDirs += antlr4.output
+
+// Add Antlr4 to classpath
+configurations {
+    compile.extendsFrom antlr4
+}
+// End Antlr4 Configuration
