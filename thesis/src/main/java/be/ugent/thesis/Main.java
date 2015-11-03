@@ -9,6 +9,7 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Objects;
 
 public class Main {
 
@@ -41,7 +42,9 @@ public class Main {
             CommonTokenStream tokens = new CommonTokenStream(lexer);
             ThesisParser parser = new ThesisParser(tokens);
             DocumentConverter converter = new DocumentConverter();
-            converter.visitDocument(parser.document());
+            String klassName = fileName.substring(fileName.lastIndexOf('/') + 1);
+            klassName = klassName.split("\\.java")[0];
+            converter.visitDocument(parser.document(), klassName);
         } catch (IOException e) {
             e.printStackTrace();
         }
