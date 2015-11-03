@@ -37,10 +37,10 @@ public class Main {
 
         try {
             CharStream input = new ANTLRInputStream(new FileInputStream(file));
-            ThesisLexer lexer = new ThesisLexer(input);
+            ThesisClassLexer lexer = new ThesisClassLexer(input);
             CommonTokenStream tokens = new CommonTokenStream(lexer);
-            ThesisParser parser = new ThesisParser(tokens);
-            DocumentConverter converter = new DocumentConverter();
+            ThesisClassParser parser = new ThesisClassParser(tokens);
+            ClassConverter converter = new ClassConverter();
             String klassName = fileName.substring(fileName.lastIndexOf('/') + 1);
             klassName = klassName.split("\\.java")[0];
             converter.visitDocument(parser.document(), klassName);

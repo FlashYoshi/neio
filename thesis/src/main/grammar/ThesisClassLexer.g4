@@ -1,4 +1,4 @@
-lexer grammar ThesisLexer;
+lexer grammar ThesisClassLexer;
 
 HEADER : '[' HEADER_CONTENT ']';
 fragment HEADER_CONTENT : CHAR+;

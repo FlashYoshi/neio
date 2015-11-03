@@ -1,6 +1,6 @@
 package be.ugent.thesis.parsing;
 
-import be.ugent.thesis.parsing.ThesisParser.*;
+import be.ugent.thesis.parsing.ThesisClassParser.*;
 import be.ugent.thesis.util.Keywords;
 import org.aikodi.chameleon.oo.method.SimpleNameMethodHeader;
 import org.aikodi.chameleon.oo.type.BasicTypeReference;
@@ -16,7 +16,7 @@ import static be.ugent.thesis.util.Keywords.*;
 /**
  * @author Titouan Vervack
  */
-public class DocumentConverter extends ThesisParserBaseVisitor<Object> {
+public class ClassConverter extends ThesisClassParserBaseVisitor<Object> {
 
     public Object visitDocument(DocumentContext ctx, String klassName) {
         visitHeader(ctx, klassName);

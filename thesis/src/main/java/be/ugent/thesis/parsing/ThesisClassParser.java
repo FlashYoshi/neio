@@ -1,4 +1,4 @@
-// Generated from B:\Documents\GitHub\Thesis\thesis\src\main\grammar\ThesisParser.g4 by ANTLR 4.2.2
+// Generated from B:\Documents\GitHub\Thesis\thesis\src\main\grammar\ThesisClassParser.g4 by ANTLR 4.2.2
 package be.ugent.thesis.parsing;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
@@ -10,7 +10,7 @@ import java.util.Iterator;
 import java.util.ArrayList;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
-public class ThesisParser extends Parser {
+public class ThesisClassParser extends Parser {
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
@@ -42,7 +42,7 @@ public class ThesisParser extends Parser {
 	};
 
 	@Override
-	public String getGrammarFileName() { return "ThesisParser.g4"; }
+	public String getGrammarFileName() { return "ThesisClassParser.g4"; }
 
 	@Override
 	public String[] getTokenNames() { return tokenNames; }
@@ -56,31 +56,31 @@ public class ThesisParser extends Parser {
 	@Override
 	public ATN getATN() { return _ATN; }
 
-	public ThesisParser(TokenStream input) {
+	public ThesisClassParser(TokenStream input) {
 		super(input);
 		_interp = new ParserATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
 	public static class DocumentContext extends ParserRuleContext {
-		public TerminalNode EOF() { return getToken(ThesisParser.EOF, 0); }
+		public TerminalNode EOF() { return getToken(ThesisClassParser.EOF, 0); }
 		public BodyContext body() {
 			return getRuleContext(BodyContext.class,0);
 		}
-		public TerminalNode HEADER() { return getToken(ThesisParser.HEADER, 0); }
+		public TerminalNode HEADER() { return getToken(ThesisClassParser.HEADER, 0); }
 		public DocumentContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_document; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).enterDocument(this);
+			if ( listener instanceof ThesisClassParserListener ) ((ThesisClassParserListener)listener).enterDocument(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).exitDocument(this);
+			if ( listener instanceof ThesisClassParserListener ) ((ThesisClassParserListener)listener).exitDocument(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ThesisParserVisitor ) return ((ThesisParserVisitor<? extends T>)visitor).visitDocument(this);
+			if ( visitor instanceof ThesisClassParserVisitor ) return ((ThesisClassParserVisitor<? extends T>)visitor).visitDocument(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -123,15 +123,15 @@ public class ThesisParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_body; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).enterBody(this);
+			if ( listener instanceof ThesisClassParserListener ) ((ThesisClassParserListener)listener).enterBody(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).exitBody(this);
+			if ( listener instanceof ThesisClassParserListener ) ((ThesisClassParserListener)listener).exitBody(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ThesisParserVisitor ) return ((ThesisParserVisitor<? extends T>)visitor).visitBody(this);
+			if ( visitor instanceof ThesisClassParserVisitor ) return ((ThesisClassParserVisitor<? extends T>)visitor).visitBody(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -200,15 +200,15 @@ public class ThesisParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_classBody; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).enterClassBody(this);
+			if ( listener instanceof ThesisClassParserListener ) ((ThesisClassParserListener)listener).enterClassBody(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).exitClassBody(this);
+			if ( listener instanceof ThesisClassParserListener ) ((ThesisClassParserListener)listener).exitClassBody(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ThesisParserVisitor ) return ((ThesisParserVisitor<? extends T>)visitor).visitClassBody(this);
+			if ( visitor instanceof ThesisClassParserVisitor ) return ((ThesisClassParserVisitor<? extends T>)visitor).visitClassBody(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -271,22 +271,22 @@ public class ThesisParser extends Parser {
 	}
 
 	public static class InterfaceBodyContext extends ParserRuleContext {
-		public TerminalNode STUB() { return getToken(ThesisParser.STUB, 0); }
+		public TerminalNode STUB() { return getToken(ThesisClassParser.STUB, 0); }
 		public InterfaceBodyContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_interfaceBody; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).enterInterfaceBody(this);
+			if ( listener instanceof ThesisClassParserListener ) ((ThesisClassParserListener)listener).enterInterfaceBody(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).exitInterfaceBody(this);
+			if ( listener instanceof ThesisClassParserListener ) ((ThesisClassParserListener)listener).exitInterfaceBody(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ThesisParserVisitor ) return ((ThesisParserVisitor<? extends T>)visitor).visitInterfaceBody(this);
+			if ( visitor instanceof ThesisClassParserVisitor ) return ((ThesisClassParserVisitor<? extends T>)visitor).visitInterfaceBody(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -312,22 +312,22 @@ public class ThesisParser extends Parser {
 	}
 
 	public static class ScriptBodyContext extends ParserRuleContext {
-		public TerminalNode STUB() { return getToken(ThesisParser.STUB, 0); }
+		public TerminalNode STUB() { return getToken(ThesisClassParser.STUB, 0); }
 		public ScriptBodyContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_scriptBody; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).enterScriptBody(this);
+			if ( listener instanceof ThesisClassParserListener ) ((ThesisClassParserListener)listener).enterScriptBody(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).exitScriptBody(this);
+			if ( listener instanceof ThesisClassParserListener ) ((ThesisClassParserListener)listener).exitScriptBody(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ThesisParserVisitor ) return ((ThesisParserVisitor<? extends T>)visitor).visitScriptBody(this);
+			if ( visitor instanceof ThesisClassParserVisitor ) return ((ThesisClassParserVisitor<? extends T>)visitor).visitScriptBody(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -353,27 +353,27 @@ public class ThesisParser extends Parser {
 	}
 
 	public static class ExtensionContext extends ParserRuleContext {
-		public TerminalNode SEMICOLON() { return getToken(ThesisParser.SEMICOLON, 0); }
+		public TerminalNode SEMICOLON() { return getToken(ThesisClassParser.SEMICOLON, 0); }
 		public ChainContext chain() {
 			return getRuleContext(ChainContext.class,0);
 		}
-		public TerminalNode IMPLEMENTS() { return getToken(ThesisParser.IMPLEMENTS, 0); }
-		public TerminalNode EXTENDS() { return getToken(ThesisParser.EXTENDS, 0); }
+		public TerminalNode IMPLEMENTS() { return getToken(ThesisClassParser.IMPLEMENTS, 0); }
+		public TerminalNode EXTENDS() { return getToken(ThesisClassParser.EXTENDS, 0); }
 		public ExtensionContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_extension; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).enterExtension(this);
+			if ( listener instanceof ThesisClassParserListener ) ((ThesisClassParserListener)listener).enterExtension(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).exitExtension(this);
+			if ( listener instanceof ThesisClassParserListener ) ((ThesisClassParserListener)listener).exitExtension(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ThesisParserVisitor ) return ((ThesisParserVisitor<? extends T>)visitor).visitExtension(this);
+			if ( visitor instanceof ThesisClassParserVisitor ) return ((ThesisClassParserVisitor<? extends T>)visitor).visitExtension(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -416,7 +416,7 @@ public class ThesisParser extends Parser {
 	}
 
 	public static class FieldContext extends ParserRuleContext {
-		public TerminalNode SEMICOLON() { return getToken(ThesisParser.SEMICOLON, 0); }
+		public TerminalNode SEMICOLON() { return getToken(ThesisClassParser.SEMICOLON, 0); }
 		public VarContext var() {
 			return getRuleContext(VarContext.class,0);
 		}
@@ -426,15 +426,15 @@ public class ThesisParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_field; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).enterField(this);
+			if ( listener instanceof ThesisClassParserListener ) ((ThesisClassParserListener)listener).enterField(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).exitField(this);
+			if ( listener instanceof ThesisClassParserListener ) ((ThesisClassParserListener)listener).exitField(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ThesisParserVisitor ) return ((ThesisParserVisitor<? extends T>)visitor).visitField(this);
+			if ( visitor instanceof ThesisClassParserVisitor ) return ((ThesisClassParserVisitor<? extends T>)visitor).visitField(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -461,23 +461,23 @@ public class ThesisParser extends Parser {
 	}
 
 	public static class FieldNameContext extends ParserRuleContext {
-		public TerminalNode CLASS_NAME() { return getToken(ThesisParser.CLASS_NAME, 0); }
-		public TerminalNode VAR_WITH_TYPE() { return getToken(ThesisParser.VAR_WITH_TYPE, 0); }
+		public TerminalNode CLASS_NAME() { return getToken(ThesisClassParser.CLASS_NAME, 0); }
+		public TerminalNode VAR_WITH_TYPE() { return getToken(ThesisClassParser.VAR_WITH_TYPE, 0); }
 		public FieldNameContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_fieldName; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).enterFieldName(this);
+			if ( listener instanceof ThesisClassParserListener ) ((ThesisClassParserListener)listener).enterFieldName(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).exitFieldName(this);
+			if ( listener instanceof ThesisClassParserListener ) ((ThesisClassParserListener)listener).exitFieldName(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ThesisParserVisitor ) return ((ThesisParserVisitor<? extends T>)visitor).visitFieldName(this);
+			if ( visitor instanceof ThesisClassParserVisitor ) return ((ThesisClassParserVisitor<? extends T>)visitor).visitFieldName(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -512,22 +512,22 @@ public class ThesisParser extends Parser {
 		public FieldNameContext fieldName() {
 			return getRuleContext(FieldNameContext.class,0);
 		}
-		public TerminalNode CAMEL_CASE() { return getToken(ThesisParser.CAMEL_CASE, 0); }
+		public TerminalNode CAMEL_CASE() { return getToken(ThesisClassParser.CAMEL_CASE, 0); }
 		public VarContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_var; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).enterVar(this);
+			if ( listener instanceof ThesisClassParserListener ) ((ThesisClassParserListener)listener).enterVar(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).exitVar(this);
+			if ( listener instanceof ThesisClassParserListener ) ((ThesisClassParserListener)listener).exitVar(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ThesisParserVisitor ) return ((ThesisParserVisitor<? extends T>)visitor).visitVar(this);
+			if ( visitor instanceof ThesisClassParserVisitor ) return ((ThesisClassParserVisitor<? extends T>)visitor).visitVar(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -557,12 +557,12 @@ public class ThesisParser extends Parser {
 		public List<VarContext> var() {
 			return getRuleContexts(VarContext.class);
 		}
-		public List<TerminalNode> COMMA() { return getTokens(ThesisParser.COMMA); }
+		public List<TerminalNode> COMMA() { return getTokens(ThesisClassParser.COMMA); }
 		public VarContext var(int i) {
 			return getRuleContext(VarContext.class,i);
 		}
 		public TerminalNode COMMA(int i) {
-			return getToken(ThesisParser.COMMA, i);
+			return getToken(ThesisClassParser.COMMA, i);
 		}
 		public ArgumentsContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -570,15 +570,15 @@ public class ThesisParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_arguments; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).enterArguments(this);
+			if ( listener instanceof ThesisClassParserListener ) ((ThesisClassParserListener)listener).enterArguments(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).exitArguments(this);
+			if ( listener instanceof ThesisClassParserListener ) ((ThesisClassParserListener)listener).exitArguments(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ThesisParserVisitor ) return ((ThesisParserVisitor<? extends T>)visitor).visitArguments(this);
+			if ( visitor instanceof ThesisClassParserVisitor ) return ((ThesisClassParserVisitor<? extends T>)visitor).visitArguments(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -634,7 +634,7 @@ public class ThesisParser extends Parser {
 	}
 
 	public static class ParameterContext extends ParserRuleContext {
-		public TerminalNode CAMEL_CASE() { return getToken(ThesisParser.CAMEL_CASE, 0); }
+		public TerminalNode CAMEL_CASE() { return getToken(ThesisClassParser.CAMEL_CASE, 0); }
 		public MethodCallContext methodCall() {
 			return getRuleContext(MethodCallContext.class,0);
 		}
@@ -644,15 +644,15 @@ public class ThesisParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_parameter; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).enterParameter(this);
+			if ( listener instanceof ThesisClassParserListener ) ((ThesisClassParserListener)listener).enterParameter(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).exitParameter(this);
+			if ( listener instanceof ThesisClassParserListener ) ((ThesisClassParserListener)listener).exitParameter(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ThesisParserVisitor ) return ((ThesisParserVisitor<? extends T>)visitor).visitParameter(this);
+			if ( visitor instanceof ThesisClassParserVisitor ) return ((ThesisClassParserVisitor<? extends T>)visitor).visitParameter(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -696,9 +696,9 @@ public class ThesisParser extends Parser {
 		public ParameterContext parameter(int i) {
 			return getRuleContext(ParameterContext.class,i);
 		}
-		public List<TerminalNode> COMMA() { return getTokens(ThesisParser.COMMA); }
+		public List<TerminalNode> COMMA() { return getTokens(ThesisClassParser.COMMA); }
 		public TerminalNode COMMA(int i) {
-			return getToken(ThesisParser.COMMA, i);
+			return getToken(ThesisClassParser.COMMA, i);
 		}
 		public ParametersContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -706,15 +706,15 @@ public class ThesisParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_parameters; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).enterParameters(this);
+			if ( listener instanceof ThesisClassParserListener ) ((ThesisClassParserListener)listener).enterParameters(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).exitParameters(this);
+			if ( listener instanceof ThesisClassParserListener ) ((ThesisClassParserListener)listener).exitParameters(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ThesisParserVisitor ) return ((ThesisParserVisitor<? extends T>)visitor).visitParameters(this);
+			if ( visitor instanceof ThesisClassParserVisitor ) return ((ThesisClassParserVisitor<? extends T>)visitor).visitParameters(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -771,12 +771,12 @@ public class ThesisParser extends Parser {
 	}
 
 	public static class MethodContext extends ParserRuleContext {
-		public TerminalNode LEFT_CURLY_BRACE() { return getToken(ThesisParser.LEFT_CURLY_BRACE, 0); }
-		public TerminalNode METHOD_OPTION() { return getToken(ThesisParser.METHOD_OPTION, 0); }
+		public TerminalNode LEFT_CURLY_BRACE() { return getToken(ThesisClassParser.LEFT_CURLY_BRACE, 0); }
+		public TerminalNode METHOD_OPTION() { return getToken(ThesisClassParser.METHOD_OPTION, 0); }
 		public DeclContext decl() {
 			return getRuleContext(DeclContext.class,0);
 		}
-		public TerminalNode RIGHT_CURLY_BRACE() { return getToken(ThesisParser.RIGHT_CURLY_BRACE, 0); }
+		public TerminalNode RIGHT_CURLY_BRACE() { return getToken(ThesisClassParser.RIGHT_CURLY_BRACE, 0); }
 		public BlockContext block() {
 			return getRuleContext(BlockContext.class,0);
 		}
@@ -786,15 +786,15 @@ public class ThesisParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_method; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).enterMethod(this);
+			if ( listener instanceof ThesisClassParserListener ) ((ThesisClassParserListener)listener).enterMethod(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).exitMethod(this);
+			if ( listener instanceof ThesisClassParserListener ) ((ThesisClassParserListener)listener).exitMethod(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ThesisParserVisitor ) return ((ThesisParserVisitor<? extends T>)visitor).visitMethod(this);
+			if ( visitor instanceof ThesisClassParserVisitor ) return ((ThesisClassParserVisitor<? extends T>)visitor).visitMethod(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -842,26 +842,26 @@ public class ThesisParser extends Parser {
 		public MethodNameContext methodName() {
 			return getRuleContext(MethodNameContext.class,0);
 		}
-		public TerminalNode LEFT_BRACE() { return getToken(ThesisParser.LEFT_BRACE, 0); }
+		public TerminalNode LEFT_BRACE() { return getToken(ThesisClassParser.LEFT_BRACE, 0); }
 		public ArgumentsContext arguments() {
 			return getRuleContext(ArgumentsContext.class,0);
 		}
-		public TerminalNode RIGHT_BRACE() { return getToken(ThesisParser.RIGHT_BRACE, 0); }
+		public TerminalNode RIGHT_BRACE() { return getToken(ThesisClassParser.RIGHT_BRACE, 0); }
 		public DeclContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_decl; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).enterDecl(this);
+			if ( listener instanceof ThesisClassParserListener ) ((ThesisClassParserListener)listener).enterDecl(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).exitDecl(this);
+			if ( listener instanceof ThesisClassParserListener ) ((ThesisClassParserListener)listener).exitDecl(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ThesisParserVisitor ) return ((ThesisParserVisitor<? extends T>)visitor).visitDecl(this);
+			if ( visitor instanceof ThesisClassParserVisitor ) return ((ThesisClassParserVisitor<? extends T>)visitor).visitDecl(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -896,23 +896,23 @@ public class ThesisParser extends Parser {
 		public ParametersContext parameters() {
 			return getRuleContext(ParametersContext.class,0);
 		}
-		public TerminalNode LEFT_BRACE() { return getToken(ThesisParser.LEFT_BRACE, 0); }
-		public TerminalNode RIGHT_BRACE() { return getToken(ThesisParser.RIGHT_BRACE, 0); }
+		public TerminalNode LEFT_BRACE() { return getToken(ThesisClassParser.LEFT_BRACE, 0); }
+		public TerminalNode RIGHT_BRACE() { return getToken(ThesisClassParser.RIGHT_BRACE, 0); }
 		public CallContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_call; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).enterCall(this);
+			if ( listener instanceof ThesisClassParserListener ) ((ThesisClassParserListener)listener).enterCall(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).exitCall(this);
+			if ( listener instanceof ThesisClassParserListener ) ((ThesisClassParserListener)listener).exitCall(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ThesisParserVisitor ) return ((ThesisParserVisitor<? extends T>)visitor).visitCall(this);
+			if ( visitor instanceof ThesisClassParserVisitor ) return ((ThesisClassParserVisitor<? extends T>)visitor).visitCall(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -941,24 +941,24 @@ public class ThesisParser extends Parser {
 	}
 
 	public static class MethodNameContext extends ParserRuleContext {
-		public TerminalNode CLASS_NAME() { return getToken(ThesisParser.CLASS_NAME, 0); }
-		public TerminalNode CAMEL_CASE() { return getToken(ThesisParser.CAMEL_CASE, 0); }
-		public TerminalNode METHOD_NAME() { return getToken(ThesisParser.METHOD_NAME, 0); }
+		public TerminalNode CLASS_NAME() { return getToken(ThesisClassParser.CLASS_NAME, 0); }
+		public TerminalNode CAMEL_CASE() { return getToken(ThesisClassParser.CAMEL_CASE, 0); }
+		public TerminalNode METHOD_NAME() { return getToken(ThesisClassParser.METHOD_NAME, 0); }
 		public MethodNameContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_methodName; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).enterMethodName(this);
+			if ( listener instanceof ThesisClassParserListener ) ((ThesisClassParserListener)listener).enterMethodName(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).exitMethodName(this);
+			if ( listener instanceof ThesisClassParserListener ) ((ThesisClassParserListener)listener).exitMethodName(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ThesisParserVisitor ) return ((ThesisParserVisitor<? extends T>)visitor).visitMethodName(this);
+			if ( visitor instanceof ThesisClassParserVisitor ) return ((ThesisClassParserVisitor<? extends T>)visitor).visitMethodName(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1005,15 +1005,15 @@ public class ThesisParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_block; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).enterBlock(this);
+			if ( listener instanceof ThesisClassParserListener ) ((ThesisClassParserListener)listener).enterBlock(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).exitBlock(this);
+			if ( listener instanceof ThesisClassParserListener ) ((ThesisClassParserListener)listener).exitBlock(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ThesisParserVisitor ) return ((ThesisParserVisitor<? extends T>)visitor).visitBlock(this);
+			if ( visitor instanceof ThesisClassParserVisitor ) return ((ThesisClassParserVisitor<? extends T>)visitor).visitBlock(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1060,7 +1060,7 @@ public class ThesisParser extends Parser {
 	}
 
 	public static class StatementContext extends ParserRuleContext {
-		public TerminalNode SEMICOLON() { return getToken(ThesisParser.SEMICOLON, 0); }
+		public TerminalNode SEMICOLON() { return getToken(ThesisClassParser.SEMICOLON, 0); }
 		public AssignmentContext assignment() {
 			return getRuleContext(AssignmentContext.class,0);
 		}
@@ -1076,15 +1076,15 @@ public class ThesisParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_statement; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).enterStatement(this);
+			if ( listener instanceof ThesisClassParserListener ) ((ThesisClassParserListener)listener).enterStatement(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).exitStatement(this);
+			if ( listener instanceof ThesisClassParserListener ) ((ThesisClassParserListener)listener).exitStatement(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ThesisParserVisitor ) return ((ThesisParserVisitor<? extends T>)visitor).visitStatement(this);
+			if ( visitor instanceof ThesisClassParserVisitor ) return ((ThesisClassParserVisitor<? extends T>)visitor).visitStatement(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1130,10 +1130,10 @@ public class ThesisParser extends Parser {
 	}
 
 	public static class MethodCallContext extends ParserRuleContext {
-		public TerminalNode SEMICOLON() { return getToken(ThesisParser.SEMICOLON, 0); }
-		public TerminalNode CLASS_NAME() { return getToken(ThesisParser.CLASS_NAME, 0); }
-		public TerminalNode CAMEL_CASE() { return getToken(ThesisParser.CAMEL_CASE, 0); }
-		public TerminalNode PERIOD() { return getToken(ThesisParser.PERIOD, 0); }
+		public TerminalNode SEMICOLON() { return getToken(ThesisClassParser.SEMICOLON, 0); }
+		public TerminalNode CLASS_NAME() { return getToken(ThesisClassParser.CLASS_NAME, 0); }
+		public TerminalNode CAMEL_CASE() { return getToken(ThesisClassParser.CAMEL_CASE, 0); }
+		public TerminalNode PERIOD() { return getToken(ThesisClassParser.PERIOD, 0); }
 		public CallContext call() {
 			return getRuleContext(CallContext.class,0);
 		}
@@ -1143,15 +1143,15 @@ public class ThesisParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_methodCall; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).enterMethodCall(this);
+			if ( listener instanceof ThesisClassParserListener ) ((ThesisClassParserListener)listener).enterMethodCall(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).exitMethodCall(this);
+			if ( listener instanceof ThesisClassParserListener ) ((ThesisClassParserListener)listener).exitMethodCall(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ThesisParserVisitor ) return ((ThesisParserVisitor<? extends T>)visitor).visitMethodCall(this);
+			if ( visitor instanceof ThesisClassParserVisitor ) return ((ThesisClassParserVisitor<? extends T>)visitor).visitMethodCall(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1197,14 +1197,14 @@ public class ThesisParser extends Parser {
 	}
 
 	public static class AssignmentContext extends ParserRuleContext {
-		public TerminalNode EQUALS() { return getToken(ThesisParser.EQUALS, 0); }
+		public TerminalNode EQUALS() { return getToken(ThesisClassParser.EQUALS, 0); }
 		public List<ThisChainContext> thisChain() {
 			return getRuleContexts(ThisChainContext.class);
 		}
 		public ThisChainContext thisChain(int i) {
 			return getRuleContext(ThisChainContext.class,i);
 		}
-		public List<TerminalNode> CAMEL_CASE() { return getTokens(ThesisParser.CAMEL_CASE); }
+		public List<TerminalNode> CAMEL_CASE() { return getTokens(ThesisClassParser.CAMEL_CASE); }
 		public VarContext var() {
 			return getRuleContext(VarContext.class,0);
 		}
@@ -1212,7 +1212,7 @@ public class ThesisParser extends Parser {
 			return getRuleContext(MethodCallContext.class,0);
 		}
 		public TerminalNode CAMEL_CASE(int i) {
-			return getToken(ThesisParser.CAMEL_CASE, i);
+			return getToken(ThesisClassParser.CAMEL_CASE, i);
 		}
 		public AssignmentContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -1220,15 +1220,15 @@ public class ThesisParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_assignment; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).enterAssignment(this);
+			if ( listener instanceof ThesisClassParserListener ) ((ThesisClassParserListener)listener).enterAssignment(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).exitAssignment(this);
+			if ( listener instanceof ThesisClassParserListener ) ((ThesisClassParserListener)listener).exitAssignment(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ThesisParserVisitor ) return ((ThesisParserVisitor<? extends T>)visitor).visitAssignment(this);
+			if ( visitor instanceof ThesisClassParserVisitor ) return ((ThesisClassParserVisitor<? extends T>)visitor).visitAssignment(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1294,28 +1294,28 @@ public class ThesisParser extends Parser {
 	}
 
 	public static class ThisChainContext extends ParserRuleContext {
-		public TerminalNode CLASS_NAME() { return getToken(ThesisParser.CLASS_NAME, 0); }
-		public TerminalNode CAMEL_CASE() { return getToken(ThesisParser.CAMEL_CASE, 0); }
+		public TerminalNode CLASS_NAME() { return getToken(ThesisClassParser.CLASS_NAME, 0); }
+		public TerminalNode CAMEL_CASE() { return getToken(ThesisClassParser.CAMEL_CASE, 0); }
 		public ChainContext chain() {
 			return getRuleContext(ChainContext.class,0);
 		}
-		public TerminalNode THIS() { return getToken(ThesisParser.THIS, 0); }
-		public TerminalNode PERIOD() { return getToken(ThesisParser.PERIOD, 0); }
+		public TerminalNode THIS() { return getToken(ThesisClassParser.THIS, 0); }
+		public TerminalNode PERIOD() { return getToken(ThesisClassParser.PERIOD, 0); }
 		public ThisChainContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_thisChain; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).enterThisChain(this);
+			if ( listener instanceof ThesisClassParserListener ) ((ThesisClassParserListener)listener).enterThisChain(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).exitThisChain(this);
+			if ( listener instanceof ThesisClassParserListener ) ((ThesisClassParserListener)listener).exitThisChain(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ThesisParserVisitor ) return ((ThesisParserVisitor<? extends T>)visitor).visitThisChain(this);
+			if ( visitor instanceof ThesisClassParserVisitor ) return ((ThesisClassParserVisitor<? extends T>)visitor).visitThisChain(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1370,16 +1370,16 @@ public class ThesisParser extends Parser {
 
 	public static class ChainContext extends ParserRuleContext {
 		public TerminalNode CLASS_NAME(int i) {
-			return getToken(ThesisParser.CLASS_NAME, i);
+			return getToken(ThesisClassParser.CLASS_NAME, i);
 		}
-		public List<TerminalNode> CLASS_NAME() { return getTokens(ThesisParser.CLASS_NAME); }
-		public List<TerminalNode> CAMEL_CASE() { return getTokens(ThesisParser.CAMEL_CASE); }
+		public List<TerminalNode> CLASS_NAME() { return getTokens(ThesisClassParser.CLASS_NAME); }
+		public List<TerminalNode> CAMEL_CASE() { return getTokens(ThesisClassParser.CAMEL_CASE); }
 		public TerminalNode CAMEL_CASE(int i) {
-			return getToken(ThesisParser.CAMEL_CASE, i);
+			return getToken(ThesisClassParser.CAMEL_CASE, i);
 		}
-		public List<TerminalNode> PERIOD() { return getTokens(ThesisParser.PERIOD); }
+		public List<TerminalNode> PERIOD() { return getTokens(ThesisClassParser.PERIOD); }
 		public TerminalNode PERIOD(int i) {
-			return getToken(ThesisParser.PERIOD, i);
+			return getToken(ThesisClassParser.PERIOD, i);
 		}
 		public ChainContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -1387,15 +1387,15 @@ public class ThesisParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_chain; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).enterChain(this);
+			if ( listener instanceof ThesisClassParserListener ) ((ThesisClassParserListener)listener).enterChain(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).exitChain(this);
+			if ( listener instanceof ThesisClassParserListener ) ((ThesisClassParserListener)listener).exitChain(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ThesisParserVisitor ) return ((ThesisParserVisitor<? extends T>)visitor).visitChain(this);
+			if ( visitor instanceof ThesisClassParserVisitor ) return ((ThesisClassParserVisitor<? extends T>)visitor).visitChain(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1446,34 +1446,34 @@ public class ThesisParser extends Parser {
 	}
 
 	public static class NewCallContext extends ParserRuleContext {
-		public TerminalNode EQUALS() { return getToken(ThesisParser.EQUALS, 0); }
-		public TerminalNode CAMEL_CASE() { return getToken(ThesisParser.CAMEL_CASE, 0); }
-		public TerminalNode CLASS_NAME() { return getToken(ThesisParser.CLASS_NAME, 0); }
-		public TerminalNode VAR_WITH_TYPE() { return getToken(ThesisParser.VAR_WITH_TYPE, 0); }
+		public TerminalNode EQUALS() { return getToken(ThesisClassParser.EQUALS, 0); }
+		public TerminalNode CAMEL_CASE() { return getToken(ThesisClassParser.CAMEL_CASE, 0); }
+		public TerminalNode CLASS_NAME() { return getToken(ThesisClassParser.CLASS_NAME, 0); }
+		public TerminalNode VAR_WITH_TYPE() { return getToken(ThesisClassParser.VAR_WITH_TYPE, 0); }
 		public ParametersContext parameters() {
 			return getRuleContext(ParametersContext.class,0);
 		}
 		public VarContext var() {
 			return getRuleContext(VarContext.class,0);
 		}
-		public TerminalNode LEFT_BRACE() { return getToken(ThesisParser.LEFT_BRACE, 0); }
-		public TerminalNode NEW() { return getToken(ThesisParser.NEW, 0); }
-		public TerminalNode RIGHT_BRACE() { return getToken(ThesisParser.RIGHT_BRACE, 0); }
+		public TerminalNode LEFT_BRACE() { return getToken(ThesisClassParser.LEFT_BRACE, 0); }
+		public TerminalNode NEW() { return getToken(ThesisClassParser.NEW, 0); }
+		public TerminalNode RIGHT_BRACE() { return getToken(ThesisClassParser.RIGHT_BRACE, 0); }
 		public NewCallContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_newCall; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).enterNewCall(this);
+			if ( listener instanceof ThesisClassParserListener ) ((ThesisClassParserListener)listener).enterNewCall(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).exitNewCall(this);
+			if ( listener instanceof ThesisClassParserListener ) ((ThesisClassParserListener)listener).exitNewCall(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ThesisParserVisitor ) return ((ThesisParserVisitor<? extends T>)visitor).visitNewCall(this);
+			if ( visitor instanceof ThesisClassParserVisitor ) return ((ThesisClassParserVisitor<? extends T>)visitor).visitNewCall(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1546,9 +1546,9 @@ public class ThesisParser extends Parser {
 	}
 
 	public static class ReturnCallContext extends ParserRuleContext {
-		public TerminalNode SEMICOLON() { return getToken(ThesisParser.SEMICOLON, 0); }
-		public TerminalNode RETURN() { return getToken(ThesisParser.RETURN, 0); }
-		public TerminalNode CAMEL_CASE() { return getToken(ThesisParser.CAMEL_CASE, 0); }
+		public TerminalNode SEMICOLON() { return getToken(ThesisClassParser.SEMICOLON, 0); }
+		public TerminalNode RETURN() { return getToken(ThesisClassParser.RETURN, 0); }
+		public TerminalNode CAMEL_CASE() { return getToken(ThesisClassParser.CAMEL_CASE, 0); }
 		public MethodCallContext methodCall() {
 			return getRuleContext(MethodCallContext.class,0);
 		}
@@ -1561,15 +1561,15 @@ public class ThesisParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_returnCall; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).enterReturnCall(this);
+			if ( listener instanceof ThesisClassParserListener ) ((ThesisClassParserListener)listener).enterReturnCall(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisParserListener ) ((ThesisParserListener)listener).exitReturnCall(this);
+			if ( listener instanceof ThesisClassParserListener ) ((ThesisClassParserListener)listener).exitReturnCall(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ThesisParserVisitor ) return ((ThesisParserVisitor<? extends T>)visitor).visitReturnCall(this);
+			if ( visitor instanceof ThesisClassParserVisitor ) return ((ThesisClassParserVisitor<? extends T>)visitor).visitReturnCall(this);
 			else return visitor.visitChildren(this);
 		}
 	}

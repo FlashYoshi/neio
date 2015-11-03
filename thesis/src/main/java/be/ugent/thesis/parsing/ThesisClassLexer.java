@@ -1,4 +1,4 @@
-// Generated from B:\Documents\GitHub\Thesis\thesis\src\main\grammar\ThesisLexer.g4 by ANTLR 4.2.2
+// Generated from B:\Documents\GitHub\Thesis\thesis\src\main\grammar\ThesisClassLexer.g4 by ANTLR 4.2.2
 package be.ugent.thesis.parsing;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
@@ -10,7 +10,7 @@ import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.misc.*;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
-public class ThesisLexer extends Lexer {
+public class ThesisClassLexer extends Lexer {
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
@@ -42,13 +42,13 @@ public class ThesisLexer extends Lexer {
 	};
 
 
-	public ThesisLexer(CharStream input) {
+	public ThesisClassLexer(CharStream input) {
 		super(input);
 		_interp = new LexerATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
 
 	@Override
-	public String getGrammarFileName() { return "ThesisLexer.g4"; }
+	public String getGrammarFileName() { return "ThesisClassLexer.g4"; }
 
 	@Override
 	public String[] getTokenNames() { return tokenNames; }

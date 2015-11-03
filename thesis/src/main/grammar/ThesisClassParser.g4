@@ -1,6 +1,6 @@
-parser grammar ThesisParser;
+parser grammar ThesisClassParser;
 
-options { tokenVocab = ThesisLexer; }
+options { tokenVocab = ThesisClassLexer; }
 
 document : HEADER
            body
