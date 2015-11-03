@@ -26,14 +26,11 @@ public class ClassConverter extends ThesisClassParserBaseVisitor<Object> {
     private void visitHeader(DocumentContext ctx, String klassName) {
         String header = ctx.HEADER().getText();
         System.out.println(header);
-        header = header.substring(1, header.length() - 1);
         switch (header) {
             case CLASS:
                 visitClass(ctx, klassName);
                 break;
             case INTERFACE:
-                break;
-            case SCRIPT:
                 break;
             default:
                 break;

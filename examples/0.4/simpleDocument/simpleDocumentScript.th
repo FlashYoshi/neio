@@ -1,4 +1,4 @@
-[script]
+script
 Document d = new Document();
 
 d.#("Chapter1")

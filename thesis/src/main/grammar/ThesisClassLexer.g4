@@ -1,7 +1,7 @@
 lexer grammar ThesisClassLexer;
 
-HEADER : '[' HEADER_CONTENT ']';
-fragment HEADER_CONTENT : CHAR+;
+HEADER : HEADER_CONTENT;
+fragment HEADER_CONTENT : CLASS | INTERFACE;
 
 COMMENT : '//' ~[\r\n]* -> channel(HIDDEN);
 MULTILINE_COMMENT : '/*' .*? '*/' -> channel(HIDDEN);
@@ -45,6 +45,7 @@ LEFT_BRACE : '(';
 RIGHT_BRACE : ')';
 LEFT_CURLY_BRACE : '{';
 RIGHT_CURLY_BRACE : '}';
-
+CLASS : 'class';
+INTERFACE : 'interface';
 
 METHOD_NAME : ~[()\r\n \t;.,:]+;

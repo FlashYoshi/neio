@@ -15,17 +15,18 @@ public class ThesisClassParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		EXTENDS=6, NEW=9, STUB=12, HEADER=1, COMMENT=2, CLASS_NAME=13, MINUS=22, 
-		RETURN=8, BIGGER=25, CAMEL_CASE=14, SEMICOLON=19, SMALLER=24, MULTILINE_COMMENT=3, 
-		LEFT_BRACE=26, WS=4, COMMA=17, RIGHT_BRACE=27, EQUALS=20, NEWLINE=5, RIGHT_CURLY_BRACE=29, 
-		IMPLEMENTS=7, COLON=18, METHOD_OPTION=11, STAR=23, PERIOD=16, VAR_WITH_TYPE=15, 
-		THIS=10, METHOD_NAME=30, LEFT_CURLY_BRACE=28, PLUS=21;
+		EXTENDS=6, NEW=9, STUB=12, HEADER=1, CLASS=30, COMMENT=2, CLASS_NAME=13, 
+		MINUS=22, RETURN=8, BIGGER=25, CAMEL_CASE=14, INTERFACE=31, SEMICOLON=19, 
+		SMALLER=24, MULTILINE_COMMENT=3, LEFT_BRACE=26, WS=4, COMMA=17, RIGHT_BRACE=27, 
+		EQUALS=20, NEWLINE=5, RIGHT_CURLY_BRACE=29, IMPLEMENTS=7, COLON=18, METHOD_OPTION=11, 
+		STAR=23, PERIOD=16, VAR_WITH_TYPE=15, THIS=10, METHOD_NAME=32, LEFT_CURLY_BRACE=28, 
+		PLUS=21;
 	public static final String[] tokenNames = {
 		"<INVALID>", "HEADER", "COMMENT", "MULTILINE_COMMENT", "WS", "NEWLINE", 
 		"'extends'", "'implements'", "'return'", "'new'", "'this'", "METHOD_OPTION", 
 		"'stub'", "CLASS_NAME", "CAMEL_CASE", "VAR_WITH_TYPE", "'.'", "','", "':'", 
 		"';'", "'='", "'+'", "'-'", "'*'", "'<'", "'>'", "'('", "')'", "'{'", 
-		"'}'", "METHOD_NAME"
+		"'}'", "'class'", "'interface'", "METHOD_NAME"
 	};
 	public static final int
 		RULE_document = 0, RULE_body = 1, RULE_classBody = 2, RULE_interfaceBody = 3, 
@@ -1618,7 +1619,7 @@ public class ThesisClassParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3 \u00dc\4\2\t\2\4"+
+		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\"\u00dc\4\2\t\2\4"+
 		"\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t"+
 		"\13\4\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22"+
 		"\4\23\t\23\4\24\t\24\4\25\t\25\4\26\t\26\4\27\t\27\4\30\t\30\4\31\t\31"+
@@ -1636,9 +1637,9 @@ public class ThesisClassParser extends Parser {
 		"\3\30\3\30\5\30\u00c7\n\30\3\30\3\30\3\30\3\30\3\30\3\30\3\30\5\30\u00d0"+
 		"\n\30\3\31\3\31\3\31\3\31\3\31\3\31\5\31\u00d8\n\31\3\31\3\31\3\31\2\2"+
 		"\32\2\4\6\b\n\f\16\20\22\24\26\30\32\34\36 \"$&(*,.\60\2\6\4\2\17\17\21"+
-		"\21\4\2\17\20  \3\2\17\20\4\2\22\22\25\25\u00e0\2\62\3\2\2\2\49\3\2\2"+
-		"\2\6>\3\2\2\2\bH\3\2\2\2\nJ\3\2\2\2\fP\3\2\2\2\16T\3\2\2\2\20W\3\2\2\2"+
-		"\22Y\3\2\2\2\24f\3\2\2\2\26j\3\2\2\2\30v\3\2\2\2\32y\3\2\2\2\34\u0082"+
+		"\21\4\2\17\20\"\"\3\2\17\20\4\2\22\22\25\25\u00e0\2\62\3\2\2\2\49\3\2"+
+		"\2\2\6>\3\2\2\2\bH\3\2\2\2\nJ\3\2\2\2\fP\3\2\2\2\16T\3\2\2\2\20W\3\2\2"+
+		"\2\22Y\3\2\2\2\24f\3\2\2\2\26j\3\2\2\2\30v\3\2\2\2\32y\3\2\2\2\34\u0082"+
 		"\3\2\2\2\36\u0087\3\2\2\2 \u008c\3\2\2\2\"\u008f\3\2\2\2$\u0099\3\2\2"+
 		"\2&\u009f\3\2\2\2(\u00a6\3\2\2\2*\u00b0\3\2\2\2,\u00b6\3\2\2\2.\u00cf"+
 		"\3\2\2\2\60\u00d7\3\2\2\2\62\63\7\3\2\2\63\64\5\4\3\2\64\65\7\2\2\3\65"+

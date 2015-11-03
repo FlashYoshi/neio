@@ -1,4 +1,4 @@
-[class]
+class
 extends thesis.lang.Content;
 
 String title;

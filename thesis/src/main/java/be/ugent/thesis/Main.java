@@ -35,6 +35,14 @@ public class Main {
             System.exit(3);
         }
 
+        visitClass(file, fileName);
+    }
+
+    public static void printHelp(String programName) {
+        System.out.println("USAGE: java -jar " + programName + " <path-to-inputfile>");
+    }
+
+    public static void visitClass(File file, String fileName) {
         try {
             CharStream input = new ANTLRInputStream(new FileInputStream(file));
             ThesisClassLexer lexer = new ThesisClassLexer(input);
@@ -47,10 +55,6 @@ public class Main {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public static void printHelp(String programName) {
-        System.out.println("USAGE: java -jar " + programName + " <path-to-inputfile>");
     }
 
 }
