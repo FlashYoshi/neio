@@ -15,7 +15,7 @@ statement : ( assignment
 
 assignment : (chain | var | CAMEL_CASE) EQUALS (CAMEL_CASE | chain | methodCall);
 
-methodCall : (CLASS_NAME | CAMEL_CASE)? call+;
+methodCall : (CLASS_NAME | CAMEL_CASE)? call;
 
 newCall : ( NEW (CLASS_NAME | VAR_WITH_TYPE) LEFT_BRACE parameters RIGHT_BRACE CAMEL_CASE
           | (var | CAMEL_CASE) EQUALS NEW CLASS_NAME LEFT_BRACE parameters RIGHT_BRACE);
