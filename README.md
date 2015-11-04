@@ -1,6 +1,6 @@
 The Neio Markup Language
 ========================
-Neio is being developed as my thesis in the Master of Science in Computer Science Engineering at the University of Ghent.
+Neio (read as "neo") is being developed as my thesis in the Master of Science in Computer Science Engineering at the University of Ghent.
 The goal of Neio is to improve mainly on LaTeX, but also on other markup languages as Markdown or WYSIWYG editors like Word.
 
 # Goals
