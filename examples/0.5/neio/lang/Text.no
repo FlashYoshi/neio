@@ -1,0 +1,8 @@
+class
+extends thesis.lang.Content;
+
+String text;
+
+Text(String text) {
+    this.text = text;
+}

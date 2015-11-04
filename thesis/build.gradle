@@ -9,7 +9,7 @@ version '0.1'
 
 jar {
     manifest {
-        attributes 'Main-class': 'be.ugent.thesis.Main'
+        attributes 'Main-class': 'be.ugent.neio.Main'
     }
 }
 
@@ -35,8 +35,8 @@ dependencies {
 // Antlr4 Configuration
 antlr4 {
     source = file('src/main/grammar')
-    output = file('src/main/java/be/ugent/thesis/parsing')
-    extraArgs = ['-package', 'be.ugent.thesis.parsing']
+    output = file('src/main/java/be/ugent/neio/parsing')
+    extraArgs = ['-package', 'be.ugent.neio.parsing']
 }
 
 sourceSets {

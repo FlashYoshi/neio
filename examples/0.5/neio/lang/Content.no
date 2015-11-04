@@ -1,0 +1,6 @@
+class
+List<Content> content;
+
+Content() {
+    content = new List();
+}

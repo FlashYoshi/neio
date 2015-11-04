@@ -9,7 +9,7 @@ regex #+(String title) {
 	return chapter;
 }
 
-#(String title, Integer level) {
+Chapter #(String title, Integer level) {
 	new Chapter(title, level) chapter;
 	content.add(chapter);
 	
