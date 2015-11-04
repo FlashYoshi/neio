@@ -1,13 +1,16 @@
-// Generated from B:\Documents\GitHub\Thesis\thesis\src\main\grammar\ThesisScriptParser.g4 by ANTLR 4.2.2
+// Generated from /home/flash/Github/neio/neio/src/main/grammar/NeioScriptParser.g4 by ANTLR 4.2.2
 package be.ugent.neio.parsing;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.misc.*;
 import org.antlr.v4.runtime.tree.*;
 import java.util.List;
+import java.util.Iterator;
+import java.util.ArrayList;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
-public class ThesisScriptParser extends Parser {
+public class NeioScriptParser extends Parser {
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
@@ -35,7 +38,7 @@ public class ThesisScriptParser extends Parser {
 	};
 
 	@Override
-	public String getGrammarFileName() { return "ThesisScriptParser.g4"; }
+	public String getGrammarFileName() { return "NeioScriptParser.g4"; }
 
 	@Override
 	public String[] getTokenNames() { return tokenNames; }
@@ -49,13 +52,13 @@ public class ThesisScriptParser extends Parser {
 	@Override
 	public ATN getATN() { return _ATN; }
 
-	public ThesisScriptParser(TokenStream input) {
+	public NeioScriptParser(TokenStream input) {
 		super(input);
 		_interp = new ParserATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
 	public static class DocumentContext extends ParserRuleContext {
-		public TerminalNode EOF() { return getToken(ThesisScriptParser.EOF, 0); }
-		public TerminalNode SCRIPT() { return getToken(ThesisScriptParser.SCRIPT, 0); }
+		public TerminalNode EOF() { return getToken(NeioScriptParser.EOF, 0); }
+		public TerminalNode SCRIPT() { return getToken(NeioScriptParser.SCRIPT, 0); }
 		public ScriptBodyContext scriptBody() {
 			return getRuleContext(ScriptBodyContext.class,0);
 		}
@@ -65,15 +68,15 @@ public class ThesisScriptParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_document; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisScriptParserListener ) ((ThesisScriptParserListener)listener).enterDocument(this);
+			if ( listener instanceof NeioScriptParserListener ) ((NeioScriptParserListener)listener).enterDocument(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisScriptParserListener ) ((ThesisScriptParserListener)listener).exitDocument(this);
+			if ( listener instanceof NeioScriptParserListener ) ((NeioScriptParserListener)listener).exitDocument(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ThesisScriptParserVisitor ) return ((ThesisScriptParserVisitor<? extends T>)visitor).visitDocument(this);
+			if ( visitor instanceof NeioScriptParserVisitor ) return ((NeioScriptParserVisitor<? extends T>)visitor).visitDocument(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -113,15 +116,15 @@ public class ThesisScriptParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_scriptBody; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisScriptParserListener ) ((ThesisScriptParserListener)listener).enterScriptBody(this);
+			if ( listener instanceof NeioScriptParserListener ) ((NeioScriptParserListener)listener).enterScriptBody(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisScriptParserListener ) ((ThesisScriptParserListener)listener).exitScriptBody(this);
+			if ( listener instanceof NeioScriptParserListener ) ((NeioScriptParserListener)listener).exitScriptBody(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ThesisScriptParserVisitor ) return ((ThesisScriptParserVisitor<? extends T>)visitor).visitScriptBody(this);
+			if ( visitor instanceof NeioScriptParserVisitor ) return ((NeioScriptParserVisitor<? extends T>)visitor).visitScriptBody(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -192,15 +195,15 @@ public class ThesisScriptParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_statement; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisScriptParserListener ) ((ThesisScriptParserListener)listener).enterStatement(this);
+			if ( listener instanceof NeioScriptParserListener ) ((NeioScriptParserListener)listener).enterStatement(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisScriptParserListener ) ((ThesisScriptParserListener)listener).exitStatement(this);
+			if ( listener instanceof NeioScriptParserListener ) ((NeioScriptParserListener)listener).exitStatement(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ThesisScriptParserVisitor ) return ((ThesisScriptParserVisitor<? extends T>)visitor).visitStatement(this);
+			if ( visitor instanceof NeioScriptParserVisitor ) return ((NeioScriptParserVisitor<? extends T>)visitor).visitStatement(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -245,8 +248,8 @@ public class ThesisScriptParser extends Parser {
 	}
 
 	public static class AssignmentContext extends ParserRuleContext {
-		public TerminalNode EQUALS() { return getToken(ThesisScriptParser.EQUALS, 0); }
-		public List<TerminalNode> CAMEL_CASE() { return getTokens(ThesisScriptParser.CAMEL_CASE); }
+		public TerminalNode EQUALS() { return getToken(NeioScriptParser.EQUALS, 0); }
+		public List<TerminalNode> CAMEL_CASE() { return getTokens(NeioScriptParser.CAMEL_CASE); }
 		public List<ChainContext> chain() {
 			return getRuleContexts(ChainContext.class);
 		}
@@ -260,7 +263,7 @@ public class ThesisScriptParser extends Parser {
 			return getRuleContext(MethodCallContext.class,0);
 		}
 		public TerminalNode CAMEL_CASE(int i) {
-			return getToken(ThesisScriptParser.CAMEL_CASE, i);
+			return getToken(NeioScriptParser.CAMEL_CASE, i);
 		}
 		public AssignmentContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -268,15 +271,15 @@ public class ThesisScriptParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_assignment; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisScriptParserListener ) ((ThesisScriptParserListener)listener).enterAssignment(this);
+			if ( listener instanceof NeioScriptParserListener ) ((NeioScriptParserListener)listener).enterAssignment(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisScriptParserListener ) ((ThesisScriptParserListener)listener).exitAssignment(this);
+			if ( listener instanceof NeioScriptParserListener ) ((NeioScriptParserListener)listener).exitAssignment(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ThesisScriptParserVisitor ) return ((ThesisScriptParserVisitor<? extends T>)visitor).visitAssignment(this);
+			if ( visitor instanceof NeioScriptParserVisitor ) return ((NeioScriptParserVisitor<? extends T>)visitor).visitAssignment(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -342,8 +345,8 @@ public class ThesisScriptParser extends Parser {
 	}
 
 	public static class MethodCallContext extends ParserRuleContext {
-		public TerminalNode CLASS_NAME() { return getToken(ThesisScriptParser.CLASS_NAME, 0); }
-		public TerminalNode CAMEL_CASE() { return getToken(ThesisScriptParser.CAMEL_CASE, 0); }
+		public TerminalNode CLASS_NAME() { return getToken(NeioScriptParser.CLASS_NAME, 0); }
+		public TerminalNode CAMEL_CASE() { return getToken(NeioScriptParser.CAMEL_CASE, 0); }
 		public CallContext call() {
 			return getRuleContext(CallContext.class,0);
 		}
@@ -353,15 +356,15 @@ public class ThesisScriptParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_methodCall; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisScriptParserListener ) ((ThesisScriptParserListener)listener).enterMethodCall(this);
+			if ( listener instanceof NeioScriptParserListener ) ((NeioScriptParserListener)listener).enterMethodCall(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisScriptParserListener ) ((ThesisScriptParserListener)listener).exitMethodCall(this);
+			if ( listener instanceof NeioScriptParserListener ) ((NeioScriptParserListener)listener).exitMethodCall(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ThesisScriptParserVisitor ) return ((ThesisScriptParserVisitor<? extends T>)visitor).visitMethodCall(this);
+			if ( visitor instanceof NeioScriptParserVisitor ) return ((NeioScriptParserVisitor<? extends T>)visitor).visitMethodCall(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -401,34 +404,34 @@ public class ThesisScriptParser extends Parser {
 	}
 
 	public static class NewCallContext extends ParserRuleContext {
-		public TerminalNode EQUALS() { return getToken(ThesisScriptParser.EQUALS, 0); }
-		public TerminalNode CAMEL_CASE() { return getToken(ThesisScriptParser.CAMEL_CASE, 0); }
-		public TerminalNode CLASS_NAME() { return getToken(ThesisScriptParser.CLASS_NAME, 0); }
-		public TerminalNode VAR_WITH_TYPE() { return getToken(ThesisScriptParser.VAR_WITH_TYPE, 0); }
+		public TerminalNode EQUALS() { return getToken(NeioScriptParser.EQUALS, 0); }
+		public TerminalNode CAMEL_CASE() { return getToken(NeioScriptParser.CAMEL_CASE, 0); }
+		public TerminalNode CLASS_NAME() { return getToken(NeioScriptParser.CLASS_NAME, 0); }
+		public TerminalNode VAR_WITH_TYPE() { return getToken(NeioScriptParser.VAR_WITH_TYPE, 0); }
 		public ParametersContext parameters() {
 			return getRuleContext(ParametersContext.class,0);
 		}
 		public VarContext var() {
 			return getRuleContext(VarContext.class,0);
 		}
-		public TerminalNode LEFT_BRACE() { return getToken(ThesisScriptParser.LEFT_BRACE, 0); }
-		public TerminalNode NEW() { return getToken(ThesisScriptParser.NEW, 0); }
-		public TerminalNode RIGHT_BRACE() { return getToken(ThesisScriptParser.RIGHT_BRACE, 0); }
+		public TerminalNode LEFT_BRACE() { return getToken(NeioScriptParser.LEFT_BRACE, 0); }
+		public TerminalNode NEW() { return getToken(NeioScriptParser.NEW, 0); }
+		public TerminalNode RIGHT_BRACE() { return getToken(NeioScriptParser.RIGHT_BRACE, 0); }
 		public NewCallContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_newCall; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisScriptParserListener ) ((ThesisScriptParserListener)listener).enterNewCall(this);
+			if ( listener instanceof NeioScriptParserListener ) ((NeioScriptParserListener)listener).enterNewCall(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisScriptParserListener ) ((ThesisScriptParserListener)listener).exitNewCall(this);
+			if ( listener instanceof NeioScriptParserListener ) ((NeioScriptParserListener)listener).exitNewCall(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ThesisScriptParserVisitor ) return ((ThesisScriptParserVisitor<? extends T>)visitor).visitNewCall(this);
+			if ( visitor instanceof NeioScriptParserVisitor ) return ((NeioScriptParserVisitor<? extends T>)visitor).visitNewCall(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -502,7 +505,7 @@ public class ThesisScriptParser extends Parser {
 	}
 
 	public static class FieldContext extends ParserRuleContext {
-		public TerminalNode SEMICOLON() { return getToken(ThesisScriptParser.SEMICOLON, 0); }
+		public TerminalNode SEMICOLON() { return getToken(NeioScriptParser.SEMICOLON, 0); }
 		public VarContext var() {
 			return getRuleContext(VarContext.class,0);
 		}
@@ -512,15 +515,15 @@ public class ThesisScriptParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_field; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisScriptParserListener ) ((ThesisScriptParserListener)listener).enterField(this);
+			if ( listener instanceof NeioScriptParserListener ) ((NeioScriptParserListener)listener).enterField(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisScriptParserListener ) ((ThesisScriptParserListener)listener).exitField(this);
+			if ( listener instanceof NeioScriptParserListener ) ((NeioScriptParserListener)listener).exitField(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ThesisScriptParserVisitor ) return ((ThesisScriptParserVisitor<? extends T>)visitor).visitField(this);
+			if ( visitor instanceof NeioScriptParserVisitor ) return ((NeioScriptParserVisitor<? extends T>)visitor).visitField(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -550,22 +553,22 @@ public class ThesisScriptParser extends Parser {
 		public FieldNameContext fieldName() {
 			return getRuleContext(FieldNameContext.class,0);
 		}
-		public TerminalNode CAMEL_CASE() { return getToken(ThesisScriptParser.CAMEL_CASE, 0); }
+		public TerminalNode CAMEL_CASE() { return getToken(NeioScriptParser.CAMEL_CASE, 0); }
 		public VarContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_var; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisScriptParserListener ) ((ThesisScriptParserListener)listener).enterVar(this);
+			if ( listener instanceof NeioScriptParserListener ) ((NeioScriptParserListener)listener).enterVar(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisScriptParserListener ) ((ThesisScriptParserListener)listener).exitVar(this);
+			if ( listener instanceof NeioScriptParserListener ) ((NeioScriptParserListener)listener).exitVar(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ThesisScriptParserVisitor ) return ((ThesisScriptParserVisitor<? extends T>)visitor).visitVar(this);
+			if ( visitor instanceof NeioScriptParserVisitor ) return ((NeioScriptParserVisitor<? extends T>)visitor).visitVar(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -592,23 +595,23 @@ public class ThesisScriptParser extends Parser {
 	}
 
 	public static class FieldNameContext extends ParserRuleContext {
-		public TerminalNode CLASS_NAME() { return getToken(ThesisScriptParser.CLASS_NAME, 0); }
-		public TerminalNode VAR_WITH_TYPE() { return getToken(ThesisScriptParser.VAR_WITH_TYPE, 0); }
+		public TerminalNode CLASS_NAME() { return getToken(NeioScriptParser.CLASS_NAME, 0); }
+		public TerminalNode VAR_WITH_TYPE() { return getToken(NeioScriptParser.VAR_WITH_TYPE, 0); }
 		public FieldNameContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_fieldName; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisScriptParserListener ) ((ThesisScriptParserListener)listener).enterFieldName(this);
+			if ( listener instanceof NeioScriptParserListener ) ((NeioScriptParserListener)listener).enterFieldName(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisScriptParserListener ) ((ThesisScriptParserListener)listener).exitFieldName(this);
+			if ( listener instanceof NeioScriptParserListener ) ((NeioScriptParserListener)listener).exitFieldName(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ThesisScriptParserVisitor ) return ((ThesisScriptParserVisitor<? extends T>)visitor).visitFieldName(this);
+			if ( visitor instanceof NeioScriptParserVisitor ) return ((NeioScriptParserVisitor<? extends T>)visitor).visitFieldName(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -643,12 +646,12 @@ public class ThesisScriptParser extends Parser {
 		public List<VarContext> var() {
 			return getRuleContexts(VarContext.class);
 		}
-		public List<TerminalNode> COMMA() { return getTokens(ThesisScriptParser.COMMA); }
+		public List<TerminalNode> COMMA() { return getTokens(NeioScriptParser.COMMA); }
 		public VarContext var(int i) {
 			return getRuleContext(VarContext.class,i);
 		}
 		public TerminalNode COMMA(int i) {
-			return getToken(ThesisScriptParser.COMMA, i);
+			return getToken(NeioScriptParser.COMMA, i);
 		}
 		public ArgumentsContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -656,15 +659,15 @@ public class ThesisScriptParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_arguments; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisScriptParserListener ) ((ThesisScriptParserListener)listener).enterArguments(this);
+			if ( listener instanceof NeioScriptParserListener ) ((NeioScriptParserListener)listener).enterArguments(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisScriptParserListener ) ((ThesisScriptParserListener)listener).exitArguments(this);
+			if ( listener instanceof NeioScriptParserListener ) ((NeioScriptParserListener)listener).exitArguments(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ThesisScriptParserVisitor ) return ((ThesisScriptParserVisitor<? extends T>)visitor).visitArguments(this);
+			if ( visitor instanceof NeioScriptParserVisitor ) return ((NeioScriptParserVisitor<? extends T>)visitor).visitArguments(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -720,26 +723,26 @@ public class ThesisScriptParser extends Parser {
 	}
 
 	public static class ParameterContext extends ParserRuleContext {
-		public TerminalNode CAMEL_CASE() { return getToken(ThesisScriptParser.CAMEL_CASE, 0); }
+		public TerminalNode CAMEL_CASE() { return getToken(NeioScriptParser.CAMEL_CASE, 0); }
 		public MethodCallContext methodCall() {
 			return getRuleContext(MethodCallContext.class,0);
 		}
-		public TerminalNode STRING() { return getToken(ThesisScriptParser.STRING, 0); }
+		public TerminalNode STRING() { return getToken(NeioScriptParser.STRING, 0); }
 		public ParameterContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_parameter; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisScriptParserListener ) ((ThesisScriptParserListener)listener).enterParameter(this);
+			if ( listener instanceof NeioScriptParserListener ) ((NeioScriptParserListener)listener).enterParameter(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisScriptParserListener ) ((ThesisScriptParserListener)listener).exitParameter(this);
+			if ( listener instanceof NeioScriptParserListener ) ((NeioScriptParserListener)listener).exitParameter(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ThesisScriptParserVisitor ) return ((ThesisScriptParserVisitor<? extends T>)visitor).visitParameter(this);
+			if ( visitor instanceof NeioScriptParserVisitor ) return ((NeioScriptParserVisitor<? extends T>)visitor).visitParameter(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -790,9 +793,9 @@ public class ThesisScriptParser extends Parser {
 		public ParameterContext parameter(int i) {
 			return getRuleContext(ParameterContext.class,i);
 		}
-		public List<TerminalNode> COMMA() { return getTokens(ThesisScriptParser.COMMA); }
+		public List<TerminalNode> COMMA() { return getTokens(NeioScriptParser.COMMA); }
 		public TerminalNode COMMA(int i) {
-			return getToken(ThesisScriptParser.COMMA, i);
+			return getToken(NeioScriptParser.COMMA, i);
 		}
 		public ParametersContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -800,15 +803,15 @@ public class ThesisScriptParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_parameters; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisScriptParserListener ) ((ThesisScriptParserListener)listener).enterParameters(this);
+			if ( listener instanceof NeioScriptParserListener ) ((NeioScriptParserListener)listener).enterParameters(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisScriptParserListener ) ((ThesisScriptParserListener)listener).exitParameters(this);
+			if ( listener instanceof NeioScriptParserListener ) ((NeioScriptParserListener)listener).exitParameters(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ThesisScriptParserVisitor ) return ((ThesisScriptParserVisitor<? extends T>)visitor).visitParameters(this);
+			if ( visitor instanceof NeioScriptParserVisitor ) return ((NeioScriptParserVisitor<? extends T>)visitor).visitParameters(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -873,25 +876,25 @@ public class ThesisScriptParser extends Parser {
 		public ParametersContext parameters() {
 			return getRuleContext(ParametersContext.class,0);
 		}
-		public TerminalNode COLON() { return getToken(ThesisScriptParser.COLON, 0); }
-		public TerminalNode LEFT_BRACE() { return getToken(ThesisScriptParser.LEFT_BRACE, 0); }
-		public TerminalNode PERIOD() { return getToken(ThesisScriptParser.PERIOD, 0); }
-		public TerminalNode RIGHT_BRACE() { return getToken(ThesisScriptParser.RIGHT_BRACE, 0); }
+		public TerminalNode COLON() { return getToken(NeioScriptParser.COLON, 0); }
+		public TerminalNode LEFT_BRACE() { return getToken(NeioScriptParser.LEFT_BRACE, 0); }
+		public TerminalNode PERIOD() { return getToken(NeioScriptParser.PERIOD, 0); }
+		public TerminalNode RIGHT_BRACE() { return getToken(NeioScriptParser.RIGHT_BRACE, 0); }
 		public CallContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_call; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisScriptParserListener ) ((ThesisScriptParserListener)listener).enterCall(this);
+			if ( listener instanceof NeioScriptParserListener ) ((NeioScriptParserListener)listener).enterCall(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisScriptParserListener ) ((ThesisScriptParserListener)listener).exitCall(this);
+			if ( listener instanceof NeioScriptParserListener ) ((NeioScriptParserListener)listener).exitCall(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ThesisScriptParserVisitor ) return ((ThesisScriptParserVisitor<? extends T>)visitor).visitCall(this);
+			if ( visitor instanceof NeioScriptParserVisitor ) return ((NeioScriptParserVisitor<? extends T>)visitor).visitCall(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -927,24 +930,24 @@ public class ThesisScriptParser extends Parser {
 	}
 
 	public static class MethodNameContext extends ParserRuleContext {
-		public TerminalNode CLASS_NAME() { return getToken(ThesisScriptParser.CLASS_NAME, 0); }
-		public TerminalNode CAMEL_CASE() { return getToken(ThesisScriptParser.CAMEL_CASE, 0); }
-		public TerminalNode METHOD_NAME() { return getToken(ThesisScriptParser.METHOD_NAME, 0); }
+		public TerminalNode CLASS_NAME() { return getToken(NeioScriptParser.CLASS_NAME, 0); }
+		public TerminalNode CAMEL_CASE() { return getToken(NeioScriptParser.CAMEL_CASE, 0); }
+		public TerminalNode METHOD_NAME() { return getToken(NeioScriptParser.METHOD_NAME, 0); }
 		public MethodNameContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_methodName; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisScriptParserListener ) ((ThesisScriptParserListener)listener).enterMethodName(this);
+			if ( listener instanceof NeioScriptParserListener ) ((NeioScriptParserListener)listener).enterMethodName(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisScriptParserListener ) ((ThesisScriptParserListener)listener).exitMethodName(this);
+			if ( listener instanceof NeioScriptParserListener ) ((NeioScriptParserListener)listener).exitMethodName(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ThesisScriptParserVisitor ) return ((ThesisScriptParserVisitor<? extends T>)visitor).visitMethodName(this);
+			if ( visitor instanceof NeioScriptParserVisitor ) return ((NeioScriptParserVisitor<? extends T>)visitor).visitMethodName(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -977,16 +980,16 @@ public class ThesisScriptParser extends Parser {
 
 	public static class ChainContext extends ParserRuleContext {
 		public TerminalNode CLASS_NAME(int i) {
-			return getToken(ThesisScriptParser.CLASS_NAME, i);
+			return getToken(NeioScriptParser.CLASS_NAME, i);
 		}
-		public List<TerminalNode> CLASS_NAME() { return getTokens(ThesisScriptParser.CLASS_NAME); }
-		public List<TerminalNode> CAMEL_CASE() { return getTokens(ThesisScriptParser.CAMEL_CASE); }
+		public List<TerminalNode> CLASS_NAME() { return getTokens(NeioScriptParser.CLASS_NAME); }
+		public List<TerminalNode> CAMEL_CASE() { return getTokens(NeioScriptParser.CAMEL_CASE); }
 		public TerminalNode CAMEL_CASE(int i) {
-			return getToken(ThesisScriptParser.CAMEL_CASE, i);
+			return getToken(NeioScriptParser.CAMEL_CASE, i);
 		}
-		public List<TerminalNode> PERIOD() { return getTokens(ThesisScriptParser.PERIOD); }
+		public List<TerminalNode> PERIOD() { return getTokens(NeioScriptParser.PERIOD); }
 		public TerminalNode PERIOD(int i) {
-			return getToken(ThesisScriptParser.PERIOD, i);
+			return getToken(NeioScriptParser.PERIOD, i);
 		}
 		public ChainContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -994,15 +997,15 @@ public class ThesisScriptParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_chain; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisScriptParserListener ) ((ThesisScriptParserListener)listener).enterChain(this);
+			if ( listener instanceof NeioScriptParserListener ) ((NeioScriptParserListener)listener).enterChain(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof ThesisScriptParserListener ) ((ThesisScriptParserListener)listener).exitChain(this);
+			if ( listener instanceof NeioScriptParserListener ) ((NeioScriptParserListener)listener).exitChain(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ThesisScriptParserVisitor ) return ((ThesisScriptParserVisitor<? extends T>)visitor).visitChain(this);
+			if ( visitor instanceof NeioScriptParserVisitor ) return ((NeioScriptParserVisitor<? extends T>)visitor).visitChain(this);
 			else return visitor.visitChildren(this);
 		}
 	}

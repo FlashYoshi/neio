@@ -1,5 +1,5 @@
 class
-extends thesis.lang.Container;
+extends neio.lang.Container;
 
 Text title;
 

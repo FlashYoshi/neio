@@ -1,4 +1,4 @@
-lexer grammar ThesisClassLexer;
+lexer grammar NeioClassLexer;
 
 HEADER : HEADER_CONTENT;
 fragment HEADER_CONTENT : CLASS | INTERFACE;

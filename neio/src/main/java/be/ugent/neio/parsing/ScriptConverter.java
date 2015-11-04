@@ -1,15 +1,15 @@
 package be.ugent.neio.parsing;
 
-import be.ugent.neio.parsing.ThesisScriptParser.*;
 import org.aikodi.chameleon.oo.type.RegularType;
 import org.aikodi.chameleon.oo.type.Type;
+import be.ugent.neio.parsing.NeioScriptParser.*;
 
 import static be.ugent.neio.util.Keywords.SCRIPT;
 
 /**
  * @author Titouan Vervack
  */
-public class ScriptConverter extends ThesisClassParserBaseVisitor<Object> {
+public class ScriptConverter extends NeioScriptParserBaseVisitor<Object> {
 
     public Object visitDocument(DocumentContext ctx) {
         visitScript(ctx);
@@ -29,21 +29,24 @@ public class ScriptConverter extends ThesisClassParserBaseVisitor<Object> {
         }
     }
 
-    private void visitAssignment(AssignmentContext ctx) {
+    public Object visitAssignment(AssignmentContext ctx) {
         if (ctx != null) {
             System.out.println(ctx.getText());
         }
+        return null;
     }
 
-    private void visitMethodCall(MethodCallContext ctx) {
+    public Object visitMethodCall(MethodCallContext ctx) {
         if (ctx != null) {
             System.out.println(ctx.getText());
         }
+        return null;
     }
 
-    private void visitNewCall(NewCallContext ctx) {
+    public Object visitNewCall(NewCallContext ctx) {
         if (ctx != null) {
             System.out.println(ctx.getText());
         }
+        return null;
     }
 }

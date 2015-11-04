@@ -1,8 +1,8 @@
 package be.ugent.neio.parsing;
 
 import be.kuleuven.cs.distrinet.jnome.core.type.RegularJavaType;
-import be.ugent.neio.parsing.ThesisClassParser.*;
 import be.ugent.neio.util.Keywords;
+import be.ugent.neio.parsing.NeioClassParser.*;
 import org.aikodi.chameleon.oo.method.SimpleNameMethodHeader;
 import org.aikodi.chameleon.oo.type.BasicTypeReference;
 import org.aikodi.chameleon.oo.type.Type;
@@ -16,7 +16,7 @@ import static be.ugent.neio.util.Keywords.*;
 /**
  * @author Titouan Vervack
  */
-public class ClassConverter extends ThesisClassParserBaseVisitor<Object> {
+public class ClassConverter extends NeioClassParserBaseVisitor<Object> {
 
     public Object visitDocument(DocumentContext ctx, String klassName) {
         visitHeader(ctx, klassName);

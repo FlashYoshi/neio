@@ -1,4 +1,4 @@
-lexer grammar ThesisScriptLexer;
+lexer grammar NeioScriptLexer;
 
 COMMENT : '//' ~[\r\n]* -> channel(HIDDEN);
 MULTILINE_COMMENT : '/*' .*? '*/' -> channel(HIDDEN);

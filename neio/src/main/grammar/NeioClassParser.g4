@@ -1,6 +1,6 @@
-parser grammar ThesisClassParser;
+parser grammar NeioClassParser;
 
-options { tokenVocab = ThesisClassLexer; }
+options { tokenVocab = NeioClassLexer; }
 
 document : HEADER
            body

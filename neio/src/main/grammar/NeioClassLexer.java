@@ -1,12 +1,17 @@
-// Generated from B:\Documents\GitHub\Thesis\thesis\src\main\grammar\ThesisClassLexer.g4 by ANTLR 4.2.2
-package be.ugent.neio.parsing;
+// Generated from NeioClassLexer.g4 by ANTLR 4.5
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.TokenStream;
+import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
+import org.antlr.v4.runtime.misc.*;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
-public class ThesisClassLexer extends Lexer {
+public class NeioClassLexer extends Lexer {
+	static { RuntimeMetaData.checkVersion("4.5", RuntimeMetaData.VERSION); }
+
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
@@ -21,14 +26,6 @@ public class ThesisClassLexer extends Lexer {
 		"DEFAULT_MODE"
 	};
 
-	public static final String[] tokenNames = {
-		"<INVALID>",
-		"HEADER", "COMMENT", "MULTILINE_COMMENT", "WS", "NEWLINE", "'extends'", 
-		"'implements'", "'class'", "'interface'", "'return'", "'new'", "'this'", 
-		"METHOD_OPTION", "'stub'", "CLASS_NAME", "CAMEL_CASE", "VAR_WITH_TYPE", 
-		"'.'", "','", "':'", "';'", "'='", "'+'", "'-'", "'*'", "'<'", "'>'", 
-		"'('", "')'", "'{'", "'}'", "METHOD_NAME"
-	};
 	public static final String[] ruleNames = {
 		"HEADER", "HEADER_CONTENT", "COMMENT", "MULTILINE_COMMENT", "WS", "NEWLINE", 
 		"CAPITAL", "LETTER", "CHAR", "EXTENDS", "IMPLEMENTS", "CLASS", "INTERFACE", 
@@ -38,17 +35,61 @@ public class ThesisClassLexer extends Lexer {
 		"RIGHT_BRACE", "LEFT_CURLY_BRACE", "RIGHT_CURLY_BRACE", "METHOD_NAME"
 	};
 
+	private static final String[] _LITERAL_NAMES = {
+		null, null, null, null, null, null, "'extends'", "'implements'", "'class'", 
+		"'interface'", "'return'", "'new'", "'this'", null, "'stub'", null, null, 
+		null, "'.'", "','", "':'", "';'", "'='", "'+'", "'-'", "'*'", "'<'", "'>'", 
+		"'('", "')'", "'{'", "'}'"
+	};
+	private static final String[] _SYMBOLIC_NAMES = {
+		null, "HEADER", "COMMENT", "MULTILINE_COMMENT", "WS", "NEWLINE", "EXTENDS", 
+		"IMPLEMENTS", "CLASS", "INTERFACE", "RETURN", "NEW", "THIS", "METHOD_OPTION", 
+		"STUB", "CLASS_NAME", "CAMEL_CASE", "VAR_WITH_TYPE", "PERIOD", "COMMA", 
+		"COLON", "SEMICOLON", "EQUALS", "PLUS", "MINUS", "STAR", "SMALLER", "BIGGER", 
+		"LEFT_BRACE", "RIGHT_BRACE", "LEFT_CURLY_BRACE", "RIGHT_CURLY_BRACE", 
+		"METHOD_NAME"
+	};
+	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
 
-	public ThesisClassLexer(CharStream input) {
+	/**
+	 * @deprecated Use {@link #VOCABULARY} instead.
+	 */
+	@Deprecated
+	public static final String[] tokenNames;
+	static {
+		tokenNames = new String[_SYMBOLIC_NAMES.length];
+		for (int i = 0; i < tokenNames.length; i++) {
+			tokenNames[i] = VOCABULARY.getLiteralName(i);
+			if (tokenNames[i] == null) {
+				tokenNames[i] = VOCABULARY.getSymbolicName(i);
+			}
+
+			if (tokenNames[i] == null) {
+				tokenNames[i] = "<INVALID>";
+			}
+		}
+	}
+
+	@Override
+	@Deprecated
+	public String[] getTokenNames() {
+		return tokenNames;
+	}
+
+	@Override
+
+	public Vocabulary getVocabulary() {
+		return VOCABULARY;
+	}
+
+
+	public NeioClassLexer(CharStream input) {
 		super(input);
 		_interp = new LexerATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
 
 	@Override
-	public String getGrammarFileName() { return "ThesisClassLexer.g4"; }
-
-	@Override
-	public String[] getTokenNames() { return tokenNames; }
+	public String getGrammarFileName() { return "NeioClassLexer.g4"; }
 
 	@Override
 	public String[] getRuleNames() { return ruleNames; }

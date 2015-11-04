@@ -1,2 +1,2 @@
 class
-extends thesis.lang.Content;
+extends neio.lang.Content;

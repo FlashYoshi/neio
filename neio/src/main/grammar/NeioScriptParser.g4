@@ -1,6 +1,6 @@
-parser grammar ThesisScriptParser;
+parser grammar NeioScriptParser;
 
-options { tokenVocab = ThesisScriptLexer; }
+options { tokenVocab = NeioScriptLexer; }
 
 document : SCRIPT
            scriptBody

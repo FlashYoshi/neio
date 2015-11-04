@@ -2,9 +2,7 @@ package be.ugent.neio;
 
 import be.ugent.neio.parsing.*;
 import be.ugent.neio.util.Constants;
-import org.antlr.v4.runtime.ANTLRInputStream;
-import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.*;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -45,9 +43,9 @@ public class Main {
     public static void visitClass(File file, String fileName) {
         try {
             CharStream input = new ANTLRInputStream(new FileInputStream(file));
-            ThesisClassLexer lexer = new ThesisClassLexer(input);
-            CommonTokenStream tokens = new CommonTokenStream(lexer);
-            ThesisClassParser parser = new ThesisClassParser(tokens);
+            Lexer lexer = new NeioClassLexer(input);
+            TokenStream tokens = new CommonTokenStream(lexer);
+            NeioClassParser parser = new NeioClassParser(tokens);
             ClassConverter converter = new ClassConverter();
             String klassName = fileName.substring(fileName.lastIndexOf('/') + 1);
             klassName = klassName.split("\\.java")[0];
@@ -60,9 +58,9 @@ public class Main {
     public static void visitScript(File file) {
         try {
             CharStream input = new ANTLRInputStream(new FileInputStream(file));
-            ThesisScriptLexer lexer = new ThesisScriptLexer(input);
-            CommonTokenStream tokens = new CommonTokenStream(lexer);
-            ThesisScriptParser parser = new ThesisScriptParser(tokens);
+            Lexer lexer = new NeioScriptLexer(input);
+            TokenStream tokens = new CommonTokenStream(lexer);
+            NeioScriptParser parser = new NeioScriptParser(tokens);
             ScriptConverter converter = new ScriptConverter();
             converter.visitDocument(parser.document());
         } catch (IOException e) {
