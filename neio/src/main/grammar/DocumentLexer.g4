@@ -1,4 +1,4 @@
-lexer grammar NeioDocumentLexer;
+lexer grammar DocumentLexer;
 
 HEADER : L_SQ_BRACE CHAR+ R_SQ_BRACE;
 COMMENT : '//' ~[\r\n]* NL+ -> channel(HIDDEN);

@@ -1,6 +1,6 @@
-parser grammar NeioDocumentParser;
+parser grammar DocumentParser;
 
-options { tokenVocab = NeioDocumentLexer; }
+options { tokenVocab = DocumentLexer; }
 
 document : HEADER mnl
            body

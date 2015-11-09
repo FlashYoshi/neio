@@ -1,4 +1,4 @@
-// Generated from B:\Documents\GitHub\neio\neio\src\main\grammar\NeioDocumentLexer.g4 by ANTLR 4.2.2
+// Generated from B:\Documents\GitHub\neio\neio\src\main\grammar\DocumentLexer.g4 by ANTLR 4.2.2
 package be.ugent.neio.parsing;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
@@ -10,7 +10,7 @@ import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.misc.*;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
-public class NeioDocumentLexer extends Lexer {
+public class DocumentLexer extends Lexer {
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
@@ -37,13 +37,13 @@ public class NeioDocumentLexer extends Lexer {
 	};
 
 
-	public NeioDocumentLexer(CharStream input) {
+	public DocumentLexer(CharStream input) {
 		super(input);
 		_interp = new LexerATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
 
 	@Override
-	public String getGrammarFileName() { return "NeioDocumentLexer.g4"; }
+	public String getGrammarFileName() { return "DocumentLexer.g4"; }
 
 	@Override
 	public String[] getTokenNames() { return tokenNames; }

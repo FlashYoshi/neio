@@ -1,4 +1,4 @@
-// Generated from B:\Documents\GitHub\neio\neio\src\main\grammar\NeioDocumentParser.g4 by ANTLR 4.2.2
+// Generated from B:\Documents\GitHub\neio\neio\src\main\grammar\DocumentParser.g4 by ANTLR 4.2.2
 package be.ugent.neio.parsing;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
@@ -10,7 +10,7 @@ import java.util.Iterator;
 import java.util.ArrayList;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
-public class NeioDocumentParser extends Parser {
+public class DocumentParser extends Parser {
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
@@ -33,7 +33,7 @@ public class NeioDocumentParser extends Parser {
 	};
 
 	@Override
-	public String getGrammarFileName() { return "NeioDocumentParser.g4"; }
+	public String getGrammarFileName() { return "DocumentParser.g4"; }
 
 	@Override
 	public String[] getTokenNames() { return tokenNames; }
@@ -47,7 +47,7 @@ public class NeioDocumentParser extends Parser {
 	@Override
 	public ATN getATN() { return _ATN; }
 
-	public NeioDocumentParser(TokenStream input) {
+	public DocumentParser(TokenStream input) {
 		super(input);
 		_interp = new ParserATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
@@ -55,26 +55,26 @@ public class NeioDocumentParser extends Parser {
 		public MnlContext mnl() {
 			return getRuleContext(MnlContext.class,0);
 		}
-		public TerminalNode EOF() { return getToken(NeioDocumentParser.EOF, 0); }
+		public TerminalNode EOF() { return getToken(DocumentParser.EOF, 0); }
 		public BodyContext body() {
 			return getRuleContext(BodyContext.class,0);
 		}
-		public TerminalNode HEADER() { return getToken(NeioDocumentParser.HEADER, 0); }
+		public TerminalNode HEADER() { return getToken(DocumentParser.HEADER, 0); }
 		public DocumentContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_document; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof NeioDocumentParserListener ) ((NeioDocumentParserListener)listener).enterDocument(this);
+			if ( listener instanceof DocumentParserListener ) ((DocumentParserListener)listener).enterDocument(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof NeioDocumentParserListener ) ((NeioDocumentParserListener)listener).exitDocument(this);
+			if ( listener instanceof DocumentParserListener ) ((DocumentParserListener)listener).exitDocument(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof NeioDocumentParserVisitor ) return ((NeioDocumentParserVisitor<? extends T>)visitor).visitDocument(this);
+			if ( visitor instanceof DocumentParserVisitor ) return ((DocumentParserVisitor<? extends T>)visitor).visitDocument(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -115,15 +115,15 @@ public class NeioDocumentParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_body; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof NeioDocumentParserListener ) ((NeioDocumentParserListener)listener).enterBody(this);
+			if ( listener instanceof DocumentParserListener ) ((DocumentParserListener)listener).enterBody(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof NeioDocumentParserListener ) ((NeioDocumentParserListener)listener).exitBody(this);
+			if ( listener instanceof DocumentParserListener ) ((DocumentParserListener)listener).exitBody(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof NeioDocumentParserVisitor ) return ((NeioDocumentParserVisitor<? extends T>)visitor).visitBody(this);
+			if ( visitor instanceof DocumentParserVisitor ) return ((DocumentParserVisitor<? extends T>)visitor).visitBody(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -180,15 +180,15 @@ public class NeioDocumentParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_content; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof NeioDocumentParserListener ) ((NeioDocumentParserListener)listener).enterContent(this);
+			if ( listener instanceof DocumentParserListener ) ((DocumentParserListener)listener).enterContent(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof NeioDocumentParserListener ) ((NeioDocumentParserListener)listener).exitContent(this);
+			if ( listener instanceof DocumentParserListener ) ((DocumentParserListener)listener).exitContent(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof NeioDocumentParserVisitor ) return ((NeioDocumentParserVisitor<? extends T>)visitor).visitContent(this);
+			if ( visitor instanceof DocumentParserVisitor ) return ((DocumentParserVisitor<? extends T>)visitor).visitContent(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -243,27 +243,27 @@ public class NeioDocumentParser extends Parser {
 
 	public static class PrefixCallContext extends ParserRuleContext {
 		public TerminalNode HASH(int i) {
-			return getToken(NeioDocumentParser.HASH, i);
+			return getToken(DocumentParser.HASH, i);
 		}
 		public SentenceContext sentence() {
 			return getRuleContext(SentenceContext.class,0);
 		}
-		public List<TerminalNode> HASH() { return getTokens(NeioDocumentParser.HASH); }
+		public List<TerminalNode> HASH() { return getTokens(DocumentParser.HASH); }
 		public PrefixCallContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_prefixCall; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof NeioDocumentParserListener ) ((NeioDocumentParserListener)listener).enterPrefixCall(this);
+			if ( listener instanceof DocumentParserListener ) ((DocumentParserListener)listener).enterPrefixCall(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof NeioDocumentParserListener ) ((NeioDocumentParserListener)listener).exitPrefixCall(this);
+			if ( listener instanceof DocumentParserListener ) ((DocumentParserListener)listener).exitPrefixCall(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof NeioDocumentParserVisitor ) return ((NeioDocumentParserVisitor<? extends T>)visitor).visitPrefixCall(this);
+			if ( visitor instanceof DocumentParserVisitor ) return ((DocumentParserVisitor<? extends T>)visitor).visitPrefixCall(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -315,15 +315,15 @@ public class NeioDocumentParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_text; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof NeioDocumentParserListener ) ((NeioDocumentParserListener)listener).enterText(this);
+			if ( listener instanceof DocumentParserListener ) ((DocumentParserListener)listener).enterText(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof NeioDocumentParserListener ) ((NeioDocumentParserListener)listener).exitText(this);
+			if ( listener instanceof DocumentParserListener ) ((DocumentParserListener)listener).exitText(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof NeioDocumentParserVisitor ) return ((NeioDocumentParserVisitor<? extends T>)visitor).visitText(this);
+			if ( visitor instanceof DocumentParserVisitor ) return ((DocumentParserVisitor<? extends T>)visitor).visitText(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -368,22 +368,22 @@ public class NeioDocumentParser extends Parser {
 	}
 
 	public static class PostfixCallContext extends ParserRuleContext {
-		public TerminalNode STUB() { return getToken(NeioDocumentParser.STUB, 0); }
+		public TerminalNode STUB() { return getToken(DocumentParser.STUB, 0); }
 		public PostfixCallContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_postfixCall; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof NeioDocumentParserListener ) ((NeioDocumentParserListener)listener).enterPostfixCall(this);
+			if ( listener instanceof DocumentParserListener ) ((DocumentParserListener)listener).enterPostfixCall(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof NeioDocumentParserListener ) ((NeioDocumentParserListener)listener).exitPostfixCall(this);
+			if ( listener instanceof DocumentParserListener ) ((DocumentParserListener)listener).exitPostfixCall(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof NeioDocumentParserVisitor ) return ((NeioDocumentParserVisitor<? extends T>)visitor).visitPostfixCall(this);
+			if ( visitor instanceof DocumentParserVisitor ) return ((DocumentParserVisitor<? extends T>)visitor).visitPostfixCall(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -409,10 +409,10 @@ public class NeioDocumentParser extends Parser {
 	}
 
 	public static class SentenceContext extends ParserRuleContext {
-		public TerminalNode NL() { return getToken(NeioDocumentParser.NL, 0); }
-		public List<TerminalNode> WORD() { return getTokens(NeioDocumentParser.WORD); }
+		public TerminalNode NL() { return getToken(DocumentParser.NL, 0); }
+		public List<TerminalNode> WORD() { return getTokens(DocumentParser.WORD); }
 		public TerminalNode WORD(int i) {
-			return getToken(NeioDocumentParser.WORD, i);
+			return getToken(DocumentParser.WORD, i);
 		}
 		public SentenceContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -420,15 +420,15 @@ public class NeioDocumentParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_sentence; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof NeioDocumentParserListener ) ((NeioDocumentParserListener)listener).enterSentence(this);
+			if ( listener instanceof DocumentParserListener ) ((DocumentParserListener)listener).enterSentence(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof NeioDocumentParserListener ) ((NeioDocumentParserListener)listener).exitSentence(this);
+			if ( listener instanceof DocumentParserListener ) ((DocumentParserListener)listener).exitSentence(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof NeioDocumentParserVisitor ) return ((NeioDocumentParserVisitor<? extends T>)visitor).visitSentence(this);
+			if ( visitor instanceof DocumentParserVisitor ) return ((DocumentParserVisitor<? extends T>)visitor).visitSentence(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -468,9 +468,9 @@ public class NeioDocumentParser extends Parser {
 	}
 
 	public static class MnlContext extends ParserRuleContext {
-		public List<TerminalNode> NL() { return getTokens(NeioDocumentParser.NL); }
+		public List<TerminalNode> NL() { return getTokens(DocumentParser.NL); }
 		public TerminalNode NL(int i) {
-			return getToken(NeioDocumentParser.NL, i);
+			return getToken(DocumentParser.NL, i);
 		}
 		public MnlContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -478,15 +478,15 @@ public class NeioDocumentParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_mnl; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof NeioDocumentParserListener ) ((NeioDocumentParserListener)listener).enterMnl(this);
+			if ( listener instanceof DocumentParserListener ) ((DocumentParserListener)listener).enterMnl(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof NeioDocumentParserListener ) ((NeioDocumentParserListener)listener).exitMnl(this);
+			if ( listener instanceof DocumentParserListener ) ((DocumentParserListener)listener).exitMnl(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof NeioDocumentParserVisitor ) return ((NeioDocumentParserVisitor<? extends T>)visitor).visitMnl(this);
+			if ( visitor instanceof DocumentParserVisitor ) return ((DocumentParserVisitor<? extends T>)visitor).visitMnl(this);
 			else return visitor.visitChildren(this);
 		}
 	}

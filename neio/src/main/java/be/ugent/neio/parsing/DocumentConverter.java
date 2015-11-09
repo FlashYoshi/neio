@@ -1,12 +1,12 @@
 package be.ugent.neio.parsing;
 
-import be.ugent.neio.parsing.NeioDocumentParser.*;
+import be.ugent.neio.parsing.DocumentParser.*;
 
 
 /**
  * @author Titouan Vervack
  */
-public class DocumentConverter extends NeioDocumentParserBaseVisitor<Object> {
+public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
 
     public Object visitDocument(DocumentContext ctx) {
         visitHeader(ctx);

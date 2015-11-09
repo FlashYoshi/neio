@@ -43,9 +43,9 @@ public class Main {
     public static void visitClass(File file, String fileName) {
         try {
             CharStream input = new ANTLRInputStream(new FileInputStream(file));
-            Lexer lexer = new NeioClassLexer(input);
+            Lexer lexer = new ClassLexer(input);
             TokenStream tokens = new CommonTokenStream(lexer);
-            NeioClassParser parser = new NeioClassParser(tokens);
+            ClassParser parser = new ClassParser(tokens);
             ClassConverter converter = new ClassConverter();
             String klassName = fileName.substring(fileName.lastIndexOf('/') + 1);
             klassName = klassName.split("\\.java")[0];
@@ -58,9 +58,9 @@ public class Main {
     public static void visitDocument(File file) {
         try {
             CharStream input = new ANTLRInputStream(new FileInputStream(file));
-            Lexer lexer = new NeioDocumentLexer(input);
+            Lexer lexer = new DocumentLexer(input);
             TokenStream tokens = new CommonTokenStream(lexer);
-            NeioDocumentParser parser = new NeioDocumentParser(tokens);
+            DocumentParser parser = new DocumentParser(tokens);
             DocumentConverter converter = new DocumentConverter();
             converter.visitDocument(parser.document());
         } catch (IOException e) {
