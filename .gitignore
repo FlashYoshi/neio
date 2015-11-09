@@ -3,7 +3,7 @@
 
 # Java
 *.class
-build
+neio/build
 
 # Gradle
 .gradle
