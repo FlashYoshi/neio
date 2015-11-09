@@ -33,7 +33,7 @@ public class Main {
             System.exit(3);
         }
 
-        visitScript(file);
+        visitDocument(file);
     }
 
     public static void printHelp(String programName) {
@@ -55,13 +55,13 @@ public class Main {
         }
     }
 
-    public static void visitScript(File file) {
+    public static void visitDocument(File file) {
         try {
             CharStream input = new ANTLRInputStream(new FileInputStream(file));
-            Lexer lexer = new NeioScriptLexer(input);
+            Lexer lexer = new NeioDocumentLexer(input);
             TokenStream tokens = new CommonTokenStream(lexer);
-            NeioScriptParser parser = new NeioScriptParser(tokens);
-            ScriptConverter converter = new ScriptConverter();
+            NeioDocumentParser parser = new NeioDocumentParser(tokens);
+            DocumentConverter converter = new DocumentConverter();
             converter.visitDocument(parser.document());
         } catch (IOException e) {
             e.printStackTrace();

@@ -1,4 +1,4 @@
-// Generated from /home/flash/Github/neio/neio/src/main/grammar/NeioClassParser.g4 by ANTLR 4.2.2
+// Generated from B:\Documents\GitHub\neio\neio\src\main\grammar\NeioClassParser.g4 by ANTLR 4.2.2
 package be.ugent.neio.parsing;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;

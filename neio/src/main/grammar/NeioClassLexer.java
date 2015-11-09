@@ -1,4 +1,4 @@
-// Generated from NeioClassLexer.g4 by ANTLR 4.5
+// Generated from NeioClassLexer.g4 by ANTLR 4.5.1
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Token;
@@ -10,7 +10,7 @@ import org.antlr.v4.runtime.misc.*;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
 public class NeioClassLexer extends Lexer {
-	static { RuntimeMetaData.checkVersion("4.5", RuntimeMetaData.VERSION); }
+	static { RuntimeMetaData.checkVersion("4.5.1", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
@@ -20,7 +20,7 @@ public class NeioClassLexer extends Lexer {
 		IMPLEMENTS=7, CLASS=8, INTERFACE=9, RETURN=10, NEW=11, THIS=12, METHOD_OPTION=13, 
 		STUB=14, CLASS_NAME=15, CAMEL_CASE=16, VAR_WITH_TYPE=17, PERIOD=18, COMMA=19, 
 		COLON=20, SEMICOLON=21, EQUALS=22, PLUS=23, MINUS=24, STAR=25, SMALLER=26, 
-		BIGGER=27, LEFT_BRACE=28, RIGHT_BRACE=29, LEFT_CURLY_BRACE=30, RIGHT_CURLY_BRACE=31, 
+		BIGGER=27, L_BRACE=28, R_BRACE=29, L_CURLY_BRACE=30, R_CURLY_BRACE=31, 
 		METHOD_NAME=32;
 	public static String[] modeNames = {
 		"DEFAULT_MODE"
@@ -31,8 +31,8 @@ public class NeioClassLexer extends Lexer {
 		"CAPITAL", "LETTER", "CHAR", "EXTENDS", "IMPLEMENTS", "CLASS", "INTERFACE", 
 		"RETURN", "NEW", "THIS", "METHOD_OPTION", "STUB", "CAPITALED", "CLASS_NAME", 
 		"CAMEL_CASE", "VAR_WITH_TYPE", "PERIOD", "COMMA", "COLON", "SEMICOLON", 
-		"EQUALS", "PLUS", "MINUS", "STAR", "SMALLER", "BIGGER", "LEFT_BRACE", 
-		"RIGHT_BRACE", "LEFT_CURLY_BRACE", "RIGHT_CURLY_BRACE", "METHOD_NAME"
+		"EQUALS", "PLUS", "MINUS", "STAR", "SMALLER", "BIGGER", "L_BRACE", "R_BRACE", 
+		"L_CURLY_BRACE", "R_CURLY_BRACE", "METHOD_NAME"
 	};
 
 	private static final String[] _LITERAL_NAMES = {
@@ -46,8 +46,7 @@ public class NeioClassLexer extends Lexer {
 		"IMPLEMENTS", "CLASS", "INTERFACE", "RETURN", "NEW", "THIS", "METHOD_OPTION", 
 		"STUB", "CLASS_NAME", "CAMEL_CASE", "VAR_WITH_TYPE", "PERIOD", "COMMA", 
 		"COLON", "SEMICOLON", "EQUALS", "PLUS", "MINUS", "STAR", "SMALLER", "BIGGER", 
-		"LEFT_BRACE", "RIGHT_BRACE", "LEFT_CURLY_BRACE", "RIGHT_CURLY_BRACE", 
-		"METHOD_NAME"
+		"L_BRACE", "R_BRACE", "L_CURLY_BRACE", "R_CURLY_BRACE", "METHOD_NAME"
 	};
 	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
 

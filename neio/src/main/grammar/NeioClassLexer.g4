@@ -43,9 +43,9 @@ MINUS : '-';
 STAR : '*';
 SMALLER : '<';
 BIGGER : '>';
-LEFT_BRACE : '(';
-RIGHT_BRACE : ')';
-LEFT_CURLY_BRACE : '{';
-RIGHT_CURLY_BRACE : '}';
+L_BRACE : '(';
+R_BRACE : ')';
+L_CURLY_BRACE : '{';
+R_CURLY_BRACE : '}';
 
 METHOD_NAME : ~[()\r\n \t;.,:]+;

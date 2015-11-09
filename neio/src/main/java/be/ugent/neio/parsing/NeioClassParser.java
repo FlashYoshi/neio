@@ -1,4 +1,4 @@
-// Generated from /home/flash/Github/neio/neio/src/main/grammar/NeioClassParser.g4 by ANTLR 4.2.2
+// Generated from B:\Documents\GitHub\neio\neio\src\main\grammar\NeioClassParser.g4 by ANTLR 4.2.2
 package be.ugent.neio.parsing;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
@@ -15,11 +15,11 @@ public class NeioClassParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		EXTENDS=6, NEW=11, STUB=14, HEADER=1, CLASS=8, COMMENT=2, CLASS_NAME=15, 
-		MINUS=24, RETURN=10, BIGGER=27, CAMEL_CASE=16, INTERFACE=9, SEMICOLON=21, 
-		SMALLER=26, MULTILINE_COMMENT=3, LEFT_BRACE=28, WS=4, COMMA=19, RIGHT_BRACE=29, 
-		EQUALS=22, NEWLINE=5, RIGHT_CURLY_BRACE=31, IMPLEMENTS=7, COLON=20, METHOD_OPTION=13, 
-		STAR=25, PERIOD=18, VAR_WITH_TYPE=17, THIS=12, METHOD_NAME=32, LEFT_CURLY_BRACE=30, 
+		EXTENDS=6, NEW=11, R_CURLY_BRACE=31, R_BRACE=29, STUB=14, HEADER=1, CLASS=8, 
+		L_CURLY_BRACE=30, COMMENT=2, CLASS_NAME=15, MINUS=24, RETURN=10, BIGGER=27, 
+		CAMEL_CASE=16, INTERFACE=9, SEMICOLON=21, SMALLER=26, MULTILINE_COMMENT=3, 
+		WS=4, L_BRACE=28, COMMA=19, EQUALS=22, NEWLINE=5, IMPLEMENTS=7, COLON=20, 
+		METHOD_OPTION=13, STAR=25, PERIOD=18, VAR_WITH_TYPE=17, THIS=12, METHOD_NAME=32, 
 		PLUS=23;
 	public static final String[] tokenNames = {
 		"<INVALID>", "HEADER", "COMMENT", "MULTILINE_COMMENT", "WS", "NEWLINE", 
@@ -571,7 +571,7 @@ public class NeioClassParser extends Parser {
 				setState(93); var();
 				}
 				break;
-			case RIGHT_BRACE:
+			case R_BRACE:
 				enterOuterAlt(_localctx, 2);
 				{
 				}
@@ -708,7 +708,7 @@ public class NeioClassParser extends Parser {
 				setState(109); parameter();
 				}
 				break;
-			case RIGHT_BRACE:
+			case R_BRACE:
 				enterOuterAlt(_localctx, 2);
 				{
 				}
@@ -729,15 +729,15 @@ public class NeioClassParser extends Parser {
 	}
 
 	public static class MethodContext extends ParserRuleContext {
-		public TerminalNode LEFT_CURLY_BRACE() { return getToken(NeioClassParser.LEFT_CURLY_BRACE, 0); }
 		public TerminalNode METHOD_OPTION() { return getToken(NeioClassParser.METHOD_OPTION, 0); }
 		public DeclContext decl() {
 			return getRuleContext(DeclContext.class,0);
 		}
-		public TerminalNode RIGHT_CURLY_BRACE() { return getToken(NeioClassParser.RIGHT_CURLY_BRACE, 0); }
 		public BlockContext block() {
 			return getRuleContext(BlockContext.class,0);
 		}
+		public TerminalNode L_CURLY_BRACE() { return getToken(NeioClassParser.L_CURLY_BRACE, 0); }
+		public TerminalNode R_CURLY_BRACE() { return getToken(NeioClassParser.R_CURLY_BRACE, 0); }
 		public MethodContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -773,7 +773,7 @@ public class NeioClassParser extends Parser {
 			}
 
 			setState(116); decl();
-			setState(117); match(LEFT_CURLY_BRACE);
+			setState(117); match(L_CURLY_BRACE);
 			setState(119);
 			_la = _input.LA(1);
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << NEW) | (1L << THIS) | (1L << CLASS_NAME) | (1L << CAMEL_CASE) | (1L << VAR_WITH_TYPE) | (1L << METHOD_NAME))) != 0)) {
@@ -782,7 +782,7 @@ public class NeioClassParser extends Parser {
 				}
 			}
 
-			setState(121); match(RIGHT_CURLY_BRACE);
+			setState(121); match(R_CURLY_BRACE);
 			}
 		}
 		catch (RecognitionException re) {
@@ -797,14 +797,14 @@ public class NeioClassParser extends Parser {
 	}
 
 	public static class DeclContext extends ParserRuleContext {
+		public TerminalNode R_BRACE() { return getToken(NeioClassParser.R_BRACE, 0); }
 		public MethodNameContext methodName() {
 			return getRuleContext(MethodNameContext.class,0);
 		}
-		public TerminalNode LEFT_BRACE() { return getToken(NeioClassParser.LEFT_BRACE, 0); }
 		public ArgumentsContext arguments() {
 			return getRuleContext(ArgumentsContext.class,0);
 		}
-		public TerminalNode RIGHT_BRACE() { return getToken(NeioClassParser.RIGHT_BRACE, 0); }
+		public TerminalNode L_BRACE() { return getToken(NeioClassParser.L_BRACE, 0); }
 		public DeclContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -831,9 +831,9 @@ public class NeioClassParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(123); methodName();
-			setState(124); match(LEFT_BRACE);
+			setState(124); match(L_BRACE);
 			setState(125); arguments();
-			setState(126); match(RIGHT_BRACE);
+			setState(126); match(R_BRACE);
 			}
 		}
 		catch (RecognitionException re) {
@@ -848,14 +848,14 @@ public class NeioClassParser extends Parser {
 	}
 
 	public static class CallContext extends ParserRuleContext {
+		public TerminalNode R_BRACE() { return getToken(NeioClassParser.R_BRACE, 0); }
 		public MethodNameContext methodName() {
 			return getRuleContext(MethodNameContext.class,0);
 		}
 		public ParametersContext parameters() {
 			return getRuleContext(ParametersContext.class,0);
 		}
-		public TerminalNode LEFT_BRACE() { return getToken(NeioClassParser.LEFT_BRACE, 0); }
-		public TerminalNode RIGHT_BRACE() { return getToken(NeioClassParser.RIGHT_BRACE, 0); }
+		public TerminalNode L_BRACE() { return getToken(NeioClassParser.L_BRACE, 0); }
 		public CallContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -882,9 +882,9 @@ public class NeioClassParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(128); methodName();
-			setState(129); match(LEFT_BRACE);
+			setState(129); match(L_BRACE);
 			setState(130); parameters();
-			setState(131); match(RIGHT_BRACE);
+			setState(131); match(R_BRACE);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1404,6 +1404,7 @@ public class NeioClassParser extends Parser {
 	}
 
 	public static class NewCallContext extends ParserRuleContext {
+		public TerminalNode R_BRACE() { return getToken(NeioClassParser.R_BRACE, 0); }
 		public TerminalNode EQUALS() { return getToken(NeioClassParser.EQUALS, 0); }
 		public TerminalNode CAMEL_CASE() { return getToken(NeioClassParser.CAMEL_CASE, 0); }
 		public TerminalNode CLASS_NAME() { return getToken(NeioClassParser.CLASS_NAME, 0); }
@@ -1414,9 +1415,8 @@ public class NeioClassParser extends Parser {
 		public VarContext var() {
 			return getRuleContext(VarContext.class,0);
 		}
-		public TerminalNode LEFT_BRACE() { return getToken(NeioClassParser.LEFT_BRACE, 0); }
 		public TerminalNode NEW() { return getToken(NeioClassParser.NEW, 0); }
-		public TerminalNode RIGHT_BRACE() { return getToken(NeioClassParser.RIGHT_BRACE, 0); }
+		public TerminalNode L_BRACE() { return getToken(NeioClassParser.L_BRACE, 0); }
 		public NewCallContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -1453,9 +1453,9 @@ public class NeioClassParser extends Parser {
 				_errHandler.recoverInline(this);
 				}
 				consume();
-				setState(184); match(LEFT_BRACE);
+				setState(184); match(L_BRACE);
 				setState(185); parameters();
-				setState(186); match(RIGHT_BRACE);
+				setState(186); match(R_BRACE);
 				setState(187); match(CAMEL_CASE);
 				}
 				break;
@@ -1483,9 +1483,9 @@ public class NeioClassParser extends Parser {
 				setState(193); match(EQUALS);
 				setState(194); match(NEW);
 				setState(195); match(CLASS_NAME);
-				setState(196); match(LEFT_BRACE);
+				setState(196); match(L_BRACE);
 				setState(197); parameters();
-				setState(198); match(RIGHT_BRACE);
+				setState(198); match(R_BRACE);
 				}
 				break;
 			default:

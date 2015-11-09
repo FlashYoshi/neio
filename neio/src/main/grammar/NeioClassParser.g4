@@ -32,9 +32,9 @@ parameter : CAMEL_CASE
 parameters : (parameter COMMA)* parameter
            | ;
 
-method : METHOD_OPTION? decl LEFT_CURLY_BRACE block? RIGHT_CURLY_BRACE;
-decl : methodName LEFT_BRACE arguments RIGHT_BRACE;
-call : methodName LEFT_BRACE parameters RIGHT_BRACE;
+method : METHOD_OPTION? decl L_CURLY_BRACE block? R_CURLY_BRACE;
+decl : methodName L_BRACE arguments R_BRACE;
+call : methodName L_BRACE parameters R_BRACE;
 methodName: CLASS_NAME
           | CAMEL_CASE
           | METHOD_NAME;
@@ -54,8 +54,8 @@ thisChain : (THIS PERIOD)? (chain | (CLASS_NAME | CAMEL_CASE));
 
 chain : (CLASS_NAME | CAMEL_CASE) (PERIOD (CLASS_NAME | CAMEL_CASE))+;
 
-newCall : NEW (CLASS_NAME | VAR_WITH_TYPE) LEFT_BRACE parameters RIGHT_BRACE CAMEL_CASE
-        | (var | CAMEL_CASE) EQUALS NEW CLASS_NAME LEFT_BRACE parameters RIGHT_BRACE;
+newCall : NEW (CLASS_NAME | VAR_WITH_TYPE) L_BRACE parameters R_BRACE CAMEL_CASE
+        | (var | CAMEL_CASE) EQUALS NEW CLASS_NAME L_BRACE parameters R_BRACE;
 
 returnCall : ( RETURN statement
              | RETURN CAMEL_CASE
