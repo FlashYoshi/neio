@@ -1,7 +1,7 @@
-package be.ugent.neio.jlo.translate;
+package be.ugent.neio.translate;
 
 import be.kuleuven.cs.distrinet.jnome.core.language.Java7;
-import be.ugent.neio.jlo.model.language.JLo;
+import be.ugent.neio.language.Neio;
 import org.aikodi.chameleon.core.document.Document;
 import org.aikodi.chameleon.core.lookup.LookupException;
 import org.aikodi.chameleon.exception.ModelException;
@@ -16,9 +16,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class JLoToJava8Translator extends IncrementalTranslator<JLo, Java7> {
+public class NeioToJava8Translator extends IncrementalTranslator<Neio, Java7> {
 
-    public JLoToJava8Translator(View source, View target) {
+    public NeioToJava8Translator(View source, View target) {
         super(source, target);
     }
 
@@ -33,8 +33,8 @@ public class JLoToJava8Translator extends IncrementalTranslator<JLo, Java7> {
         return result;
     }
 
-    public List<Document> translate(Document sourceDocument) throws LookupException, ModelException {
-        List<Document> result = new ArrayList<Document>();
+    public List<Document> translate(Document sourceDocument) throws ModelException {
+        List<Document> result = new ArrayList<>();
         Document interfaceDocument = createInterface(sourceDocument);
         result.add(interfaceDocument);
         Document implementationDocument = createImplementation(sourceDocument);
@@ -57,14 +57,4 @@ public class JLoToJava8Translator extends IncrementalTranslator<JLo, Java7> {
         Document result = sourceDocument.cloneTo(target());
         return new Java8InterfaceGenerator().createInterface(result);
     }
-
-    // protected void makeImplicitlyAbstractMethodsAbstract(Document target) {
-    // target.apply(Method.class, m -> {
-    // if(m.implementation() == null) {
-    // m.addModifier(new Abstract());
-    // m.flushCache();
-    // }
-    // });
-    // }
-
 }
