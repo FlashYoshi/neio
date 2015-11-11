@@ -120,29 +120,12 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     private void visitMethods(ClassBodyContext body, Type klass) {
         for (MethodContext method : body.method()) {
-            // If their is no return type, this is a constructor
-            if (method.decl().CLASS_NAME() == null) {
-                klass.addModifier(visitConstructor(method));
-            } else {
-                klass.add(visitMethod(method));
-            }
+            klass.add(visitMethod(method, klass.name()));
             System.out.println();
         }
     }
 
-    private Constructor visitConstructor(MethodContext ctx) {
-        Constructor c = new Constructor();
-        Block b = new Block();
-        for (StatementContext statement : ctx.block().statement()) {
-            b.addStatement(visitStatement(statement));
-        }
-
-        // TODO: set constructor implementation
-        return c;
-    }
-
-    @Override
-    public Method visitMethod(MethodContext ctx) {
+    public Method visitMethod(MethodContext ctx, String klassName) {
         // Is this a regex method?
         // TODO: Do something for regex
         if (ctx.METHOD_OPTION() != null) {
@@ -150,10 +133,20 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         }
         System.out.println(ctx.decl().getText() + " {");
 
-        String returnType = ctx.decl().CLASS_NAME().getText();
+        String returnType = klassName;
+        Constructor c = null;
+        // If their is no return type, this is a constructor
+        if (ctx.decl().CLASS_NAME() == null) {
+            c = new Constructor();
+        } else {
+            returnType = ctx.decl().CLASS_NAME().getText();
+        }
         Method method = ooFactory().createMethod(ctx.decl().methodName().getText(), returnType);
-        // TODO: set parameters
-        visitArguments(ctx.decl().arguments());
+        method.header().addFormalParameters(visitArguments(ctx.decl().arguments()));
+
+        if (c != null) {
+            method.addModifier(c);
+        }
 
         Block b = new Block();
         for (StatementContext statement : ctx.block().statement()) {
