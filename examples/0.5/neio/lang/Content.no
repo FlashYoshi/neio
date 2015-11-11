@@ -1,4 +1,4 @@
-class
+class Content
 List<Content> content;
 
 Content() {

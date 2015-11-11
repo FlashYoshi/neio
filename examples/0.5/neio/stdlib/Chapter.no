@@ -1,4 +1,4 @@
-class
+class Chapter
 extends neio.lang.Content;
 
 String title;

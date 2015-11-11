@@ -1,4 +1,4 @@
-class
+class Document
 extends neio.lang.Container;
 
 Text title;

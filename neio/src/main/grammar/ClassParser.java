@@ -1,5 +1,4 @@
-// Generated from B:\Documents\GitHub\neio\neio\src\main\grammar\ClassParser.g4 by ANTLR 4.2.2
-package be.ugent.neio.parsing;
+// Generated from ClassParser.g4 by ANTLR 4.5.1
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
@@ -11,23 +10,18 @@ import java.util.ArrayList;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
 public class ClassParser extends Parser {
+	static { RuntimeMetaData.checkVersion("4.5.1", RuntimeMetaData.VERSION); }
+
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		EXTENDS=6, NEW=11, R_CURLY_BRACE=31, R_BRACE=29, STUB=14, HEADER=1, CLASS=8, 
-		L_CURLY_BRACE=30, COMMENT=2, CLASS_NAME=15, MINUS=24, RETURN=10, BIGGER=27, 
-		CAMEL_CASE=16, INTERFACE=9, SEMICOLON=21, SMALLER=26, MULTILINE_COMMENT=3, 
-		WS=4, L_BRACE=28, COMMA=19, EQUALS=22, NEWLINE=5, IMPLEMENTS=7, COLON=20, 
-		METHOD_OPTION=13, STAR=25, PERIOD=18, VAR_WITH_TYPE=17, THIS=12, METHOD_NAME=32, 
-		PLUS=23;
-	public static final String[] tokenNames = {
-		"<INVALID>", "HEADER", "COMMENT", "MULTILINE_COMMENT", "WS", "NEWLINE", 
-		"'extends'", "'implements'", "'class'", "'interface'", "'return'", "'new'", 
-		"'this'", "METHOD_OPTION", "'stub'", "CLASS_NAME", "CAMEL_CASE", "VAR_WITH_TYPE", 
-		"'.'", "','", "':'", "';'", "'='", "'+'", "'-'", "'*'", "'<'", "'>'", 
-		"'('", "')'", "'{'", "'}'", "METHOD_NAME"
-	};
+		HEADER=1, COMMENT=2, MULTILINE_COMMENT=3, WS=4, NEWLINE=5, EXTENDS=6, 
+		IMPLEMENTS=7, CLASS=8, INTERFACE=9, RETURN=10, NEW=11, THIS=12, METHOD_OPTION=13, 
+		STUB=14, CLASS_NAME=15, CAMEL_CASE=16, VAR_WITH_TYPE=17, PERIOD=18, COMMA=19, 
+		COLON=20, SEMICOLON=21, EQUALS=22, PLUS=23, MINUS=24, STAR=25, SMALLER=26, 
+		BIGGER=27, L_BRACE=28, R_BRACE=29, L_CURLY_BRACE=30, R_CURLY_BRACE=31, 
+		METHOD_NAME=32;
 	public static final int
 		RULE_document = 0, RULE_body = 1, RULE_classBody = 2, RULE_interfaceBody = 3, 
 		RULE_extension = 4, RULE_field = 5, RULE_fieldName = 6, RULE_var = 7, 
@@ -42,11 +36,54 @@ public class ClassParser extends Parser {
 		"thisChain", "chain", "newCall", "returnCall"
 	};
 
-	@Override
-	public String getGrammarFileName() { return "ClassParser.g4"; }
+	private static final String[] _LITERAL_NAMES = {
+		null, null, null, null, null, null, "'extends'", "'implements'", "'class'", 
+		"'interface'", "'return'", "'new'", "'this'", null, "'stub'", null, null, 
+		null, "'.'", "','", "':'", "';'", "'='", "'+'", "'-'", "'*'", "'<'", "'>'", 
+		"'('", "')'", "'{'", "'}'"
+	};
+	private static final String[] _SYMBOLIC_NAMES = {
+		null, "HEADER", "COMMENT", "MULTILINE_COMMENT", "WS", "NEWLINE", "EXTENDS", 
+		"IMPLEMENTS", "CLASS", "INTERFACE", "RETURN", "NEW", "THIS", "METHOD_OPTION", 
+		"STUB", "CLASS_NAME", "CAMEL_CASE", "VAR_WITH_TYPE", "PERIOD", "COMMA", 
+		"COLON", "SEMICOLON", "EQUALS", "PLUS", "MINUS", "STAR", "SMALLER", "BIGGER", 
+		"L_BRACE", "R_BRACE", "L_CURLY_BRACE", "R_CURLY_BRACE", "METHOD_NAME"
+	};
+	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
+
+	/**
+	 * @deprecated Use {@link #VOCABULARY} instead.
+	 */
+	@Deprecated
+	public static final String[] tokenNames;
+	static {
+		tokenNames = new String[_SYMBOLIC_NAMES.length];
+		for (int i = 0; i < tokenNames.length; i++) {
+			tokenNames[i] = VOCABULARY.getLiteralName(i);
+			if (tokenNames[i] == null) {
+				tokenNames[i] = VOCABULARY.getSymbolicName(i);
+			}
+
+			if (tokenNames[i] == null) {
+				tokenNames[i] = "<INVALID>";
+			}
+		}
+	}
 
 	@Override
-	public String[] getTokenNames() { return tokenNames; }
+	@Deprecated
+	public String[] getTokenNames() {
+		return tokenNames;
+	}
+
+	@Override
+
+	public Vocabulary getVocabulary() {
+		return VOCABULARY;
+	}
+
+	@Override
+	public String getGrammarFileName() { return "ClassParser.g4"; }
 
 	@Override
 	public String[] getRuleNames() { return ruleNames; }
@@ -62,12 +99,12 @@ public class ClassParser extends Parser {
 		_interp = new ParserATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
 	public static class DocumentContext extends ParserRuleContext {
+		public TerminalNode HEADER() { return getToken(ClassParser.HEADER, 0); }
 		public TerminalNode CLASS_NAME() { return getToken(ClassParser.CLASS_NAME, 0); }
-		public TerminalNode EOF() { return getToken(ClassParser.EOF, 0); }
 		public BodyContext body() {
 			return getRuleContext(BodyContext.class,0);
 		}
-		public TerminalNode HEADER() { return getToken(ClassParser.HEADER, 0); }
+		public TerminalNode EOF() { return getToken(ClassParser.EOF, 0); }
 		public DocumentContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -80,11 +117,6 @@ public class ClassParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof ClassParserListener ) ((ClassParserListener)listener).exitDocument(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ClassParserVisitor ) return ((ClassParserVisitor<? extends T>)visitor).visitDocument(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final DocumentContext document() throws RecognitionException {
@@ -93,10 +125,14 @@ public class ClassParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(46); match(HEADER);
-			setState(47); match(CLASS_NAME);
-			setState(48); body();
-			setState(49); match(EOF);
+			setState(46);
+			match(HEADER);
+			setState(47);
+			match(CLASS_NAME);
+			setState(48);
+			body();
+			setState(49);
+			match(EOF);
 			}
 		}
 		catch (RecognitionException re) {
@@ -111,11 +147,11 @@ public class ClassParser extends Parser {
 	}
 
 	public static class BodyContext extends ParserRuleContext {
-		public InterfaceBodyContext interfaceBody() {
-			return getRuleContext(InterfaceBodyContext.class,0);
-		}
 		public ClassBodyContext classBody() {
 			return getRuleContext(ClassBodyContext.class,0);
+		}
+		public InterfaceBodyContext interfaceBody() {
+			return getRuleContext(InterfaceBodyContext.class,0);
 		}
 		public BodyContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -128,11 +164,6 @@ public class ClassParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof ClassParserListener ) ((ClassParserListener)listener).exitBody(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ClassParserVisitor ) return ((ClassParserVisitor<? extends T>)visitor).visitBody(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -152,13 +183,15 @@ public class ClassParser extends Parser {
 			case METHOD_NAME:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(51); classBody();
+				setState(51);
+				classBody();
 				}
 				break;
 			case STUB:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(52); interfaceBody();
+				setState(52);
+				interfaceBody();
 				}
 				break;
 			default:
@@ -177,14 +210,14 @@ public class ClassParser extends Parser {
 	}
 
 	public static class ClassBodyContext extends ParserRuleContext {
-		public ExtensionContext extension(int i) {
-			return getRuleContext(ExtensionContext.class,i);
-		}
 		public List<ExtensionContext> extension() {
 			return getRuleContexts(ExtensionContext.class);
 		}
-		public MethodContext method(int i) {
-			return getRuleContext(MethodContext.class,i);
+		public ExtensionContext extension(int i) {
+			return getRuleContext(ExtensionContext.class,i);
+		}
+		public List<FieldContext> field() {
+			return getRuleContexts(FieldContext.class);
 		}
 		public FieldContext field(int i) {
 			return getRuleContext(FieldContext.class,i);
@@ -192,8 +225,8 @@ public class ClassParser extends Parser {
 		public List<MethodContext> method() {
 			return getRuleContexts(MethodContext.class);
 		}
-		public List<FieldContext> field() {
-			return getRuleContexts(FieldContext.class);
+		public MethodContext method(int i) {
+			return getRuleContext(MethodContext.class,i);
 		}
 		public ClassBodyContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -206,11 +239,6 @@ public class ClassParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof ClassParserListener ) ((ClassParserListener)listener).exitClassBody(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ClassParserVisitor ) return ((ClassParserVisitor<? extends T>)visitor).visitClassBody(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -227,7 +255,8 @@ public class ClassParser extends Parser {
 			while (_la==EXTENDS || _la==IMPLEMENTS) {
 				{
 				{
-				setState(55); extension();
+				setState(55);
+				extension();
 				}
 				}
 				setState(60);
@@ -243,13 +272,14 @@ public class ClassParser extends Parser {
 				switch ( getInterpreter().adaptivePredict(_input,2,_ctx) ) {
 				case 1:
 					{
-					setState(61); field();
+					setState(61);
+					field();
 					}
 					break;
-
 				case 2:
 					{
-					setState(62); method();
+					setState(62);
+					method();
 					}
 					break;
 				}
@@ -285,11 +315,6 @@ public class ClassParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof ClassParserListener ) ((ClassParserListener)listener).exitInterfaceBody(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ClassParserVisitor ) return ((ClassParserVisitor<? extends T>)visitor).visitInterfaceBody(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final InterfaceBodyContext interfaceBody() throws RecognitionException {
@@ -298,7 +323,8 @@ public class ClassParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(68); match(STUB);
+			setState(68);
+			match(STUB);
 			}
 		}
 		catch (RecognitionException re) {
@@ -314,11 +340,11 @@ public class ClassParser extends Parser {
 
 	public static class ExtensionContext extends ParserRuleContext {
 		public TerminalNode SEMICOLON() { return getToken(ClassParser.SEMICOLON, 0); }
+		public TerminalNode EXTENDS() { return getToken(ClassParser.EXTENDS, 0); }
 		public ChainContext chain() {
 			return getRuleContext(ChainContext.class,0);
 		}
 		public TerminalNode IMPLEMENTS() { return getToken(ClassParser.IMPLEMENTS, 0); }
-		public TerminalNode EXTENDS() { return getToken(ClassParser.EXTENDS, 0); }
 		public ExtensionContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -330,11 +356,6 @@ public class ClassParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof ClassParserListener ) ((ClassParserListener)listener).exitExtension(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ClassParserVisitor ) return ((ClassParserVisitor<? extends T>)visitor).visitExtension(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -348,20 +369,25 @@ public class ClassParser extends Parser {
 			switch (_input.LA(1)) {
 			case EXTENDS:
 				{
-				setState(70); match(EXTENDS);
-				setState(71); chain();
+				setState(70);
+				match(EXTENDS);
+				setState(71);
+				chain();
 				}
 				break;
 			case IMPLEMENTS:
 				{
-				setState(72); match(IMPLEMENTS);
-				setState(73); chain();
+				setState(72);
+				match(IMPLEMENTS);
+				setState(73);
+				chain();
 				}
 				break;
 			default:
 				throw new NoViableAltException(this);
 			}
-			setState(76); match(SEMICOLON);
+			setState(76);
+			match(SEMICOLON);
 			}
 		}
 		catch (RecognitionException re) {
@@ -376,10 +402,10 @@ public class ClassParser extends Parser {
 	}
 
 	public static class FieldContext extends ParserRuleContext {
-		public TerminalNode SEMICOLON() { return getToken(ClassParser.SEMICOLON, 0); }
 		public VarContext var() {
 			return getRuleContext(VarContext.class,0);
 		}
+		public TerminalNode SEMICOLON() { return getToken(ClassParser.SEMICOLON, 0); }
 		public FieldContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -392,11 +418,6 @@ public class ClassParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof ClassParserListener ) ((ClassParserListener)listener).exitField(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ClassParserVisitor ) return ((ClassParserVisitor<? extends T>)visitor).visitField(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final FieldContext field() throws RecognitionException {
@@ -405,8 +426,10 @@ public class ClassParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(78); var();
-			setState(79); match(SEMICOLON);
+			setState(78);
+			var();
+			setState(79);
+			match(SEMICOLON);
 			}
 		}
 		catch (RecognitionException re) {
@@ -435,11 +458,6 @@ public class ClassParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof ClassParserListener ) ((ClassParserListener)listener).exitFieldName(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ClassParserVisitor ) return ((ClassParserVisitor<? extends T>)visitor).visitFieldName(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final FieldNameContext fieldName() throws RecognitionException {
@@ -453,8 +471,9 @@ public class ClassParser extends Parser {
 			_la = _input.LA(1);
 			if ( !(_la==CLASS_NAME || _la==VAR_WITH_TYPE) ) {
 			_errHandler.recoverInline(this);
+			} else {
+				consume();
 			}
-			consume();
 			}
 		}
 		catch (RecognitionException re) {
@@ -485,11 +504,6 @@ public class ClassParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof ClassParserListener ) ((ClassParserListener)listener).exitVar(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ClassParserVisitor ) return ((ClassParserVisitor<? extends T>)visitor).visitVar(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final VarContext var() throws RecognitionException {
@@ -498,8 +512,10 @@ public class ClassParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(83); fieldName();
-			setState(84); match(CAMEL_CASE);
+			setState(83);
+			fieldName();
+			setState(84);
+			match(CAMEL_CASE);
 			}
 		}
 		catch (RecognitionException re) {
@@ -517,10 +533,10 @@ public class ClassParser extends Parser {
 		public List<VarContext> var() {
 			return getRuleContexts(VarContext.class);
 		}
-		public List<TerminalNode> COMMA() { return getTokens(ClassParser.COMMA); }
 		public VarContext var(int i) {
 			return getRuleContext(VarContext.class,i);
 		}
+		public List<TerminalNode> COMMA() { return getTokens(ClassParser.COMMA); }
 		public TerminalNode COMMA(int i) {
 			return getToken(ClassParser.COMMA, i);
 		}
@@ -535,11 +551,6 @@ public class ClassParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof ClassParserListener ) ((ClassParserListener)listener).exitArguments(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ClassParserVisitor ) return ((ClassParserVisitor<? extends T>)visitor).visitArguments(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -557,12 +568,14 @@ public class ClassParser extends Parser {
 				setState(91);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,5,_ctx);
-				while ( _alt!=2 && _alt!=ATN.INVALID_ALT_NUMBER ) {
+				while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 					if ( _alt==1 ) {
 						{
 						{
-						setState(86); var();
-						setState(87); match(COMMA);
+						setState(86);
+						var();
+						setState(87);
+						match(COMMA);
 						}
 						} 
 					}
@@ -570,7 +583,8 @@ public class ClassParser extends Parser {
 					_errHandler.sync(this);
 					_alt = getInterpreter().adaptivePredict(_input,5,_ctx);
 				}
-				setState(94); var();
+				setState(94);
+				var();
 				}
 				break;
 			case R_BRACE:
@@ -610,11 +624,6 @@ public class ClassParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof ClassParserListener ) ((ClassParserListener)listener).exitParameter(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ClassParserVisitor ) return ((ClassParserVisitor<? extends T>)visitor).visitParameter(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final ParameterContext parameter() throws RecognitionException {
@@ -626,14 +635,15 @@ public class ClassParser extends Parser {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(98); match(CAMEL_CASE);
+				setState(98);
+				match(CAMEL_CASE);
 				}
 				break;
-
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(99); methodCall();
+				setState(99);
+				methodCall();
 				}
 				break;
 			}
@@ -672,11 +682,6 @@ public class ClassParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof ClassParserListener ) ((ClassParserListener)listener).exitParameters(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ClassParserVisitor ) return ((ClassParserVisitor<? extends T>)visitor).visitParameters(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final ParametersContext parameters() throws RecognitionException {
@@ -694,12 +699,14 @@ public class ClassParser extends Parser {
 				setState(107);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,8,_ctx);
-				while ( _alt!=2 && _alt!=ATN.INVALID_ALT_NUMBER ) {
+				while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 					if ( _alt==1 ) {
 						{
 						{
-						setState(102); parameter();
-						setState(103); match(COMMA);
+						setState(102);
+						parameter();
+						setState(103);
+						match(COMMA);
 						}
 						} 
 					}
@@ -707,7 +714,8 @@ public class ClassParser extends Parser {
 					_errHandler.sync(this);
 					_alt = getInterpreter().adaptivePredict(_input,8,_ctx);
 				}
-				setState(110); parameter();
+				setState(110);
+				parameter();
 				}
 				break;
 			case R_BRACE:
@@ -731,15 +739,15 @@ public class ClassParser extends Parser {
 	}
 
 	public static class MethodContext extends ParserRuleContext {
-		public TerminalNode METHOD_OPTION() { return getToken(ClassParser.METHOD_OPTION, 0); }
 		public DeclContext decl() {
 			return getRuleContext(DeclContext.class,0);
 		}
+		public TerminalNode L_CURLY_BRACE() { return getToken(ClassParser.L_CURLY_BRACE, 0); }
+		public TerminalNode R_CURLY_BRACE() { return getToken(ClassParser.R_CURLY_BRACE, 0); }
+		public TerminalNode METHOD_OPTION() { return getToken(ClassParser.METHOD_OPTION, 0); }
 		public BlockContext block() {
 			return getRuleContext(BlockContext.class,0);
 		}
-		public TerminalNode L_CURLY_BRACE() { return getToken(ClassParser.L_CURLY_BRACE, 0); }
-		public TerminalNode R_CURLY_BRACE() { return getToken(ClassParser.R_CURLY_BRACE, 0); }
 		public MethodContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -751,11 +759,6 @@ public class ClassParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof ClassParserListener ) ((ClassParserListener)listener).exitMethod(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ClassParserVisitor ) return ((ClassParserVisitor<? extends T>)visitor).visitMethod(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -770,21 +773,26 @@ public class ClassParser extends Parser {
 			_la = _input.LA(1);
 			if (_la==METHOD_OPTION) {
 				{
-				setState(114); match(METHOD_OPTION);
+				setState(114);
+				match(METHOD_OPTION);
 				}
 			}
 
-			setState(117); decl();
-			setState(118); match(L_CURLY_BRACE);
+			setState(117);
+			decl();
+			setState(118);
+			match(L_CURLY_BRACE);
 			setState(120);
 			_la = _input.LA(1);
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << NEW) | (1L << THIS) | (1L << CLASS_NAME) | (1L << CAMEL_CASE) | (1L << VAR_WITH_TYPE) | (1L << METHOD_NAME))) != 0)) {
 				{
-				setState(119); block();
+				setState(119);
+				block();
 				}
 			}
 
-			setState(122); match(R_CURLY_BRACE);
+			setState(122);
+			match(R_CURLY_BRACE);
 			}
 		}
 		catch (RecognitionException re) {
@@ -799,15 +807,15 @@ public class ClassParser extends Parser {
 	}
 
 	public static class DeclContext extends ParserRuleContext {
-		public TerminalNode R_BRACE() { return getToken(ClassParser.R_BRACE, 0); }
 		public MethodNameContext methodName() {
 			return getRuleContext(MethodNameContext.class,0);
 		}
-		public TerminalNode CLASS_NAME() { return getToken(ClassParser.CLASS_NAME, 0); }
+		public TerminalNode L_BRACE() { return getToken(ClassParser.L_BRACE, 0); }
 		public ArgumentsContext arguments() {
 			return getRuleContext(ArgumentsContext.class,0);
 		}
-		public TerminalNode L_BRACE() { return getToken(ClassParser.L_BRACE, 0); }
+		public TerminalNode R_BRACE() { return getToken(ClassParser.R_BRACE, 0); }
+		public TerminalNode CLASS_NAME() { return getToken(ClassParser.CLASS_NAME, 0); }
 		public DeclContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -819,11 +827,6 @@ public class ClassParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof ClassParserListener ) ((ClassParserListener)listener).exitDecl(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ClassParserVisitor ) return ((ClassParserVisitor<? extends T>)visitor).visitDecl(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -837,14 +840,19 @@ public class ClassParser extends Parser {
 			switch ( getInterpreter().adaptivePredict(_input,12,_ctx) ) {
 			case 1:
 				{
-				setState(124); match(CLASS_NAME);
+				setState(124);
+				match(CLASS_NAME);
 				}
 				break;
 			}
-			setState(127); methodName();
-			setState(128); match(L_BRACE);
-			setState(129); arguments();
-			setState(130); match(R_BRACE);
+			setState(127);
+			methodName();
+			setState(128);
+			match(L_BRACE);
+			setState(129);
+			arguments();
+			setState(130);
+			match(R_BRACE);
 			}
 		}
 		catch (RecognitionException re) {
@@ -859,14 +867,14 @@ public class ClassParser extends Parser {
 	}
 
 	public static class CallContext extends ParserRuleContext {
-		public TerminalNode R_BRACE() { return getToken(ClassParser.R_BRACE, 0); }
 		public MethodNameContext methodName() {
 			return getRuleContext(MethodNameContext.class,0);
 		}
+		public TerminalNode L_BRACE() { return getToken(ClassParser.L_BRACE, 0); }
 		public ParametersContext parameters() {
 			return getRuleContext(ParametersContext.class,0);
 		}
-		public TerminalNode L_BRACE() { return getToken(ClassParser.L_BRACE, 0); }
+		public TerminalNode R_BRACE() { return getToken(ClassParser.R_BRACE, 0); }
 		public CallContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -879,11 +887,6 @@ public class ClassParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof ClassParserListener ) ((ClassParserListener)listener).exitCall(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ClassParserVisitor ) return ((ClassParserVisitor<? extends T>)visitor).visitCall(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final CallContext call() throws RecognitionException {
@@ -892,10 +895,14 @@ public class ClassParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(132); methodName();
-			setState(133); match(L_BRACE);
-			setState(134); parameters();
-			setState(135); match(R_BRACE);
+			setState(132);
+			methodName();
+			setState(133);
+			match(L_BRACE);
+			setState(134);
+			parameters();
+			setState(135);
+			match(R_BRACE);
 			}
 		}
 		catch (RecognitionException re) {
@@ -925,11 +932,6 @@ public class ClassParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof ClassParserListener ) ((ClassParserListener)listener).exitMethodName(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ClassParserVisitor ) return ((ClassParserVisitor<? extends T>)visitor).visitMethodName(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final MethodNameContext methodName() throws RecognitionException {
@@ -943,8 +945,9 @@ public class ClassParser extends Parser {
 			_la = _input.LA(1);
 			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << CLASS_NAME) | (1L << CAMEL_CASE) | (1L << METHOD_NAME))) != 0)) ) {
 			_errHandler.recoverInline(this);
+			} else {
+				consume();
 			}
-			consume();
 			}
 		}
 		catch (RecognitionException re) {
@@ -959,14 +962,14 @@ public class ClassParser extends Parser {
 	}
 
 	public static class BlockContext extends ParserRuleContext {
-		public ReturnCallContext returnCall() {
-			return getRuleContext(ReturnCallContext.class,0);
+		public List<StatementContext> statement() {
+			return getRuleContexts(StatementContext.class);
 		}
 		public StatementContext statement(int i) {
 			return getRuleContext(StatementContext.class,i);
 		}
-		public List<StatementContext> statement() {
-			return getRuleContexts(StatementContext.class);
+		public ReturnCallContext returnCall() {
+			return getRuleContext(ReturnCallContext.class,0);
 		}
 		public BlockContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -979,11 +982,6 @@ public class ClassParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof ClassParserListener ) ((ClassParserListener)listener).exitBlock(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ClassParserVisitor ) return ((ClassParserVisitor<? extends T>)visitor).visitBlock(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1000,7 +998,8 @@ public class ClassParser extends Parser {
 			do {
 				{
 				{
-				setState(139); statement();
+				setState(139);
+				statement();
 				}
 				}
 				setState(142); 
@@ -1011,7 +1010,8 @@ public class ClassParser extends Parser {
 			_la = _input.LA(1);
 			if (_la==RETURN) {
 				{
-				setState(144); returnCall();
+				setState(144);
+				returnCall();
 				}
 			}
 
@@ -1051,11 +1051,6 @@ public class ClassParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof ClassParserListener ) ((ClassParserListener)listener).exitStatement(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ClassParserVisitor ) return ((ClassParserVisitor<? extends T>)visitor).visitStatement(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final StatementContext statement() throws RecognitionException {
@@ -1068,23 +1063,25 @@ public class ClassParser extends Parser {
 			switch ( getInterpreter().adaptivePredict(_input,15,_ctx) ) {
 			case 1:
 				{
-				setState(147); assignment();
+				setState(147);
+				assignment();
 				}
 				break;
-
 			case 2:
 				{
-				setState(148); methodCall();
+				setState(148);
+				methodCall();
 				}
 				break;
-
 			case 3:
 				{
-				setState(149); newCall();
+				setState(149);
+				newCall();
 				}
 				break;
 			}
-			setState(152); match(SEMICOLON);
+			setState(152);
+			match(SEMICOLON);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1099,13 +1096,13 @@ public class ClassParser extends Parser {
 	}
 
 	public static class MethodCallContext extends ParserRuleContext {
-		public TerminalNode SEMICOLON() { return getToken(ClassParser.SEMICOLON, 0); }
-		public TerminalNode CLASS_NAME() { return getToken(ClassParser.CLASS_NAME, 0); }
-		public TerminalNode CAMEL_CASE() { return getToken(ClassParser.CAMEL_CASE, 0); }
-		public TerminalNode PERIOD() { return getToken(ClassParser.PERIOD, 0); }
 		public CallContext call() {
 			return getRuleContext(CallContext.class,0);
 		}
+		public TerminalNode CLASS_NAME() { return getToken(ClassParser.CLASS_NAME, 0); }
+		public TerminalNode CAMEL_CASE() { return getToken(ClassParser.CAMEL_CASE, 0); }
+		public TerminalNode SEMICOLON() { return getToken(ClassParser.SEMICOLON, 0); }
+		public TerminalNode PERIOD() { return getToken(ClassParser.PERIOD, 0); }
 		public MethodCallContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -1117,11 +1114,6 @@ public class ClassParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof ClassParserListener ) ((ClassParserListener)listener).exitMethodCall(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ClassParserVisitor ) return ((ClassParserVisitor<? extends T>)visitor).visitMethodCall(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1140,18 +1132,21 @@ public class ClassParser extends Parser {
 				_la = _input.LA(1);
 				if ( !(_la==CLASS_NAME || _la==CAMEL_CASE) ) {
 				_errHandler.recoverInline(this);
+				} else {
+					consume();
 				}
-				consume();
 				setState(155);
 				_la = _input.LA(1);
 				if ( !(_la==PERIOD || _la==SEMICOLON) ) {
 				_errHandler.recoverInline(this);
+				} else {
+					consume();
 				}
-				consume();
 				}
 				break;
 			}
-			setState(158); call();
+			setState(158);
+			call();
 			}
 		}
 		catch (RecognitionException re) {
@@ -1173,15 +1168,15 @@ public class ClassParser extends Parser {
 		public ThisChainContext thisChain(int i) {
 			return getRuleContext(ThisChainContext.class,i);
 		}
-		public List<TerminalNode> CAMEL_CASE() { return getTokens(ClassParser.CAMEL_CASE); }
 		public VarContext var() {
 			return getRuleContext(VarContext.class,0);
 		}
-		public MethodCallContext methodCall() {
-			return getRuleContext(MethodCallContext.class,0);
-		}
+		public List<TerminalNode> CAMEL_CASE() { return getTokens(ClassParser.CAMEL_CASE); }
 		public TerminalNode CAMEL_CASE(int i) {
 			return getToken(ClassParser.CAMEL_CASE, i);
+		}
+		public MethodCallContext methodCall() {
+			return getRuleContext(MethodCallContext.class,0);
 		}
 		public AssignmentContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -1195,11 +1190,6 @@ public class ClassParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof ClassParserListener ) ((ClassParserListener)listener).exitAssignment(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ClassParserVisitor ) return ((ClassParserVisitor<? extends T>)visitor).visitAssignment(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final AssignmentContext assignment() throws RecognitionException {
@@ -1212,40 +1202,43 @@ public class ClassParser extends Parser {
 			switch ( getInterpreter().adaptivePredict(_input,17,_ctx) ) {
 			case 1:
 				{
-				setState(160); thisChain();
+				setState(160);
+				thisChain();
 				}
 				break;
-
 			case 2:
 				{
-				setState(161); var();
+				setState(161);
+				var();
 				}
 				break;
-
 			case 3:
 				{
-				setState(162); match(CAMEL_CASE);
+				setState(162);
+				match(CAMEL_CASE);
 				}
 				break;
 			}
-			setState(165); match(EQUALS);
+			setState(165);
+			match(EQUALS);
 			setState(169);
 			switch ( getInterpreter().adaptivePredict(_input,18,_ctx) ) {
 			case 1:
 				{
-				setState(166); match(CAMEL_CASE);
+				setState(166);
+				match(CAMEL_CASE);
 				}
 				break;
-
 			case 2:
 				{
-				setState(167); thisChain();
+				setState(167);
+				thisChain();
 				}
 				break;
-
 			case 3:
 				{
-				setState(168); methodCall();
+				setState(168);
+				methodCall();
 				}
 				break;
 			}
@@ -1263,13 +1256,13 @@ public class ClassParser extends Parser {
 	}
 
 	public static class ThisChainContext extends ParserRuleContext {
-		public TerminalNode CLASS_NAME() { return getToken(ClassParser.CLASS_NAME, 0); }
-		public TerminalNode CAMEL_CASE() { return getToken(ClassParser.CAMEL_CASE, 0); }
 		public ChainContext chain() {
 			return getRuleContext(ChainContext.class,0);
 		}
 		public TerminalNode THIS() { return getToken(ClassParser.THIS, 0); }
 		public TerminalNode PERIOD() { return getToken(ClassParser.PERIOD, 0); }
+		public TerminalNode CLASS_NAME() { return getToken(ClassParser.CLASS_NAME, 0); }
+		public TerminalNode CAMEL_CASE() { return getToken(ClassParser.CAMEL_CASE, 0); }
 		public ThisChainContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -1281,11 +1274,6 @@ public class ClassParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof ClassParserListener ) ((ClassParserListener)listener).exitThisChain(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ClassParserVisitor ) return ((ClassParserVisitor<? extends T>)visitor).visitThisChain(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1300,8 +1288,10 @@ public class ClassParser extends Parser {
 			_la = _input.LA(1);
 			if (_la==THIS) {
 				{
-				setState(171); match(THIS);
-				setState(172); match(PERIOD);
+				setState(171);
+				match(THIS);
+				setState(172);
+				match(PERIOD);
 				}
 			}
 
@@ -1309,18 +1299,19 @@ public class ClassParser extends Parser {
 			switch ( getInterpreter().adaptivePredict(_input,20,_ctx) ) {
 			case 1:
 				{
-				setState(175); chain();
+				setState(175);
+				chain();
 				}
 				break;
-
 			case 2:
 				{
 				setState(176);
 				_la = _input.LA(1);
 				if ( !(_la==CLASS_NAME || _la==CAMEL_CASE) ) {
 				_errHandler.recoverInline(this);
+				} else {
+					consume();
 				}
-				consume();
 				}
 				break;
 			}
@@ -1338,10 +1329,10 @@ public class ClassParser extends Parser {
 	}
 
 	public static class ChainContext extends ParserRuleContext {
+		public List<TerminalNode> CLASS_NAME() { return getTokens(ClassParser.CLASS_NAME); }
 		public TerminalNode CLASS_NAME(int i) {
 			return getToken(ClassParser.CLASS_NAME, i);
 		}
-		public List<TerminalNode> CLASS_NAME() { return getTokens(ClassParser.CLASS_NAME); }
 		public List<TerminalNode> CAMEL_CASE() { return getTokens(ClassParser.CAMEL_CASE); }
 		public TerminalNode CAMEL_CASE(int i) {
 			return getToken(ClassParser.CAMEL_CASE, i);
@@ -1362,11 +1353,6 @@ public class ClassParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof ClassParserListener ) ((ClassParserListener)listener).exitChain(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ClassParserVisitor ) return ((ClassParserVisitor<? extends T>)visitor).visitChain(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final ChainContext chain() throws RecognitionException {
@@ -1380,21 +1366,24 @@ public class ClassParser extends Parser {
 			_la = _input.LA(1);
 			if ( !(_la==CLASS_NAME || _la==CAMEL_CASE) ) {
 			_errHandler.recoverInline(this);
+			} else {
+				consume();
 			}
-			consume();
 			setState(182); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
 				{
 				{
-				setState(180); match(PERIOD);
+				setState(180);
+				match(PERIOD);
 				setState(181);
 				_la = _input.LA(1);
 				if ( !(_la==CLASS_NAME || _la==CAMEL_CASE) ) {
 				_errHandler.recoverInline(this);
+				} else {
+					consume();
 				}
-				consume();
 				}
 				}
 				setState(184); 
@@ -1415,19 +1404,19 @@ public class ClassParser extends Parser {
 	}
 
 	public static class NewCallContext extends ParserRuleContext {
-		public TerminalNode R_BRACE() { return getToken(ClassParser.R_BRACE, 0); }
-		public TerminalNode EQUALS() { return getToken(ClassParser.EQUALS, 0); }
-		public TerminalNode CAMEL_CASE() { return getToken(ClassParser.CAMEL_CASE, 0); }
-		public TerminalNode CLASS_NAME() { return getToken(ClassParser.CLASS_NAME, 0); }
-		public TerminalNode VAR_WITH_TYPE() { return getToken(ClassParser.VAR_WITH_TYPE, 0); }
+		public TerminalNode NEW() { return getToken(ClassParser.NEW, 0); }
+		public TerminalNode L_BRACE() { return getToken(ClassParser.L_BRACE, 0); }
 		public ParametersContext parameters() {
 			return getRuleContext(ParametersContext.class,0);
 		}
+		public TerminalNode R_BRACE() { return getToken(ClassParser.R_BRACE, 0); }
+		public TerminalNode CAMEL_CASE() { return getToken(ClassParser.CAMEL_CASE, 0); }
+		public TerminalNode CLASS_NAME() { return getToken(ClassParser.CLASS_NAME, 0); }
+		public TerminalNode VAR_WITH_TYPE() { return getToken(ClassParser.VAR_WITH_TYPE, 0); }
+		public TerminalNode EQUALS() { return getToken(ClassParser.EQUALS, 0); }
 		public VarContext var() {
 			return getRuleContext(VarContext.class,0);
 		}
-		public TerminalNode NEW() { return getToken(ClassParser.NEW, 0); }
-		public TerminalNode L_BRACE() { return getToken(ClassParser.L_BRACE, 0); }
 		public NewCallContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -1439,11 +1428,6 @@ public class ClassParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof ClassParserListener ) ((ClassParserListener)listener).exitNewCall(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ClassParserVisitor ) return ((ClassParserVisitor<? extends T>)visitor).visitNewCall(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1457,17 +1441,23 @@ public class ClassParser extends Parser {
 			case NEW:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(186); match(NEW);
+				setState(186);
+				match(NEW);
 				setState(187);
 				_la = _input.LA(1);
 				if ( !(_la==CLASS_NAME || _la==VAR_WITH_TYPE) ) {
 				_errHandler.recoverInline(this);
+				} else {
+					consume();
 				}
-				consume();
-				setState(188); match(L_BRACE);
-				setState(189); parameters();
-				setState(190); match(R_BRACE);
-				setState(191); match(CAMEL_CASE);
+				setState(188);
+				match(L_BRACE);
+				setState(189);
+				parameters();
+				setState(190);
+				match(R_BRACE);
+				setState(191);
+				match(CAMEL_CASE);
 				}
 				break;
 			case CLASS_NAME:
@@ -1480,23 +1470,31 @@ public class ClassParser extends Parser {
 				case CLASS_NAME:
 				case VAR_WITH_TYPE:
 					{
-					setState(193); var();
+					setState(193);
+					var();
 					}
 					break;
 				case CAMEL_CASE:
 					{
-					setState(194); match(CAMEL_CASE);
+					setState(194);
+					match(CAMEL_CASE);
 					}
 					break;
 				default:
 					throw new NoViableAltException(this);
 				}
-				setState(197); match(EQUALS);
-				setState(198); match(NEW);
-				setState(199); match(CLASS_NAME);
-				setState(200); match(L_BRACE);
-				setState(201); parameters();
-				setState(202); match(R_BRACE);
+				setState(197);
+				match(EQUALS);
+				setState(198);
+				match(NEW);
+				setState(199);
+				match(CLASS_NAME);
+				setState(200);
+				match(L_BRACE);
+				setState(201);
+				parameters();
+				setState(202);
+				match(R_BRACE);
 				}
 				break;
 			default:
@@ -1517,12 +1515,12 @@ public class ClassParser extends Parser {
 	public static class ReturnCallContext extends ParserRuleContext {
 		public TerminalNode SEMICOLON() { return getToken(ClassParser.SEMICOLON, 0); }
 		public TerminalNode RETURN() { return getToken(ClassParser.RETURN, 0); }
+		public StatementContext statement() {
+			return getRuleContext(StatementContext.class,0);
+		}
 		public TerminalNode CAMEL_CASE() { return getToken(ClassParser.CAMEL_CASE, 0); }
 		public MethodCallContext methodCall() {
 			return getRuleContext(MethodCallContext.class,0);
-		}
-		public StatementContext statement() {
-			return getRuleContext(StatementContext.class,0);
 		}
 		public ReturnCallContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -1536,11 +1534,6 @@ public class ClassParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof ClassParserListener ) ((ClassParserListener)listener).exitReturnCall(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ClassParserVisitor ) return ((ClassParserVisitor<? extends T>)visitor).visitReturnCall(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final ReturnCallContext returnCall() throws RecognitionException {
@@ -1553,26 +1546,31 @@ public class ClassParser extends Parser {
 			switch ( getInterpreter().adaptivePredict(_input,24,_ctx) ) {
 			case 1:
 				{
-				setState(206); match(RETURN);
-				setState(207); statement();
+				setState(206);
+				match(RETURN);
+				setState(207);
+				statement();
 				}
 				break;
-
 			case 2:
 				{
-				setState(208); match(RETURN);
-				setState(209); match(CAMEL_CASE);
+				setState(208);
+				match(RETURN);
+				setState(209);
+				match(CAMEL_CASE);
 				}
 				break;
-
 			case 3:
 				{
-				setState(210); match(RETURN);
-				setState(211); methodCall();
+				setState(210);
+				match(RETURN);
+				setState(211);
+				methodCall();
 				}
 				break;
 			}
-			setState(214); match(SEMICOLON);
+			setState(214);
+			match(SEMICOLON);
 			}
 		}
 		catch (RecognitionException re) {

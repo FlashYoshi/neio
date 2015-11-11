@@ -1,8 +1,11 @@
 package be.ugent.neio.parsing;
 
 import be.kuleuven.cs.distrinet.jnome.core.type.RegularJavaType;
-import be.ugent.neio.util.Keywords;
+import be.kuleuven.cs.distrinet.jnome.workspace.JavaView;
+import be.ugent.neio.language.Neio;
 import be.ugent.neio.parsing.ClassParser.*;
+import be.ugent.neio.util.Keywords;
+import org.aikodi.chameleon.core.document.Document;
 import org.aikodi.chameleon.oo.method.SimpleNameMethodHeader;
 import org.aikodi.chameleon.oo.type.BasicTypeReference;
 import org.aikodi.chameleon.oo.type.Type;
@@ -10,22 +13,37 @@ import org.aikodi.chameleon.oo.type.TypeReference;
 import org.aikodi.chameleon.oo.type.inheritance.SubtypeRelation;
 import org.aikodi.chameleon.oo.variable.RegularMemberVariable;
 import org.aikodi.chameleon.support.member.simplename.method.NormalMethod;
+import org.antlr.v4.runtime.TokenStream;
 
-import static be.ugent.neio.util.Keywords.*;
+import static be.ugent.neio.util.Keywords.CLASS;
+import static be.ugent.neio.util.Keywords.INTERFACE;
 
 /**
  * @author Titouan Vervack
  */
 public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
-    public Object visitDocument(DocumentContext ctx, String klassName) {
-        visitHeader(ctx, klassName);
+    private final JavaView view;
+    private final Document document;
+    private final Neio neio;
+    private final TokenStream stream;
+
+    public ClassConverter(Document document, JavaView view, TokenStream stream) {
+        this.document = document;
+        this.view = view;
+        this.neio = view.language(Neio.class);
+        this.stream = stream;
+    }
+
+    public Object visitDocument(DocumentContext ctx) {
+        visitHeader(ctx);
         return null;
     }
 
-    private void visitHeader(DocumentContext ctx, String klassName) {
+    private void visitHeader(DocumentContext ctx) {
         String header = ctx.HEADER().getText();
-        System.out.println(header);
+        String klassName = ctx.CLASS_NAME().getText();
+        System.out.println(header + " " + klassName);
         switch (header) {
             case CLASS:
                 visitClass(ctx, klassName);

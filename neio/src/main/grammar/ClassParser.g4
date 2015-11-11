@@ -2,7 +2,7 @@ parser grammar ClassParser;
 
 options { tokenVocab = ClassLexer; }
 
-document : HEADER
+document : HEADER CLASS_NAME
            body
            EOF;
 
@@ -33,7 +33,7 @@ parameters : (parameter COMMA)* parameter
            | ;
 
 method : METHOD_OPTION? decl L_CURLY_BRACE block? R_CURLY_BRACE;
-decl : methodName L_BRACE arguments R_BRACE;
+decl : CLASS_NAME? methodName L_BRACE arguments R_BRACE;
 call : methodName L_BRACE parameters R_BRACE;
 methodName: CLASS_NAME
           | CAMEL_CASE

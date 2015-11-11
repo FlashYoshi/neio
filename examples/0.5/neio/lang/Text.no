@@ -1,4 +1,4 @@
-class
+class Text
 extends neio.lang.Content;
 
 String text;
