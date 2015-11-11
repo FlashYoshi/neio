@@ -4,7 +4,7 @@ import be.kuleuven.cs.distrinet.jnome.core.language.Java7LanguageFactory;
 import be.ugent.neio.chameleonCommon.build.LanguageBuilder;
 import be.ugent.neio.language.Neio;
 import be.ugent.neio.language.NeioBuilder;
-import be.ugent.neio.language.NeioLanguageFactory;
+import be.ugent.neio.industry.NeioLanguageFactory;
 import be.ugent.neio.language.NeioProjectConfigurator;
 import be.ugent.neio.parsing.DocumentConverter;
 import be.ugent.neio.parsing.DocumentLexer;
