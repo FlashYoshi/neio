@@ -182,7 +182,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
             e = visitNewCall(ctx.newCall());
         } else if (ctx.methodCall() != null) {
             e = visitMethodCall(ctx.methodCall());
-        } else if (ctx.methodCall() != null) {
+        } else if (ctx.assignment() != null) {
             e = visitAssignment(ctx.assignment());
         } else {
             throw new IllegalArgumentException("Unrecognized statement: " + ctx.getText());
@@ -210,7 +210,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     private Expression getAssignmentVar(AssignmentContext ctx) {
-        if (ctx.thisChain() != null) {
+        if (ctx.thisChain() != null && !ctx.thisChain().isEmpty()) {
             String chain = getChain(ctx.thisChain().get(0));
             String[] split = chain.split("\\.");
             String prefix = "";
@@ -263,7 +263,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         System.out.println();
         System.out.println(ctx.getText());
         // TODO
-        Expression e = new StubExpression(null);
+        Expression e = new StubExpression(new RegularType(""));
         return new ReturnStatement(e);
     }
 }
