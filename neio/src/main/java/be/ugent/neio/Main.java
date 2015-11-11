@@ -10,16 +10,15 @@ import be.ugent.neio.parsing.*;
 import be.ugent.neio.util.Constants;
 import org.aikodi.chameleon.core.Config;
 import org.aikodi.chameleon.plugin.build.BuildException;
-import org.aikodi.chameleon.workspace.LanguageRepository;
-import org.aikodi.chameleon.workspace.Project;
-import org.aikodi.chameleon.workspace.Workspace;
-import org.aikodi.chameleon.workspace.XMLProjectLoader;
+import org.aikodi.chameleon.workspace.*;
 import org.antlr.v4.runtime.*;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
+import static be.ugent.neio.util.Constants.AUTO_GEN_DIR;
+import static be.ugent.neio.util.Constants.LANG_NAME;
 import static be.ugent.neio.util.Constants.NEIO_HOME;
 
 public class Main {
@@ -41,7 +40,7 @@ public class Main {
 
         String fileName = args[1];
         File inputFile = new File(fileName);
-        if (!inputFile.isDirectory() || !inputFile.canRead()) {
+        if (!inputFile.isFile() || !inputFile.canRead()) {
             System.err.println(fileName + " isn't a valid folder or it isn't readable.");
             System.exit(2);
         }
@@ -59,15 +58,15 @@ public class Main {
         repo.add(new Java7LanguageFactory().create());
         Neio neio = new NeioLanguageFactory().create();
         repo.add(neio);
-        neio.plugin(NeioProjectConfigurator.class).searchInParent();
+        ((NeioProjectConfigurator) neio.plugin(ProjectConfigurator.class)).searchInParent();
 
-        File configFile = new File(args[0]);
+        File configFile = new File("../base_library/project.xml");
         XMLProjectLoader config = new XMLProjectLoader(workspace);
-
         Project project = config.project(configFile, null);
+
         LanguageBuilder builder = new NeioBuilder(project.views().get(0));
         try {
-            builder.buildAll(new File(NEIO_HOME), null);
+            builder.buildAll(new File(AUTO_GEN_DIR), null);
         } catch (BuildException e) {
             e.printStackTrace();
             System.exit(4);
@@ -78,21 +77,6 @@ public class Main {
 
     public static void printHelp(String programName) {
         System.out.println("USAGE: java -jar " + programName + " <path-to-outputdir> <path-to-inputfile>");
-    }
-
-    public static void visitClass(File file, String fileName) {
-        try {
-            CharStream input = new ANTLRInputStream(new FileInputStream(file));
-            Lexer lexer = new ClassLexer(input);
-            TokenStream tokens = new CommonTokenStream(lexer);
-            ClassParser parser = new ClassParser(tokens);
-            ClassConverter converter = new ClassConverter();
-            String klassName = fileName.substring(fileName.lastIndexOf('/') + 1);
-            klassName = klassName.split("\\.java")[0];
-            converter.visitDocument(parser.document(), klassName);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     public static void visitDocument(File file) {
