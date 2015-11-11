@@ -8,22 +8,23 @@ import org.aikodi.chameleon.core.document.Document;
 import org.aikodi.chameleon.core.factory.Factory;
 import org.aikodi.chameleon.core.namespacedeclaration.NamespaceDeclaration;
 import org.aikodi.chameleon.oo.expression.Expression;
+import org.aikodi.chameleon.oo.expression.ExpressionFactory;
 import org.aikodi.chameleon.oo.method.Method;
 import org.aikodi.chameleon.oo.plugin.ObjectOrientedFactory;
 import org.aikodi.chameleon.oo.statement.Block;
 import org.aikodi.chameleon.oo.statement.Statement;
-import org.aikodi.chameleon.oo.type.Parameter;
+import org.aikodi.chameleon.oo.type.RegularType;
 import org.aikodi.chameleon.oo.type.Type;
 import org.aikodi.chameleon.oo.type.TypeReference;
 import org.aikodi.chameleon.oo.type.inheritance.InheritanceRelation;
 import org.aikodi.chameleon.oo.variable.FormalParameter;
 import org.aikodi.chameleon.oo.variable.MemberVariable;
 import org.aikodi.chameleon.stub.StubExpression;
+import org.aikodi.chameleon.support.expression.AssignmentExpression;
 import org.aikodi.chameleon.support.modifier.Constructor;
 import org.aikodi.chameleon.support.statement.ReturnStatement;
 import org.aikodi.chameleon.support.statement.StatementExpression;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -51,6 +52,10 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     protected NeioFactory ooFactory() {
         return (NeioFactory) neio.plugin(ObjectOrientedFactory.class);
+    }
+
+    protected ExpressionFactory expressionFactory() {
+        return neio.plugin(ExpressionFactory.class);
     }
 
     public Object visitDocument(DocumentContext ctx) {
@@ -165,7 +170,6 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     @Override
     public List<FormalParameter> visitArguments(ArgumentsContext ctx) {
-
         return ctx.var().stream().map(v -> new FormalParameter(v.CAMEL_CASE().getText(), ooFactory().createTypeReference(v.fieldName().getText()))).collect(Collectors.toList());
     }
 
@@ -173,8 +177,85 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     public Statement visitStatement(StatementContext ctx) {
         System.out.println(ctx.getText());
         // TODO
-        Expression e = new StubExpression(null);
+        Expression e;
+        if (ctx.newCall() != null) {
+            e = visitNewCall(ctx.newCall());
+        } else if (ctx.methodCall() != null) {
+            e = visitMethodCall(ctx.methodCall());
+        } else if (ctx.methodCall() != null) {
+            e = visitAssignment(ctx.assignment());
+        } else {
+            throw new IllegalArgumentException("Unrecognized statement: " + ctx.getText());
+        }
+
         return new StatementExpression(e);
+    }
+
+    // TODO
+    @Override
+    public StubExpression visitNewCall(NewCallContext ctx) {
+        return new StubExpression(new RegularType(""));
+    }
+
+
+    // TODO
+    @Override
+    public StubExpression visitMethodCall(MethodCallContext ctx) {
+        return new StubExpression(new RegularType(""));
+    }
+
+    @Override
+    public AssignmentExpression visitAssignment(AssignmentContext ctx) {
+        return expressionFactory().createAssignmentExpression(getAssignmentVar(ctx), getAssignmentValue(ctx));
+    }
+
+    private Expression getAssignmentVar(AssignmentContext ctx) {
+        if (ctx.thisChain() != null) {
+            String chain = getChain(ctx.thisChain().get(0));
+            String[] split = chain.split("\\.");
+            String prefix = "";
+            for (int i = 0; i < split.length - 1; i++) {
+                prefix += split[i];
+            }
+
+            // TODO Use prefix
+            return expressionFactory().createNameExpression(split[split.length - 1]);
+        } else if (ctx.var() != null) {
+            // TODO Create variable
+            expressionFactory().createNameExpression(ctx.var().CAMEL_CASE().getText());
+            return null;
+        } else if (ctx.CAMEL_CASE() != null) {
+            return expressionFactory().createNameExpression(ctx.CAMEL_CASE().get(0).getText());
+        } else {
+            throw new IllegalArgumentException("Nothing to assign to: " + ctx.getText());
+        }
+    }
+
+    private String getChain(ThisChainContext ctx) {
+        String chain = "";
+
+        if (ctx.THIS() != null) {
+            chain += ctx.THIS().getText() + ".";
+        }
+
+        if (ctx.chain() != null) {
+            chain += ctx.chain().getText();
+        }
+
+        if (ctx.CLASS_NAME() != null) {
+            chain += ctx.CLASS_NAME().getText();
+        }
+
+        if (ctx.CAMEL_CASE() != null) {
+            chain += ctx.CAMEL_CASE().getText();
+        }
+
+        return chain;
+    }
+
+    // TODO
+    private Expression getAssignmentValue(AssignmentContext ctx) {
+        return new StubExpression(new RegularType(""));
     }
 
     @Override
