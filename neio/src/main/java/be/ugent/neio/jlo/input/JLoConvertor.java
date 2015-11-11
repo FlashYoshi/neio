@@ -107,8 +107,8 @@ public class JLoConvertor extends JLoBaseVisitor<Object> {
             ns.addImport(visitImportDeclaration(id));
         }
         List<KlassContext> klasses = ctx.klass();
-        for (KlassContext klas : klasses) {
-            ns.add(visitKlass(klas));
+        for (KlassContext klass : klasses) {
+            ns.add(visitKlass(klass));
         }
         _document.add(ns);
         return _document;
