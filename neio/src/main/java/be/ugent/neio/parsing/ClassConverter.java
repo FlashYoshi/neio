@@ -4,21 +4,28 @@ import be.kuleuven.cs.distrinet.jnome.workspace.JavaView;
 import be.ugent.neio.industry.NeioFactory;
 import be.ugent.neio.language.Neio;
 import be.ugent.neio.parsing.ClassParser.*;
-import be.ugent.neio.util.Keywords;
 import org.aikodi.chameleon.core.document.Document;
 import org.aikodi.chameleon.core.factory.Factory;
 import org.aikodi.chameleon.core.namespacedeclaration.NamespaceDeclaration;
+import org.aikodi.chameleon.oo.expression.Expression;
 import org.aikodi.chameleon.oo.method.Method;
-import org.aikodi.chameleon.oo.method.SimpleNameMethodHeader;
 import org.aikodi.chameleon.oo.plugin.ObjectOrientedFactory;
-import org.aikodi.chameleon.oo.type.BasicTypeReference;
+import org.aikodi.chameleon.oo.statement.Block;
+import org.aikodi.chameleon.oo.statement.Statement;
+import org.aikodi.chameleon.oo.type.Parameter;
 import org.aikodi.chameleon.oo.type.Type;
 import org.aikodi.chameleon.oo.type.TypeReference;
 import org.aikodi.chameleon.oo.type.inheritance.InheritanceRelation;
-import org.aikodi.chameleon.oo.type.inheritance.SubtypeRelation;
+import org.aikodi.chameleon.oo.variable.FormalParameter;
 import org.aikodi.chameleon.oo.variable.MemberVariable;
-import org.aikodi.chameleon.oo.variable.RegularMemberVariable;
-import org.aikodi.chameleon.support.member.simplename.method.NormalMethod;
+import org.aikodi.chameleon.stub.StubExpression;
+import org.aikodi.chameleon.support.modifier.Constructor;
+import org.aikodi.chameleon.support.statement.ReturnStatement;
+import org.aikodi.chameleon.support.statement.StatementExpression;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static be.ugent.neio.util.Keywords.CLASS;
 import static be.ugent.neio.util.Keywords.INTERFACE;
@@ -70,17 +77,20 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         ClassBodyContext body = ctx.body().classBody();
         NamespaceDeclaration ns = factory().createRootNamespaceDeclaration();
         Type klass = ooFactory().createRegularType(klassName);
+
         visitExtensions(body, klass);
         visitFields(body, klass);
         visitMethods(body, klass);
+        System.out.println();
+
         ns.add(klass);
         document.add(ns);
     }
 
-    private void visitExtensions(ClassBodyContext body, Type type) {
+    private void visitExtensions(ClassBodyContext body, Type klass) {
         for (ExtensionContext extension : body.extension()) {
             System.out.println(extension.chain().getText());
-            type.addInheritanceRelation(visitExtension(extension));
+            klass.addInheritanceRelation(visitExtension(extension));
         }
     }
 
@@ -93,10 +103,10 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         return ooFactory().createSubtypeRelation(ref);
     }
 
-    private void visitFields(ClassBodyContext body, Type type) {
+    private void visitFields(ClassBodyContext body, Type klass) {
         for (FieldContext field : body.field()) {
             System.out.println(field.var().fieldName().getText() + " " + field.var().CAMEL_CASE().getText() + ";");
-            type.add(visitField(field));
+            klass.add(visitField(field));
         }
     }
 
@@ -108,37 +118,78 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         return ooFactory().createMemberVariable(name, type);
     }
 
-    private void visitMethods(ClassBodyContext body, Type type) {
+    private void visitMethods(ClassBodyContext body, Type klass) {
         for (MethodContext method : body.method()) {
-            visitMethod(method, type);
+            // If their is no return type, this is a constructor
+            if (method.decl().CLASS_NAME() == null) {
+                klass.addModifier(visitConstructor(method));
+            } else {
+                klass.add(visitMethod(method));
+            }
             System.out.println();
         }
     }
 
-    public Object visitMethod(MethodContext method, Type type) {
-        if (method.METHOD_OPTION() != null) {
-            System.out.print(method.METHOD_OPTION().getText());
+    private Constructor visitConstructor(MethodContext ctx) {
+        Constructor c = new Constructor();
+        Block b = new Block();
+        for (StatementContext statement : ctx.block().statement()) {
+            b.addStatement(visitStatement(statement));
         }
 
-        System.out.println(method.decl().getText() + " {");
-        String returnType = visitMethodBlock(method.block());
-        Method m = new NormalMethod(new SimpleNameMethodHeader(method.decl().methodName().getText(), new BasicTypeReference(returnType)));
-        type.add(m);
-        System.out.println("}");
-        return null;
+        // TODO: set constructor implementation
+        return c;
     }
 
-    private String visitMethodBlock(BlockContext block) {
-        for (StatementContext statementContext : block.statement()) {
-            System.out.println(statementContext.getText());
+    @Override
+    public Method visitMethod(MethodContext ctx) {
+        // Is this a regex method?
+        // TODO: Do something for regex
+        if (ctx.METHOD_OPTION() != null) {
+            System.out.print(ctx.METHOD_OPTION().getText());
+        }
+        System.out.println(ctx.decl().getText() + " {");
+
+        String returnType = ctx.decl().CLASS_NAME().getText();
+        Method method = ooFactory().createMethod(ctx.decl().methodName().getText(), returnType);
+        // TODO: set parameters
+        visitArguments(ctx.decl().arguments());
+
+        Block b = new Block();
+        for (StatementContext statement : ctx.block().statement()) {
+            b.addStatement(visitStatement(statement));
         }
 
-        if (block.returnCall() != null) {
-            System.out.println(block.returnCall().getText());
-            // Still have to dereference this type
-            return block.returnCall().CAMEL_CASE().getText();
+        if (ctx.block().returnCall() != null) {
+            b.addStatement(visitReturnCall(ctx.block().returnCall()));
         }
 
-        return Keywords.VOID;
+        method.setImplementation(ooFactory().createImplementation(b));
+        System.out.println("}");
+
+        return method;
+    }
+
+    @Override
+    public List<FormalParameter> visitArguments(ArgumentsContext ctx) {
+
+        return ctx.var().stream().map(v -> new FormalParameter(v.CAMEL_CASE().getText(), ooFactory().createTypeReference(v.fieldName().getText()))).collect(Collectors.toList());
+    }
+
+    @Override
+    public Statement visitStatement(StatementContext ctx) {
+        System.out.println(ctx.getText());
+        // TODO
+        Expression e = new StubExpression(null);
+        return new StatementExpression(e);
+    }
+
+    @Override
+    public ReturnStatement visitReturnCall(ReturnCallContext ctx) {
+        System.out.println();
+        System.out.println(ctx.getText());
+        // TODO
+        Expression e = new StubExpression(null);
+        return new ReturnStatement(e);
     }
 }
