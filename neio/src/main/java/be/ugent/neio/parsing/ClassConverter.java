@@ -6,6 +6,8 @@ import be.ugent.neio.language.Neio;
 import be.ugent.neio.parsing.ClassParser.*;
 import be.ugent.neio.util.Keywords;
 import org.aikodi.chameleon.core.document.Document;
+import org.aikodi.chameleon.oo.expression.MethodInvocation;
+import org.aikodi.chameleon.oo.method.Method;
 import org.aikodi.chameleon.oo.method.SimpleNameMethodHeader;
 import org.aikodi.chameleon.oo.type.BasicTypeReference;
 import org.aikodi.chameleon.oo.type.Type;
@@ -13,6 +15,7 @@ import org.aikodi.chameleon.oo.type.TypeReference;
 import org.aikodi.chameleon.oo.type.inheritance.SubtypeRelation;
 import org.aikodi.chameleon.oo.variable.RegularMemberVariable;
 import org.aikodi.chameleon.support.member.simplename.method.NormalMethod;
+import org.aikodi.chameleon.support.member.simplename.method.RegularMethodInvocation;
 import org.antlr.v4.runtime.TokenStream;
 
 import static be.ugent.neio.util.Keywords.CLASS;
@@ -23,16 +26,14 @@ import static be.ugent.neio.util.Keywords.INTERFACE;
  */
 public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
-    private final JavaView view;
     private final Document document;
+    private final JavaView view;
     private final Neio neio;
-    private final TokenStream stream;
 
-    public ClassConverter(Document document, JavaView view, TokenStream stream) {
+    public ClassConverter(Document document, JavaView view) {
         this.document = document;
         this.view = view;
         this.neio = view.language(Neio.class);
-        this.stream = stream;
     }
 
     public Object visitDocument(DocumentContext ctx) {
@@ -97,7 +98,8 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
         System.out.println(method.decl().getText() + " {");
         String returnType = visitMethodBlock(method.block());
-        type.add(new NormalMethod(new SimpleNameMethodHeader(method.decl().methodName().getText(), new BasicTypeReference(returnType))));
+        Method m = new NormalMethod(new SimpleNameMethodHeader(method.decl().methodName().getText(), new BasicTypeReference(returnType)));
+        type.add(m);
         System.out.println("}");
         return null;
     }

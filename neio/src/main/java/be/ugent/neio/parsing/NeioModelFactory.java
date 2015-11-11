@@ -39,6 +39,6 @@ public class NeioModelFactory extends LanguagePluginImpl implements ModelFactory
         JavaView view = document.view(JavaView.class);
         ClassParser parser = getParser(inputStream);
 
-        new ClassConverter(document, view, parser.getTokenStream()).visitDocument(parser.document());
+        new ClassConverter(document, view).visitDocument(parser.document());
     }
 }

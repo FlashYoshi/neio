@@ -6,7 +6,9 @@ import be.ugent.neio.language.Neio;
 import be.ugent.neio.language.NeioBuilder;
 import be.ugent.neio.language.NeioLanguageFactory;
 import be.ugent.neio.language.NeioProjectConfigurator;
-import be.ugent.neio.parsing.*;
+import be.ugent.neio.parsing.DocumentConverter;
+import be.ugent.neio.parsing.DocumentLexer;
+import be.ugent.neio.parsing.DocumentParser;
 import be.ugent.neio.util.Constants;
 import org.aikodi.chameleon.core.Config;
 import org.aikodi.chameleon.plugin.build.BuildException;
@@ -18,8 +20,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 import static be.ugent.neio.util.Constants.AUTO_GEN_DIR;
-import static be.ugent.neio.util.Constants.LANG_NAME;
-import static be.ugent.neio.util.Constants.NEIO_HOME;
 
 public class Main {
 
