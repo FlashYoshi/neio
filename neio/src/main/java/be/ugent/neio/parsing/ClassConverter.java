@@ -18,9 +18,9 @@ import org.aikodi.chameleon.oo.type.Type;
 import org.aikodi.chameleon.oo.type.TypeReference;
 import org.aikodi.chameleon.oo.type.inheritance.InheritanceRelation;
 import org.aikodi.chameleon.oo.variable.FormalParameter;
-import org.aikodi.chameleon.oo.variable.MemberVariable;
 import org.aikodi.chameleon.stub.StubExpression;
 import org.aikodi.chameleon.support.expression.AssignmentExpression;
+import org.aikodi.chameleon.support.member.simplename.variable.MemberVariableDeclarator;
 import org.aikodi.chameleon.support.modifier.Constructor;
 import org.aikodi.chameleon.support.statement.ReturnStatement;
 import org.aikodi.chameleon.support.statement.StatementExpression;
@@ -116,11 +116,11 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     @Override
-    public MemberVariable visitField(FieldContext ctx) {
+    public MemberVariableDeclarator visitField(FieldContext ctx) {
         String name = ctx.var().CAMEL_CASE().getText();
         TypeReference type = ooFactory().createTypeReference(ctx.var().fieldName().getText());
 
-        return ooFactory().createMemberVariable(name, type);
+        return ooFactory().createMemberVariableDeclarator(name, type);
     }
 
     private void visitMethods(ClassBodyContext body, Type klass) {
@@ -178,8 +178,8 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         System.out.println(ctx.getText());
         // TODO
         Expression e;
-        if (ctx.newCall() != null) {
-            e = visitNewCall(ctx.newCall());
+        if (ctx.newAssignment() != null) {
+            e = visitNewAssignment(ctx.newAssignment());
         } else if (ctx.methodCall() != null) {
             e = visitMethodCall(ctx.methodCall());
         } else if (ctx.assignment() != null) {
@@ -193,7 +193,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     // TODO
     @Override
-    public StubExpression visitNewCall(NewCallContext ctx) {
+    public StubExpression visitNewAssignment(NewAssignmentContext ctx) {
         return new StubExpression(new RegularType(""));
     }
 
@@ -211,23 +211,34 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     private Expression getAssignmentVar(AssignmentContext ctx) {
         if (ctx.thisChain() != null && !ctx.thisChain().isEmpty()) {
-            String chain = getChain(ctx.thisChain().get(0));
-            String[] split = chain.split("\\.");
-            String prefix = "";
-            for (int i = 0; i < split.length - 1; i++) {
-                prefix += split[i];
-            }
-
-            // TODO Use prefix
-            return expressionFactory().createNameExpression(split[split.length - 1]);
+            return visitThisChain(ctx.thisChain().get(0));
         } else if (ctx.var() != null) {
-            // TODO Create variable
-            expressionFactory().createNameExpression(ctx.var().CAMEL_CASE().getText());
-            return null;
+            MemberVariableDeclarator variable =
+                    ooFactory().createMemberVariableDeclarator(ctx.var().fieldName().getText(),
+                            ctx.var().CAMEL_CASE().getText());
+
+            // TODO Add variable
+            return expressionFactory().createNameExpression(ctx.var().CAMEL_CASE().getText());
         } else if (ctx.CAMEL_CASE() != null) {
             return expressionFactory().createNameExpression(ctx.CAMEL_CASE().get(0).getText());
         } else {
             throw new IllegalArgumentException("Nothing to assign to: " + ctx.getText());
+        }
+    }
+
+    public Expression visitThisChain(ThisChainContext ctx) {
+        String chain = getChain(ctx);
+        String[] split = chain.split("\\.");
+        String prefix = "";
+        for (int i = 0; i < split.length - 1; i++) {
+            prefix += split[i];
+        }
+
+        String varName = split[split.length - 1];
+        if (prefix.isEmpty()) {
+            return expressionFactory().createNameExpression(varName);
+        } else {
+            return expressionFactory().createNameExpression(varName, expressionFactory().createNamedTarget(prefix));
         }
     }
 
@@ -253,9 +264,21 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         return chain;
     }
 
-    // TODO
     private Expression getAssignmentValue(AssignmentContext ctx) {
-        return new StubExpression(new RegularType(""));
+        if (ctx.CAMEL_CASE() != null) {
+            return expressionFactory().createNameExpression(ctx.CAMEL_CASE().get(0).getText());
+        } else if (ctx.thisChain() != null && !ctx.thisChain().isEmpty()) {
+            int index = 0;
+            if (ctx.thisChain().size() > 1) {
+                index = 1;
+            }
+
+            return visitThisChain(ctx.thisChain().get(index));
+        } else if (ctx.methodCall() != null) {
+            return visitMethodCall(ctx.methodCall());
+        } else {
+            throw new IllegalArgumentException("Nothing to assign to: " + ctx.getText());
+        }
     }
 
     @Override
