@@ -13,7 +13,9 @@ import org.aikodi.chameleon.oo.type.TypeReference;
 import org.aikodi.chameleon.oo.type.inheritance.SubtypeRelation;
 import org.aikodi.chameleon.oo.variable.MemberVariable;
 import org.aikodi.chameleon.oo.variable.RegularMemberVariable;
+import org.aikodi.chameleon.oo.variable.VariableDeclaration;
 import org.aikodi.chameleon.support.member.simplename.method.NormalMethod;
+import org.aikodi.chameleon.support.member.simplename.variable.MemberVariableDeclarator;
 
 public class NeioFactory extends Java7Factory {
 
@@ -34,8 +36,18 @@ public class NeioFactory extends Java7Factory {
         return new SubtypeRelation(type);
     }
 
-    public MemberVariable createMemberVariable(String name, TypeReference type) {
-        return new RegularMemberVariable(name, type);
+    public MemberVariableDeclarator createMemberVariableDeclarator(String name, String type) {
+        MemberVariableDeclarator m = new MemberVariableDeclarator(createTypeReference(type));
+        m.add(new VariableDeclaration(name));
+
+        return m;
+    }
+
+    public MemberVariableDeclarator createMemberVariableDeclarator(String name, TypeReference type) {
+        MemberVariableDeclarator m = new MemberVariableDeclarator(type);
+        m.add(new VariableDeclaration(name));
+
+        return m;
     }
 
     public Method createMethod(String methodName, String returnType) {
