@@ -9,6 +9,7 @@ import org.aikodi.chameleon.core.factory.Factory;
 import org.aikodi.chameleon.core.namespacedeclaration.NamespaceDeclaration;
 import org.aikodi.chameleon.oo.expression.Expression;
 import org.aikodi.chameleon.oo.expression.ExpressionFactory;
+import org.aikodi.chameleon.oo.expression.MethodInvocation;
 import org.aikodi.chameleon.oo.method.Method;
 import org.aikodi.chameleon.oo.plugin.ObjectOrientedFactory;
 import org.aikodi.chameleon.oo.statement.Block;
@@ -25,6 +26,7 @@ import org.aikodi.chameleon.support.modifier.Constructor;
 import org.aikodi.chameleon.support.statement.ReturnStatement;
 import org.aikodi.chameleon.support.variable.LocalVariableDeclarator;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -206,7 +208,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         Expression e = expressionFactory().createNameExpression(ctx.var().CAMEL_CASE().getText());
 
         return ooFactory().createLocalVariable(ooFactory().createTypeReference(ctx.var().fieldName().getText()),
-                            ctx.var().CAMEL_CASE().getText(), e);
+                ctx.var().CAMEL_CASE().getText(), e);
     }
 
     private Statement visitNewDeclarationAssignment(NewAssignmentContext ctx) {
@@ -252,10 +254,40 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         return new StubExpression(new RegularType(""));
     }
 
-    // TODO
     @Override
-    public StubExpression visitMethodCall(MethodCallContext ctx) {
-        return new StubExpression(new RegularType(""));
+    public Expression visitMethodCall(MethodCallContext ctx) {
+        Expression e;
+        String chain = ctx.chain().getText();
+        String prefix = getPrefix(chain);
+
+        if (getPrefix(chain).isEmpty()) {
+            e = expressionFactory().createNameExpression(chain);
+        } else {
+            e = expressionFactory().createNameExpression(prefix, expressionFactory().createNamedTarget(getSuffix(chain)));
+        }
+        MethodInvocation invocation = expressionFactory().createInvocation(ctx.call().methodName().getText(), e);
+        if (!ctx.call().parameters().isEmpty()) {
+            invocation.addAllArguments(visitParameters(ctx.call().parameters()));
+        }
+
+        return invocation;
+    }
+
+    @Override
+    public List<Expression> visitParameters(ParametersContext ctx) {
+        List<Expression> parameters = new ArrayList<>();
+        ctx.parameter().forEach(this::visitParameter);
+
+        return parameters;
+    }
+
+    @Override
+    public Expression visitParameter(ParameterContext ctx) {
+        if (ctx.CAMEL_CASE() != null) {
+            return expressionFactory().createNameExpression(ctx.CAMEL_CASE().getText());
+        } else {
+            return visitMethodCall(ctx.methodCall());
+        }
     }
 
     @Override
@@ -275,18 +307,30 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     public Expression visitThisChain(ThisChainContext ctx) {
         String chain = getChain(ctx);
-        String[] split = chain.split("\\.");
+        String prefix = getPrefix(chain);
+
+        if (prefix.isEmpty()) {
+            return expressionFactory().createNameExpression(chain);
+        } else {
+            String varName = getSuffix(chain);
+            return expressionFactory().createNameExpression(varName, expressionFactory().createNamedTarget(prefix));
+        }
+    }
+
+    private String getPrefix(String s) {
+        String[] split = s.split("\\.");
         String prefix = "";
         for (int i = 0; i < split.length - 1; i++) {
             prefix += split[i];
         }
 
-        String varName = split[split.length - 1];
-        if (prefix.isEmpty()) {
-            return expressionFactory().createNameExpression(varName);
-        } else {
-            return expressionFactory().createNameExpression(varName, expressionFactory().createNamedTarget(prefix));
-        }
+        return prefix;
+    }
+
+    private String getSuffix(String s) {
+        String[] split = s.split("\\.");
+
+        return split[split.length - 1];
     }
 
     private String getChain(ThisChainContext ctx) {
