@@ -33,7 +33,6 @@ public class Java8ClassGenerator extends AbstractJava8Generator {
 
     public Document createImplementation(Document javaDocument) {
         removeNormalMethods(javaDocument);
-        //    replaceSubobjects(result);
         implementOwnInterfaces(javaDocument);
         addFields(javaDocument);
         renameConstructorCalls(javaDocument);
@@ -44,9 +43,7 @@ public class Java8ClassGenerator extends AbstractJava8Generator {
     protected void removeNormalMethods(Document result) {
         result.apply(Method.class, m -> {
             Member origin = (Member) m.origin();
-//      if (!origin.isTrue(jlo(origin).CONSTRUCTOR)) {
             m.disconnect();
-//      }
         });
     }
 
@@ -109,7 +106,6 @@ public class Java8ClassGenerator extends AbstractJava8Generator {
             MemberVariableDeclarator f = new MemberVariableDeclarator(clone(jloMemberVariableDeclarator.typeReference()));
             VariableDeclaration variableDeclaration = (VariableDeclaration) v.origin();
             String fieldName = fieldName(variableDeclaration);
-//      Util.debug(fieldName.contains(IMPLEMENTATION_SUFFIX));
             f.add(new VariableDeclaration(fieldName));
             f.addModifier(new Private());
             to.add(f);
@@ -131,6 +127,4 @@ public class Java8ClassGenerator extends AbstractJava8Generator {
         getter.setImplementation(new RegularImplementation(getterBody));
         getterBody.addStatement(new ReturnStatement(new NameExpression(fieldName)));
     }
-
-
 }
