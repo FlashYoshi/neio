@@ -2,11 +2,13 @@ package be.ugent.neio.industry;
 
 import be.kuleuven.cs.distrinet.jnome.core.type.RegularJavaType;
 import be.kuleuven.cs.distrinet.jnome.input.Java7Factory;
+import org.aikodi.chameleon.oo.expression.Expression;
 import org.aikodi.chameleon.oo.method.Implementation;
 import org.aikodi.chameleon.oo.method.Method;
 import org.aikodi.chameleon.oo.method.RegularImplementation;
 import org.aikodi.chameleon.oo.method.SimpleNameMethodHeader;
 import org.aikodi.chameleon.oo.statement.Block;
+import org.aikodi.chameleon.oo.statement.Statement;
 import org.aikodi.chameleon.oo.type.BasicTypeReference;
 import org.aikodi.chameleon.oo.type.RegularType;
 import org.aikodi.chameleon.oo.type.TypeReference;
@@ -16,6 +18,8 @@ import org.aikodi.chameleon.oo.variable.RegularMemberVariable;
 import org.aikodi.chameleon.oo.variable.VariableDeclaration;
 import org.aikodi.chameleon.support.member.simplename.method.NormalMethod;
 import org.aikodi.chameleon.support.member.simplename.variable.MemberVariableDeclarator;
+import org.aikodi.chameleon.support.statement.ReturnStatement;
+import org.aikodi.chameleon.support.statement.StatementExpression;
 
 public class NeioFactory extends Java7Factory {
 
@@ -56,5 +60,13 @@ public class NeioFactory extends Java7Factory {
 
     public Implementation createImplementation(Block b) {
         return new RegularImplementation(b);
+    }
+
+    public Statement createStatement(Expression e) {
+        return new StatementExpression(e);
+    }
+
+    public ReturnStatement createReturnStatement(Expression e) {
+        return new ReturnStatement(e);
     }
 }

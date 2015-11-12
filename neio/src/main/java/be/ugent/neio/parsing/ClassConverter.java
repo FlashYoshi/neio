@@ -188,7 +188,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
             throw new IllegalArgumentException("Unrecognized statement: " + ctx.getText());
         }
 
-        return new StatementExpression(e);
+        return ooFactory().createStatement(e);
     }
 
     // TODO
@@ -277,16 +277,31 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         } else if (ctx.methodCall() != null) {
             return visitMethodCall(ctx.methodCall());
         } else {
-            throw new IllegalArgumentException("Nothing to assign to: " + ctx.getText());
+            throw new IllegalArgumentException("Nothing assignable found: " + ctx.getText());
         }
+    }
+
+    @Override
+    public Expression visitNewCall(NewCallContext ctx) {
+        return new StubExpression(new RegularType(""));
     }
 
     @Override
     public ReturnStatement visitReturnCall(ReturnCallContext ctx) {
         System.out.println();
         System.out.println(ctx.getText());
-        // TODO
-        Expression e = new StubExpression(new RegularType(""));
-        return new ReturnStatement(e);
+
+        Expression e;
+        if (ctx.newCall() != null) {
+            e = visitNewCall(ctx.newCall());
+        } else if (ctx.CAMEL_CASE() != null) {
+            e = expressionFactory().createNameExpression(ctx.CAMEL_CASE().getText());
+        } else if (ctx.methodCall() != null) {
+            e = visitMethodCall(ctx.methodCall());
+        } else {
+            throw new IllegalArgumentException("Nothing to assign to: " + ctx.getText());
+        }
+
+        return ooFactory().createReturnStatement(e);
     }
 }
