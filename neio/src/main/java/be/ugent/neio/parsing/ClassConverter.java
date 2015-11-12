@@ -23,6 +23,7 @@ import org.aikodi.chameleon.support.expression.AssignmentExpression;
 import org.aikodi.chameleon.support.member.simplename.variable.MemberVariableDeclarator;
 import org.aikodi.chameleon.support.modifier.Constructor;
 import org.aikodi.chameleon.support.statement.ReturnStatement;
+import org.aikodi.chameleon.support.variable.LocalVariableDeclarator;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -155,6 +156,9 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         Block b = new Block();
         for (StatementContext statement : ctx.block().statement()) {
             b.addStatement(visitStatement(statement));
+
+            LocalVariableDeclarator a = ooFactory().createLocalVariable(null, null, null);
+            b.addStatement(a);
         }
 
         if (ctx.block().returnCall() != null) {
@@ -178,11 +182,19 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
         Expression e;
         if (ctx.newAssignment() != null) {
-            e = visitNewAssignment(ctx.newAssignment());
+            if (!varDeclaration(ctx.newAssignment())) {
+                e = visitNewAssignment(ctx.newAssignment());
+            } else {
+                return visitNewDeclarationAssignment(ctx.newAssignment());
+            }
         } else if (ctx.methodCall() != null) {
             e = visitMethodCall(ctx.methodCall());
         } else if (ctx.assignment() != null) {
-            e = visitAssignment(ctx.assignment());
+            if (ctx.assignment().var() != null) {
+                return visitAssignmentDeclaration(ctx.assignment());
+            } else {
+                e = visitAssignment(ctx.assignment());
+            }
         } else {
             throw new IllegalArgumentException("Unrecognized statement: " + ctx.getText());
         }
@@ -190,29 +202,46 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         return ooFactory().createStatement(e);
     }
 
-    @Override
-    public Expression visitNewAssignment(NewAssignmentContext ctx) {
+    private Statement visitAssignmentDeclaration(AssignmentContext ctx) {
+        Expression e = expressionFactory().createNameExpression(ctx.var().CAMEL_CASE().getText());
+
+        return ooFactory().createLocalVariable(ooFactory().createTypeReference(ctx.var().fieldName().getText()),
+                            ctx.var().CAMEL_CASE().getText(), e);
+    }
+
+    private Statement visitNewDeclarationAssignment(NewAssignmentContext ctx) {
+        Statement declaration;
+        Expression var = getNewExpression(ctx);
+
+        if (ctx.EQUALS() == null) {
+            String type = ctx.newCall().CLASS_NAME() == null ? ctx.newCall().VAR_WITH_TYPE().getText() : ctx.newCall().CLASS_NAME().getText();
+            declaration = ooFactory().createLocalVariable(ooFactory().createTypeReference(type), ctx.CAMEL_CASE().getText(), var);
+        } else {
+            TypeReference type = ooFactory().createTypeReference(ctx.var().fieldName().getText());
+            declaration = ooFactory().createLocalVariable(type, ctx.var().CAMEL_CASE().getText(), var);
+        }
+        return declaration;
+    }
+
+    private boolean varDeclaration(NewAssignmentContext ctx) {
+        return ctx.CAMEL_CASE() == null || ctx.EQUALS() == null;
+    }
+
+    private Expression getNewExpression(NewAssignmentContext ctx) {
         Expression var;
-        Expression value = visitNewCall(ctx.newCall());
-
         if (ctx.CAMEL_CASE() != null) {
-            // This is a local variable
-            if (ctx.EQUALS() == null) {
-                String type = ctx.newCall().CLASS_NAME() == null ? ctx.newCall().VAR_WITH_TYPE().getText() : ctx.newCall().CLASS_NAME().getText();
-                MemberVariableDeclarator variable = ooFactory().createMemberVariableDeclarator(ctx.CAMEL_CASE().getText(), type);
-
-                // TODO Add variable
-            }
-
             var = expressionFactory().createNameExpression(ctx.CAMEL_CASE().getText());
         } else {
-            // This is also a local variable
-            String type = ctx.var().fieldName().getText();
-            MemberVariableDeclarator variable = ooFactory().createMemberVariableDeclarator(ctx.CAMEL_CASE().getText(), type);
-            // TODO Add variable
-
             var = expressionFactory().createNameExpression(ctx.var().CAMEL_CASE().getText());
         }
+
+        return var;
+    }
+
+    @Override
+    public Expression visitNewAssignment(NewAssignmentContext ctx) {
+        Expression var = getNewExpression(ctx);
+        Expression value = visitNewCall(ctx.newCall());
 
         return expressionFactory().createAssignmentExpression(var, value);
     }
@@ -237,13 +266,6 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     private Expression getAssignmentVar(AssignmentContext ctx) {
         if (ctx.thisChain() != null && !ctx.thisChain().isEmpty()) {
             return visitThisChain(ctx.thisChain().get(0));
-        } else if (ctx.var() != null) {
-            MemberVariableDeclarator variable =
-                    ooFactory().createMemberVariableDeclarator(ctx.var().fieldName().getText(),
-                            ctx.var().CAMEL_CASE().getText());
-
-            // TODO Add variable
-            return expressionFactory().createNameExpression(ctx.var().CAMEL_CASE().getText());
         } else if (ctx.CAMEL_CASE() != null) {
             return expressionFactory().createNameExpression(ctx.CAMEL_CASE().get(0).getText());
         } else {

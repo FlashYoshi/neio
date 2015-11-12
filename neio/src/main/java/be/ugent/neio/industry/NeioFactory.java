@@ -13,13 +13,12 @@ import org.aikodi.chameleon.oo.type.BasicTypeReference;
 import org.aikodi.chameleon.oo.type.RegularType;
 import org.aikodi.chameleon.oo.type.TypeReference;
 import org.aikodi.chameleon.oo.type.inheritance.SubtypeRelation;
-import org.aikodi.chameleon.oo.variable.MemberVariable;
-import org.aikodi.chameleon.oo.variable.RegularMemberVariable;
 import org.aikodi.chameleon.oo.variable.VariableDeclaration;
 import org.aikodi.chameleon.support.member.simplename.method.NormalMethod;
 import org.aikodi.chameleon.support.member.simplename.variable.MemberVariableDeclarator;
 import org.aikodi.chameleon.support.statement.ReturnStatement;
 import org.aikodi.chameleon.support.statement.StatementExpression;
+import org.aikodi.chameleon.support.variable.LocalVariableDeclarator;
 
 public class NeioFactory extends Java7Factory {
 
@@ -52,6 +51,13 @@ public class NeioFactory extends Java7Factory {
         m.add(new VariableDeclaration(name));
 
         return m;
+    }
+
+    public LocalVariableDeclarator createLocalVariable(TypeReference type, String name, Expression e) {
+        LocalVariableDeclarator declarator = new LocalVariableDeclarator(type);
+        declarator.add(new VariableDeclaration(name, e));
+
+        return declarator;
     }
 
     public Method createMethod(String methodName, String returnType) {
