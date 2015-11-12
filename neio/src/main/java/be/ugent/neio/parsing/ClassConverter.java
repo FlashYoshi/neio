@@ -23,7 +23,6 @@ import org.aikodi.chameleon.support.expression.AssignmentExpression;
 import org.aikodi.chameleon.support.member.simplename.variable.MemberVariableDeclarator;
 import org.aikodi.chameleon.support.modifier.Constructor;
 import org.aikodi.chameleon.support.statement.ReturnStatement;
-import org.aikodi.chameleon.support.statement.StatementExpression;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -176,7 +175,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     @Override
     public Statement visitStatement(StatementContext ctx) {
         System.out.println(ctx.getText());
-        // TODO
+
         Expression e;
         if (ctx.newAssignment() != null) {
             e = visitNewAssignment(ctx.newAssignment());
@@ -191,12 +190,38 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         return ooFactory().createStatement(e);
     }
 
-    // TODO
     @Override
-    public StubExpression visitNewAssignment(NewAssignmentContext ctx) {
-        return new StubExpression(new RegularType(""));
+    public Expression visitNewAssignment(NewAssignmentContext ctx) {
+        Expression var;
+        Expression value = visitNewCall(ctx.newCall());
+
+        if (ctx.CAMEL_CASE() != null) {
+            // This is a local variable
+            if (ctx.EQUALS() == null) {
+                String type = ctx.newCall().CLASS_NAME() == null ? ctx.newCall().VAR_WITH_TYPE().getText() : ctx.newCall().CLASS_NAME().getText();
+                MemberVariableDeclarator variable = ooFactory().createMemberVariableDeclarator(ctx.CAMEL_CASE().getText(), type);
+
+                // TODO Add variable
+            }
+
+            var = expressionFactory().createNameExpression(ctx.CAMEL_CASE().getText());
+        } else {
+            // This is also a local variable
+            String type = ctx.var().fieldName().getText();
+            MemberVariableDeclarator variable = ooFactory().createMemberVariableDeclarator(ctx.CAMEL_CASE().getText(), type);
+            // TODO Add variable
+
+            var = expressionFactory().createNameExpression(ctx.var().CAMEL_CASE().getText());
+        }
+
+        return expressionFactory().createAssignmentExpression(var, value);
     }
 
+    // TODO
+    @Override
+    public Expression visitNewCall(NewCallContext ctx) {
+        return new StubExpression(new RegularType(""));
+    }
 
     // TODO
     @Override
@@ -279,11 +304,6 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         } else {
             throw new IllegalArgumentException("Nothing assignable found: " + ctx.getText());
         }
-    }
-
-    @Override
-    public Expression visitNewCall(NewCallContext ctx) {
-        return new StubExpression(new RegularType(""));
     }
 
     @Override
