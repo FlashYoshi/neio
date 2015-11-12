@@ -47,12 +47,12 @@ statement : ( assignment
             | newAssignment)
             SEMICOLON;
 
-methodCall : chain? call;
+methodCall : (chain PERIOD)? call;
 
 assignment : (thisChain | var | CAMEL_CASE) EQUALS (CAMEL_CASE | thisChain | methodCall);
-thisChain : (THIS PERIOD)? (chain | (CLASS_NAME | CAMEL_CASE));
+thisChain : (THIS PERIOD)? (chain PERIOD | (CLASS_NAME | CAMEL_CASE));
 
-chain : (CLASS_NAME | CAMEL_CASE) (PERIOD (CLASS_NAME | CAMEL_CASE))+;
+chain : (CLASS_NAME | CAMEL_CASE) (PERIOD (CLASS_NAME | CAMEL_CASE))*;
 
 newAssignment : newCall CAMEL_CASE
               | (var | CAMEL_CASE) EQUALS newCall;
