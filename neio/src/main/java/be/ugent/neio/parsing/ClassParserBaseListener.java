@@ -56,6 +56,19 @@ public class ClassParserBaseListener implements ClassParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterNewAssignment(@NotNull ClassParser.NewAssignmentContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitNewAssignment(@NotNull ClassParser.NewAssignmentContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterReturnCall(@NotNull ClassParser.ReturnCallContext ctx) { }
 	/**
 	 * {@inheritDoc}

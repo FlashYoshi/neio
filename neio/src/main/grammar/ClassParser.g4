@@ -44,7 +44,7 @@ block : statement+
 
 statement : ( assignment
             | methodCall
-            | newCall)
+            | newAssignment)
             SEMICOLON;
 
 methodCall : ((CLASS_NAME | CAMEL_CASE) (SEMICOLON | PERIOD))? call;
@@ -54,10 +54,12 @@ thisChain : (THIS PERIOD)? (chain | (CLASS_NAME | CAMEL_CASE));
 
 chain : (CLASS_NAME | CAMEL_CASE) (PERIOD (CLASS_NAME | CAMEL_CASE))+;
 
-newCall : NEW (CLASS_NAME | VAR_WITH_TYPE) L_BRACE parameters R_BRACE CAMEL_CASE
-        | (var | CAMEL_CASE) EQUALS NEW CLASS_NAME L_BRACE parameters R_BRACE;
+newAssignment : newCall CAMEL_CASE
+              | (var | CAMEL_CASE) EQUALS newCall;
 
-returnCall : ( RETURN statement
+newCall : NEW (CLASS_NAME | VAR_WITH_TYPE) L_BRACE parameters R_BRACE;
+
+returnCall : ( RETURN newCall
              | RETURN CAMEL_CASE
              | RETURN methodCall)
              SEMICOLON;

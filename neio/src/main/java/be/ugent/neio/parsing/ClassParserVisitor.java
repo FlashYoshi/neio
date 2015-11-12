@@ -33,6 +33,13 @@ public interface ClassParserVisitor<T> extends ParseTreeVisitor<T> {
 	T visitChain(@NotNull ClassParser.ChainContext ctx);
 
 	/**
+	 * Visit a parse tree produced by {@link ClassParser#newAssignment}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNewAssignment(@NotNull ClassParser.NewAssignmentContext ctx);
+
+	/**
 	 * Visit a parse tree produced by {@link ClassParser#returnCall}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
