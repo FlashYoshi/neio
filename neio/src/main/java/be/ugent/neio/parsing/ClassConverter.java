@@ -265,7 +265,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     private Expression getAssignmentValue(AssignmentContext ctx) {
-        if (ctx.CAMEL_CASE() != null) {
+        if (ctx.CAMEL_CASE() != null && !ctx.CAMEL_CASE().isEmpty()) {
             return expressionFactory().createNameExpression(ctx.CAMEL_CASE().get(0).getText());
         } else if (ctx.thisChain() != null && !ctx.thisChain().isEmpty()) {
             int index = 0;
