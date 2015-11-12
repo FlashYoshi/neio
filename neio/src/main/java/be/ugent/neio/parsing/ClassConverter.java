@@ -1,5 +1,6 @@
 package be.ugent.neio.parsing;
 
+import be.kuleuven.cs.distrinet.jnome.core.expression.invocation.ConstructorInvocation;
 import be.kuleuven.cs.distrinet.jnome.workspace.JavaView;
 import be.ugent.neio.industry.NeioFactory;
 import be.ugent.neio.language.Neio;
@@ -248,10 +249,19 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         return expressionFactory().createAssignmentExpression(var, value);
     }
 
-    // TODO
     @Override
     public Expression visitNewCall(NewCallContext ctx) {
-        return new StubExpression(new RegularType(""));
+        String type;
+        if (ctx.CLASS_NAME() != null) {
+            type = ctx.CLASS_NAME().getText();
+        } else {
+            type = ctx.VAR_WITH_TYPE().getText();
+        }
+
+        List<Expression> parameters = visitParameters(ctx.parameters());
+        ConstructorInvocation c = ooFactory().createConstructorInvocation(type, expressionFactory().createNameExpression(type));
+        c.addAllArguments(parameters);
+        return c;
     }
 
     @Override

@@ -1,7 +1,12 @@
 package be.ugent.neio.industry;
 
+import be.kuleuven.cs.distrinet.jnome.core.expression.invocation.ConstructorInvocation;
+import be.kuleuven.cs.distrinet.jnome.core.method.JavaMethod;
+import be.kuleuven.cs.distrinet.jnome.core.type.BasicJavaTypeReference;
+import be.kuleuven.cs.distrinet.jnome.core.type.JavaTypeReference;
 import be.kuleuven.cs.distrinet.jnome.core.type.RegularJavaType;
 import be.kuleuven.cs.distrinet.jnome.input.Java7Factory;
+import org.aikodi.chameleon.core.reference.CrossReferenceTarget;
 import org.aikodi.chameleon.oo.expression.Expression;
 import org.aikodi.chameleon.oo.method.Implementation;
 import org.aikodi.chameleon.oo.method.Method;
@@ -61,7 +66,15 @@ public class NeioFactory extends Java7Factory {
     }
 
     public Method createMethod(String methodName, String returnType) {
-        return new NormalMethod(new SimpleNameMethodHeader(methodName, createTypeReference(returnType)));
+        return new JavaMethod(new SimpleNameMethodHeader(methodName, createTypeReference(returnType)));
+    }
+
+    private BasicJavaTypeReference createBasicJavaTypeReference(String typeRef) {
+        return new BasicJavaTypeReference(typeRef);
+    }
+
+    public ConstructorInvocation createConstructorInvocation(String typeRef, CrossReferenceTarget target) {
+        return new ConstructorInvocation(createBasicJavaTypeReference(typeRef), target);
     }
 
     public Implementation createImplementation(Block b) {
