@@ -1,2 +1,3 @@
-rootProject.name = 'neio'
+include 'ChameleonSupport'
 
+rootProject.name = 'neio'

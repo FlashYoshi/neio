@@ -1,11 +1,29 @@
 plugins {
     id "me.champeau.gradle.antlr4" version "0.1"
-    id "java"
     id "antlr"
 }
 
 group 'be.ugent'
 version '0.1'
+
+allprojects {
+    sourceCompatibility = 1.8
+
+    apply plugin: "java"
+
+    repositories {
+        mavenCentral()
+        maven {
+            url 'http://users.ugent.be/~mcvdoore/repository'
+        }
+    }
+
+    dependencies {
+        testCompile group: 'junit', name: 'junit'
+        compile group: 'markovandooren', name: 'chameleon', version: '1.2.1'
+        compile group: 'markovandooren', name: 'jnome', version: '1.2.1'
+    }
+}
 
 jar {
     manifest {
@@ -13,19 +31,10 @@ jar {
     }
 }
 
-repositories {
-    mavenCentral()
-    maven {
-        url 'http://users.ugent.be/~mcvdoore/repository'
-    }
-}
-
 dependencies {
-    testCompile group: 'junit', name: 'junit'
     antlr "org.antlr:antlr4:4.5"
 
-    compile group: 'markovandooren', name: 'chameleon', version: '1.2.1'
-    compile group: 'markovandooren', name: 'jnome', version: '1.2.1'
+    compile project(':ChameleonSupport')
 
     compile 'org.ow2.asm:asm:5.0.3'
     compile 'com.lexicalscope.jewelcli:jewelcli:0.8.5'

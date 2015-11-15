@@ -3,7 +3,7 @@ package be.ugent.neio.jlo.build;
 import be.kuleuven.cs.distrinet.jnome.core.language.Java7;
 import be.kuleuven.cs.distrinet.jnome.core.language.Java7LanguageFactory;
 import be.kuleuven.cs.distrinet.jnome.workspace.JavaView;
-import be.ugent.neio.chameleonCommon.build.LanguageBuilder;
+import be.ugent.chameleonsupport.build.LanguageBuilder;
 import be.ugent.neio.jlo.model.language.JLo;
 import be.ugent.neio.jlo.translate.JLoToJava8Translator;
 import org.aikodi.chameleon.core.namespace.LazyRootNamespace;

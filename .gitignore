@@ -1,5 +1,7 @@
 # General
 .swp
+ChameleonSupport
+neio/jlo
 
 # Java
 *.class
