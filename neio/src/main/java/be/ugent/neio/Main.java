@@ -1,25 +1,31 @@
 package be.ugent.neio;
 
 import be.kuleuven.cs.distrinet.jnome.core.language.Java7LanguageFactory;
-import be.ugent.chameleonsupport.build.LanguageBuilder;
-import be.ugent.neio.language.Neio;
-import be.ugent.neio.language.NeioBuilder;
+import be.kuleuven.cs.distrinet.jnome.output.JavaDocumentWriter;
+import be.kuleuven.cs.distrinet.jnome.workspace.JavaView;
 import be.ugent.neio.industry.NeioLanguageFactory;
+import be.ugent.neio.language.LanguageDocument;
+import be.ugent.neio.language.Neio;
 import be.ugent.neio.language.NeioProjectConfigurator;
 import be.ugent.neio.parsing.DocumentConverter;
 import be.ugent.neio.parsing.DocumentLexer;
 import be.ugent.neio.parsing.DocumentParser;
-import be.ugent.neio.util.Constants;
+import org.aikodi.chameleon.builder.DocumentFactory;
 import org.aikodi.chameleon.core.Config;
-import org.aikodi.chameleon.plugin.build.BuildException;
+import org.aikodi.chameleon.core.document.Document;
+import org.aikodi.chameleon.core.namespacedeclaration.NamespaceDeclaration;
+import org.aikodi.chameleon.exception.ModelException;
+import org.aikodi.chameleon.plugin.build.DocumentWriter;
 import org.aikodi.chameleon.workspace.*;
 import org.antlr.v4.runtime.*;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.List;
 
 import static be.ugent.neio.util.Constants.AUTO_GEN_DIR;
+import static be.ugent.neio.util.Constants.EXTENSION;
 
 public class Main {
 
@@ -45,8 +51,8 @@ public class Main {
             System.exit(2);
         }
 
-        if (!inputFile.getName().endsWith(Constants.EXTENSION)) {
-            System.err.println(fileName + " doesn't have the right extension.\nThe right extension is: " + Constants.EXTENSION);
+        if (!inputFile.getName().endsWith(EXTENSION)) {
+            System.err.println(fileName + " doesn't have the right extension.\nThe right extension is: " + EXTENSION);
             System.exit(3);
         }
 
@@ -64,30 +70,47 @@ public class Main {
         XMLProjectLoader config = new XMLProjectLoader(workspace);
         Project project = config.project(configFile, null);
 
-        LanguageBuilder builder = new NeioBuilder(project.views().get(0));
+        View view = project.views().get(0);
+        try {
+            List<Document> documents = view.sourceDocuments();
+            translateDocument(inputFile, documents.get(0).view(JavaView.class));
+        } catch (InputException e) {
+            e.printStackTrace();
+        }
+        /*LanguageBuilder builder = new NeioBuilder(project.views().get(0));
         try {
             builder.buildAll(new File(AUTO_GEN_DIR), null);
         } catch (BuildException e) {
             e.printStackTrace();
             System.exit(4);
-        }
-
-        visitDocument(inputFile);
+        }*/
     }
 
     public static void printHelp(String programName) {
         System.out.println("USAGE: java -jar " + programName + " <path-to-outputdir> <path-to-inputfile>");
     }
 
-    public static void visitDocument(File file) {
+    public static void translateDocument(File file, JavaView view) {
         try {
             CharStream input = new ANTLRInputStream(new FileInputStream(file));
             Lexer lexer = new DocumentLexer(input);
             TokenStream tokens = new CommonTokenStream(lexer);
             DocumentParser parser = new DocumentParser(tokens);
-            DocumentConverter converter = new DocumentConverter();
-            converter.visitDocument(parser.document());
-        } catch (IOException e) {
+
+
+            DocumentFactory df = new DocumentFactory();
+            NamespaceDeclaration ns = df.createDocument("be.ugent", view);
+            LanguageDocument document = new LanguageDocument(ns.nearestAncestor(Document.class), new Java7LanguageFactory().create());
+
+            File output = new File(AUTO_GEN_DIR);
+            String name = file.getName().split("\\.")[0];
+
+            DocumentConverter converter = new DocumentConverter(document, view, name);
+            Document javaDocument = converter.visitDocument(parser.document());
+
+            DocumentWriter writer = new JavaDocumentWriter(".java");
+            writer.write(javaDocument, output);
+        } catch (IOException | ModelException e) {
             e.printStackTrace();
         }
     }

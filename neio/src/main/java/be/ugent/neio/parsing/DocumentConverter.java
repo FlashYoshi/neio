@@ -1,8 +1,19 @@
 package be.ugent.neio.parsing;
 
+import be.kuleuven.cs.distrinet.jnome.workspace.JavaView;
+import be.ugent.neio.industry.NeioFactory;
+import be.ugent.neio.language.Neio;
 import be.ugent.neio.parsing.DocumentParser.ContentContext;
 import be.ugent.neio.parsing.DocumentParser.DocumentContext;
 import be.ugent.neio.parsing.DocumentParser.SentenceContext;
+import org.aikodi.chameleon.core.document.Document;
+import org.aikodi.chameleon.core.factory.Factory;
+import org.aikodi.chameleon.core.namespacedeclaration.NamespaceDeclaration;
+import org.aikodi.chameleon.oo.expression.ExpressionFactory;
+import org.aikodi.chameleon.oo.method.Method;
+import org.aikodi.chameleon.oo.plugin.ObjectOrientedFactory;
+import org.aikodi.chameleon.oo.statement.Block;
+import org.aikodi.chameleon.oo.type.Type;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 
@@ -11,13 +22,54 @@ import org.antlr.v4.runtime.tree.TerminalNode;
  */
 public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
 
-    public Object visitDocument(DocumentContext ctx) {
+    private final Document document;
+    private final Neio neio;
+    private final Block block;
+    private final String name;
+
+    public DocumentConverter(Document document, JavaView view, String name) {
+        this.document = document;
+        this.neio = view.language(Neio.class);
+        this.block = ooFactory().createBlock();
+        this.name = name;
+    }
+
+    protected Factory factory() {
+        return neio.plugin(Factory.class);
+    }
+
+    protected NeioFactory ooFactory() {
+        return (NeioFactory) neio.plugin(ObjectOrientedFactory.class);
+    }
+
+    protected ExpressionFactory expressionFactory() {
+        return neio.plugin(ExpressionFactory.class);
+    }
+
+    public Document visitDocument(DocumentContext ctx) {
         visitHeader(ctx);
         visitBody(ctx);
-        return null;
+
+        fillDocument();
+
+        return document;
+    }
+
+    private void fillDocument() {
+        NamespaceDeclaration ns = document.namespaceDeclarations().get(0);
+        Type type = ooFactory().createRegularType(name);
+        Method method = ooFactory().createMethod("main", "void");
+
+        method.setImplementation(ooFactory().createImplementation(block));
+        type.add(method);
+        ns.add(type);
+        document.add(ns);
     }
 
     private void visitHeader(DocumentContext ctx) {
+        String documentType = ctx.HEADER().getText();
+
+
         System.out.println(ctx.HEADER().getText());
     }
 
