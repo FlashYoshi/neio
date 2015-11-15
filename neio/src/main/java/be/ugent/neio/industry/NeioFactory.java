@@ -88,4 +88,8 @@ public class NeioFactory extends Java7Factory {
     public ReturnStatement createReturnStatement(Expression e) {
         return new ReturnStatement(e);
     }
+
+    public Block createBlock() {
+        return new Block();
+    }
 }

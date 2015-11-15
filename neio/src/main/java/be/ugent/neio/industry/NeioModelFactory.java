@@ -1,6 +1,9 @@
-package be.ugent.neio.parsing;
+package be.ugent.neio.industry;
 
 import be.kuleuven.cs.distrinet.jnome.workspace.JavaView;
+import be.ugent.neio.parsing.ClassConverter;
+import be.ugent.neio.parsing.ClassLexer;
+import be.ugent.neio.parsing.ClassParser;
 import org.aikodi.chameleon.core.document.Document;
 import org.aikodi.chameleon.input.ModelFactory;
 import org.aikodi.chameleon.input.ParseException;

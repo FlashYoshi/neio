@@ -3,7 +3,6 @@ package be.ugent.neio.industry;
 import be.kuleuven.cs.distrinet.jnome.input.JavaExpressionFactory;
 import be.ugent.neio.language.Neio;
 import be.ugent.neio.language.NeioProjectConfigurator;
-import be.ugent.neio.parsing.NeioModelFactory;
 import org.aikodi.chameleon.core.factory.Factory;
 import org.aikodi.chameleon.input.ModelFactory;
 import org.aikodi.chameleon.oo.expression.ExpressionFactory;

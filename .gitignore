@@ -5,6 +5,7 @@ ChameleonSupport
 # Java
 *.class
 neio/build
+neio/gen
 
 # Gradle
 .gradle

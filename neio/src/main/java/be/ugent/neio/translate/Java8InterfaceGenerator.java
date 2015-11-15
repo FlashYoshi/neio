@@ -148,9 +148,7 @@ public class Java8InterfaceGenerator extends AbstractJava8Generator {
     }
 
     protected void makeMethodsDefault(Document javaDocument) {
-        add(new Default()).to(Method.class).in(javaDocument).whenTranslated(m -> {
-            return !m.isTrue(java(m).CONSTRUCTOR) && !m.isTrue(java(m).ABSTRACT);
-        });
+        add(new Default()).to(Method.class).in(javaDocument).whenTranslated(m -> !m.isTrue(java(m).CONSTRUCTOR) && !m.isTrue(java(m).ABSTRACT));
     }
 
     protected void replaceExpressionImplementations(Document javaDocument) {

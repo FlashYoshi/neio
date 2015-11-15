@@ -156,7 +156,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
             method.addModifier(c);
         }
 
-        Block b = new Block();
+        Block b = ooFactory().createBlock();
         for (StatementContext statement : ctx.block().statement()) {
             b.addStatement(visitStatement(statement));
 
