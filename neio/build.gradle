@@ -35,10 +35,6 @@ dependencies {
     antlr "org.antlr:antlr4:4.5"
 
     compile project(':ChameleonSupport')
-
-    compile 'org.ow2.asm:asm:5.0.3'
-    compile 'com.lexicalscope.jewelcli:jewelcli:0.8.5'
-    compile 'org.apache.ant:ant:1.9.4'
 }
 
 // Antlr4 Configuration
