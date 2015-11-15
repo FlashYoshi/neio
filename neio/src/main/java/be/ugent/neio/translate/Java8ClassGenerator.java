@@ -3,8 +3,6 @@ package be.ugent.neio.translate;
 import be.kuleuven.cs.distrinet.jnome.core.language.Java7;
 import be.kuleuven.cs.distrinet.jnome.core.modifier.Implements;
 import be.kuleuven.cs.distrinet.jnome.core.type.BasicJavaTypeReference;
-import be.ugent.neio.jlo.model.component.SubobjectType;
-import be.ugent.neio.jlo.translate.AbstractJava8Generator;
 import org.aikodi.chameleon.core.document.Document;
 import org.aikodi.chameleon.core.lookup.LookupException;
 import org.aikodi.chameleon.exception.ChameleonProgrammerException;
@@ -36,7 +34,6 @@ public class Java8ClassGenerator extends AbstractJava8Generator {
         implementOwnInterfaces(javaDocument);
         addFields(javaDocument);
         renameConstructorCalls(javaDocument);
-        addTypeParameterToOwnClass(javaDocument);
         return javaDocument;
     }
 
@@ -60,7 +57,6 @@ public class Java8ClassGenerator extends AbstractJava8Generator {
                     SubtypeRelation relation = new SubtypeRelation(superTypeReference);
                     relation.addModifier(new Implements());
                     javaType.addInheritanceRelation(relation);
-                    addTypeParameters(relation, jloType);
                     javaType.setName(implementationName(javaType));
                     javaType.modifiers(java.SCOPE_MUTEX).forEach(m -> m.disconnect());
                 }
@@ -78,7 +74,8 @@ public class Java8ClassGenerator extends AbstractJava8Generator {
             }
         });
         javaDocument.apply(Type.class, t -> {
-            if (!(t instanceof SubobjectType) && !isGenerated(t)) {
+            //if (!(t instanceof SubobjectType) && !isGenerated(t)) {
+            if (!isGenerated(t)) {
                 Type originalType = (Type) t.origin();
                 try {
                     addFields(t, originalType);

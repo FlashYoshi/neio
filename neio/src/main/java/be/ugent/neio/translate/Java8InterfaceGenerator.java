@@ -7,8 +7,6 @@ import be.kuleuven.cs.distrinet.jnome.core.modifier.Default;
 import be.kuleuven.cs.distrinet.jnome.core.type.ArrayTypeReference;
 import be.kuleuven.cs.distrinet.jnome.core.type.BasicJavaTypeReference;
 import be.kuleuven.cs.distrinet.rejuse.action.Action;
-import be.ugent.neio.jlo.model.type.TypeMemberDeclarator;
-import be.ugent.neio.jlo.translate.AbstractJava8Generator;
 import org.aikodi.chameleon.core.document.Document;
 import org.aikodi.chameleon.core.lookup.LookupException;
 import org.aikodi.chameleon.core.property.StaticChameleonProperty;
@@ -45,8 +43,6 @@ public class Java8InterfaceGenerator extends AbstractJava8Generator {
         makeMethodsDefault(javaDocument);
         createConstructors(javaDocument);
         createDefaultConstructor(javaDocument);
-        addTypeParameterToOwnClass(javaDocument);
-        transformKeywordTypeReferences(javaDocument);
         return javaDocument;
     }
 
@@ -73,11 +69,6 @@ public class Java8InterfaceGenerator extends AbstractJava8Generator {
                     javaInstanceMethod.setReturnTypeReference(java.createTypeReference("void"));
                     javaMethod.setReturnTypeReference(Java8InterfaceGenerator.this.clone(typeRef));
                     javaMethod.addModifier(new Static());
-
-                    ((Type) javaParentType.origin()).members(TypeMemberDeclarator.class).forEach(m -> {
-                        //t.addParameter(TypeParameter.class, new FormalTypeParameter(m.name()));
-                        javaMethod.header().addTypeParameter(m.clone(m.parameter()));
-                    });
 
 
                     /**
