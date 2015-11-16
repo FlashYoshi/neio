@@ -13,7 +13,6 @@ import be.ugent.neio.parsing.DocumentParser;
 import org.aikodi.chameleon.core.Config;
 import org.aikodi.chameleon.core.document.Document;
 import org.aikodi.chameleon.core.namespace.LazyRootNamespace;
-import org.aikodi.chameleon.core.namespace.RegularNamespaceFactory;
 import org.aikodi.chameleon.core.namespacedeclaration.NamespaceDeclaration;
 import org.aikodi.chameleon.exception.ModelException;
 import org.aikodi.chameleon.plugin.build.DocumentWriter;
@@ -31,7 +30,6 @@ import static be.ugent.neio.util.Constants.EXTENSION;
 public class Main {
 
     /**
-     * args[0] = path for the directory to write output
      * args[1] = input file
      * <p>
      * Exit code 1: Invalid call to program
@@ -40,12 +38,12 @@ public class Main {
      * Exit code 4: Could not build everything NEIO_HOME
      */
     public static void main(String[] args) {
-        if (args.length < 2) {
+        if (args.length < 1) {
             printHelp("neio.jar");
             System.exit(1);
         }
 
-        String fileName = args[1];
+        String fileName = args[0];
         File inputFile = new File(fileName);
         if (!inputFile.isFile() || !inputFile.canRead()) {
             System.err.println(fileName + " isn't a valid folder or it isn't readable.");
@@ -99,11 +97,6 @@ public class Main {
             TokenStream tokens = new CommonTokenStream(lexer);
             DocumentParser parser = new DocumentParser(tokens);
 
-
-            //DocumentFactory df = new DocumentFactory();
-            //NamespaceDeclaration ns = df.createDocument("be.ugent", view);
-            //LanguageDocument document = new LanguageDocument(ns.nearestAncestor(Document.class), new Java7LanguageFactory().create());
-            RegularNamespaceFactory ns = new RegularNamespaceFactory();
             Java7 target = new Java7LanguageFactory().create();
             JavaView targetView = new JavaView(new LazyRootNamespace(), target);
             Document newDocument = document.cloneTo(targetView);
