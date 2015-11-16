@@ -1,18 +1,19 @@
 package be.ugent.neio;
 
+import be.kuleuven.cs.distrinet.jnome.core.language.Java7;
 import be.kuleuven.cs.distrinet.jnome.core.language.Java7LanguageFactory;
 import be.kuleuven.cs.distrinet.jnome.output.JavaDocumentWriter;
 import be.kuleuven.cs.distrinet.jnome.workspace.JavaView;
 import be.ugent.neio.industry.NeioLanguageFactory;
-import be.ugent.neio.language.LanguageDocument;
 import be.ugent.neio.language.Neio;
 import be.ugent.neio.language.NeioProjectConfigurator;
 import be.ugent.neio.parsing.DocumentConverter;
 import be.ugent.neio.parsing.DocumentLexer;
 import be.ugent.neio.parsing.DocumentParser;
-import org.aikodi.chameleon.builder.DocumentFactory;
 import org.aikodi.chameleon.core.Config;
 import org.aikodi.chameleon.core.document.Document;
+import org.aikodi.chameleon.core.namespace.LazyRootNamespace;
+import org.aikodi.chameleon.core.namespace.RegularNamespaceFactory;
 import org.aikodi.chameleon.core.namespacedeclaration.NamespaceDeclaration;
 import org.aikodi.chameleon.exception.ModelException;
 import org.aikodi.chameleon.plugin.build.DocumentWriter;
@@ -73,7 +74,8 @@ public class Main {
         View view = project.views().get(0);
         try {
             List<Document> documents = view.sourceDocuments();
-            translateDocument(inputFile, documents.get(0).view(JavaView.class));
+            Document document = documents.get(0);
+            translateDocument(inputFile, document.view(JavaView.class), document);
         } catch (InputException e) {
             e.printStackTrace();
         }
@@ -90,7 +92,7 @@ public class Main {
         System.out.println("USAGE: java -jar " + programName + " <path-to-outputdir> <path-to-inputfile>");
     }
 
-    public static void translateDocument(File file, JavaView view) {
+    public static void translateDocument(File file, JavaView view, Document document) {
         try {
             CharStream input = new ANTLRInputStream(new FileInputStream(file));
             Lexer lexer = new DocumentLexer(input);
@@ -98,14 +100,19 @@ public class Main {
             DocumentParser parser = new DocumentParser(tokens);
 
 
-            DocumentFactory df = new DocumentFactory();
-            NamespaceDeclaration ns = df.createDocument("be.ugent", view);
-            LanguageDocument document = new LanguageDocument(ns.nearestAncestor(Document.class), new Java7LanguageFactory().create());
+            //DocumentFactory df = new DocumentFactory();
+            //NamespaceDeclaration ns = df.createDocument("be.ugent", view);
+            //LanguageDocument document = new LanguageDocument(ns.nearestAncestor(Document.class), new Java7LanguageFactory().create());
+            RegularNamespaceFactory ns = new RegularNamespaceFactory();
+            Java7 target = new Java7LanguageFactory().create();
+            JavaView targetView = new JavaView(new LazyRootNamespace(), target);
+            Document newDocument = document.cloneTo(targetView);
 
+            newDocument.namespaceDeclarations().forEach(NamespaceDeclaration::disconnect);
             File output = new File(AUTO_GEN_DIR);
             String name = file.getName().split("\\.")[0];
 
-            DocumentConverter converter = new DocumentConverter(document, view, name);
+            DocumentConverter converter = new DocumentConverter(newDocument, view, name);
             Document javaDocument = converter.visitDocument(parser.document());
 
             DocumentWriter writer = new JavaDocumentWriter(".java");
