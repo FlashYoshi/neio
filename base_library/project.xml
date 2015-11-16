@@ -4,6 +4,6 @@
         <library language="Neio" load="false" />
     </baselibraries>
     <sourcepath>
-        <source root="../examples/0.5/neio" />
+        <source root="../examples/0.6/neio" />
     </sourcepath>
 </project>
