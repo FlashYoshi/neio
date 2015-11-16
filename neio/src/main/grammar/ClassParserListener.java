@@ -217,6 +217,16 @@ public interface ClassParserListener extends ParseTreeListener {
 	 */
 	void exitChain(ClassParser.ChainContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link ClassParser#newAssignment}.
+	 * @param ctx the parse tree
+	 */
+	void enterNewAssignment(ClassParser.NewAssignmentContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ClassParser#newAssignment}.
+	 * @param ctx the parse tree
+	 */
+	void exitNewAssignment(ClassParser.NewAssignmentContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link ClassParser#newCall}.
 	 * @param ctx the parse tree
 	 */

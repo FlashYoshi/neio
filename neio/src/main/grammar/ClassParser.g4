@@ -27,8 +27,9 @@ var : fieldName CAMEL_CASE;
 arguments : (var COMMA)* var
           | ;
 
-parameter : CAMEL_CASE
-          | methodCall;
+parameter : CAMEL_CASE (DIGIT+)?
+          | methodCall
+          | DIGIT+;
 parameters : (parameter COMMA)* parameter
            | ;
 

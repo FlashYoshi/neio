@@ -21,9 +21,7 @@ INTERFACE : 'interface';
 RETURN : 'return';
 NEW : 'new';
 THIS : 'this';
-METHOD_OPTION : 'builder'
-               | 'regex'
-               | 'util';
+METHOD_OPTION : 'nested';
 STUB : 'stub';
 ////////////END KEYWORDS////////////
 
@@ -47,5 +45,6 @@ L_BRACE : '(';
 R_BRACE : ')';
 L_CURLY_BRACE : '{';
 R_CURLY_BRACE : '}';
+DIGIT : [0-9];
 
 METHOD_NAME : ~[()\r\n \t;.,:]+;
