@@ -18,26 +18,30 @@ public class NeioExpressionFactory extends JavaExpressionFactory {
 
     public Expression createNewExpression(String method, List<FormalParameter> parameters) {
 
-        return createNameExpression("new " + createMethodString(method, parameters));
+        return createNameExpression("new " + createMethodString(null, method, parameters));
     }
 
-    public Expression createMethodCall(String method) {
-        return createMethodCall(method, new ArrayList<>());
+    public Expression createMethodCall(String caller, String method, List<FormalParameter> parameters) {
+        return createNameExpression(createMethodString(caller, method, parameters));
     }
 
-    public Expression createMethodCall(String method, List<FormalParameter>parameters) {
-        return createNameExpression(createMethodString(method, parameters));
-    }
-
-    private String createMethodString(String method, List<FormalParameter> parameters) {
+    private String createMethodString(String caller, String method, List<FormalParameter> parameters) {
         String result = "";
         for (FormalParameter f : parameters) {
             if (!result.isEmpty()) {
-                result += ",";
+                result += ", ";
             }
-            result += f.name();
+
+            boolean string = f.getTypeReference().toString().equals("String");
+
+            result += (string ? "\"" : "") + f.name() + (string ? "\"" : "");
         }
 
-        return method + "(" + result + ")";
+        result = method + "(" + result + ")";
+        if (caller != null) {
+            result = caller + "." + result;
+        }
+
+        return result;
     }
 }
