@@ -1,6 +1,5 @@
 package be.ugent.neio.industry;
 
-import be.kuleuven.cs.distrinet.jnome.input.JavaExpressionFactory;
 import be.ugent.neio.language.Neio;
 import be.ugent.neio.language.NeioProjectConfigurator;
 import org.aikodi.chameleon.core.factory.Factory;
@@ -19,7 +18,7 @@ public class NeioLanguageFactory {
         NeioFactory factory = new NeioFactory();
         result.setPlugin(Factory.class, factory);
         result.setPlugin(ObjectOrientedFactory.class, factory);
-        result.setPlugin(ExpressionFactory.class, new JavaExpressionFactory());
+        result.setPlugin(ExpressionFactory.class, new NeioExpressionFactory());
         result.setPlugin(ProjectConfigurator.class, new NeioProjectConfigurator());
 
         return result;

@@ -92,4 +92,8 @@ public class NeioFactory extends Java7Factory {
     public Block createBlock() {
         return new Block();
     }
+
+    public Statement createNewDeclaration(String type, String name, Expression expression) {
+        return createLocalVariable(createTypeReference(type), name, expression);
+    }
 }
