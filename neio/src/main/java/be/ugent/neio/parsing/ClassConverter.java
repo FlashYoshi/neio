@@ -4,9 +4,11 @@ import be.kuleuven.cs.distrinet.jnome.core.expression.invocation.ConstructorInvo
 import be.kuleuven.cs.distrinet.jnome.workspace.JavaView;
 import be.ugent.neio.industry.NeioFactory;
 import be.ugent.neio.language.Neio;
+import be.ugent.neio.language.Nested;
 import be.ugent.neio.parsing.ClassParser.*;
 import org.aikodi.chameleon.core.document.Document;
 import org.aikodi.chameleon.core.factory.Factory;
+import org.aikodi.chameleon.core.modifier.Modifier;
 import org.aikodi.chameleon.core.namespacedeclaration.NamespaceDeclaration;
 import org.aikodi.chameleon.oo.expression.Expression;
 import org.aikodi.chameleon.oo.expression.ExpressionFactory;
@@ -15,17 +17,14 @@ import org.aikodi.chameleon.oo.method.Method;
 import org.aikodi.chameleon.oo.plugin.ObjectOrientedFactory;
 import org.aikodi.chameleon.oo.statement.Block;
 import org.aikodi.chameleon.oo.statement.Statement;
-import org.aikodi.chameleon.oo.type.RegularType;
 import org.aikodi.chameleon.oo.type.Type;
 import org.aikodi.chameleon.oo.type.TypeReference;
 import org.aikodi.chameleon.oo.type.inheritance.InheritanceRelation;
 import org.aikodi.chameleon.oo.variable.FormalParameter;
-import org.aikodi.chameleon.stub.StubExpression;
 import org.aikodi.chameleon.support.expression.AssignmentExpression;
 import org.aikodi.chameleon.support.member.simplename.variable.MemberVariableDeclarator;
 import org.aikodi.chameleon.support.modifier.Constructor;
 import org.aikodi.chameleon.support.statement.ReturnStatement;
-import org.aikodi.chameleon.support.variable.LocalVariableDeclarator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -135,8 +134,9 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     public Method visitMethod(MethodContext ctx, String klassName) {
         // Is this a regex method?
-        // TODO: Do something for regex
+        Modifier m = null;
         if (ctx.METHOD_OPTION() != null) {
+            m = new Nested();
             System.out.print(ctx.METHOD_OPTION().getText());
         }
         System.out.println(ctx.decl().getText() + " {");
@@ -152,6 +152,9 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         Method method = ooFactory().createMethod(ctx.decl().methodName().getText(), returnType);
         method.header().addFormalParameters(visitArguments(ctx.decl().arguments()));
 
+        if (m != null) {
+            method.addModifier(m);
+        }
         if (c != null) {
             method.addModifier(c);
         }
@@ -159,9 +162,6 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         Block b = ooFactory().createBlock();
         for (StatementContext statement : ctx.block().statement()) {
             b.addStatement(visitStatement(statement));
-
-            LocalVariableDeclarator a = ooFactory().createLocalVariable(null, null, null);
-            b.addStatement(a);
         }
 
         if (ctx.block().returnCall() != null) {
