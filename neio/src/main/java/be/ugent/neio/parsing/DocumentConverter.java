@@ -40,6 +40,7 @@ import java.util.stream.Collectors;
  */
 public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
 
+    private static final String VAR_NAME = "var";
     private final Document document;
     private final Neio neio;
     private final Block block;
@@ -47,7 +48,6 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
     private final Stack<Variable> vars;
     private final JavaView view;
     private int varCount = 0;
-    private static final String VAR_NAME = "var";
 
     public DocumentConverter(Document document, JavaView view, String name) {
         this.document = document;
@@ -147,13 +147,18 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
             String name = getVarName();
             List<FormalParameter> parameters = new ArrayList<>();
             parameters.add(new FormalParameter(parameter, ooFactory().createTypeReference("String")));
+            Variable var;
             if (isNested(m)) {
-                parameters.add(new FormalParameter("" + methodName.length(), ooFactory().createTypeReference("Integer")));
+                int nestedLevel = methodName.length();
+                parameters.add(new FormalParameter("" + nestedLevel, ooFactory().createTypeReference("Integer")));
+                var = new Variable(name, type, nestedLevel);
+            } else {
+                var = new Variable(name, type);
             }
 
             Expression expression = expressionFactory().createMethodCall(vars.peek().getName(), m.name(), parameters);
             block.addStatement(ooFactory().createLocalVariable(type, name, expression));
-            vars.push(new Variable(name, type));
+            vars.push(var);
         }
     }
 
@@ -167,13 +172,18 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
             Variable var = vars.peek();
             List<Method> methods = getMethods(var.getType());
             if (nested) {
-                List<Method> nestedMethods = methods.stream().filter(this::isNested).collect(Collectors.toList());
-                originalMethod = findMethod(methodName.charAt(0) + "", nestedMethods);
+                int nestedLevel = methodName.length();
+                // The new nesting can not be the same or smaller than the already existing nesting
+                if (!(var.isNested() && nestedLevel <= var.getLevel())) {
+                    List<Method> nestedMethods = methods.stream().filter(this::isNested).collect(Collectors.toList());
+                    originalMethod = findMethod(methodName.charAt(0) + "", nestedMethods);
+                }
             }
 
             // Did not find it as nested method, try the other methods
             if (originalMethod == null) {
-                originalMethod = findMethod(methodName, methods);
+                List<Method> normalMethods = methods.stream().filter(m -> !isNested(m)).collect(Collectors.toList());
+                originalMethod = findMethod(methodName, normalMethods);
             }
 
             // Did not find the method, try on the other part of the tree
