@@ -28,6 +28,7 @@ import org.aikodi.chameleon.support.modifier.Static;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Stack;
 import java.util.regex.Matcher;
@@ -45,9 +46,10 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
     private final Neio neio;
     private final Block block;
     private final String name;
-    private final Stack<Variable> vars;
+    private final Stack<Variable> callStack;
     private final JavaView view;
     private int varCount = 0;
+    private HashMap<String, String> aliases;
 
     public DocumentConverter(Document document, JavaView view, String name) {
         this.document = document;
@@ -55,7 +57,10 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         this.neio = view.language(Neio.class);
         this.block = ooFactory().createBlock();
         this.name = name;
-        this.vars = new Stack<>();
+        this.callStack = new Stack<>();
+        this.aliases = new HashMap<>();
+        aliases.put("#", "hash");
+        aliases.put("*", "star");
     }
 
     protected Factory factory() {
@@ -101,7 +106,7 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         String name = getVarName();
         TypeReference type = ooFactory().createTypeReference(documentType);
         Statement s = ooFactory().createLocalVariable(type, name, expressionFactory().createNewExpression(documentType));
-        vars.push(new Variable(name, type, 0, documentType));
+        callStack.push(new Variable(name, type, 0, documentType));
 
         System.out.println(ctx.HEADER().getText());
         return s;
@@ -128,28 +133,34 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
 
     private void visitPrefixCall(ContentContext ctx) {
         if (ctx.prefixCall() != null) {
+            // Find the method name and print it
             String methodName = "";
             for (TerminalNode h : ctx.prefixCall().HASH()) {
                 methodName += h;
             }
             System.out.print(methodName + " ");
 
+            // Find the parameters and print them
             String parameter = "";
             for (TerminalNode w : ctx.prefixCall().sentence().WORD()) {
                 parameter += w + " ";
             }
             System.out.println(parameter);
 
+            // Check if this method might be a nested method
             boolean nested = isNested(methodName);
-            Method m = findOriginalMethod(methodName, nested);
+            // Find the method in the Neio classes
+            Method m = findNeioMethod(methodName, nested);
 
-            TypeReference type = m.returnTypeReference();
+            // Add the parameters
             String name = getVarName();
             List<FormalParameter> parameters = new ArrayList<>();
             parameters.add(new FormalParameter(parameter, ooFactory().createTypeReference("String")));
-            int nextLevel = vars.peek().getLevel() + 1;
-            Variable var;
 
+            // Prepare the new method to add it to the stack
+            TypeReference type = m.returnTypeReference();
+            int nextLevel = callStack.peek().getLevel() + 1;
+            Variable var;
             if (isNested(m)) {
                 int nestingLevel = methodName.length();
                 // nestingLevel since this is a property that might be used by the chapter to decide what layout to use
@@ -160,20 +171,27 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
                 var = new Variable(name, type, nextLevel, methodName);
             }
 
-            Expression expression = expressionFactory().createMethodCall(vars.peek().getName(), m.name(), parameters);
+            // Check if we have an alias for the method name
+            String javaMethodName = m.name();
+            if (aliases.get(javaMethodName) != null) {
+                javaMethodName = aliases.get(javaMethodName);
+            }
+
+            // Add the statement to the block and add the method to the call stack
+            Expression expression = expressionFactory().createMethodCall(callStack.peek().getName(), javaMethodName, parameters);
             block.addStatement(ooFactory().createLocalVariable(type, name, expression));
-            vars.push(var);
+            callStack.push(var);
         }
     }
 
-    private Method findOriginalMethod(String methodName, boolean nested) {
-        Method originalMethod = null;
-        while (originalMethod == null) {
-            if (vars.isEmpty()) {
+    private Method findNeioMethod(String methodName, boolean nested) {
+        Method neioMethod = null;
+        while (neioMethod == null) {
+            if (callStack.isEmpty()) {
                 throw new IllegalArgumentException("The method " + methodName + " could not be found.");
             }
 
-            Variable var = vars.peek();
+            Variable var = callStack.peek();
             List<Method> methods = getMethods(var.getType());
             // Do we suspect nesting?
             if (nested) {
@@ -181,32 +199,32 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
                 // Can not nest same elements
                 if (!methodName.equals(var.getMethodName())) {
                     List<Method> nestedMethods = methods.stream().filter(this::isNested).collect(Collectors.toList());
-                    originalMethod = findMethod(methodName.charAt(0) + "", nestedMethods);
+                    neioMethod = findMethod(methodName.charAt(0) + "", nestedMethods);
                     // Is the found method really nested?
-                    if (originalMethod != null && isNested(originalMethod)) {
+                    if (neioMethod != null && isNested(neioMethod)) {
                         // Then check the level IF it is not the same kind of method
                         // Level check is for i.e. # when the previous method was ###
                         // The same methodCheck is for i.e. * when the previous method was ##
-                        if (sameNestedMethod(originalMethod.name(), methodName) && (nestedLevel <= var.getNestingLevel())) {
-                            originalMethod = null;
+                        if (sameNestedMethod(neioMethod.name(), methodName) && (nestedLevel <= var.getNestingLevel())) {
+                            neioMethod = null;
                         }
                     }
                 }
             }
 
             // Did not find it as nested method, try the other methods
-            if (originalMethod == null) {
+            if (neioMethod == null) {
                 List<Method> normalMethods = methods.stream().filter(m -> !isNested(m)).collect(Collectors.toList());
-                originalMethod = findMethod(methodName, normalMethods);
+                neioMethod = findMethod(methodName, normalMethods);
             }
 
             // Did not find the method, try on the other part of the tree
-            if (originalMethod == null) {
-                vars.pop();
+            if (neioMethod == null) {
+                callStack.pop();
             }
         }
 
-        return originalMethod;
+        return neioMethod;
     }
 
     private boolean sameNestedMethod(String nestedMethod, String toTest) {
@@ -262,6 +280,11 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         return result;
     }
 
+    private Method getMethod(TypeReference type, String methodName) {
+        List<Method> methods = getMethods(type);
+        return findMethod(methodName, methods);
+    }
+
     private void visitPostFixCall(ContentContext ctx) {
         if (ctx.postfixCall() != null) {
             System.out.println(ctx.postfixCall().getText());
@@ -270,12 +293,51 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
 
     private void visitText(ContentContext ctx) {
         if (ctx.text() != null) {
-            for (SentenceContext s : ctx.text().sentence()) {
-                for (TerminalNode w : s.WORD()) {
-                    System.out.print(w + " ");
+            String paragraph = "";
+            List<SentenceContext> sentences = ctx.text().sentence();
+            for (int i = 0; i < sentences.size(); i++) {
+                SentenceContext s = sentences.get(i);
+
+                List<TerminalNode> words = s.WORD();
+                for (int j = 0; j < words.size(); j++) {
+                    TerminalNode w = words.get(j);
+                    paragraph += w;
+
+                    // Do not add a space to the end of a sentence
+                    if (j != words.size() - 1) {
+                        paragraph += " ";
+                    }
                 }
-                System.out.println();
+                // Do not add a newline to the end of the paragraph
+                if (i != sentences.size() - 1) {
+                    paragraph += "\\n";
+                }
             }
+            System.out.print(paragraph);
+
+            // This is always the newline method
+            String methodName = "newline";
+
+            // Add the statement to the block and add the method to the call stack
+            while (!callStack.isEmpty()) {
+                Variable var = callStack.peek();
+                Method method = getMethod(var.getType(), methodName);
+                if (method != null) {
+                    List<FormalParameter> parameters = new ArrayList<>();
+                    parameters.add(new FormalParameter(paragraph, ooFactory().createTypeReference("String")));
+
+                    String varName = getVarName();
+                    TypeReference returnType = method.returnTypeReference();
+                    Expression expression = expressionFactory().createMethodCall(var.getName(), methodName, parameters);
+                    block.addStatement(ooFactory().createLocalVariable(returnType, varName, expression));
+                    callStack.push(new Variable(varName, returnType, var.getLevel() + 1, methodName));
+                    // Needed to prevent the exception of being thrown
+                    return;
+                } else {
+                    callStack.pop();
+                }
+            }
+            throw new IllegalArgumentException("The method " + methodName + " was not found!");
         }
     }
 }
