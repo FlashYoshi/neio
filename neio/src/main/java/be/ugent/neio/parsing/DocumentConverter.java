@@ -101,7 +101,7 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         String name = getVarName();
         TypeReference type = ooFactory().createTypeReference(documentType);
         Statement s = ooFactory().createLocalVariable(type, name, expressionFactory().createNewExpression(documentType));
-        vars.push(new Variable(name, type));
+        vars.push(new Variable(name, type, 0, documentType));
 
         System.out.println(ctx.HEADER().getText());
         return s;
@@ -147,13 +147,17 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
             String name = getVarName();
             List<FormalParameter> parameters = new ArrayList<>();
             parameters.add(new FormalParameter(parameter, ooFactory().createTypeReference("String")));
+            int nextLevel = vars.peek().getLevel() + 1;
             Variable var;
+
             if (isNested(m)) {
-                int nestedLevel = methodName.length();
-                parameters.add(new FormalParameter("" + nestedLevel, ooFactory().createTypeReference("Integer")));
-                var = new Variable(name, type, nestedLevel);
+                int nestingLevel = methodName.length();
+                // nestingLevel since this is a property that might be used by the chapter to decide what layout to use
+                // The total level is not important for this chapter
+                parameters.add(new FormalParameter("" + nestingLevel, ooFactory().createTypeReference("Integer")));
+                var = new Variable(name, type, nextLevel, methodName, nestingLevel);
             } else {
-                var = new Variable(name, type);
+                var = new Variable(name, type, nextLevel, methodName);
             }
 
             Expression expression = expressionFactory().createMethodCall(vars.peek().getName(), m.name(), parameters);
@@ -171,12 +175,22 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
 
             Variable var = vars.peek();
             List<Method> methods = getMethods(var.getType());
+            // Do we suspect nesting?
             if (nested) {
                 int nestedLevel = methodName.length();
-                // The new nesting can not be the same or smaller than the already existing nesting
-                if (!(var.isNested() && nestedLevel <= var.getLevel())) {
+                // Can not nest same elements
+                if (!methodName.equals(var.getMethodName())) {
                     List<Method> nestedMethods = methods.stream().filter(this::isNested).collect(Collectors.toList());
                     originalMethod = findMethod(methodName.charAt(0) + "", nestedMethods);
+                    // Is the found method really nested?
+                    if (originalMethod != null && isNested(originalMethod)) {
+                        // Then check the level IF it is not the same kind of method
+                        // Level check is for i.e. # when the previous method was ###
+                        // The same methodCheck is for i.e. * when the previous method was ##
+                        if (sameNestedMethod(originalMethod.name(), methodName) && (nestedLevel <= var.getNestingLevel())) {
+                            originalMethod = null;
+                        }
+                    }
                 }
             }
 
@@ -193,6 +207,24 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         }
 
         return originalMethod;
+    }
+
+    private boolean sameNestedMethod(String nestedMethod, String toTest) {
+        Pattern p = Pattern.compile("^" + nestedMethod.charAt(0) + "+$");
+        Matcher m = p.matcher(toTest);
+        return m.matches();
+    }
+
+    /**
+     * Checks if a method could be a nested method
+     *
+     * @param method the name of the method to test
+     * @return if the method might be a nested method
+     */
+    private boolean isNested(String method) {
+        Pattern p = Pattern.compile("^" + method.charAt(0) + "+$");
+        Matcher m = p.matcher(method);
+        return m.matches();
     }
 
     private boolean isNested(Method m) {
@@ -228,18 +260,6 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         }
 
         return result;
-    }
-
-    /**
-     * Checks if a method could be a nested method
-     *
-     * @param method the name of the method to test
-     * @return if the method might be a nested method
-     */
-    private boolean isNested(String method) {
-        Pattern p = Pattern.compile("^" + method.charAt(0) + "+$");
-        Matcher m = p.matcher(method);
-        return m.matches();
     }
 
     private void visitPostFixCall(ContentContext ctx) {
