@@ -16,10 +16,6 @@ public class Nested extends ModifierImpl {
 
     @Override
     public PropertySet<Element, ChameleonProperty> impliedProperties() {
-        try {
-            return this.createSet(this.language().property("accessibility.nested"));
-        } catch (NullPointerException var2) {
-            return this.createSet(this.language().property("accessibility.nested"));
-        }
+        return this.createSet(this.language(Neio.class).NESTED);
     }
 }

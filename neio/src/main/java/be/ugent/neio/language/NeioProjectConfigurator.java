@@ -11,7 +11,7 @@ import static be.ugent.neio.util.Constants.*;
 
 public class NeioProjectConfigurator extends BaseLibraryJavaProjectConfigurator {
 
-    private final String langName = LANG_NAME;
+    private final String langName = Neio.NAME;
 
     /**
      * Set baseLibraryInParent to true when running from class files outside eclipse.
