@@ -11,3 +11,4 @@ The goal of Neio is to improve mainly on LaTeX, but also on other markup languag
 * [Chameleon](https://github.com/markovandooren/chameleon)
 * [Chameleon Support](https://github.ugent.be/tivervac/ChameleonSupport)
 * [Jnome](https://github.com/markovandooren/jnome)
+* [ANTLR](http://www.antlr.org/)
