@@ -38,6 +38,30 @@ public class Main {
      * Exit code 4: Could not build everything NEIO_HOME
      */
     public static void main(String[] args) {
+        new Main().read(args);
+    }
+
+    private void read(String[] args) {
+        File inputFile = getInputFile(args);
+        View view = getView();
+
+        try {
+            List<Document> documents = view.sourceDocuments();
+            Document document = documents.get(0);
+            translateDocument(inputFile, document.view(JavaView.class), document);
+        } catch (InputException e) {
+            e.printStackTrace();
+        }
+        /*LanguageBuilder builder = new NeioBuilder(project.views().get(0));
+        try {
+            builder.buildAll(new File(AUTO_GEN_DIR), null);
+        } catch (BuildException e) {
+            e.printStackTrace();
+            System.exit(4);
+        }*/
+    }
+
+    private File getInputFile(String[] args) {
         if (args.length < 1) {
             printHelp("neio.jar");
             System.exit(1);
@@ -55,8 +79,15 @@ public class Main {
             System.exit(3);
         }
 
-        Config.setCaching(true);
+        return inputFile;
+    }
 
+    private void printHelp(String programName) {
+        System.out.println("USAGE: java -jar " + programName + " <path-to-outputdir> <path-to-inputfile>");
+    }
+
+    private View getView() {
+        Config.setCaching(true);
         LanguageRepository repo = new LanguageRepository();
         Workspace workspace = new Workspace(repo);
 
@@ -69,34 +100,11 @@ public class Main {
         XMLProjectLoader config = new XMLProjectLoader(workspace);
         Project project = config.project(configFile, null);
 
-        View view = project.views().get(0);
-        try {
-            List<Document> documents = view.sourceDocuments();
-            Document document = documents.get(0);
-            translateDocument(inputFile, document.view(JavaView.class), document);
-        } catch (InputException e) {
-            e.printStackTrace();
-        }
-        /*LanguageBuilder builder = new NeioBuilder(project.views().get(0));
-        try {
-            builder.buildAll(new File(AUTO_GEN_DIR), null);
-        } catch (BuildException e) {
-            e.printStackTrace();
-            System.exit(4);
-        }*/
+        return project.views().get(0);
     }
 
-    public static void printHelp(String programName) {
-        System.out.println("USAGE: java -jar " + programName + " <path-to-outputdir> <path-to-inputfile>");
-    }
-
-    public static void translateDocument(File file, JavaView view, Document document) {
+    private void translateDocument(File file, JavaView view, Document document) {
         try {
-            CharStream input = new ANTLRInputStream(new FileInputStream(file));
-            Lexer lexer = new DocumentLexer(input);
-            TokenStream tokens = new CommonTokenStream(lexer);
-            DocumentParser parser = new DocumentParser(tokens);
-
             Java7 target = new Java7LanguageFactory().create();
             JavaView targetView = new JavaView(new LazyRootNamespace(), target);
             Document newDocument = document.cloneTo(targetView);
@@ -105,13 +113,22 @@ public class Main {
             File output = new File(AUTO_GEN_DIR);
             String name = file.getName().split("\\.")[0];
 
+            DocumentParser parser = getParser(file);
             DocumentConverter converter = new DocumentConverter(newDocument, view, name);
             Document javaDocument = converter.visitDocument(parser.document());
 
             DocumentWriter writer = new JavaDocumentWriter(".java");
             writer.write(javaDocument, output);
-        } catch (IOException | ModelException e) {
+        } catch (ModelException | IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private DocumentParser getParser(File file) throws IOException {
+        CharStream input = new ANTLRInputStream(new FileInputStream(file));
+        Lexer lexer = new DocumentLexer(input);
+        TokenStream tokens = new CommonTokenStream(lexer);
+
+        return new DocumentParser(tokens);
     }
 }
