@@ -8,8 +8,6 @@ import be.ugent.neio.industry.NeioLanguageFactory;
 import be.ugent.neio.language.Neio;
 import be.ugent.neio.language.NeioProjectConfigurator;
 import be.ugent.neio.parsing.DocumentConverter;
-import be.ugent.neio.parsing.DocumentLexer;
-import be.ugent.neio.parsing.DocumentParser;
 import org.aikodi.chameleon.core.Config;
 import org.aikodi.chameleon.core.document.Document;
 import org.aikodi.chameleon.core.namespace.LazyRootNamespace;
@@ -18,6 +16,7 @@ import org.aikodi.chameleon.exception.ModelException;
 import org.aikodi.chameleon.plugin.build.DocumentWriter;
 import org.aikodi.chameleon.workspace.*;
 import org.antlr.v4.runtime.*;
+import org.neio.antlr.*;
 
 import java.io.File;
 import java.io.FileInputStream;

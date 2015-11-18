@@ -5,7 +5,6 @@ import be.kuleuven.cs.distrinet.jnome.workspace.JavaView;
 import be.ugent.neio.industry.NeioFactory;
 import be.ugent.neio.language.Neio;
 import be.ugent.neio.language.Nested;
-import be.ugent.neio.parsing.ClassParser.*;
 import org.aikodi.chameleon.core.document.Document;
 import org.aikodi.chameleon.core.factory.Factory;
 import org.aikodi.chameleon.core.modifier.Modifier;
@@ -25,6 +24,8 @@ import org.aikodi.chameleon.support.expression.AssignmentExpression;
 import org.aikodi.chameleon.support.member.simplename.variable.MemberVariableDeclarator;
 import org.aikodi.chameleon.support.modifier.Constructor;
 import org.aikodi.chameleon.support.statement.ReturnStatement;
+import org.neio.antlr.ClassParser.*;
+import org.neio.antlr.ClassParserBaseVisitor;
 
 import java.util.ArrayList;
 import java.util.List;

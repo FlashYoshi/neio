@@ -1,6 +1,7 @@
 plugins {
-    id "me.champeau.gradle.antlr4" version "0.1"
-    id "antlr"
+    id 'me.champeau.gradle.antlr4' version '0.1'
+    id 'antlr'
+    id 'groovy'
 }
 
 group 'be.ugent'
@@ -35,30 +36,26 @@ dependencies {
     antlr "org.antlr:antlr4:4.5"
 
     compile project(':ChameleonSupport')
+    compile fileTree(dir: 'build/libs', include: '**/*.jar')
 }
 
 // Antlr4 Configuration
 antlr4 {
     source = file('src/main/grammar')
-    output = file('src/main/java/be/ugent/neio/parsing')
-    extraArgs = ['-package', 'be.ugent.neio.parsing']
+    output = file('build/tmp/compileJava/antlr/org/neio/antlr')
+    extraArgs = ['-package', 'org.neio.antlr']
 }
 
-sourceSets {
-    main {
-        java {
-            srcDir 'src'
-        }
-    }
+task compileAntlr (type: JavaCompile, dependsOn: antlr4) {
+    source = 'build/tmp/compileJava/antlr/org/neio/antlr'
+    classpath = sourceSets.main.compileClasspath
+    destinationDir = file('build/classes/antlr')
 }
-// Make the Java compile task depend on the Antlr4 task
-compileJava.dependsOn antlr4
 
-// Add the generated source files to the list of java sources
-sourceSets.main.java.srcDirs += antlr4.output
-
-// Add Antlr4 to classpath
-configurations {
-    compile.extendsFrom antlr4
+task antlrJar(type: Jar, dependsOn: compileAntlr) {
+    baseName = 'org.neio.antlr'
+    version = '0.6'
+    from 'build/classes/antlr'
 }
-// End Antlr4 Configuration
+
+assemble.dependsOn 'antlrJar'

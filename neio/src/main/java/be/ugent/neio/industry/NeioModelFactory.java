@@ -2,8 +2,6 @@ package be.ugent.neio.industry;
 
 import be.kuleuven.cs.distrinet.jnome.workspace.JavaView;
 import be.ugent.neio.parsing.ClassConverter;
-import be.ugent.neio.parsing.ClassLexer;
-import be.ugent.neio.parsing.ClassParser;
 import org.aikodi.chameleon.core.document.Document;
 import org.aikodi.chameleon.input.ModelFactory;
 import org.aikodi.chameleon.input.ParseException;
@@ -12,6 +10,8 @@ import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.TokenStream;
+import org.neio.antlr.ClassLexer;
+import org.neio.antlr.ClassParser;
 
 import java.io.IOException;
 import java.io.InputStream;
