@@ -7,16 +7,19 @@ import be.kuleuven.cs.distrinet.jnome.workspace.JavaView;
 import be.ugent.neio.industry.NeioLanguageFactory;
 import be.ugent.neio.language.Neio;
 import be.ugent.neio.language.NeioProjectConfigurator;
+import be.ugent.neio.model.document.TextDocument;
 import be.ugent.neio.parsing.DocumentConverter;
 import org.aikodi.chameleon.core.Config;
 import org.aikodi.chameleon.core.document.Document;
 import org.aikodi.chameleon.core.namespace.LazyRootNamespace;
 import org.aikodi.chameleon.core.namespacedeclaration.NamespaceDeclaration;
 import org.aikodi.chameleon.exception.ModelException;
+import org.aikodi.chameleon.oo.statement.Block;
 import org.aikodi.chameleon.plugin.build.DocumentWriter;
 import org.aikodi.chameleon.workspace.*;
 import org.antlr.v4.runtime.*;
-import org.neio.antlr.*;
+import org.neio.antlr.DocumentLexer;
+import org.neio.antlr.DocumentParser;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -47,7 +50,7 @@ public class Main {
         try {
             List<Document> documents = view.sourceDocuments();
             Document document = documents.get(0);
-            translateDocument(inputFile, document.view(JavaView.class), document);
+            translateDocument(inputFile, document.view(JavaView.class));
         } catch (InputException e) {
             e.printStackTrace();
         }
@@ -102,22 +105,23 @@ public class Main {
         return project.views().get(0);
     }
 
-    private void translateDocument(File file, JavaView view, Document document) {
+    private void translateDocument(File file, JavaView view) {
         try {
-            Java7 target = new Java7LanguageFactory().create();
-            JavaView targetView = new JavaView(new LazyRootNamespace(), target);
-            Document newDocument = document.cloneTo(targetView);
-
-            newDocument.namespaceDeclarations().forEach(NamespaceDeclaration::disconnect);
             File output = new File(AUTO_GEN_DIR);
             String name = file.getName().split("\\.")[0];
 
             DocumentParser parser = getParser(file);
-            DocumentConverter converter = new DocumentConverter(newDocument, view, name);
-            Document javaDocument = converter.visitDocument(parser.document());
+            DocumentConverter converter = new DocumentConverter(view, name);
+            Block block = converter.visitDocument(parser.document());
 
+            Java7 target = new Java7LanguageFactory().create();
+            JavaView targetView = new JavaView(new LazyRootNamespace(), target);
+            TextDocument document = new TextDocument(targetView, block);
+
+            //Document javaDocument = createJavaDocument;
             DocumentWriter writer = new JavaDocumentWriter(".java");
-            writer.write(javaDocument, output);
+            //writer.write(javaDocument, output);
+            writer.write(document, output);
         } catch (ModelException | IOException e) {
             e.printStackTrace();
         }

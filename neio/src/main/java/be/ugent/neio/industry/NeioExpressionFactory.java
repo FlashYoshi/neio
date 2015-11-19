@@ -21,6 +21,10 @@ public class NeioExpressionFactory extends JavaExpressionFactory {
         return createNameExpression("new " + createMethodString(null, method, parameters));
     }
 
+    public Expression createMethodCall(String method, List<FormalParameter> parameters) {
+        return createNameExpression(createMethodString(null, method, parameters));
+    }
+
     public Expression createMethodCall(String caller, String method, List<FormalParameter> parameters) {
         return createNameExpression(createMethodString(caller, method, parameters));
     }
@@ -38,7 +42,7 @@ public class NeioExpressionFactory extends JavaExpressionFactory {
         }
 
         result = method + "(" + result + ")";
-        if (caller != null) {
+        if (caller != null && !caller.isEmpty()) {
             result = caller + "." + result;
         }
 

@@ -5,23 +5,16 @@ import be.ugent.neio.industry.NeioExpressionFactory;
 import be.ugent.neio.industry.NeioFactory;
 import be.ugent.neio.language.Neio;
 import be.ugent.neio.model.modifier.Nested;
-import org.aikodi.chameleon.core.document.Document;
-import org.aikodi.chameleon.core.factory.Factory;
 import org.aikodi.chameleon.core.lookup.LookupException;
 import org.aikodi.chameleon.core.modifier.Modifier;
-import org.aikodi.chameleon.core.namespace.NamespaceReference;
-import org.aikodi.chameleon.core.namespacedeclaration.NamespaceDeclaration;
 import org.aikodi.chameleon.oo.expression.Expression;
 import org.aikodi.chameleon.oo.expression.ExpressionFactory;
 import org.aikodi.chameleon.oo.method.Method;
 import org.aikodi.chameleon.oo.plugin.ObjectOrientedFactory;
 import org.aikodi.chameleon.oo.statement.Block;
 import org.aikodi.chameleon.oo.statement.Statement;
-import org.aikodi.chameleon.oo.type.Type;
 import org.aikodi.chameleon.oo.type.TypeReference;
 import org.aikodi.chameleon.oo.variable.FormalParameter;
-import org.aikodi.chameleon.support.modifier.Public;
-import org.aikodi.chameleon.support.modifier.Static;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.neio.antlr.DocumentParser.ContentContext;
 import org.neio.antlr.DocumentParser.DocumentContext;
@@ -29,7 +22,6 @@ import org.neio.antlr.DocumentParser.SentenceContext;
 import org.neio.antlr.DocumentParserBaseVisitor;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Stack;
 import java.util.regex.Matcher;
@@ -42,30 +34,18 @@ import java.util.stream.Collectors;
  */
 public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
 
-    private static final String VAR_NAME = "var";
-    private final Document document;
     private final Neio neio;
     private final Block block;
     private final String name;
     private final Stack<Variable> callStack;
     private final JavaView view;
-    private int varCount = 0;
-    private HashMap<String, String> aliases;
 
-    public DocumentConverter(Document document, JavaView view, String name) {
-        this.document = document;
+    public DocumentConverter(JavaView view, String name) {
         this.view = view;
         this.neio = view.language(Neio.class);
         this.block = ooFactory().createBlock();
         this.name = name;
         this.callStack = new Stack<>();
-        this.aliases = new HashMap<>();
-        aliases.put("#", "hash");
-        aliases.put("*", "star");
-    }
-
-    protected Factory factory() {
-        return neio.plugin(Factory.class);
     }
 
     protected NeioFactory ooFactory() {
@@ -76,45 +56,23 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         return (NeioExpressionFactory) neio.plugin(ExpressionFactory.class);
     }
 
-    public Document visitDocument(DocumentContext ctx) {
-        block.addStatement(visitHeader(ctx));
+    public Block visitDocument(DocumentContext ctx) {
+        System.out.println("Parsing " + name + "...");
+        visitHeader(ctx);
         visitBody(ctx);
 
-        fillDocument();
-
-        return document;
+        return block;
     }
 
-    private void fillDocument() {
-        NamespaceDeclaration ns = factory().createNamespaceDeclaration(new NamespaceReference("be.ugent"));
-        Type type = ooFactory().createRegularType(name);
-        type.addModifier(new Public());
-        Method method = ooFactory().createMethod("main", "void");
-        method.header().addFormalParameter(new FormalParameter("args", ooFactory().createTypeReference("String[]")));
-        method.addModifier(new Public());
-        method.addModifier(new Static());
-
-        method.setImplementation(ooFactory().createImplementation(block));
-        type.add(method);
-        ns.add(type);
-        document.add(ns);
-    }
-
-    private Statement visitHeader(DocumentContext ctx) {
+    private void visitHeader(DocumentContext ctx) {
         String header = ctx.HEADER().getText();
         // Strip the brackets
         String documentType = header.substring(1, header.length() - 1);
-        String name = getVarName();
         TypeReference type = ooFactory().createTypeReference(documentType);
-        Statement s = ooFactory().createLocalVariable(type, name, expressionFactory().createNewExpression(documentType));
-        callStack.push(new Variable(name, type, 0, documentType));
+        block.addStatement(ooFactory().createStatement(expressionFactory().createNewExpression(documentType)));
+        callStack.push(new Variable(type, 0, documentType));
 
         System.out.println(ctx.HEADER().getText());
-        return s;
-    }
-
-    private String getVarName() {
-        return VAR_NAME + varCount++;
     }
 
     private void visitBody(DocumentContext ctx) {
@@ -154,7 +112,6 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
             Method m = findNeioMethod(methodName, nested);
 
             // Add the parameters
-            String name = getVarName();
             List<FormalParameter> parameters = new ArrayList<>();
             parameters.add(new FormalParameter(parameter, ooFactory().createTypeReference("String")));
 
@@ -167,20 +124,14 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
                 // nestingLevel since this is a property that might be used by the chapter to decide what layout to use
                 // The total level is not important for this chapter
                 parameters.add(new FormalParameter("" + nestingLevel, ooFactory().createTypeReference("Integer")));
-                var = new Variable(name, type, nextLevel, methodName, nestingLevel);
+                var = new Variable(type, nextLevel, methodName, nestingLevel);
             } else {
-                var = new Variable(name, type, nextLevel, methodName);
-            }
-
-            // Check if we have an alias for the method name
-            String javaMethodName = m.name();
-            if (aliases.get(javaMethodName) != null) {
-                javaMethodName = aliases.get(javaMethodName);
+                var = new Variable(type, nextLevel, methodName);
             }
 
             // Add the statement to the block and add the method to the call stack
-            Expression expression = expressionFactory().createMethodCall(callStack.peek().getName(), javaMethodName, parameters);
-            block.addStatement(ooFactory().createLocalVariable(type, name, expression));
+            Expression expression = expressionFactory().createMethodCall(m.name(), parameters);
+            block.addStatement(ooFactory().createStatement(expression));
             callStack.push(var);
         }
     }
@@ -327,11 +278,10 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
                     List<FormalParameter> parameters = new ArrayList<>();
                     parameters.add(new FormalParameter(paragraph, ooFactory().createTypeReference("String")));
 
-                    String varName = getVarName();
                     TypeReference returnType = method.returnTypeReference();
-                    Expression expression = expressionFactory().createMethodCall(var.getName(), methodName, parameters);
-                    block.addStatement(ooFactory().createLocalVariable(returnType, varName, expression));
-                    callStack.push(new Variable(varName, returnType, var.getLevel() + 1, methodName));
+                    Expression expression = expressionFactory().createMethodCall(methodName, parameters);
+                    block.addStatement(ooFactory().createStatement(expression));
+                    callStack.push(new Variable(returnType, var.getLevel() + 1, methodName));
                     // Needed to prevent the exception of being thrown
                     return;
                 } else {
