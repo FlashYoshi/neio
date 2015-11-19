@@ -40,12 +40,10 @@ import static be.ugent.neio.util.Keywords.INTERFACE;
 public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     private final Document document;
-    private final JavaView view;
     private final Neio neio;
 
     public ClassConverter(Document document, JavaView view) {
         this.document = document;
-        this.view = view;
         this.neio = view.language(Neio.class);
     }
 
@@ -69,7 +67,6 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     private void visitHeader(DocumentContext ctx) {
         String header = ctx.HEADER().getText();
         String klassName = ctx.CLASS_NAME().getText();
-        System.out.println(header + " " + klassName);
         switch (header) {
             case CLASS:
                 visitClass(ctx, klassName);
@@ -89,7 +86,6 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         visitExtensions(body, klass);
         visitFields(body, klass);
         visitMethods(body, klass);
-        System.out.println();
 
         ns.add(klass);
         document.add(ns);
@@ -97,7 +93,6 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     private void visitExtensions(ClassBodyContext body, Type klass) {
         for (ExtensionContext extension : body.extension()) {
-            System.out.println(extension.chain().getText());
             klass.addInheritanceRelation(visitExtension(extension));
         }
     }
@@ -113,7 +108,6 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     private void visitFields(ClassBodyContext body, Type klass) {
         for (FieldContext field : body.field()) {
-            System.out.println(field.var().fieldName().getText() + " " + field.var().CAMEL_CASE().getText() + ";");
             klass.add(visitField(field));
         }
     }
@@ -129,7 +123,6 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     private void visitMethods(ClassBodyContext body, Type klass) {
         for (MethodContext method : body.method()) {
             klass.add(visitMethod(method, klass.name()));
-            System.out.println();
         }
     }
 
@@ -138,9 +131,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         Modifier m = null;
         if (ctx.METHOD_OPTION() != null) {
             m = new Nested();
-            System.out.print(ctx.METHOD_OPTION().getText());
         }
-        System.out.println(ctx.decl().getText() + " {");
 
         String returnType = klassName;
         Constructor c = null;
@@ -170,7 +161,6 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         }
 
         method.setImplementation(ooFactory().createImplementation(b));
-        System.out.println("}");
 
         return method;
     }
@@ -182,8 +172,6 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     @Override
     public Statement visitStatement(StatementContext ctx) {
-        System.out.println(ctx.getText());
-
         Expression e;
         if (ctx.newAssignment() != null) {
             if (!varDeclaration(ctx.newAssignment())) {
@@ -385,9 +373,6 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     @Override
     public ReturnStatement visitReturnCall(ReturnCallContext ctx) {
-        System.out.println();
-        System.out.println(ctx.getText());
-
         Expression e;
         if (ctx.newCall() != null) {
             e = visitNewCall(ctx.newCall());
