@@ -112,11 +112,13 @@ public class Main {
 
             DocumentParser parser = getParser(file);
             DocumentConverter converter = new DocumentConverter(view, name);
-            Block block = converter.visitDocument(parser.document());
+//            Block block = converter.visitDocument(parser.document());
+            NamespaceDeclaration nd = converter.visitDocument(parser.document());
 
             Java7 target = new Java7LanguageFactory().create();
             JavaView targetView = new JavaView(new LazyRootNamespace(), target);
-            TextDocument document = new TextDocument(targetView, block);
+            TextDocument document = new TextDocument(targetView, new Block());
+            document.add(nd);
 
             //Document javaDocument = createJavaDocument;
             DocumentWriter writer = new JavaDocumentWriter(".java");
