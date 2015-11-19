@@ -187,18 +187,16 @@ public abstract class AbstractJava8Generator {
                     t.addModifier(modifier.clone(modifier));
                     t.flushCache();
                 }
-                ;
             });
         }
 
         public void whenTranslated(Predicate<T> predicate) {
             this.predicate = predicate;
             element.apply(type, t -> {
-                if (predicate.test((T) t)) {
+                if (predicate.test(t)) {
                     t.addModifier(modifier.clone(modifier));
                     t.flushCache();
                 }
-                ;
             });
         }
     }

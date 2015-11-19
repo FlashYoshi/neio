@@ -4,7 +4,7 @@ import be.kuleuven.cs.distrinet.jnome.core.expression.invocation.ConstructorInvo
 import be.kuleuven.cs.distrinet.jnome.workspace.JavaView;
 import be.ugent.neio.industry.NeioFactory;
 import be.ugent.neio.language.Neio;
-import be.ugent.neio.language.Nested;
+import be.ugent.neio.model.modifier.Nested;
 import org.aikodi.chameleon.core.document.Document;
 import org.aikodi.chameleon.core.factory.Factory;
 import org.aikodi.chameleon.core.modifier.Modifier;

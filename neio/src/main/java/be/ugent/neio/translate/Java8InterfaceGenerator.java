@@ -90,7 +90,7 @@ public class Java8InterfaceGenerator extends AbstractJava8Generator {
                     }
                     javaBody.addStatement(new StatementExpression(invocation));
                     javaBody.addStatement(new ReturnStatement(new NameExpression(resultVariableName())));
-                    ((RegularImplementation) ((NormalMethod) javaMethod).implementation()).setBody(javaBody);
+                    ((RegularImplementation) javaMethod.implementation()).setBody(javaBody);
                 }
             }
         });

@@ -1,6 +1,7 @@
 # General
 .swp
-ChameleonSupport
+ChameleonSupport/
+chameleon/
 
 # Java
 *.class
