@@ -12,7 +12,6 @@ import org.aikodi.chameleon.oo.expression.ExpressionFactory;
 import org.aikodi.chameleon.oo.method.Method;
 import org.aikodi.chameleon.oo.plugin.ObjectOrientedFactory;
 import org.aikodi.chameleon.oo.statement.Block;
-import org.aikodi.chameleon.oo.statement.Statement;
 import org.aikodi.chameleon.oo.type.TypeReference;
 import org.aikodi.chameleon.oo.variable.FormalParameter;
 import org.antlr.v4.runtime.tree.TerminalNode;
@@ -71,8 +70,6 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         TypeReference type = ooFactory().createTypeReference(documentType);
         block.addStatement(ooFactory().createStatement(expressionFactory().createNewExpression(documentType)));
         callStack.push(new Variable(type, 0, documentType));
-
-        System.out.println(ctx.HEADER().getText());
     }
 
     private void visitBody(DocumentContext ctx) {
@@ -84,9 +81,7 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         visitPrefixCall(ctx);
         visitPostFixCall(ctx);
         visitText(ctx);
-        if (ctx.mnl() != null) {
-            System.out.print(ctx.mnl().getText());
-        }
+
         return null;
     }
 
@@ -97,14 +92,12 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
             for (TerminalNode h : ctx.prefixCall().HASH()) {
                 methodName += h;
             }
-            System.out.print(methodName + " ");
 
             // Find the parameters and print them
             String parameter = "";
             for (TerminalNode w : ctx.prefixCall().sentence().WORD()) {
                 parameter += w + " ";
             }
-            System.out.println(parameter);
 
             // Check if this method might be a nested method
             boolean nested = isNested(methodName);
@@ -239,7 +232,7 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
 
     private void visitPostFixCall(ContentContext ctx) {
         if (ctx.postfixCall() != null) {
-            System.out.println(ctx.postfixCall().getText());
+            // Parse postfixcall
         }
     }
 
@@ -265,7 +258,6 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
                     paragraph += "\\n";
                 }
             }
-            System.out.print(paragraph);
 
             // This is always the newline method
             String methodName = "newline";
