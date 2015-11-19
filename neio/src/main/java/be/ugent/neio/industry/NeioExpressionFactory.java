@@ -1,8 +1,10 @@
 package be.ugent.neio.industry;
 
 import be.kuleuven.cs.distrinet.jnome.input.JavaExpressionFactory;
+import org.aikodi.chameleon.core.reference.CrossReferenceTarget;
 import org.aikodi.chameleon.oo.expression.Expression;
 import org.aikodi.chameleon.oo.variable.FormalParameter;
+import org.aikodi.chameleon.support.member.simplename.method.RegularMethodInvocation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,16 +19,14 @@ public class NeioExpressionFactory extends JavaExpressionFactory {
     }
 
     public Expression createNewExpression(String method, List<FormalParameter> parameters) {
-
         return createNameExpression("new " + createMethodString(null, method, parameters));
     }
 
-    public Expression createMethodCall(String method, List<FormalParameter> parameters) {
-        return createNameExpression(createMethodString(null, method, parameters));
-    }
+    public Expression createMethodInvocation(String methodName, CrossReferenceTarget returnType, List<Expression> arguments) {
+        RegularMethodInvocation rmi = new RegularMethodInvocation(methodName, returnType);
+        rmi.addAllArguments(arguments);
 
-    public Expression createMethodCall(String caller, String method, List<FormalParameter> parameters) {
-        return createNameExpression(createMethodString(caller, method, parameters));
+        return rmi;
     }
 
     private String createMethodString(String caller, String method, List<FormalParameter> parameters) {
