@@ -17,6 +17,7 @@ import org.aikodi.chameleon.oo.statement.Block;
 import org.aikodi.chameleon.oo.statement.Statement;
 import org.aikodi.chameleon.oo.type.BasicTypeReference;
 import org.aikodi.chameleon.oo.type.RegularType;
+import org.aikodi.chameleon.oo.type.Type;
 import org.aikodi.chameleon.oo.type.TypeReference;
 import org.aikodi.chameleon.oo.type.inheritance.SubtypeRelation;
 import org.aikodi.chameleon.oo.variable.VariableDeclaration;
@@ -40,6 +41,10 @@ public class NeioFactory extends Java7Factory {
 
     public TypeReference createTypeReference(String name) {
         return new BasicTypeReference(name);
+    }
+
+    public TypeReference createTypeReference(Type type) {
+        return createTypeReference(type.name());
     }
 
     public SubtypeRelation createSubtypeRelation(TypeReference type) {
