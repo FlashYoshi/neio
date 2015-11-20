@@ -1,22 +1,17 @@
 package be.ugent.neio;
 
-import be.kuleuven.cs.distrinet.jnome.core.language.Java7;
-import be.kuleuven.cs.distrinet.jnome.core.language.Java7LanguageFactory;
 import be.kuleuven.cs.distrinet.jnome.output.JavaDocumentWriter;
 import be.kuleuven.cs.distrinet.jnome.workspace.JavaView;
+import be.ugent.neio.builder.ClassBuilder;
 import be.ugent.neio.industry.NeioLanguageFactory;
 import be.ugent.neio.language.Neio;
-import be.ugent.neio.language.NeioProjectConfigurator;
 import be.ugent.neio.model.document.TextDocument;
 import be.ugent.neio.parsing.DocumentConverter;
-import org.aikodi.chameleon.core.Config;
 import org.aikodi.chameleon.core.document.Document;
 import org.aikodi.chameleon.core.namespace.LazyRootNamespace;
-import org.aikodi.chameleon.core.namespacedeclaration.NamespaceDeclaration;
 import org.aikodi.chameleon.exception.ModelException;
 import org.aikodi.chameleon.oo.statement.Block;
 import org.aikodi.chameleon.plugin.build.DocumentWriter;
-import org.aikodi.chameleon.workspace.*;
 import org.antlr.v4.runtime.*;
 import org.neio.antlr.DocumentLexer;
 import org.neio.antlr.DocumentParser;
@@ -37,7 +32,7 @@ public class Main {
      * Exit code 1: Invalid call to program
      * Exit code 2: Input file can not be read or does not exist
      * Exit code 3: Input file has the wrong extension
-     * Exit code 4: Could not build everything NEIO_HOME
+     * Exit code 4: Could not build everything in NEIO_HOME
      */
     public static void main(String[] args) {
         new Main().read(args);
@@ -45,16 +40,12 @@ public class Main {
 
     private void read(String[] args) {
         File inputFile = getInputFile(args);
-        View view = getView();
+        ClassBuilder builder = new ClassBuilder();
+        List<Document> documents = builder.build("../base_library/project.xml");
 
-        try {
-            List<Document> documents = view.sourceDocuments();
-            Document document = documents.get(0);
-            translateDocument(inputFile, document.view(JavaView.class));
-        } catch (InputException e) {
-            e.printStackTrace();
-        }
-        /*LanguageBuilder builder = new NeioBuilder(project.views().get(0));
+        Document document = documents.get(0);
+        translateDocument(inputFile, document.view(JavaView.class), document);
+        /*LanguageBuilder builder = new NeioBuilder(view);
         try {
             builder.buildAll(new File(AUTO_GEN_DIR), null);
         } catch (BuildException e) {
@@ -88,43 +79,34 @@ public class Main {
         System.out.println("USAGE: java -jar " + programName + " <path-to-outputdir> <path-to-inputfile>");
     }
 
-    private View getView() {
-        Config.setCaching(true);
-        LanguageRepository repo = new LanguageRepository();
-        Workspace workspace = new Workspace(repo);
-
-        repo.add(new Java7LanguageFactory().create());
-        Neio neio = new NeioLanguageFactory().create();
-        repo.add(neio);
-        ((NeioProjectConfigurator) neio.plugin(ProjectConfigurator.class)).searchInParent();
-
-        File configFile = new File("../base_library/project.xml");
-        XMLProjectLoader config = new XMLProjectLoader(workspace);
-        Project project = config.project(configFile, null);
-
-        return project.views().get(0);
-    }
-
-    private void translateDocument(File file, JavaView view) {
+    private void translateDocument(File file, JavaView view, Document d) {
         try {
             File output = new File(AUTO_GEN_DIR);
             String name = file.getName().split("\\.")[0];
 
+            Neio target = new NeioLanguageFactory().create();
+            JavaView targetView = new JavaView(new LazyRootNamespace(), target);
+            TextDocument document = new TextDocument(targetView, d, new Block());
+
             DocumentParser parser = getParser(file);
             DocumentConverter converter = new DocumentConverter(view, name);
 //            Block block = converter.visitDocument(parser.document());
-            NamespaceDeclaration nd = converter.visitDocument(parser.document());
+            converter.visitDocument(parser.document(), document.namespaceDeclarations().get(0));
 
-            Java7 target = new Java7LanguageFactory().create();
-            JavaView targetView = new JavaView(new LazyRootNamespace(), target);
-            TextDocument document = new TextDocument(targetView, new Block());
-            document.add(nd);
+            //document.add(nd);
 
+//            LanguageBuilder builder = new NeioBuilder(document.view());
+//            try {
+//                builder.build(document, output);
+//            } catch (BuildException e) {
+//                e.printStackTrace();
+//                System.exit(4);
+//            }
             //Document javaDocument = createJavaDocument;
             DocumentWriter writer = new JavaDocumentWriter(".java");
             //writer.write(javaDocument, output);
             writer.write(document, output);
-        } catch (ModelException | IOException e) {
+        } catch (IOException | ModelException e) {
             e.printStackTrace();
         }
     }
