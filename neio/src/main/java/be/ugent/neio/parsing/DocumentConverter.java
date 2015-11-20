@@ -5,11 +5,12 @@ import be.ugent.neio.industry.NeioExpressionFactory;
 import be.ugent.neio.industry.NeioFactory;
 import be.ugent.neio.language.Neio;
 import be.ugent.neio.model.modifier.Nested;
+import be.ugent.neio.model.type.ContextType;
 import org.aikodi.chameleon.core.factory.Factory;
 import org.aikodi.chameleon.core.lookup.LookupException;
 import org.aikodi.chameleon.core.modifier.Modifier;
-import org.aikodi.chameleon.core.namespace.NamespaceReference;
 import org.aikodi.chameleon.core.namespacedeclaration.NamespaceDeclaration;
+import org.aikodi.chameleon.exception.ChameleonProgrammerException;
 import org.aikodi.chameleon.oo.expression.Expression;
 import org.aikodi.chameleon.oo.expression.ExpressionFactory;
 import org.aikodi.chameleon.oo.method.Method;
@@ -28,10 +29,8 @@ import org.neio.antlr.DocumentParserBaseVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 
 /**
@@ -42,17 +41,17 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
     private final Neio neio;
     private final Block block;
     private final String name;
-    private final Stack<Variable> callStack;
     private final JavaView view;
-    private Expression previousExpression;
+    private boolean firstMethod;
+    private Type previousType;
 
     public DocumentConverter(JavaView view, String name) {
         this.view = view;
         this.neio = view.language(Neio.class);
         this.block = ooFactory().createBlock();
         this.name = name;
-        this.callStack = new Stack<>();
-        previousExpression = null;
+        previousType = null;
+        firstMethod = true;
     }
 
     protected NeioFactory factory() {
@@ -67,18 +66,17 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         return (NeioExpressionFactory) neio.plugin(ExpressionFactory.class);
     }
 
-    public NamespaceDeclaration visitDocument(DocumentContext ctx) {
+    public void visitDocument(DocumentContext ctx, NamespaceDeclaration nd) throws LookupException {
         System.out.println("Parsing " + name + "...");
         visitHeader(ctx);
         visitBody(ctx);
 
-        return fillDocument();
+        fillDocument(nd);
 
         //return block;
     }
 
-    private NamespaceDeclaration fillDocument() {
-        NamespaceDeclaration ns = factory().createNamespaceDeclaration(new NamespaceReference("be.ugent"));
+    private void fillDocument(NamespaceDeclaration nd) {
         Type type = ooFactory().createRegularType(name);
         type.addModifier(new Public());
         Method method = ooFactory().createMethod("main", "void");
@@ -88,20 +86,19 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
 
         method.setImplementation(ooFactory().createImplementation(block));
         type.add(method);
-        ns.add(type);
-
-        return ns;
+        nd.add(type);
     }
 
-    private void visitHeader(DocumentContext ctx) {
+    private void visitHeader(DocumentContext ctx) throws LookupException {
         String header = ctx.HEADER().getText();
         // Strip the brackets
         String documentType = header.substring(1, header.length() - 1);
         TypeReference type = ooFactory().createTypeReference(documentType);
         Expression expression = expressionFactory().createNewExpression(documentType);
-        setPreviousExpression(expression);
+        setPreviousType(view.findType(documentType));
 
-        callStack.push(new Variable(type, 0, documentType));
+        //TODO: Is this right?
+        ooFactory().createStatement(expression);
     }
 
     private void visitBody(DocumentContext ctx) {
@@ -117,7 +114,12 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
     public Expression visitContent(ContentContext ctx) {
         Expression expression;
         if (ctx.prefixCall() != null) {
-            expression = visitPrefixCall(ctx);
+            try {
+                expression = visitPrefixCall(ctx);
+            } catch (LookupException e) {
+                e.printStackTrace();
+                throw new ChameleonProgrammerException("Could not lookup: " + e);
+            }
         } else if (ctx.postfixCall() != null) {
             expression = visitPostFixCall(ctx);
         } else if (ctx.text() != null) {
@@ -129,7 +131,7 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         return expression;
     }
 
-    private Expression visitPrefixCall(ContentContext ctx) {
+    private Expression visitPrefixCall(ContentContext ctx) throws LookupException {
         // Find the method name and print it
         String methodName = "";
         for (TerminalNode h : ctx.prefixCall().HASH()) {
@@ -142,76 +144,47 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         // Check if this method might be a nested method
         boolean nested = isNested(methodName);
         // Find the method in the Neio classes
-        Method m = findNeioMethod(methodName, nested);
+        Method m = findNeioMethod(methodName);
+        TypeReference type = (TypeReference) m.returnTypeReference().clone();
+        ContextType ctxType = new ContextType(m.returnType(), previousType);
+        setPreviousType(ctxType);
 
         // Add the arguments
         List<Expression> arguments = new ArrayList<>();
         arguments.add(ooFactory().createStringLiteral(argument));
 
         // Prepare the new method to add it to the stack
-        TypeReference type = m.returnTypeReference();
-        int nextLevel = callStack.peek().getLevel() + 1;
-        Variable var;
         if (isNested(m)) {
             int nestingLevel = methodName.length();
             // nestingLevel since this is a property that might be used by the chapter to decide what layout to use
             // The total level is not important for this chapter
             arguments.add(ooFactory().createIntegerLiteral(String.valueOf(nestingLevel)));
-            var = new Variable(type, nextLevel, methodName, nestingLevel);
-        } else {
-            var = new Variable(type, nextLevel, methodName);
         }
 
         // Add the statement to the block and add the method to the call stack
-        Expression expression = expressionFactory().createMethodInvocation(m.name(), previousExpression, arguments);
-        setPreviousExpression(expression);
-        callStack.push(var);
 
-        return expression;
+        return expressionFactory().createMethodInvocation(m.name(), ooFactory().createTypeReference(ctxType), arguments);
     }
 
-    private void setPreviousExpression(Expression expression) {
-        previousExpression = expression;
+    private void setPreviousType(Type type) {
+        previousType = type;
     }
 
-    private Method findNeioMethod(String methodName, boolean nested) {
+//    private void setPreviousType(TypeReference type) {
+//        previousType = type;
+//    }
+
+    private Method findNeioMethod(String methodName) {
         Method neioMethod = null;
-        while (neioMethod == null) {
-            if (callStack.isEmpty()) {
-                throw new Error("The method " + methodName + " could not be found.");
+        if (!firstMethod) {
+            try {
+                previousType.members();
+            } catch (LookupException e) {
+                e.printStackTrace();
             }
-
-            Variable var = callStack.peek();
-            List<Method> methods = getMethods(var.getType());
-            // Do we suspect nesting?
-            if (nested) {
-                int nestedLevel = methodName.length();
-                // Can not nest same elements
-                if (!methodName.equals(var.getMethodName())) {
-                    List<Method> nestedMethods = methods.stream().filter(this::isNested).collect(Collectors.toList());
-                    neioMethod = findMethod(methodName.charAt(0) + "", nestedMethods);
-                    // Is the found method really nested?
-                    if (neioMethod != null && isNested(neioMethod)) {
-                        // Then check the level IF it is not the same kind of method
-                        // Level check is for i.e. # when the previous method was ###
-                        // The same methodCheck is for i.e. * when the previous method was ##
-                        if (sameNestedMethod(neioMethod.name(), methodName) && (nestedLevel <= var.getNestingLevel())) {
-                            neioMethod = null;
-                        }
-                    }
-                }
-            }
-
-            // Did not find it as nested method, try the other methods
-            if (neioMethod == null) {
-                List<Method> normalMethods = methods.stream().filter(m -> !isNested(m)).collect(Collectors.toList());
-                neioMethod = findMethod(methodName, normalMethods);
-            }
-
-            // Did not find the method, try on the other part of the tree
-            if (neioMethod == null) {
-                callStack.pop();
-            }
+        } else {
+            neioMethod = getMethod(ooFactory().createTypeReference(previousType), methodName);
+            firstMethod = false;
         }
 
         return neioMethod;
@@ -311,23 +284,22 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         String methodName = "newline";
 
         // Add the statement to the block and add the method to the call stack
-        while (!callStack.isEmpty()) {
-            Variable var = callStack.peek();
-            Method method = getMethod(var.getType(), methodName);
-            if (method != null) {
-                List<Expression> arguments = new ArrayList<>();
-                arguments.add(ooFactory().createStringLiteral(paragraph));
+        Method method = findNeioMethod(methodName);
+        if (method != null) {
+            List<Expression> arguments = new ArrayList<>();
+            arguments.add(ooFactory().createStringLiteral(paragraph));
 
-                TypeReference returnType = method.returnTypeReference();
-                Expression expression = expressionFactory().createMethodInvocation(methodName, previousExpression, arguments);
-                setPreviousExpression(expression);
-                callStack.push(new Variable(returnType, var.getLevel() + 1, methodName));
-                // Needed to prevent the exception of being thrown
-
-                return expression;
-            } else {
-                callStack.pop();
+            TypeReference returnType = method.returnTypeReference();
+            Expression expression = expressionFactory().createMethodInvocation(methodName, ooFactory().createTypeReference(previousType), arguments);
+            ContextType ctxType = null;
+            try {
+                ctxType = new ContextType(method.returnType(), previousType);
+            } catch (LookupException e) {
+                e.printStackTrace();
             }
+            setPreviousType(ctxType);
+
+            return expression;
         }
         throw new Error("The method " + methodName + " was not found!");
     }
