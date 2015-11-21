@@ -1,10 +1,14 @@
 package be.ugent.neio.industry;
 
 import be.kuleuven.cs.distrinet.jnome.input.JavaExpressionFactory;
+import be.ugent.neio.expression.NeioMethodInvocation;
 import org.aikodi.chameleon.core.reference.CrossReferenceTarget;
 import org.aikodi.chameleon.oo.expression.Expression;
+import org.aikodi.chameleon.oo.expression.Literal;
+import org.aikodi.chameleon.oo.expression.MethodInvocation;
+import org.aikodi.chameleon.oo.type.BasicTypeReference;
 import org.aikodi.chameleon.oo.variable.FormalParameter;
-import org.aikodi.chameleon.support.member.simplename.method.RegularMethodInvocation;
+import org.aikodi.chameleon.support.expression.RegularLiteral;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,10 +27,10 @@ public class NeioExpressionFactory extends JavaExpressionFactory {
     }
 
     public Expression createMethodInvocation(String methodName, CrossReferenceTarget returnType, List<Expression> arguments) {
-        RegularMethodInvocation rmi = new RegularMethodInvocation(methodName, returnType);
-        rmi.addAllArguments(arguments);
+        MethodInvocation mi = new NeioMethodInvocation(methodName, returnType);
+        mi.addAllArguments(arguments);
 
-        return rmi;
+        return mi;
     }
 
     private String createMethodString(String caller, String method, List<FormalParameter> parameters) {

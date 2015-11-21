@@ -19,11 +19,11 @@ import java.util.List;
  * @author Titouan Vervack
  */
 public class ContextType extends RegularJavaType {
-    public ContextType(Type directReturn, Type contextReturn) {
-        super(directReturn.name() + contextReturn.name());
+    public ContextType(Type returnType, Type contextType) {
+        super(returnType.name() + contextType.name());
 
-        addInheritanceRelation(new SubtypeRelation(new BasicTypeReference(directReturn.name())));
-        addInheritanceRelation(new SubtypeRelation(new BasicTypeReference(contextReturn.name())));
+        addInheritanceRelation(new SubtypeRelation(new BasicTypeReference(returnType.name())));
+        addInheritanceRelation(new SubtypeRelation(new BasicTypeReference(contextType.name())));
     }
 
     @Override
