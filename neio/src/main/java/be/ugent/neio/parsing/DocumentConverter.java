@@ -149,7 +149,6 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
             arguments.add(ooFactory().createIntegerLiteral(String.valueOf(nestingLevel)));
         }
 
-        // Add the statement to the block
         Expression expression = expressionFactory().createMethodInvocation(m.name(), previousExpression, arguments);
         try {
             setPreviousType(expression.getType());
