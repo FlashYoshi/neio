@@ -14,8 +14,11 @@ import org.aikodi.chameleon.workspace.View;
 
 public class NeioBuilder extends LanguageBuilder<Neio, Java7> {
 
-    public NeioBuilder(View view) {
+    private final String name;
+
+    public NeioBuilder(View view, String name) {
         super(view);
+        this.name = name;
     }
 
     @Override
@@ -27,7 +30,7 @@ public class NeioBuilder extends LanguageBuilder<Neio, Java7> {
         super.setContainer(view, pluginInterface);
         Java7 target = new Java7LanguageFactory().create();
         JavaView targetView = new JavaView(new LazyRootNamespace(), target);
-        translator = new NeioToJava8Translator(view, targetView);
+        translator = new NeioToJava8Translator(view, targetView, name);
 
         if (syntax != null) {
             target.setPlugin(Syntax.class, syntax);
