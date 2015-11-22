@@ -45,15 +45,15 @@ public class NeioToJava8Translator extends IncrementalTranslator<Neio, Java7> {
     public List<Document> translate(Document sourceDocument) throws ModelException {
         List<Document> result = new ArrayList<>();
         TextDocument document = (TextDocument) sourceDocument;
-        TextDocument interfaceDocument = createInterface(document);
+        TextDocument interfaceDocument = createJavaDocument(document);
         finishDocument(interfaceDocument);
         result.add(interfaceDocument);
 
         return result;
     }
 
-    protected TextDocument createInterface(TextDocument sourceDocument) throws LookupException {
-        return new Java8InterfaceGenerator().createInterface(sourceDocument);
+    protected TextDocument createJavaDocument(TextDocument sourceDocument) throws LookupException {
+        return new Java8Generator().createJavaDocument(sourceDocument);
     }
 
     private void finishDocument(TextDocument document) {

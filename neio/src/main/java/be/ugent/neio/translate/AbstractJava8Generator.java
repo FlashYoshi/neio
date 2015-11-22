@@ -30,23 +30,11 @@ public abstract class AbstractJava8Generator {
 
     protected final String IMPLEMENTATION_SUFFIX = "Impl";
 
-    protected String fieldName(VariableDeclaration variableDeclaration) {
-        return "field$" + variableDeclaration.origin().nearestAncestor(Type.class).name() + "$" + variableDeclaration.name();
-    }
-
-    protected String getterName(VariableDeclaration variableDeclaration) {
-        return "get$" + variableDeclaration.origin().nearestAncestor(Type.class).name() + "$" + variableDeclaration.name();
-    }
-
-    protected String setterName(VariableDeclaration variableDeclaration) {
-        return "set$" + variableDeclaration.origin().nearestAncestor(Type.class).name() + "$" + variableDeclaration.name();
-    }
-
     protected String implementationName(Type t) {
         return t.name() + IMPLEMENTATION_SUFFIX;
     }
 
-    protected Neio jlo(Element element) {
+    protected Neio neio(Element element) {
         return element.language(Neio.class);
     }
 
@@ -70,7 +58,6 @@ public abstract class AbstractJava8Generator {
                 }
             }
         });
-
     }
 
     protected ModifierAdder add(Modifier modifier) {
@@ -83,13 +70,6 @@ public abstract class AbstractJava8Generator {
 
     public ModifierStripper strip(Class<? extends Modifier> type) {
         return new ModifierStripper(type::isInstance);
-    }
-
-    protected Method createGetterTemplate(MemberVariableDeclarator d) throws LookupException {
-        VariableDeclaration variableDeclaration = d.variableDeclarations().get(0);
-        TypeReference tref = flattened(d.typeReference());
-
-        return ooFactory(d).createNormalMethod(getterName(variableDeclaration), clone(d.typeReference()));
     }
 
     protected TypeReference flattened(TypeReference typeReference) throws LookupException {
@@ -120,15 +100,6 @@ public abstract class AbstractJava8Generator {
 
     protected ExpressionFactory expressionFactory(Element element) {
         return java(element).plugin(ExpressionFactory.class);
-    }
-
-    protected Method createSetterTemplate(MemberVariableDeclarator d) {
-        VariableDeclaration variableDeclaration = d.variableDeclarations().get(0);
-        ObjectOrientedFactory factory = java(d).plugin(ObjectOrientedFactory.class);
-        TypeReference fieldType = d.clone(d.typeReference());
-        Method result = factory.createNormalMethod(setterName(variableDeclaration), java(d).createTypeReference("void"));
-        result.header().addFormalParameter(new FormalParameter("value", fieldType));
-        return result;
     }
 
     protected boolean isGenerated(Element element) {
@@ -241,7 +212,5 @@ public abstract class AbstractJava8Generator {
                 }
             });
         }
-
     }
-
 }
