@@ -17,7 +17,6 @@ import org.aikodi.chameleon.oo.type.Type;
 import org.aikodi.chameleon.support.statement.ReturnStatement;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 
@@ -46,41 +45,42 @@ public class Java8Generator extends AbstractJava8Generator {
     private void replaceMethodChain(TextDocument neioDocument) throws LookupException {
         List<Statement> newStatements = new ArrayList<>();
 
-        Iterator<Statement> iterator = neioDocument.getBlock().statements().iterator();
-        while (iterator.hasNext()) {
+        for (Statement methodChain : neioDocument.getBlock().statements()) {
             Stack<NeioMethodInvocation> callStack = new Stack<>();
-            Statement methodChain = iterator.next();
-            iterator.remove();
 
             // MethodInvocations start from the back so push the invocations on a stack to get the correct order
-            // TODO: Should only be one?
             NeioMethodInvocation nmi = methodChain.nearestDescendants(NeioMethodInvocation.class).get(0);
             while (nmi.getTarget() != null) {
                 callStack.push(nmi);
                 nmi = (NeioMethodInvocation) nmi.getTarget();
             }
+            // Push the new call on the stack
+            callStack.push(nmi);
 
             boolean first = true;
             while (!callStack.isEmpty()) {
                 NeioMethodInvocation call = callStack.pop();
                 Type type = call.getType();
-                // TODO: is this allowed?
+
                 Expression expression;
                 if (first) {
                     call.setTarget(null);
                     // If this is the first expression then it has to be a new call
-                    expression = eFactory().createNewExpression(call.toString());
+                    expression = eFactory().createNewExpression(type.name());
                     first = false;
                 } else {
-                    // TODO: now set the right var as prefix
+                    // TODO: now set the right var as prefix (= target)
                     expression = call;
                 }
 
-                oFactory().createLocalVariable(neio.createTypeReference(type.name()), getVarName(), expression);
+                Statement s = oFactory().createLocalVariable(neio.createTypeReference(type.name()), getVarName(), expression);
+                newStatements.add(s);
             }
         }
 
-        neioDocument.getBlock().addStatements(newStatements);
+        Block block = new Block();
+        block.addStatements(newStatements);
+        neioDocument.setBlock(block);
     }
 
     private String getVarName() {

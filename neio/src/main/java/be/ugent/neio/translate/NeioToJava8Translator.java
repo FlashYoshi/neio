@@ -6,6 +6,7 @@ import be.ugent.neio.language.Neio;
 import be.ugent.neio.model.document.TextDocument;
 import org.aikodi.chameleon.core.document.Document;
 import org.aikodi.chameleon.core.lookup.LookupException;
+import org.aikodi.chameleon.core.namespacedeclaration.NamespaceDeclaration;
 import org.aikodi.chameleon.exception.ModelException;
 import org.aikodi.chameleon.oo.method.Method;
 import org.aikodi.chameleon.oo.plugin.ObjectOrientedFactory;
@@ -24,10 +25,13 @@ import java.util.List;
 
 public class NeioToJava8Translator extends IncrementalTranslator<Neio, Java7> {
 
-    private final String name;
+    private String name;
 
-    public NeioToJava8Translator(View source, View target, String name) {
+    public NeioToJava8Translator(View source, View target) {
         super(source, target);
+    }
+
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -68,6 +72,11 @@ public class NeioToJava8Translator extends IncrementalTranslator<Neio, Java7> {
 
         method.setImplementation(ooFactory.createImplementation(document.getBlock()));
         type.add(method);
-        document.namespaceDeclarations().get(0).add(type);
+
+        // RootNamespace can not be translated by the Java7Writer
+        document.namespaceDeclarations().forEach(NamespaceDeclaration::disconnect);
+        NamespaceDeclaration ns = new NamespaceDeclaration("be.ugent");
+        ns.add(type);
+        document.add(ns);
     }
 }

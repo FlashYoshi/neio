@@ -3,11 +3,16 @@ package be.ugent.neio.parsing;
 import be.kuleuven.cs.distrinet.jnome.workspace.JavaView;
 import be.ugent.neio.industry.NeioExpressionFactory;
 import be.ugent.neio.industry.NeioFactory;
+import be.ugent.neio.industry.NeioLanguageFactory;
 import be.ugent.neio.language.Neio;
+import be.ugent.neio.model.document.TextDocument;
 import be.ugent.neio.model.modifier.Nested;
 import org.aikodi.chameleon.core.factory.Factory;
 import org.aikodi.chameleon.core.lookup.LookupException;
 import org.aikodi.chameleon.core.modifier.Modifier;
+import org.aikodi.chameleon.core.namespace.LazyRootNamespace;
+import org.aikodi.chameleon.core.namespace.Namespace;
+import org.aikodi.chameleon.core.namespace.RegularNamespace;
 import org.aikodi.chameleon.core.namespacedeclaration.NamespaceDeclaration;
 import org.aikodi.chameleon.exception.ChameleonProgrammerException;
 import org.aikodi.chameleon.oo.expression.Expression;
@@ -47,10 +52,6 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         previousType = null;
     }
 
-    protected NeioFactory factory() {
-        return (NeioFactory) neio.plugin(Factory.class);
-    }
-
     protected NeioFactory ooFactory() {
         return (NeioFactory) neio.plugin(ObjectOrientedFactory.class);
     }
@@ -59,37 +60,35 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         return (NeioExpressionFactory) neio.plugin(ExpressionFactory.class);
     }
 
-    public void visitDocument(DocumentContext ctx, NamespaceDeclaration nd) throws LookupException {
+    @Override
+    public TextDocument visitDocument(DocumentContext ctx) {
         System.out.println("Parsing " + name + "...");
         Expression headerExpression = visitHeader(ctx);
         Expression expression = visitBody(ctx, headerExpression);
 
         Block block = ooFactory().createBlock();
         block.addStatement(ooFactory().createStatement(expression));
-        fillDocument(nd, block);
 
-        //return block;
+        return createDocument(block);
     }
 
-    private void fillDocument(NamespaceDeclaration nd, Block block) {
-        Type type = ooFactory().createRegularType(name);
-        type.addModifier(new Public());
-        Method method = ooFactory().createMethod("main", "void");
-        method.header().addFormalParameter(new FormalParameter("args", ooFactory().createTypeReference("String[]")));
-        method.addModifier(new Public());
-        method.addModifier(new Static());
+    private TextDocument createDocument(Block block) {
+        Neio target = new NeioLanguageFactory().create();
+        JavaView targetView = new JavaView(new LazyRootNamespace(), target);
 
-        method.setImplementation(ooFactory().createImplementation(block));
-        type.add(method);
-        nd.add(type);
+        return new TextDocument(targetView, block);
     }
 
-    private Expression visitHeader(DocumentContext ctx) throws LookupException {
+    private Expression visitHeader(DocumentContext ctx) {
         String header = ctx.HEADER().getText();
         // Strip the brackets
         String documentType = header.substring(1, header.length() - 1);
-        Expression expression = expressionFactory().createMethodInvocation(documentType, factory().createTypeReference(documentType), new ArrayList<>());
-        setPreviousType(view.findType(documentType));
+        Expression expression = expressionFactory().createMethodInvocation(documentType, null, new ArrayList<>());
+        try {
+            setPreviousType(view.findType(documentType));
+        } catch (LookupException e) {
+            throw new ChameleonProgrammerException("Could not lookup: " + e);
+        }
 
         return expression;
     }
@@ -111,7 +110,7 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         } else if (ctx.text() != null) {
             expression = visitText(ctx);
         } else {
-            throw new Error("Method could not be found!");
+            throw new ChameleonProgrammerException("Method could not be found!");
         }
 
         return expression;

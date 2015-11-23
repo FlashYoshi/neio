@@ -27,17 +27,14 @@ public class TextDocument extends Document {
      * @param view The view of this document
      * @see {@link #cloneTo(View) cloneTo}
      */
-    public TextDocument(JavaView view, Document document, Block block) {
+    public TextDocument(JavaView view , Block block) {
         this.block = block;
         // Make sure view is not null
         Contracts.notNull(view);
 
         FakeDocumentScanner pl = new FakeDocumentScanner();
         new FakeDocumentLoader(this, pl);
-        for (NamespaceDeclaration declaration : document.descendants(NamespaceDeclaration.class)) {
-            view.namespace().getOrCreateNamespace(declaration.namespace().fullyQualifiedName());
-            add(declaration);
-        }
+
         try {
             view.addSource(pl);
         } catch (ProjectException e) {
