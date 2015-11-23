@@ -7,7 +7,8 @@ import be.ugent.chameleonsupport.language.BaseLibraryJavaProjectConfigurator;
 import org.aikodi.chameleon.core.language.Language;
 import org.aikodi.chameleon.workspace.*;
 
-import static be.ugent.neio.util.Constants.*;
+import static be.ugent.neio.util.Constants.EXTENSION;
+import static be.ugent.neio.util.Constants.NEIO_HOME;
 
 public class NeioProjectConfigurator extends BaseLibraryJavaProjectConfigurator {
 

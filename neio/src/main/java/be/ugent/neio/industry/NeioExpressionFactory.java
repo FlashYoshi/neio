@@ -4,11 +4,8 @@ import be.kuleuven.cs.distrinet.jnome.input.JavaExpressionFactory;
 import be.ugent.neio.expression.NeioMethodInvocation;
 import org.aikodi.chameleon.core.reference.CrossReferenceTarget;
 import org.aikodi.chameleon.oo.expression.Expression;
-import org.aikodi.chameleon.oo.expression.Literal;
 import org.aikodi.chameleon.oo.expression.MethodInvocation;
-import org.aikodi.chameleon.oo.type.BasicTypeReference;
 import org.aikodi.chameleon.oo.variable.FormalParameter;
-import org.aikodi.chameleon.support.expression.RegularLiteral;
 
 import java.util.ArrayList;
 import java.util.List;
