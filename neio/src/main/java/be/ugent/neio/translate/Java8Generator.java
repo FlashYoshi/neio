@@ -60,15 +60,22 @@ public class Java8Generator extends AbstractJava8Generator {
                 nmi = (NeioMethodInvocation) nmi.getTarget();
             }
 
+            boolean first = true;
             while (!callStack.isEmpty()) {
                 NeioMethodInvocation call = callStack.pop();
                 Type type = call.getType();
                 // TODO: is this allowed?
-                call.setTarget(null);
-                // TODO: now set the right var as prefix
+                Expression expression;
+                if (first) {
+                    call.setTarget(null);
+                    // If this is the first expression then it has to be a new call
+                    expression = eFactory().createNewExpression(call.toString());
+                    first = false;
+                } else {
+                    // TODO: now set the right var as prefix
+                    expression = call;
+                }
 
-                // If this is the first expression then it has to be a new call
-                Expression expression = (id == 0) ? eFactory().createNewExpression(call.toString()) : call;
                 oFactory().createLocalVariable(neio.createTypeReference(type.name()), getVarName(), expression);
             }
         }

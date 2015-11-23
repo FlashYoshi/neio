@@ -36,19 +36,15 @@ import java.util.stream.Collectors;
 public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
 
     private final Neio neio;
-    private final Block block;
     private final String name;
     private final JavaView view;
     private Type previousType;
-    private Expression previousExpression;
 
     public DocumentConverter(JavaView view, String name) {
         this.view = view;
         this.neio = view.language(Neio.class);
-        this.block = ooFactory().createBlock();
         this.name = name;
         previousType = null;
-        previousExpression = null;
     }
 
     protected NeioFactory factory() {
@@ -65,9 +61,11 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
 
     public void visitDocument(DocumentContext ctx, NamespaceDeclaration nd) throws LookupException {
         System.out.println("Parsing " + name + "...");
-        visitHeader(ctx);
-        visitBody(ctx);
+        Expression headerExpression = visitHeader(ctx);
+        Expression expression = visitBody(ctx, headerExpression);
 
+        Block block = ooFactory().createBlock();
+        block.addStatement(ooFactory().createStatement(expression));
         fillDocument(nd);
 
         //return block;
@@ -86,34 +84,30 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         nd.add(type);
     }
 
-    private void visitHeader(DocumentContext ctx) throws LookupException {
+    private Expression visitHeader(DocumentContext ctx) throws LookupException {
         String header = ctx.HEADER().getText();
         // Strip the brackets
         String documentType = header.substring(1, header.length() - 1);
         Expression expression = expressionFactory().createMethodInvocation(documentType, factory().createTypeReference(documentType), new ArrayList<>());
         setPreviousType(view.findType(documentType));
-        setPreviousExpression(expression);
 
-        //TODO: Is this right?
-        ooFactory().createStatement(expression);
+        return expression;
     }
 
-    private void visitBody(DocumentContext ctx) {
-        Expression chainedExpression = null;
-        for (ContentContext content : ctx.body().content()) {
-            chainedExpression = visitContent(content);
+    public Expression visitBody(DocumentContext ctx, Expression expression) {
+        for (ContentContext c : ctx.body().content()) {
+            expression = visitContent(c, expression);
         }
 
-        block.addStatement(ooFactory().createStatement(chainedExpression));
+        return expression;
     }
 
-    @Override
-    public Expression visitContent(ContentContext ctx) {
+    public Expression visitContent(ContentContext ctx, Expression previousExpression) {
         Expression expression;
         if (ctx.prefixCall() != null) {
-            expression = visitPrefixCall(ctx);
+            expression = visitPrefixCall(ctx, previousExpression);
         } else if (ctx.postfixCall() != null) {
-            expression = visitPostFixCall(ctx);
+            expression = visitPostFixCall(ctx, previousExpression);
         } else if (ctx.text() != null) {
             expression = visitText(ctx);
         } else {
@@ -123,7 +117,7 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         return expression;
     }
 
-    private Expression visitPrefixCall(ContentContext ctx) {
+    private Expression visitPrefixCall(ContentContext ctx, Expression previousExpression) {
         // Find the method name and print it
         String methodName = "";
         for (TerminalNode h : ctx.prefixCall().HASH()) {
@@ -141,12 +135,11 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         List<Expression> arguments = new ArrayList<>();
         arguments.add(ooFactory().createStringLiteral(argument));
 
-        // Prepare the new method to add it to the stack
+        // Add the nesting level in case this is a nested method
         if (isNested(m)) {
-            int nestingLevel = methodName.length();
             // nestingLevel since this is a property that might be used by the chapter to decide what layout to use
             // The total level is not important for this chapter
-            arguments.add(ooFactory().createIntegerLiteral(String.valueOf(nestingLevel)));
+            arguments.add(ooFactory().createIntegerLiteral(String.valueOf(methodName.length())));
         }
 
         Expression expression = expressionFactory().createMethodInvocation(m.name(), previousExpression, arguments);
@@ -155,7 +148,7 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         } catch (LookupException e) {
             throw new ChameleonProgrammerException("Could not lookup: " + e);
         }
-        setPreviousExpression(expression);
+
         return expression;
     }
 
@@ -163,11 +156,8 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         previousType = type;
     }
 
-    private void setPreviousExpression(Expression e) {
-        previousExpression = e;
-    }
-
     private Method findNeioMethod(String methodName) {
+        // TODO: Should call contextType.inheritedMembers
         return previousType.descendants(Method.class).stream().filter(a -> a.name().equals(methodName)).collect(Collectors.toList()).get(0);
     }
 
@@ -185,7 +175,7 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         return false;
     }
 
-    private Expression visitPostFixCall(ContentContext ctx) {
+    private Expression visitPostFixCall(ContentContext ctx, Expression previousExpression) {
         return null;
     }
 
@@ -233,7 +223,6 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
             } catch (LookupException e) {
                 throw new ChameleonProgrammerException("Could not lookup: " + e);
             }
-            setPreviousExpression(expression);
 
             return expression;
         }
