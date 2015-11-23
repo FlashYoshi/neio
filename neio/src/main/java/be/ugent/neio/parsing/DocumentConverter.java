@@ -66,12 +66,12 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
 
         Block block = ooFactory().createBlock();
         block.addStatement(ooFactory().createStatement(expression));
-        fillDocument(nd);
+        fillDocument(nd, block);
 
         //return block;
     }
 
-    private void fillDocument(NamespaceDeclaration nd) {
+    private void fillDocument(NamespaceDeclaration nd, Block block) {
         Type type = ooFactory().createRegularType(name);
         type.addModifier(new Public());
         Method method = ooFactory().createMethod("main", "void");
