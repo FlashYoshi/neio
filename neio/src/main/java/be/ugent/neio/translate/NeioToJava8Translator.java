@@ -26,13 +26,20 @@ import java.util.List;
 public class NeioToJava8Translator extends IncrementalTranslator<Neio, Java7> {
 
     private String name;
+    private boolean debug;
 
     public NeioToJava8Translator(View source, View target) {
         super(source, target);
+        name = "";
+        debug = false;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setDebug(boolean debug) {
+        this.debug = debug;
     }
 
     @Override
@@ -49,9 +56,11 @@ public class NeioToJava8Translator extends IncrementalTranslator<Neio, Java7> {
     public List<Document> translate(Document sourceDocument) throws ModelException {
         List<Document> result = new ArrayList<>();
         TextDocument document = (TextDocument) sourceDocument;
-        TextDocument interfaceDocument = createJavaDocument(document);
-        finishDocument(interfaceDocument);
-        result.add(interfaceDocument);
+        if (!debug) {
+            document = createJavaDocument(document);
+        }
+        finishDocument(document);
+        result.add(document);
 
         return result;
     }

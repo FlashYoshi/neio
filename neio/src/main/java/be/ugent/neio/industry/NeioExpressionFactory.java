@@ -1,10 +1,13 @@
 package be.ugent.neio.industry;
 
+import be.kuleuven.cs.distrinet.jnome.core.expression.invocation.ConstructorInvocation;
+import be.kuleuven.cs.distrinet.jnome.core.type.BasicJavaTypeReference;
 import be.kuleuven.cs.distrinet.jnome.input.JavaExpressionFactory;
 import be.ugent.neio.expression.NeioMethodInvocation;
 import org.aikodi.chameleon.core.reference.CrossReferenceTarget;
 import org.aikodi.chameleon.oo.expression.Expression;
 import org.aikodi.chameleon.oo.expression.MethodInvocation;
+import org.aikodi.chameleon.oo.type.TypeReference;
 import org.aikodi.chameleon.oo.variable.FormalParameter;
 
 import java.util.ArrayList;
@@ -23,8 +26,19 @@ public class NeioExpressionFactory extends JavaExpressionFactory {
         return createNameExpression("new " + createMethodString(null, method, parameters));
     }
 
-    public Expression createMethodInvocation(String methodName, CrossReferenceTarget returnType, List<Expression> arguments) {
-        MethodInvocation mi = new NeioMethodInvocation(methodName, returnType);
+    public Expression createConstructor(String type, TypeReference prefix) {
+        return createConstructor(type, prefix, new ArrayList<Expression>());
+    }
+
+    public Expression createConstructor(String type, TypeReference prefix, List<? extends Expression> arguments) {
+        ConstructorInvocation ci = new ConstructorInvocation(new BasicJavaTypeReference(type), prefix);
+        ci.addAllArguments(arguments);
+
+        return ci;
+    }
+
+    public Expression createMethodInvocation(String methodName, CrossReferenceTarget prefix, List<Expression> arguments) {
+        MethodInvocation mi = new NeioMethodInvocation(methodName, prefix);
         mi.addAllArguments(arguments);
 
         return mi;

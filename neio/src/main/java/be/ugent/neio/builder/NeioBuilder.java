@@ -14,10 +14,11 @@ import org.aikodi.chameleon.workspace.View;
 
 public class NeioBuilder extends LanguageBuilder<Neio, Java7> {
 
-    public NeioBuilder(View view, String name) {
+    public NeioBuilder(View view, String name, boolean debug) {
         super(view);
         // Have to set it after the constructor is called as super(view) will call setContainer
         ((NeioToJava8Translator) translator).setName(name);
+        ((NeioToJava8Translator) translator).setDebug(debug);
     }
 
     @Override

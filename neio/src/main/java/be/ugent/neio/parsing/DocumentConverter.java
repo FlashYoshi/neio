@@ -6,14 +6,10 @@ import be.ugent.neio.industry.NeioFactory;
 import be.ugent.neio.industry.NeioLanguageFactory;
 import be.ugent.neio.language.Neio;
 import be.ugent.neio.model.document.TextDocument;
-import be.ugent.neio.model.modifier.Nested;
-import org.aikodi.chameleon.core.lookup.LookupException;
-import org.aikodi.chameleon.core.modifier.Modifier;
 import org.aikodi.chameleon.core.namespace.LazyRootNamespace;
 import org.aikodi.chameleon.exception.ChameleonProgrammerException;
 import org.aikodi.chameleon.oo.expression.Expression;
 import org.aikodi.chameleon.oo.expression.ExpressionFactory;
-import org.aikodi.chameleon.oo.method.Method;
 import org.aikodi.chameleon.oo.plugin.ObjectOrientedFactory;
 import org.aikodi.chameleon.oo.statement.Block;
 import org.aikodi.chameleon.oo.type.Type;
@@ -25,7 +21,6 @@ import org.neio.antlr.DocumentParserBaseVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 /**
@@ -35,14 +30,10 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
 
     private final Neio neio;
     private final String name;
-    private final JavaView view;
-    private Type previousType;
 
     public DocumentConverter(JavaView view, String name) {
-        this.view = view;
         this.neio = view.language(Neio.class);
         this.name = name;
-        previousType = null;
     }
 
     protected NeioFactory ooFactory() {
@@ -76,14 +67,8 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         String header = ctx.HEADER().getText();
         // Strip the brackets
         String documentType = header.substring(1, header.length() - 1);
-        Expression expression = expressionFactory().createMethodInvocation(documentType, null, new ArrayList<>());
-        try {
-            setPreviousType(view.findType(documentType));
-        } catch (LookupException e) {
-            throw new ChameleonProgrammerException("Could not lookup: " + e);
-        }
 
-        return expression;
+        return expressionFactory().createConstructor(documentType, null);
     }
 
     public Expression visitBody(DocumentContext ctx, Expression expression) {
@@ -101,7 +86,7 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         } else if (ctx.postfixCall() != null) {
             expression = visitPostFixCall(ctx, previousExpression);
         } else if (ctx.text() != null) {
-            expression = visitText(ctx);
+            expression = visitText(ctx, previousExpression);
         } else {
             throw new ChameleonProgrammerException("Method could not be found!");
         }
@@ -115,56 +100,13 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         for (TerminalNode h : ctx.prefixCall().HASH()) {
             methodName += h;
         }
-        System.out.println(methodName);
 
-        // Find the arguments and print them
+        // Find the arguments
         String argument = createSentence(ctx.prefixCall().sentence().WORD());
-
-        // Find the method in the Neio classes
-        Method m = findNeioMethod(methodName);
-
-        // Add the arguments
         List<Expression> arguments = new ArrayList<>();
         arguments.add(ooFactory().createStringLiteral(argument));
 
-        // Add the nesting level in case this is a nested method
-        if (isNested(m)) {
-            // nestingLevel since this is a property that might be used by the chapter to decide what layout to use
-            // The total level is not important for this chapter
-            arguments.add(ooFactory().createIntegerLiteral(String.valueOf(methodName.length())));
-        }
-
-        Expression expression = expressionFactory().createMethodInvocation(m.name(), previousExpression, arguments);
-        try {
-            setPreviousType(expression.getType());
-        } catch (LookupException e) {
-            throw new ChameleonProgrammerException("Could not lookup: " + e);
-        }
-
-        return expression;
-    }
-
-    private void setPreviousType(Type type) {
-        previousType = type;
-    }
-
-    private Method findNeioMethod(String methodName) {
-        // TODO: Should call contextType.inheritedMembers
-        return previousType.descendants(Method.class).stream().filter(a -> a.name().equals(methodName)).collect(Collectors.toList()).get(0);
-    }
-
-    private boolean isNested(Method m) {
-        return hasModifier(m, new Nested());
-    }
-
-    private boolean hasModifier(Method method, Modifier has) {
-        for (Modifier m : method.modifiers()) {
-            if (m.getClass().isInstance(has)) {
-                return true;
-            }
-        }
-
-        return false;
+        return expressionFactory().createMethodInvocation(methodName, previousExpression, arguments);
     }
 
     private Expression visitPostFixCall(ContentContext ctx, Expression previousExpression) {
@@ -186,7 +128,7 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         return result;
     }
 
-    private Expression visitText(ContentContext ctx) {
+    private Expression visitText(ContentContext ctx, Expression previousExpression) {
         String paragraph = "";
         List<SentenceContext> sentences = ctx.text().sentence();
         for (int i = 0; i < sentences.size(); i++) {
@@ -202,22 +144,9 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         // This is always the newline method
         String methodName = "newline";
 
-        // Add the statement to the block and add the method to the call stack
-        Method method = findNeioMethod(methodName);
-        if (method != null) {
-            List<Expression> arguments = new ArrayList<>();
-            arguments.add(ooFactory().createStringLiteral(paragraph));
+        List<Expression> arguments = new ArrayList<>();
+        arguments.add(ooFactory().createStringLiteral(paragraph));
 
-            Expression expression = expressionFactory().createMethodInvocation(methodName, ooFactory().createTypeReference(previousType), arguments);
-
-            try {
-                setPreviousType(expression.getType());
-            } catch (LookupException e) {
-                throw new ChameleonProgrammerException("Could not lookup: " + e);
-            }
-
-            return expression;
-        }
-        throw new Error("The method " + methodName + " was not found!");
+        return expressionFactory().createMethodInvocation(methodName, previousExpression, arguments);
     }
 }
