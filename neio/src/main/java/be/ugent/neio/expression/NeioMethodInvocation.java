@@ -18,7 +18,8 @@ public class NeioMethodInvocation extends JavaMethodInvocation {
     @Override
     protected Type actualType() throws LookupException {
         Type returnType = super.actualType();
-        Type contextType = getTarget().nearestAncestor(Type.class);
+        Type contextType = (Type) getTarget().targetContext().declarationContainer();
+
         return new ContextType(returnType, contextType);
     }
 }

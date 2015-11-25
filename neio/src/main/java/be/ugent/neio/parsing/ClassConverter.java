@@ -85,6 +85,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         List<NamespaceDeclaration> lnd = view.namespace().namespaceDeclarations();
         NamespaceDeclaration ns;
         boolean firstDocument = lnd.isEmpty();
+        // TODO: can not use rootnamespace, create a new one
         if (firstDocument) {
             ns = factory().createRootNamespaceDeclaration();
         } else {
