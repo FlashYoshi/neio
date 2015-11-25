@@ -1,6 +1,5 @@
 package be.ugent.neio.translate;
 
-import be.ugent.neio.expression.NeioMethodInvocation;
 import be.ugent.neio.industry.NeioExpressionFactory;
 import be.ugent.neio.industry.NeioFactory;
 import be.ugent.neio.language.Neio;
@@ -8,6 +7,7 @@ import be.ugent.neio.model.document.TextDocument;
 import org.aikodi.chameleon.core.lookup.LookupException;
 import org.aikodi.chameleon.oo.expression.Expression;
 import org.aikodi.chameleon.oo.expression.ExpressionFactory;
+import org.aikodi.chameleon.oo.expression.MethodInvocation;
 import org.aikodi.chameleon.oo.method.ExpressionImplementation;
 import org.aikodi.chameleon.oo.method.RegularImplementation;
 import org.aikodi.chameleon.oo.plugin.ObjectOrientedFactory;
@@ -46,20 +46,20 @@ public class Java8Generator extends AbstractJava8Generator {
         List<Statement> newStatements = new ArrayList<>();
 
         for (Statement methodChain : neioDocument.getBlock().statements()) {
-            Stack<NeioMethodInvocation> callStack = new Stack<>();
+            Stack<MethodInvocation> callStack = new Stack<>();
 
             // MethodInvocations start from the back so push the invocations on a stack to get the correct order
-            NeioMethodInvocation nmi = methodChain.nearestDescendants(NeioMethodInvocation.class).get(0);
+            MethodInvocation nmi = methodChain.nearestDescendants(MethodInvocation.class).get(0);
             while (nmi.getTarget() != null) {
                 callStack.push(nmi);
-                nmi = (NeioMethodInvocation) nmi.getTarget();
+                nmi = (MethodInvocation) nmi.getTarget();
             }
             // Push the new call on the stack
             callStack.push(nmi);
 
             boolean first = true;
             while (!callStack.isEmpty()) {
-                NeioMethodInvocation call = callStack.pop();
+                MethodInvocation call = callStack.pop();
                 Type type = call.getType();
 
                 Expression expression;

@@ -1,14 +1,13 @@
 package be.ugent.neio.model.document;
 
 import be.kuleuven.cs.distrinet.jnome.workspace.JavaView;
+import be.kuleuven.cs.distrinet.rejuse.association.SingleAssociation;
 import org.aikodi.chameleon.core.document.Document;
-import org.aikodi.chameleon.exception.ChameleonProgrammerException;
 import org.aikodi.chameleon.oo.statement.Block;
-import org.aikodi.chameleon.workspace.FakeDocumentLoader;
-import org.aikodi.chameleon.workspace.FakeDocumentScanner;
-import org.aikodi.chameleon.workspace.ProjectException;
-import org.aikodi.chameleon.workspace.View;
+import org.aikodi.chameleon.workspace.*;
 import org.aikodi.contract.Contracts;
+
+import java.io.File;
 
 /**
  * @author Titouan Vervack
@@ -23,17 +22,18 @@ public class TextDocument extends Document {
      */
     public TextDocument(JavaView view, Block block) {
         this.block = block;
-        // Make sure view is not null
+
         Contracts.notNull(view);
 
-        FakeDocumentScanner pl = new FakeDocumentScanner();
-        new FakeDocumentLoader(this, pl);
-
+        DocumentScanner scanner = view.sourceScanners().get(0);
+        StreamDocumentLoader loader = null;
         try {
-            view.addSource(pl);
-        } catch (ProjectException e) {
-            throw new ChameleonProgrammerException(e);
+            loader = new FileDocumentLoader(new File("."), scanner);
+        } catch (InputException e) {
+            e.printStackTrace();
         }
+
+        _loader = new SingleAssociation<>(this, new SingleAssociation<DocumentLoader, Document>(loader));
 
         activate();
     }

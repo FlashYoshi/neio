@@ -99,7 +99,7 @@ public class NeioFactory extends Java7Factory {
     }
 
     public Literal createStringLiteral(String value) {
-        return createLiteral(createTypeReference("String"), value);
+        return createLiteral(createTypeReference("java.lang.String"), value);
     }
 
     public Literal createIntegerLiteral(String value) {

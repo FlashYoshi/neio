@@ -87,7 +87,7 @@ public class Main {
             DocumentConverter converter = new DocumentConverter(view, name);
             TextDocument document = converter.visitDocument(parser.document());
 
-            LanguageBuilder builder = new NeioBuilder(document.view(), name, true);
+            LanguageBuilder builder = new NeioBuilder(document.view(), name, false);
             try {
                 builder.build(document, output);
             } catch (BuildException e) {

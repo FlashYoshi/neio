@@ -3,16 +3,13 @@ package be.ugent.neio.parsing;
 import be.kuleuven.cs.distrinet.jnome.workspace.JavaView;
 import be.ugent.neio.industry.NeioExpressionFactory;
 import be.ugent.neio.industry.NeioFactory;
-import be.ugent.neio.industry.NeioLanguageFactory;
 import be.ugent.neio.language.Neio;
 import be.ugent.neio.model.document.TextDocument;
-import org.aikodi.chameleon.core.namespace.LazyRootNamespace;
 import org.aikodi.chameleon.exception.ChameleonProgrammerException;
 import org.aikodi.chameleon.oo.expression.Expression;
 import org.aikodi.chameleon.oo.expression.ExpressionFactory;
 import org.aikodi.chameleon.oo.plugin.ObjectOrientedFactory;
 import org.aikodi.chameleon.oo.statement.Block;
-import org.aikodi.chameleon.oo.type.Type;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.neio.antlr.DocumentParser.ContentContext;
 import org.neio.antlr.DocumentParser.DocumentContext;
@@ -28,10 +25,12 @@ import java.util.List;
  */
 public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
 
+    private final JavaView view;
     private final Neio neio;
     private final String name;
 
     public DocumentConverter(JavaView view, String name) {
+        this.view = view;
         this.neio = view.language(Neio.class);
         this.name = name;
     }
@@ -57,10 +56,7 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
     }
 
     private TextDocument createDocument(Block block) {
-        Neio target = new NeioLanguageFactory().create();
-        JavaView targetView = new JavaView(new LazyRootNamespace(), target);
-
-        return new TextDocument(targetView, block);
+        return new TextDocument(view, block);
     }
 
     private Expression visitHeader(DocumentContext ctx) {
