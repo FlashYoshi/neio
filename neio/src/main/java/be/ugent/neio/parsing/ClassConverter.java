@@ -41,9 +41,11 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     private final Document document;
     private final Neio neio;
+    private final JavaView view;
 
     public ClassConverter(Document document, JavaView view) {
         this.document = document;
+        this.view = view;
         this.neio = view.language(Neio.class);
     }
 
@@ -80,7 +82,14 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     private void visitClass(DocumentContext ctx, String klassName) {
         ClassBodyContext body = ctx.body().classBody();
-        NamespaceDeclaration ns = factory().createRootNamespaceDeclaration();
+        List<NamespaceDeclaration> lnd = view.namespace().namespaceDeclarations();
+        NamespaceDeclaration ns;
+        boolean firstDocument = lnd.isEmpty();
+        if (firstDocument) {
+            ns = factory().createRootNamespaceDeclaration();
+        } else {
+            ns = lnd.get(0);
+        }
         Type klass = ooFactory().createRegularType(klassName);
 
         visitExtensions(body, klass);
@@ -88,7 +97,9 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         visitMethods(body, klass);
 
         ns.add(klass);
-        document.add(ns);
+        if (firstDocument) {
+            document.add(ns);
+        }
     }
 
     private void visitExtensions(ClassBodyContext body, Type klass) {
