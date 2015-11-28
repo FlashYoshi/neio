@@ -2,6 +2,7 @@ plugins {
     id 'me.champeau.gradle.antlr4' version '0.1'
     id 'antlr'
     id 'groovy'
+    id 'java'
 }
 
 group 'be.ugent'
@@ -18,11 +19,6 @@ allprojects {
             url 'http://users.ugent.be/~mcvdoore/repository'
         }
     }
-
-    dependencies {
-        testCompile group: 'junit', name: 'junit'
-        compile group: 'markovandooren', name: 'jnome', version: '1.2.9'
-    }
 }
 
 jar {
@@ -34,8 +30,9 @@ jar {
 dependencies {
     antlr "org.antlr:antlr4:4.5"
 
-    compile project(':Chameleon')
+    compile project(':chameleon')
     compile project(':ChameleonSupport')
+    compile project(':jnome')
     compile fileTree(dir: 'build/libs', include: '**/*.jar')
 }
 
