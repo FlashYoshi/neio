@@ -8,7 +8,10 @@ import be.ugent.neio.model.modifier.Nested;
 import org.aikodi.chameleon.core.document.Document;
 import org.aikodi.chameleon.core.factory.Factory;
 import org.aikodi.chameleon.core.modifier.Modifier;
+import org.aikodi.chameleon.core.namespace.Namespace;
+import org.aikodi.chameleon.core.namespace.NamespaceReference;
 import org.aikodi.chameleon.core.namespacedeclaration.NamespaceDeclaration;
+import org.aikodi.chameleon.core.reference.NameReference;
 import org.aikodi.chameleon.oo.expression.Expression;
 import org.aikodi.chameleon.oo.expression.ExpressionFactory;
 import org.aikodi.chameleon.oo.expression.MethodInvocation;
@@ -82,15 +85,9 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     private void visitClass(DocumentContext ctx, String klassName) {
         ClassBodyContext body = ctx.body().classBody();
-        List<NamespaceDeclaration> lnd = view.namespace().namespaceDeclarations();
-        NamespaceDeclaration ns;
-        boolean firstDocument = lnd.isEmpty();
-        // TODO: can not use rootnamespace, create a new one
-        if (firstDocument) {
-            ns = factory().createRootNamespaceDeclaration();
-        } else {
-            ns = lnd.get(0);
-        }
+        NameReference<Namespace> nr = new NamespaceReference("neio.lang");
+        NamespaceDeclaration ns = factory().createNamespaceDeclaration(nr);
+
         Type klass = ooFactory().createRegularType(klassName);
 
         visitExtensions(body, klass);
@@ -98,9 +95,8 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         visitMethods(body, klass);
 
         ns.add(klass);
-        if (firstDocument) {
-            document.add(ns);
-        }
+        document.add(ns);
+        view.namespace().addNamespacePart(ns);
     }
 
     private void visitExtensions(ClassBodyContext body, Type klass) {

@@ -84,9 +84,6 @@ public class NeioToJava8Translator extends IncrementalTranslator<Neio, Java7> {
         method.setImplementation(ooFactory.createImplementation(block));
         type.add(method);
 
-        // RootNamespace can not be translated by the Java7Writer
-        //document.namespaceDeclarations().forEach(NamespaceDeclaration::disconnect);
-        //NamespaceDeclaration ns = new NamespaceDeclaration("be.ugent");
         NamespaceDeclaration ns = document.view().namespace().namespaceDeclarations().get(0);
         ns.add(type);
         document.add(ns);

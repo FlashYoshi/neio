@@ -6,8 +6,8 @@ import be.ugent.neio.builder.ClassBuilder;
 import be.ugent.neio.builder.NeioBuilder;
 import be.ugent.neio.model.document.TextDocument;
 import be.ugent.neio.parsing.DocumentConverter;
-import org.aikodi.chameleon.core.document.Document;
 import org.aikodi.chameleon.plugin.build.BuildException;
+import org.aikodi.chameleon.workspace.View;
 import org.antlr.v4.runtime.*;
 import org.neio.antlr.DocumentLexer;
 import org.neio.antlr.DocumentParser;
@@ -15,7 +15,6 @@ import org.neio.antlr.DocumentParser;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.List;
 
 import static be.ugent.neio.util.Constants.AUTO_GEN_DIR;
 import static be.ugent.neio.util.Constants.EXTENSION;
@@ -37,8 +36,7 @@ public class Main {
     private void read(String[] args) {
         File inputFile = getInputFile(args);
         ClassBuilder builder = new ClassBuilder();
-        List<Document> documents = builder.build("../base_library/project.xml");
-
+        View view = builder.build("../base_library/project.xml");
         // Creates the Java files for the Neio class files
         // Not needed for now as we're just trying to create a non-working java file
         /*LanguageBuilder builder = new NeioBuilder(view);
@@ -49,8 +47,7 @@ public class Main {
             System.exit(4);
         }*/
 
-        Document document = documents.get(0);
-        translateDocument(inputFile, document.view(JavaView.class));
+        translateDocument(inputFile, (JavaView) view);
     }
 
     private File getInputFile(String[] args) {
