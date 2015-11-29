@@ -1,20 +1,20 @@
 package be.ugent.neio;
 
+import be.kuleuven.cs.distrinet.jnome.input.LazyJavaFileInputSourceFactory;
 import be.kuleuven.cs.distrinet.jnome.workspace.JavaView;
 import be.ugent.chameleonsupport.build.LanguageBuilder;
 import be.ugent.neio.builder.ClassBuilder;
 import be.ugent.neio.builder.NeioBuilder;
+import be.ugent.neio.industry.LazyTextFileFactory;
+import be.ugent.neio.industry.NeioDocumentModelFactory;
 import be.ugent.neio.model.document.TextDocument;
-import be.ugent.neio.parsing.DocumentConverter;
+import be.ugent.neio.util.Constants;
+import org.aikodi.chameleon.core.document.Document;
+import org.aikodi.chameleon.input.ModelFactory;
 import org.aikodi.chameleon.plugin.build.BuildException;
-import org.aikodi.chameleon.workspace.View;
-import org.antlr.v4.runtime.*;
-import org.neio.antlr.DocumentLexer;
-import org.neio.antlr.DocumentParser;
+import org.aikodi.chameleon.workspace.*;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 
 import static be.ugent.neio.util.Constants.AUTO_GEN_DIR;
 import static be.ugent.neio.util.Constants.EXTENSION;
@@ -80,27 +80,25 @@ public class Main {
             File output = new File(AUTO_GEN_DIR);
             String name = file.getName().split("\\.")[0];
 
-            DocumentParser parser = getParser(file);
-            DocumentConverter converter = new DocumentConverter(view, name);
-            TextDocument document = converter.visitDocument(parser.document());
+            // We're done scanning Neio class files, change the classparser to the documentparser
+            view.language().setPlugin(ModelFactory.class, new NeioDocumentModelFactory());
+            DirectoryScanner scanner = new DirectoryScanner(Constants.BASE + "/simpleDocument",
+                    new ExtensionPredicate(EXTENSION), new LazyTextFileFactory());
+            view.addSource(scanner);
 
-            LanguageBuilder builder = new NeioBuilder(document.view(), name, false);
-            try {
-                builder.build(document, output);
-            } catch (BuildException e) {
-                e.printStackTrace();
-                System.exit(4);
+
+            for (Document doc : scanner.documents()) {
+                TextDocument document = (TextDocument) doc;
+                LanguageBuilder builder = new NeioBuilder(document.view(), name, false);
+                try {
+                    builder.build(document, output);
+                } catch (BuildException e) {
+                    e.printStackTrace();
+                    System.exit(4);
+                }
             }
-        } catch (IOException e) {
+        } catch (InputException | ProjectException e) {
             e.printStackTrace();
         }
-    }
-
-    private DocumentParser getParser(File file) throws IOException {
-        CharStream input = new ANTLRInputStream(new FileInputStream(file));
-        Lexer lexer = new DocumentLexer(input);
-        TokenStream tokens = new CommonTokenStream(lexer);
-
-        return new DocumentParser(tokens);
     }
 }

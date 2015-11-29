@@ -5,6 +5,7 @@ import be.ugent.neio.industry.NeioExpressionFactory;
 import be.ugent.neio.industry.NeioFactory;
 import be.ugent.neio.language.Neio;
 import be.ugent.neio.model.document.TextDocument;
+import org.aikodi.chameleon.core.document.Document;
 import org.aikodi.chameleon.exception.ChameleonProgrammerException;
 import org.aikodi.chameleon.oo.expression.Expression;
 import org.aikodi.chameleon.oo.expression.ExpressionFactory;
@@ -25,14 +26,12 @@ import java.util.List;
  */
 public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
 
-    private final JavaView view;
     private final Neio neio;
-    private final String name;
+    private final TextDocument document;
 
-    public DocumentConverter(JavaView view, String name) {
-        this.view = view;
+    public DocumentConverter(Document document, JavaView view) {
+        this.document = (TextDocument) document;
         this.neio = view.language(Neio.class);
-        this.name = name;
     }
 
     protected NeioFactory ooFactory() {
@@ -45,19 +44,16 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
 
     @Override
     public TextDocument visitDocument(DocumentContext ctx) {
-        System.out.println("Parsing " + name + "...");
         Expression headerExpression = visitHeader(ctx);
         Expression expression = visitBody(ctx, headerExpression);
 
         Block block = ooFactory().createBlock();
         block.addStatement(ooFactory().createStatement(expression));
 
-        return createDocument(block);
+        document.setBlock(block);
+        return document;
     }
 
-    private TextDocument createDocument(Block block) {
-        return new TextDocument(view, block);
-    }
 
     private Expression visitHeader(DocumentContext ctx) {
         String header = ctx.HEADER().getText();
