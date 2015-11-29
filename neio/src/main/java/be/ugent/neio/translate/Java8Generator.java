@@ -6,7 +6,6 @@ import be.ugent.neio.language.Neio;
 import be.ugent.neio.model.document.TextDocument;
 import be.ugent.neio.util.Variable;
 import org.aikodi.chameleon.core.lookup.LookupException;
-import org.aikodi.chameleon.oo.expression.Expression;
 import org.aikodi.chameleon.oo.expression.ExpressionFactory;
 import org.aikodi.chameleon.oo.method.ExpressionImplementation;
 import org.aikodi.chameleon.oo.method.RegularImplementation;
@@ -65,11 +64,12 @@ public class Java8Generator extends AbstractJava8Generator {
             while (!callStack.isEmpty()) {
                 RegularMethodInvocation call = callStack.pop();
                 fixNestedMethod(call);
+
                 NormalMethod method = call.getElement();
                 Type type = method.nearestAncestor(Type.class);
                 Type returnType = method.returnType();
-                //Type type = call.getType();
                 String prefix = getPrefix(type, variables);
+
                 RegularMethodInvocation clone = (RegularMethodInvocation) call.clone();
                 clone.setTarget(prefix == null ? null : eFactory().createNameExpression(prefix));
 

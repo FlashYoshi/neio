@@ -8,7 +8,6 @@ import org.aikodi.chameleon.core.reference.CrossReferenceTarget;
 import org.aikodi.chameleon.oo.expression.Expression;
 import org.aikodi.chameleon.oo.expression.MethodInvocation;
 import org.aikodi.chameleon.oo.type.TypeReference;
-import org.aikodi.chameleon.oo.variable.FormalParameter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,16 +17,8 @@ import java.util.List;
  */
 public class NeioExpressionFactory extends JavaExpressionFactory {
 
-    public Expression createNewExpression(String type) {
-        return createNewExpression(type, new ArrayList<>());
-    }
-
-    public Expression createNewExpression(String method, List<FormalParameter> parameters) {
-        return createNameExpression("new " + createMethodString(null, method, parameters));
-    }
-
     public Expression createConstructor(String type, TypeReference prefix) {
-        return createConstructor(type, prefix, new ArrayList<Expression>());
+        return createConstructor(type, prefix, new ArrayList<>());
     }
 
     public Expression createConstructor(String type, TypeReference prefix, List<? extends Expression> arguments) {
@@ -42,25 +33,5 @@ public class NeioExpressionFactory extends JavaExpressionFactory {
         mi.addAllArguments(arguments);
 
         return mi;
-    }
-
-    private String createMethodString(String caller, String method, List<FormalParameter> parameters) {
-        String result = "";
-        for (FormalParameter f : parameters) {
-            if (!result.isEmpty()) {
-                result += ", ";
-            }
-
-            boolean string = f.getTypeReference().toString().equals("String");
-
-            result += (string ? "\"" : "") + f.name() + (string ? "\"" : "");
-        }
-
-        result = method + "(" + result + ")";
-        if (caller != null && !caller.isEmpty()) {
-            result = caller + "." + result;
-        }
-
-        return result;
     }
 }
