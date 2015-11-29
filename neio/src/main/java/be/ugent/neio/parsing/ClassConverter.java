@@ -85,8 +85,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     private void visitClass(DocumentContext ctx, String klassName) {
         ClassBodyContext body = ctx.body().classBody();
-        NameReference<Namespace> nr = new NamespaceReference("neio.lang");
-        NamespaceDeclaration ns = factory().createNamespaceDeclaration(nr);
+        NamespaceDeclaration ns = visitNamespace(ctx.namespace());
 
         Type klass = ooFactory().createRegularType(klassName);
 
@@ -96,7 +95,11 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
         ns.add(klass);
         document.add(ns);
-        view.namespace().addNamespacePart(ns);
+    }
+
+    @Override
+    public NamespaceDeclaration visitNamespace(NamespaceContext ctx) {
+        return factory().createNamespaceDeclaration(ooFactory().createNamespaceReference(ctx.chain().getText()));
     }
 
     private void visitExtensions(ClassBodyContext body, Type klass) {

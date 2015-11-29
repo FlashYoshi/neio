@@ -1,3 +1,5 @@
+namespace neio.stdlib;
+
 class Document
 extends neio.lang.Container;
 

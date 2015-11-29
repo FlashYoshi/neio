@@ -5,6 +5,7 @@ import be.kuleuven.cs.distrinet.jnome.core.method.JavaMethod;
 import be.kuleuven.cs.distrinet.jnome.core.type.BasicJavaTypeReference;
 import be.kuleuven.cs.distrinet.jnome.core.type.RegularJavaType;
 import be.kuleuven.cs.distrinet.jnome.input.Java7Factory;
+import org.aikodi.chameleon.core.namespace.NamespaceReference;
 import org.aikodi.chameleon.core.reference.CrossReferenceTarget;
 import org.aikodi.chameleon.oo.expression.Expression;
 import org.aikodi.chameleon.oo.expression.Literal;
@@ -43,6 +44,10 @@ public class NeioFactory extends Java7Factory {
 
     public TypeReference createTypeReference(Type type) {
         return createTypeReference(type.name());
+    }
+
+    public NamespaceReference createNamespaceReference(String qn) {
+        return new NamespaceReference(qn);
     }
 
     public SubtypeRelation createSubtypeRelation(TypeReference type) {

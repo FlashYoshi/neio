@@ -2,7 +2,6 @@ package be.ugent.neio.model.io;
 
 import be.ugent.neio.model.document.TextDocument;
 import org.aikodi.chameleon.core.namespace.DocumentLoaderNamespace;
-import org.aikodi.chameleon.core.namespace.Namespace;
 import org.aikodi.chameleon.input.ModelFactory;
 import org.aikodi.chameleon.workspace.DocumentScanner;
 import org.aikodi.chameleon.workspace.InputException;

@@ -2,7 +2,8 @@ parser grammar ClassParser;
 
 options { tokenVocab = ClassLexer; }
 
-document : HEADER CLASS_NAME
+document : namespace
+           HEADER CLASS_NAME
            body
            EOF;
 
@@ -13,6 +14,8 @@ classBody : extension*
             (field | method)*;
 
 interfaceBody : STUB;
+
+namespace: NAMESPACE chain SEMICOLON;
 
 ////////////UTIL////////////
 extension : ( EXTENDS chain

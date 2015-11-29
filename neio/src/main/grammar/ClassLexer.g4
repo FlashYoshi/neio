@@ -22,6 +22,7 @@ RETURN : 'return';
 NEW : 'new';
 THIS : 'this';
 METHOD_OPTION : 'nested';
+NAMESPACE : 'namespace';
 STUB : 'stub';
 ////////////END KEYWORDS////////////
 
