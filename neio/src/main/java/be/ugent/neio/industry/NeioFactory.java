@@ -13,6 +13,7 @@ import org.aikodi.chameleon.oo.method.Implementation;
 import org.aikodi.chameleon.oo.method.Method;
 import org.aikodi.chameleon.oo.method.RegularImplementation;
 import org.aikodi.chameleon.oo.method.SimpleNameMethodHeader;
+import org.aikodi.chameleon.oo.namespacedeclaration.TypeImport;
 import org.aikodi.chameleon.oo.statement.Block;
 import org.aikodi.chameleon.oo.statement.Statement;
 import org.aikodi.chameleon.oo.type.BasicTypeReference;
@@ -40,6 +41,10 @@ public class NeioFactory extends Java7Factory {
 
     public TypeReference createTypeReference(String name) {
         return new BasicTypeReference(name);
+    }
+
+    public TypeImport createTypeImport(String fqn) {
+        return new TypeImport(createTypeReference(fqn));
     }
 
     public TypeReference createTypeReference(Type type) {

@@ -9,7 +9,6 @@ import org.aikodi.chameleon.core.lookup.LookupException;
 import org.aikodi.chameleon.core.namespacedeclaration.NamespaceDeclaration;
 import org.aikodi.chameleon.exception.ModelException;
 import org.aikodi.chameleon.oo.method.Method;
-import org.aikodi.chameleon.oo.namespacedeclaration.TypeImport;
 import org.aikodi.chameleon.oo.plugin.ObjectOrientedFactory;
 import org.aikodi.chameleon.oo.statement.Block;
 import org.aikodi.chameleon.oo.type.Type;
@@ -52,10 +51,11 @@ public class NeioToJava8Translator extends IncrementalTranslator<Neio, Java7> {
     public List<Document> translate(Document sourceDocument) throws ModelException {
         List<Document> result = new ArrayList<>();
         TextDocument document = (TextDocument) sourceDocument;
-        finishDocument(document);
+        prepareDocument(document);
         if (!debug) {
             document = createJavaDocument(document);
         }
+        finishDocument(document);
         result.add(document);
 
         return result;
@@ -65,7 +65,7 @@ public class NeioToJava8Translator extends IncrementalTranslator<Neio, Java7> {
         return new Java8Generator().createJavaDocument(sourceDocument);
     }
 
-    private void finishDocument(TextDocument document) {
+    private void prepareDocument(TextDocument document) {
         Neio neio = (Neio) document.language();
         NeioFactory ooFactory = (NeioFactory) neio.plugin(ObjectOrientedFactory.class);
         Type type = ooFactory.createRegularType(document.getName());
@@ -80,7 +80,17 @@ public class NeioToJava8Translator extends IncrementalTranslator<Neio, Java7> {
 
         NamespaceDeclaration ns = ooFactory.createNamespaceDeclaration(ooFactory.createNamespaceReference(document.loader().namespace().fullyQualifiedName()));
         ns.add(type);
-        ns.addImport(new TypeImport(ooFactory.createTypeReference("neio.stdlib.Document")));
+        // TODO: dont hardcode this
+        ns.addImport(ooFactory.createTypeImport("neio.stdlib.Document"));
+        ns.addImport(ooFactory.createTypeImport("neio.stdlib.Chapter"));
+        ns.addImport(ooFactory.createTypeImport("neio.stdlib.Paragraph"));
         document.add(ns);
+    }
+
+    private void finishDocument(TextDocument document) {
+        // There is only the main method
+        Method main = document.nearestDescendants(Method.class).get(0);
+        NeioFactory ooFactory = (NeioFactory) document.language().plugin(ObjectOrientedFactory.class);
+        main.setImplementation(ooFactory.createImplementation(document.getBlock()));
     }
 }
