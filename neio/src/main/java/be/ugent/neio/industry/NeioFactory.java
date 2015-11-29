@@ -108,7 +108,7 @@ public class NeioFactory extends Java7Factory {
     }
 
     public Literal createIntegerLiteral(String value) {
-        return createLiteral(createTypeReference("Integer"), value);
+        return createLiteral(createTypeReference("java.lang.Integer"), value);
     }
 
     public Literal createLiteral(TypeReference type, String value) {

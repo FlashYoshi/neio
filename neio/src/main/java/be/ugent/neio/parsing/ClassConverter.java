@@ -110,9 +110,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     @Override
     public InheritanceRelation visitExtension(ExtensionContext ctx) {
-        // Ignore the namespace for now, it does not really matter at this point
-        String ignoredNS = ctx.chain().getChild(ctx.chain().getChildCount() - 1).getText();
-        TypeReference ref = ooFactory().createTypeReference(ignoredNS);
+        TypeReference ref = ooFactory().createTypeReference(ctx.chain().getText());
 
         return ooFactory().createSubtypeRelation(ref);
     }

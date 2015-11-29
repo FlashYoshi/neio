@@ -9,6 +9,7 @@ import be.ugent.neio.util.Variable;
 import org.aikodi.chameleon.core.lookup.LookupException;
 import org.aikodi.chameleon.core.lookup.NameSelector;
 import org.aikodi.chameleon.core.lookup.SelectionResult;
+import org.aikodi.chameleon.oo.expression.Expression;
 import org.aikodi.chameleon.oo.expression.ExpressionFactory;
 import org.aikodi.chameleon.oo.expression.MethodInvocation;
 import org.aikodi.chameleon.oo.method.ExpressionImplementation;
@@ -77,7 +78,7 @@ public class Java8Generator extends AbstractJava8Generator {
                 }
 
                 String varName = getVarName();
-                Statement s = oFactory().createLocalVariable(neio.createTypeReference(type.name()), varName, call);
+                Statement s = oFactory().createLocalVariable(neio.createTypeReference(type.name()), varName, (Expression) call.clone());
                 variables.push(new Variable(type.name(), varName));
                 newStatements.add(s);
             }
