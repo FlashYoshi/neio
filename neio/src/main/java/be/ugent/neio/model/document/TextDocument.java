@@ -9,6 +9,7 @@ import org.aikodi.chameleon.oo.statement.Block;
 public class TextDocument extends Document {
 
     private Block block;
+    private String name;
 
     public Block getBlock() {
         return block;
@@ -16,5 +17,13 @@ public class TextDocument extends Document {
 
     public void setBlock(Block block) {
         this.block = block;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

@@ -29,6 +29,8 @@ public class LazyFileTextDocumentLoader extends LazyFileDocumentLoader {
         }
         try {
             InputStream inputStream = inputStream();
+            TextDocument document = (TextDocument) rawDocument();
+            document.setName(declarationName());
             namespace().language().plugin(ModelFactory.class).parse(inputStream, rawDocument());
         } catch (Exception e) {
             throw new InputException(e);
