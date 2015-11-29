@@ -1,14 +1,12 @@
 package be.ugent.neio;
 
-import be.kuleuven.cs.distrinet.jnome.input.LazyJavaFileInputSourceFactory;
 import be.kuleuven.cs.distrinet.jnome.workspace.JavaView;
 import be.ugent.chameleonsupport.build.LanguageBuilder;
 import be.ugent.neio.builder.ClassBuilder;
 import be.ugent.neio.builder.NeioBuilder;
-import be.ugent.neio.industry.LazyTextFileFactory;
+import be.ugent.neio.industry.LazyFileTextFactory;
 import be.ugent.neio.industry.NeioDocumentModelFactory;
 import be.ugent.neio.model.document.TextDocument;
-import be.ugent.neio.util.Constants;
 import org.aikodi.chameleon.core.document.Document;
 import org.aikodi.chameleon.input.ModelFactory;
 import org.aikodi.chameleon.plugin.build.BuildException;
@@ -25,16 +23,16 @@ public class Main {
      * args[1] = input file
      * <p>
      * Exit code 1: Invalid call to program
-     * Exit code 2: Input file can not be read or does not exist
-     * Exit code 3: Input file has the wrong extension
-     * Exit code 4: Could not build everything in NEIO_HOME
+     * Exit code 2: Input path can not be read or does not exist
+     * Exit code 3: Could not build everything in NEIO_HOME
+     * Exit code 4: Could not build everything in input path
      */
     public static void main(String[] args) {
         new Main().read(args);
     }
 
     private void read(String[] args) {
-        File inputFile = getInputFile(args);
+        String inputPath = getInputPath(args);
         ClassBuilder builder = new ClassBuilder();
         View view = builder.build("../base_library/project.xml");
         // Creates the Java files for the Neio class files
@@ -44,52 +42,46 @@ public class Main {
             builder.buildAll(new File(AUTO_GEN_DIR), null);
         } catch (BuildException e) {
             e.printStackTrace();
-            System.exit(4);
+            System.exit(3);
         }*/
 
-        translateDocument(inputFile, (JavaView) view);
+        translateDocuments(inputPath, (JavaView) view);
     }
 
-    private File getInputFile(String[] args) {
+    private String getInputPath(String[] args) {
         if (args.length < 1) {
             printHelp("neio.jar");
             System.exit(1);
         }
 
-        String fileName = args[0];
-        File inputFile = new File(fileName);
-        if (!inputFile.isFile() || !inputFile.canRead()) {
-            System.err.println(fileName + " isn't a valid folder or it isn't readable.");
+        String path = args[0];
+        File inputFile = new File(path);
+        if (!inputFile.isDirectory() || !inputFile.canRead()) {
+            System.err.println(path + " isn't a valid folder or it isn't readable.");
             System.exit(2);
         }
 
-        if (!inputFile.getName().endsWith(EXTENSION)) {
-            System.err.println(fileName + " doesn't have the right extension.\nThe right extension is: " + EXTENSION);
-            System.exit(3);
-        }
-
-        return inputFile;
+        return path;
     }
 
     private void printHelp(String programName) {
-        System.out.println("USAGE: java -jar " + programName + " <path-to-outputdir> <path-to-inputfile>");
+        System.out.println("USAGE: java -jar " + programName + " <path-to-outputdir> <path-to-inputfile-directory>");
     }
 
-    private void translateDocument(File file, JavaView view) {
+    private void translateDocuments(String inputPath, JavaView view) {
         try {
             File output = new File(AUTO_GEN_DIR);
-            String name = file.getName().split("\\.")[0];
 
             // We're done scanning Neio class files, change the classparser to the documentparser
             view.language().setPlugin(ModelFactory.class, new NeioDocumentModelFactory());
-            DirectoryScanner scanner = new DirectoryScanner(Constants.BASE + "/simpleDocument",
-                    new ExtensionPredicate(EXTENSION), new LazyTextFileFactory());
+            DirectoryScanner scanner = new DirectoryScanner(inputPath,
+                    new ExtensionPredicate(EXTENSION), new LazyFileTextFactory());
             view.addSource(scanner);
 
 
             for (Document doc : scanner.documents()) {
                 TextDocument document = (TextDocument) doc;
-                LanguageBuilder builder = new NeioBuilder(document.view(), name, false);
+                LanguageBuilder builder = new NeioBuilder(document.view(), false);
                 try {
                     builder.build(document, output);
                 } catch (BuildException e) {

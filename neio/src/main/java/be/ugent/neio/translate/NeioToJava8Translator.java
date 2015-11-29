@@ -1,7 +1,6 @@
 package be.ugent.neio.translate;
 
 import be.kuleuven.cs.distrinet.jnome.core.language.Java7;
-import be.kuleuven.cs.distrinet.jnome.workspace.JavaView;
 import be.ugent.neio.industry.NeioFactory;
 import be.ugent.neio.language.Neio;
 import be.ugent.neio.model.document.TextDocument;
@@ -10,6 +9,7 @@ import org.aikodi.chameleon.core.lookup.LookupException;
 import org.aikodi.chameleon.core.namespacedeclaration.NamespaceDeclaration;
 import org.aikodi.chameleon.exception.ModelException;
 import org.aikodi.chameleon.oo.method.Method;
+import org.aikodi.chameleon.oo.namespacedeclaration.TypeImport;
 import org.aikodi.chameleon.oo.plugin.ObjectOrientedFactory;
 import org.aikodi.chameleon.oo.statement.Block;
 import org.aikodi.chameleon.oo.type.Type;
@@ -27,17 +27,11 @@ import java.util.List;
 
 public class NeioToJava8Translator extends IncrementalTranslator<Neio, Java7> {
 
-    private String name;
     private boolean debug;
 
     public NeioToJava8Translator(View source, View target) {
         super(source, target);
-        name = "";
         debug = false;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public void setDebug(boolean debug) {
@@ -74,7 +68,7 @@ public class NeioToJava8Translator extends IncrementalTranslator<Neio, Java7> {
     private void finishDocument(TextDocument document) {
         Neio neio = (Neio) document.language();
         NeioFactory ooFactory = (NeioFactory) neio.plugin(ObjectOrientedFactory.class);
-        Type type = ooFactory.createRegularType(name);
+        Type type = ooFactory.createRegularType(document.getName());
         type.addModifier(new Public());
         Method method = ooFactory.createMethod("main", "void");
         method.header().addFormalParameter(new FormalParameter("args", ooFactory.createTypeReference("String[]")));
@@ -84,9 +78,9 @@ public class NeioToJava8Translator extends IncrementalTranslator<Neio, Java7> {
         method.setImplementation(ooFactory.createImplementation(block));
         type.add(method);
 
-        NamespaceDeclaration ns = document.view().namespace().namespaceDeclarations().get(0);
+        NamespaceDeclaration ns = ooFactory.createNamespaceDeclaration(ooFactory.createNamespaceReference(document.loader().namespace().fullyQualifiedName()));
         ns.add(type);
+        ns.addImport(new TypeImport(ooFactory.createTypeReference("neio.stdlib.Document")));
         document.add(ns);
-        document.view(JavaView.class).setTopLevelType(type);
     }
 }

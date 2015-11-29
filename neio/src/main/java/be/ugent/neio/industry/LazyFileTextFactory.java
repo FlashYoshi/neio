@@ -13,7 +13,7 @@ import java.io.File;
 /**
  * @author Titouan Vervack
  */
-public class LazyTextFileFactory extends LazyJavaFileInputSourceFactory {
+public class LazyFileTextFactory extends LazyJavaFileInputSourceFactory {
 
     @Override
     public IFileDocumentLoader create(File file, DirectoryScanner loader) throws InputException {
