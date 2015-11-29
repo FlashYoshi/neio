@@ -1,9 +1,9 @@
 <project name="Thesis">
     <language name="neio" />
     <baselibraries>
-        <library language="Neio" load="false" />
+        <library language="Neio" load="true" />
     </baselibraries>
     <sourcepath>
-        <source root="../examples/0.6/neio" />
+        <source root="../examples/0.6/lib" />
     </sourcepath>
 </project>
