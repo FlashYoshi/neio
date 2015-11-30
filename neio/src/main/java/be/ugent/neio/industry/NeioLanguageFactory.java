@@ -3,6 +3,7 @@ package be.ugent.neio.industry;
 import be.kuleuven.cs.distrinet.jnome.output.Java7Syntax;
 import be.ugent.neio.language.Neio;
 import be.ugent.neio.language.NeioProjectConfigurator;
+import be.ugent.neio.translate.NeioSyntax;
 import org.aikodi.chameleon.core.factory.Factory;
 import org.aikodi.chameleon.input.ModelFactory;
 import org.aikodi.chameleon.oo.expression.ExpressionFactory;
@@ -22,7 +23,7 @@ public class NeioLanguageFactory {
         result.setPlugin(ObjectOrientedFactory.class, factory);
         result.setPlugin(ExpressionFactory.class, new NeioExpressionFactory());
         result.setPlugin(ProjectConfigurator.class, new NeioProjectConfigurator());
-        result.setPlugin(Syntax.class, new Java7Syntax());
+        result.setPlugin(Syntax.class, new NeioSyntax());
 
         return result;
     }
