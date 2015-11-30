@@ -72,7 +72,7 @@ public class NeioFactory extends Java7Factory {
         return new JavaMethod(new SimpleNameMethodHeader(methodName, createTypeReference(returnType)));
     }
 
-    private BasicJavaTypeReference createBasicJavaTypeReference(String typeRef) {
+    public BasicJavaTypeReference createBasicJavaTypeReference(String typeRef) {
         return new BasicJavaTypeReference(typeRef);
     }
 

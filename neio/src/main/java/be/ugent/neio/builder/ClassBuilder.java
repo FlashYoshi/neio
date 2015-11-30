@@ -34,6 +34,7 @@ public class ClassBuilder {
         } catch (InputException e) {
             e.printStackTrace();
         }
+
         return view;
     }
 }
