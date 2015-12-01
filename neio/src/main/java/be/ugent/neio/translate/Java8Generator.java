@@ -58,7 +58,7 @@ public class Java8Generator extends AbstractJava8Generator {
                 callStack.push(rmi);
                 rmi = (RegularMethodInvocation) rmi.getTarget();
             }
-            // Push the new call on the stack
+            // Push the constructor call on the stack
             callStack.push(rmi);
 
             while (!callStack.isEmpty()) {

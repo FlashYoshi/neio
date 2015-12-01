@@ -5,7 +5,11 @@ import be.kuleuven.cs.distrinet.jnome.core.method.JavaMethod;
 import be.kuleuven.cs.distrinet.jnome.core.type.BasicJavaTypeReference;
 import be.kuleuven.cs.distrinet.jnome.core.type.RegularJavaType;
 import be.kuleuven.cs.distrinet.jnome.input.Java7Factory;
+import be.ugent.neio.model.namespace.WildcardNamespaceDeclaration;
+import org.aikodi.chameleon.core.namespace.Namespace;
 import org.aikodi.chameleon.core.namespace.NamespaceReference;
+import org.aikodi.chameleon.core.namespacedeclaration.NamespaceDeclaration;
+import org.aikodi.chameleon.core.reference.CrossReference;
 import org.aikodi.chameleon.core.reference.CrossReferenceTarget;
 import org.aikodi.chameleon.oo.expression.Expression;
 import org.aikodi.chameleon.oo.expression.Literal;
@@ -48,6 +52,11 @@ public class NeioFactory extends Java7Factory {
 
     public NamespaceReference createNamespaceReference(String qn) {
         return new NamespaceReference(qn);
+    }
+
+    @Override
+    public NamespaceDeclaration createNamespaceDeclaration(CrossReference<Namespace> cref) {
+        return new WildcardNamespaceDeclaration(cref);
     }
 
     public SubtypeRelation createSubtypeRelation(TypeReference type) {

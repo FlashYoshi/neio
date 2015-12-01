@@ -1,6 +1,5 @@
 package be.ugent.neio.industry;
 
-import be.kuleuven.cs.distrinet.jnome.output.Java7Syntax;
 import be.ugent.neio.language.Neio;
 import be.ugent.neio.language.NeioProjectConfigurator;
 import be.ugent.neio.translate.NeioSyntax;

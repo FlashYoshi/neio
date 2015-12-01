@@ -4,10 +4,9 @@ import be.kuleuven.cs.distrinet.jnome.core.language.Java7;
 import be.ugent.neio.industry.NeioFactory;
 import be.ugent.neio.language.Neio;
 import be.ugent.neio.model.document.TextDocument;
+import be.ugent.neio.model.namespace.WildcardNamespaceDeclaration;
 import org.aikodi.chameleon.core.document.Document;
 import org.aikodi.chameleon.core.lookup.LookupException;
-import org.aikodi.chameleon.core.namespace.Namespace;
-import org.aikodi.chameleon.core.namespacedeclaration.NamespaceDeclaration;
 import org.aikodi.chameleon.exception.ModelException;
 import org.aikodi.chameleon.oo.method.Method;
 import org.aikodi.chameleon.oo.plugin.ObjectOrientedFactory;
@@ -24,7 +23,6 @@ import org.aikodi.chameleon.workspace.View;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class NeioToJava8Translator extends IncrementalTranslator<Neio, Java7> {
 
@@ -80,32 +78,12 @@ public class NeioToJava8Translator extends IncrementalTranslator<Neio, Java7> {
         method.setImplementation(ooFactory.createImplementation(block));
         type.add(method);
 
-        NamespaceDeclaration ns = ooFactory.createNamespaceDeclaration(ooFactory.createNamespaceReference(document.loader().namespace().fullyQualifiedName()));
+        WildcardNamespaceDeclaration ns = (WildcardNamespaceDeclaration) ooFactory.createNamespaceDeclaration(
+                ooFactory.createNamespaceReference(document.loader().namespace().fullyQualifiedName()));
         ns.add(type);
 
-        addImports(ns, document.view().namespace(), ooFactory);
+        ns.addImports(document.view().namespace(), "neio");
         document.add(ns);
-    }
-
-    private void addImports(NamespaceDeclaration ns, Namespace namespace, NeioFactory ooFactory) {
-        List<Namespace> subns = namespace.descendantNamespaces().stream().filter(a -> a.toString().equals("neio")).collect(Collectors.toList());
-        getImports(namespace, subns).forEach(a -> ns.addImport(ooFactory.createTypeImport(a)));
-    }
-
-    private List<String> getImports(Namespace rootNamespace, List<Namespace> namespaces) {
-        List<String> imports = new ArrayList<>();
-
-        if (!namespaces.isEmpty()) {
-            for (Namespace namespace : namespaces) {
-                imports.addAll(getImports(namespace, namespace.descendantNamespaces()));
-            }
-        } else {
-            for (NamespaceDeclaration ns : rootNamespace.namespaceDeclarations()) {
-                imports.addAll(ns.declarations(Type.class).stream().map(toImport -> ns.getFullyQualifiedName() + "." + toImport.name()).collect(Collectors.toList()));
-            }
-        }
-
-        return imports;
     }
 
     private void finishDocument(TextDocument document) {
