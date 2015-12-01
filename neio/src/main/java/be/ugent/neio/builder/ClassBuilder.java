@@ -5,6 +5,9 @@ import be.ugent.neio.industry.NeioLanguageFactory;
 import be.ugent.neio.language.Neio;
 import be.ugent.neio.language.NeioProjectConfigurator;
 import org.aikodi.chameleon.core.Config;
+import org.aikodi.chameleon.core.document.Document;
+import org.aikodi.chameleon.exception.ModelException;
+import org.aikodi.chameleon.plugin.output.Syntax;
 import org.aikodi.chameleon.workspace.*;
 
 import java.io.File;
@@ -30,8 +33,11 @@ public class ClassBuilder {
         View view = project.views().get(0);
 
         try {
-            view.sourceDocuments();
-        } catch (InputException e) {
+            for (Document document : view.sourceDocuments()) {
+                System.out.println(neio.plugin(Syntax.class).toCode(document));
+            }
+
+        } catch (InputException | ModelException e) {
             e.printStackTrace();
         }
 

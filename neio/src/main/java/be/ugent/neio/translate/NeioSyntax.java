@@ -1,7 +1,9 @@
 package be.ugent.neio.translate;
 
 import be.kuleuven.cs.distrinet.jnome.output.Java7Syntax;
+import be.ugent.neio.model.modifier.Nested;
 import org.aikodi.chameleon.core.lookup.LookupException;
+import org.aikodi.chameleon.core.modifier.Modifier;
 import org.aikodi.chameleon.exception.ChameleonProgrammerException;
 import org.aikodi.chameleon.oo.expression.Literal;
 import org.aikodi.chameleon.oo.method.Method;
@@ -26,6 +28,14 @@ public class NeioSyntax extends Java7Syntax {
         ALIASES = Collections.unmodifiableMap(map);
     }
 
+    @Override
+    protected String toCodeModifier(Modifier element) {
+        if (element instanceof Nested) {
+            return "";
+        } else {
+            return super.toCodeModifier(element);
+        }
+    }
 
     // Used to put quotes around String literals
     @Override
