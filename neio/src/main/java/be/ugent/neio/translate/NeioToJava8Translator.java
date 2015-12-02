@@ -4,9 +4,10 @@ import be.kuleuven.cs.distrinet.jnome.core.language.Java7;
 import be.ugent.neio.industry.NeioFactory;
 import be.ugent.neio.language.Neio;
 import be.ugent.neio.model.document.TextDocument;
-import be.ugent.neio.model.namespace.WildcardNamespaceDeclaration;
 import org.aikodi.chameleon.core.document.Document;
 import org.aikodi.chameleon.core.lookup.LookupException;
+import org.aikodi.chameleon.core.namespace.Namespace;
+import org.aikodi.chameleon.core.namespacedeclaration.NamespaceDeclaration;
 import org.aikodi.chameleon.exception.ModelException;
 import org.aikodi.chameleon.oo.method.Method;
 import org.aikodi.chameleon.oo.plugin.ObjectOrientedFactory;
@@ -78,11 +79,13 @@ public class NeioToJava8Translator extends IncrementalTranslator<Neio, Java7> {
         method.setImplementation(ooFactory.createImplementation(block));
         type.add(method);
 
-        WildcardNamespaceDeclaration ns = (WildcardNamespaceDeclaration) ooFactory.createNamespaceDeclaration(
+        NamespaceDeclaration ns = ooFactory.createNamespaceDeclaration(
                 ooFactory.createNamespaceReference(document.loader().namespace().fullyQualifiedName()));
         ns.add(type);
 
-        ns.addImports(document.view().namespace(), "neio");
+        for (Namespace namespace : document.view().namespace().getSubNamespace("neio").descendantNamespaces()) {
+            ns.addImport(ooFactory.createDemandImport(namespace.fullyQualifiedName()));
+        }
         document.add(ns);
     }
 

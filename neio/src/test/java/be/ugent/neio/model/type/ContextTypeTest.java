@@ -1,44 +1,26 @@
 package be.ugent.neio.model.type;
 
-import be.kuleuven.cs.distrinet.jnome.core.expression.invocation.ConstructorInvocation;
 import be.kuleuven.cs.distrinet.jnome.workspace.JavaView;
 import be.ugent.neio.builder.ClassBuilder;
 import be.ugent.neio.expression.NeioMethodInvocation;
-import be.ugent.neio.industry.LazyFileTextFactory;
 import be.ugent.neio.industry.NeioExpressionFactory;
 import be.ugent.neio.industry.NeioFactory;
 import be.ugent.neio.industry.NeioLanguageFactory;
 import be.ugent.neio.language.Neio;
-import be.ugent.neio.model.document.TextDocument;
-import be.ugent.neio.model.io.LazyFileTextDocumentLoader;
-import be.ugent.neio.model.modifier.Nested;
-import be.ugent.neio.model.namespace.WildcardNamespaceDeclaration;
-import org.aikodi.chameleon.core.document.Document;
 import org.aikodi.chameleon.core.factory.Factory;
 import org.aikodi.chameleon.core.lookup.LookupException;
-import org.aikodi.chameleon.core.modifier.Modifier;
-import org.aikodi.chameleon.core.namespace.DocumentLoaderNamespace;
 import org.aikodi.chameleon.core.namespace.Namespace;
-import org.aikodi.chameleon.core.namespace.RootNamespace;
 import org.aikodi.chameleon.core.namespacedeclaration.NamespaceDeclaration;
-import org.aikodi.chameleon.exception.ChameleonProgrammerException;
 import org.aikodi.chameleon.oo.expression.Expression;
 import org.aikodi.chameleon.oo.expression.ExpressionFactory;
 import org.aikodi.chameleon.oo.method.Method;
 import org.aikodi.chameleon.oo.statement.Block;
 import org.aikodi.chameleon.oo.type.Type;
 import org.aikodi.chameleon.support.modifier.Public;
-import org.aikodi.chameleon.workspace.DirectoryScanner;
-import org.aikodi.chameleon.workspace.ExtensionPredicate;
 import org.aikodi.chameleon.workspace.InputException;
 import org.aikodi.chameleon.workspace.ProjectException;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.io.File;
-import java.util.List;
-
-import static be.ugent.neio.util.Constants.EXTENSION;
 
 /**
  * @author Titouan Vervack
@@ -104,7 +86,7 @@ public class ContextTypeTest {
         addToMethod(method, mi0);
         Method m0 = mi0.getElement();
         assert (m0.name().equals("#"));
-        assert (!m0.hasModifier(new Nested()));
+        assert (!m0.isTrue(m0.language(Neio.class).NESTED));
         Type t0 = m0.nearestAncestor(Type.class);
         assert (t0.getFullyQualifiedName().equals(doc));
 
@@ -114,7 +96,7 @@ public class ContextTypeTest {
         addToMethod(method, mi1);
         Method m1 = mi1.getElement();
         assert (m1.name().equals("#"));
-        assert (m1.hasModifier(new Nested()));
+        assert (m1.isTrue(m1.language(Neio.class).NESTED));
         Type t1 = m1.nearestAncestor(Type.class);
         assert (t1.getFullyQualifiedName().equals(cha));
 
@@ -123,19 +105,18 @@ public class ContextTypeTest {
         addToMethod(method, mi2);
         Method m2 = mi2.getElement();
         assert (m2.name().equals("newline"));
-        assert (!m2.hasModifier(new Nested()));
+        assert (!m2.isTrue(m2.language(Neio.class).NESTED));
         Type t2 = m2.nearestAncestor(Type.class);
         assert (t2.getFullyQualifiedName().equals(cha));
 
         NeioMethodInvocation mi3 = new NeioMethodInvocation("#", mi2);
         mi3.addArgument(ooFactory().createStringLiteral("test3"));
-        mi3.addArgument(ooFactory().createIntegerLiteral("3"));
         addToMethod(method, mi3);
         Method m3 = mi3.getElement();
         assert (m3.name().equals("#"));
-        assert (m3.hasModifier(new Nested()));
+        assert (!m3.isTrue(m3.language(Neio.class).NESTED));
         Type t3 = m3.nearestAncestor(Type.class);
-        assert (t3.getFullyQualifiedName().equals(cha));
+        assert (t3.getFullyQualifiedName().equals(doc));
     }
 
     @Test(expected = LookupException.class)
@@ -143,6 +124,8 @@ public class ContextTypeTest {
         Method method = createTestMethod();
         Expression ci = eFactory().createConstructor(doc, null);
         NeioMethodInvocation mi0 = new NeioMethodInvocation("###", ci);
+        mi0.addArgument(ooFactory().createStringLiteral("test1"));
+        mi0.addArgument(ooFactory().createIntegerLiteral("3"));
         addToMethod(method, mi0);
 
         mi0.getElement();
@@ -164,11 +147,13 @@ public class ContextTypeTest {
         method.setImplementation(ooFactory().createImplementation(new Block()));
         type.add(method);
 
-        WildcardNamespaceDeclaration ns = (WildcardNamespaceDeclaration) ooFactory().createNamespaceDeclaration(
+        NamespaceDeclaration ns = ooFactory().createNamespaceDeclaration(
                 ooFactory().createNamespaceReference("test"));
         ns.add(type);
         type.setUniParent(view.namespace());
-        ns.addImports(view.namespace(), "neio");
+        for (Namespace namespace : view.namespace().getSubNamespace("neio").descendantNamespaces()) {
+            ns.addImport(ooFactory().createDemandImport(namespace.fullyQualifiedName()));
+        }
 
         return method;
     }

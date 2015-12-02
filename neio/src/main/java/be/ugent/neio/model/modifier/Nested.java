@@ -18,12 +18,6 @@ public class Nested extends ModifierImpl {
 
     @Override
     public PropertySet<Element, ChameleonProperty> impliedProperties() {
-        return this.createSet(this.language(Neio.class).NESTED);
-    }
-
-    // TODO: is this allowed?
-    @Override
-    public boolean uniSameAs(Element other) throws LookupException {
-        return getClass().isInstance(other);
+        return createSet(language(Neio.class).NESTED);
     }
 }
