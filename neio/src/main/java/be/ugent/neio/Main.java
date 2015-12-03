@@ -35,15 +35,6 @@ public class Main {
         String inputPath = getInputPath(args);
         ClassBuilder builder = new ClassBuilder();
         View view = builder.build("../base_library/project.xml");
-        // Creates the Java files for the Neio class files
-        // Not needed for now as we're just trying to create a non-working java file
-        /*LanguageBuilder builder = new NeioBuilder(view);
-        try {
-            builder.buildAll(new File(AUTO_GEN_DIR), null);
-        } catch (BuildException e) {
-            e.printStackTrace();
-            System.exit(3);
-        }*/
 
         translateDocuments(inputPath, (JavaView) view);
     }

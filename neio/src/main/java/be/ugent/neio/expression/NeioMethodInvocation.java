@@ -21,7 +21,6 @@ public class NeioMethodInvocation extends JavaMethodInvocation {
         Type contextType = (Type) getTarget().targetContext().declarationContainer();
 
         ContextType ctx = new ContextType(returnType, contextType);
-        // TODO: is this right?
         ctx.setUniParent(getTarget());
 
         return ctx;

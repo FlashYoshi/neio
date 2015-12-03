@@ -5,7 +5,10 @@ import be.kuleuven.cs.distrinet.jnome.core.method.JavaMethod;
 import be.kuleuven.cs.distrinet.jnome.core.type.BasicJavaTypeReference;
 import be.kuleuven.cs.distrinet.jnome.core.type.RegularJavaType;
 import be.kuleuven.cs.distrinet.jnome.input.Java7Factory;
+import org.aikodi.chameleon.core.namespace.Namespace;
 import org.aikodi.chameleon.core.namespace.NamespaceReference;
+import org.aikodi.chameleon.core.namespacedeclaration.DemandImport;
+import org.aikodi.chameleon.core.namespacedeclaration.Import;
 import org.aikodi.chameleon.core.reference.CrossReferenceTarget;
 import org.aikodi.chameleon.oo.expression.Expression;
 import org.aikodi.chameleon.oo.expression.Literal;
@@ -13,7 +16,6 @@ import org.aikodi.chameleon.oo.method.Implementation;
 import org.aikodi.chameleon.oo.method.Method;
 import org.aikodi.chameleon.oo.method.RegularImplementation;
 import org.aikodi.chameleon.oo.method.SimpleNameMethodHeader;
-import org.aikodi.chameleon.oo.namespacedeclaration.TypeImport;
 import org.aikodi.chameleon.oo.statement.Block;
 import org.aikodi.chameleon.oo.statement.Statement;
 import org.aikodi.chameleon.oo.type.BasicTypeReference;
@@ -42,8 +44,8 @@ public class NeioFactory extends Java7Factory {
         return new BasicTypeReference(name);
     }
 
-    public TypeImport createTypeImport(String fqn) {
-        return new TypeImport(createTypeReference(fqn));
+    public Import createDemandImport(String fqn) {
+        return new DemandImport(createNameReference(fqn, Namespace.class));
     }
 
     public NamespaceReference createNamespaceReference(String qn) {

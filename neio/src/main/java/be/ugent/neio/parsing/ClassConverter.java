@@ -26,6 +26,7 @@ import org.aikodi.chameleon.oo.variable.FormalParameter;
 import org.aikodi.chameleon.support.expression.AssignmentExpression;
 import org.aikodi.chameleon.support.member.simplename.variable.MemberVariableDeclarator;
 import org.aikodi.chameleon.support.modifier.Constructor;
+import org.aikodi.chameleon.support.modifier.Public;
 import org.aikodi.chameleon.support.statement.ReturnStatement;
 import org.neio.antlr.ClassParser.*;
 import org.neio.antlr.ClassParserBaseVisitor;
@@ -88,6 +89,8 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         NamespaceDeclaration ns = visitNamespace(ctx.namespace());
 
         Type klass = ooFactory().createRegularType(klassName);
+        // Every class is allowed to be public for now
+        klass.addModifier(new Public());
 
         visitExtensions(body, klass);
         visitFields(body, klass);
@@ -170,6 +173,8 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         }
 
         method.setImplementation(ooFactory().createImplementation(b));
+        // Every method is allowed to be public for now
+        method.addModifier(new Public());
 
         return method;
     }

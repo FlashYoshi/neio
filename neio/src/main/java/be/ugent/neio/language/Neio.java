@@ -19,6 +19,6 @@ public class Neio extends Java7 {
 
     public Neio() {
         super(NAME, new BasicRevision(Arrays.asList(VERSION.split("\\.")).stream().mapToInt(Integer::parseInt).toArray()));
-        this.NESTED = this.add(new StaticChameleonProperty("nested", Method.class));
+        NESTED = add(new StaticChameleonProperty("nested", Method.class));
     }
 }
