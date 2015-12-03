@@ -1,17 +1,14 @@
 package be.ugent.neio.parsing;
 
-import be.kuleuven.cs.distrinet.jnome.core.expression.invocation.ConstructorInvocation;
 import be.kuleuven.cs.distrinet.jnome.workspace.JavaView;
+import be.ugent.neio.industry.NeioExpressionFactory;
 import be.ugent.neio.industry.NeioFactory;
 import be.ugent.neio.language.Neio;
 import be.ugent.neio.model.modifier.Nested;
 import org.aikodi.chameleon.core.document.Document;
 import org.aikodi.chameleon.core.factory.Factory;
 import org.aikodi.chameleon.core.modifier.Modifier;
-import org.aikodi.chameleon.core.namespace.Namespace;
-import org.aikodi.chameleon.core.namespace.NamespaceReference;
 import org.aikodi.chameleon.core.namespacedeclaration.NamespaceDeclaration;
-import org.aikodi.chameleon.core.reference.NameReference;
 import org.aikodi.chameleon.oo.expression.Expression;
 import org.aikodi.chameleon.oo.expression.ExpressionFactory;
 import org.aikodi.chameleon.oo.expression.MethodInvocation;
@@ -61,8 +58,8 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         return (NeioFactory) neio.plugin(ObjectOrientedFactory.class);
     }
 
-    protected ExpressionFactory expressionFactory() {
-        return neio.plugin(ExpressionFactory.class);
+    protected NeioExpressionFactory expressionFactory() {
+        return (NeioExpressionFactory) neio.plugin(ExpressionFactory.class);
     }
 
     public Object visitDocument(DocumentContext ctx) {
@@ -262,9 +259,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         }
 
         List<Expression> parameters = visitParameters(ctx.parameters());
-        ConstructorInvocation c = ooFactory().createConstructorInvocation(type, expressionFactory().createNameExpression(type));
-        c.addAllArguments(parameters);
-        return c;
+        return expressionFactory().createConstructor(type, null, parameters);
     }
 
     @Override
