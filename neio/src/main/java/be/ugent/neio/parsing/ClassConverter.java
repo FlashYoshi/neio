@@ -214,15 +214,22 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     private Statement visitNewDeclarationAssignment(NewAssignmentContext ctx) {
         Statement declaration;
-        Expression var = getNewExpression(ctx);
+        Expression value = visitNewCall(ctx.newCall());
 
+        // Neio new call
         if (ctx.EQUALS() == null) {
-            String type = ctx.newCall().CLASS_NAME() == null ? ctx.newCall().VAR_WITH_TYPE().getText() : ctx.newCall().CLASS_NAME().getText();
-            declaration = ooFactory().createLocalVariable(ooFactory().createTypeReference(type), ctx.CAMEL_CASE().getText(), var);
-        } else {
-            TypeReference type = ooFactory().createTypeReference(ctx.var().fieldName().getText());
-            declaration = ooFactory().createLocalVariable(type, ctx.var().CAMEL_CASE().getText(), var);
+            String type = ctx.newCall().CLASS_NAME() == null
+                    ? ctx.newCall().VAR_WITH_TYPE().getText()
+                    : ctx.newCall().CLASS_NAME().getText();
+            // Add constructor parameters
+            declaration = ooFactory().createLocalVariable(type, ctx.CAMEL_CASE().getText(), value);
         }
+        // Java new call
+        else {
+            TypeReference type = ooFactory().createTypeReference(ctx.var().fieldName().getText());
+            declaration = ooFactory().createLocalVariable(type, ctx.var().CAMEL_CASE().getText(), value);
+        }
+
         return declaration;
     }
 
@@ -284,7 +291,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     @Override
     public List<Expression> visitParameters(ParametersContext ctx) {
         List<Expression> parameters = new ArrayList<>();
-        ctx.parameter().forEach(this::visitParameter);
+        ctx.parameter().forEach(a -> parameters.add(visitParameter(a)));
 
         return parameters;
     }
@@ -293,6 +300,10 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     public Expression visitParameter(ParameterContext ctx) {
         if (ctx.CAMEL_CASE() != null) {
             return expressionFactory().createNameExpression(ctx.CAMEL_CASE().getText());
+        } else if (ctx.DIGIT() != null) {
+            StringBuilder number = new StringBuilder();
+            ctx.DIGIT().forEach(d -> number.append(d.getText()));
+            return ooFactory().createIntegerLiteral(number.toString());
         } else {
             return visitMethodCall(ctx.methodCall());
         }
