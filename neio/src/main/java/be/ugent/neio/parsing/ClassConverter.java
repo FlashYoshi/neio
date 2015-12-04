@@ -221,7 +221,6 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
             String type = ctx.newCall().CLASS_NAME() == null
                     ? ctx.newCall().VAR_WITH_TYPE().getText()
                     : ctx.newCall().CLASS_NAME().getText();
-            // Add constructor parameters
             declaration = ooFactory().createLocalVariable(type, ctx.CAMEL_CASE().getText(), value);
         }
         // Java new call

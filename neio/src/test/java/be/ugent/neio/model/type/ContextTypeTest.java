@@ -1,7 +1,7 @@
 package be.ugent.neio.model.type;
 
 import be.kuleuven.cs.distrinet.jnome.workspace.JavaView;
-import be.ugent.neio.builder.ClassBuilder;
+import be.ugent.neio.builder.NeioProjectBuilder;
 import be.ugent.neio.expression.NeioMethodInvocation;
 import be.ugent.neio.industry.NeioExpressionFactory;
 import be.ugent.neio.industry.NeioFactory;
@@ -50,7 +50,7 @@ public class ContextTypeTest {
 
     @Before
     public void initialize() {
-        ClassBuilder builder = new ClassBuilder();
+        NeioProjectBuilder builder = new NeioProjectBuilder();
         view = (JavaView) builder.build("../base_library/project.xml");
     }
 

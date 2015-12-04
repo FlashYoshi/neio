@@ -54,8 +54,12 @@ public class NeioSyntax extends Java7Syntax {
 
     @Override
     public String toCodeMethod(Method method) {
-        method.setName(createValidMethodname(method.name()));
-        return super.toCodeMethod(method);
+        // Be sure we do not make changes to the actual method
+        Method clone = (Method) method.clone();
+        // Need to set parent to be able to do some lookups in super()
+        clone.setUniParent(method.parent());
+        clone.header().signature().setName(createValidMethodname(clone.name()));
+        return super.toCodeMethod(clone);
     }
 
     @Override

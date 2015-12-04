@@ -2,12 +2,11 @@ package be.ugent.neio;
 
 import be.kuleuven.cs.distrinet.jnome.workspace.JavaView;
 import be.ugent.chameleonsupport.build.LanguageBuilder;
-import be.ugent.neio.builder.ClassBuilder;
-import be.ugent.neio.builder.NeioBuilder;
+import be.ugent.neio.builder.NeioClassBuilder;
+import be.ugent.neio.builder.NeioProjectBuilder;
+import be.ugent.neio.builder.NeioScriptBuilder;
 import be.ugent.neio.industry.LazyFileTextFactory;
 import be.ugent.neio.industry.NeioDocumentModelFactory;
-import be.ugent.neio.model.document.TextDocument;
-import org.aikodi.chameleon.core.document.Document;
 import org.aikodi.chameleon.input.ModelFactory;
 import org.aikodi.chameleon.plugin.build.BuildException;
 import org.aikodi.chameleon.workspace.*;
@@ -33,10 +32,19 @@ public class Main {
 
     private void read(String[] args) {
         String inputPath = getInputPath(args);
-        ClassBuilder builder = new ClassBuilder();
-        View view = builder.build("../base_library/project.xml");
+        NeioProjectBuilder projectBuilder = new NeioProjectBuilder();
+        View view = projectBuilder.build("../base_library/project.xml");
 
-        translateDocuments(inputPath, (JavaView) view);
+        File output = new File(AUTO_GEN_DIR);
+        LanguageBuilder languageBuilder = new NeioClassBuilder(view);
+        try {
+            languageBuilder.buildAll(output, null);
+        } catch (BuildException e) {
+            e.printStackTrace();
+            System.exit(3);
+        }
+
+        translateDocuments(inputPath, output, (JavaView) view);
     }
 
     private String getInputPath(String[] args) {
@@ -59,28 +67,22 @@ public class Main {
         System.out.println("USAGE: java -jar " + programName + " <path-to-outputdir> <path-to-inputfile-directory>");
     }
 
-    private void translateDocuments(String inputPath, JavaView view) {
+    private void translateDocuments(String inputPath, File output, JavaView view) {
         try {
-            File output = new File(AUTO_GEN_DIR);
-
             // We're done scanning Neio class files, change the classparser to the documentparser
             view.language().setPlugin(ModelFactory.class, new NeioDocumentModelFactory());
             DirectoryScanner scanner = new DirectoryScanner(inputPath,
                     new ExtensionPredicate(EXTENSION), new LazyFileTextFactory());
             view.addSource(scanner);
 
-
-            for (Document doc : scanner.documents()) {
-                TextDocument document = (TextDocument) doc;
-                LanguageBuilder builder = new NeioBuilder(document.view(), false);
-                try {
-                    builder.build(document, output);
-                } catch (BuildException e) {
-                    e.printStackTrace();
-                    System.exit(4);
-                }
+            NeioScriptBuilder builder = new NeioScriptBuilder(view, false);
+            try {
+                builder.buildAll(scanner.documents(), output, null);
+            } catch (BuildException | InputException e) {
+                e.printStackTrace();
+                System.exit(4);
             }
-        } catch (InputException | ProjectException e) {
+        } catch (ProjectException e) {
             e.printStackTrace();
         }
     }
