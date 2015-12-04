@@ -1,17 +1,14 @@
 package be.ugent.neio.parsing;
 
-import be.kuleuven.cs.distrinet.jnome.core.expression.invocation.ConstructorInvocation;
 import be.kuleuven.cs.distrinet.jnome.workspace.JavaView;
+import be.ugent.neio.industry.NeioExpressionFactory;
 import be.ugent.neio.industry.NeioFactory;
 import be.ugent.neio.language.Neio;
 import be.ugent.neio.model.modifier.Nested;
 import org.aikodi.chameleon.core.document.Document;
 import org.aikodi.chameleon.core.factory.Factory;
 import org.aikodi.chameleon.core.modifier.Modifier;
-import org.aikodi.chameleon.core.namespace.Namespace;
-import org.aikodi.chameleon.core.namespace.NamespaceReference;
 import org.aikodi.chameleon.core.namespacedeclaration.NamespaceDeclaration;
-import org.aikodi.chameleon.core.reference.NameReference;
 import org.aikodi.chameleon.oo.expression.Expression;
 import org.aikodi.chameleon.oo.expression.ExpressionFactory;
 import org.aikodi.chameleon.oo.expression.MethodInvocation;
@@ -61,8 +58,8 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         return (NeioFactory) neio.plugin(ObjectOrientedFactory.class);
     }
 
-    protected ExpressionFactory expressionFactory() {
-        return neio.plugin(ExpressionFactory.class);
+    protected NeioExpressionFactory expressionFactory() {
+        return (NeioExpressionFactory) neio.plugin(ExpressionFactory.class);
     }
 
     public Object visitDocument(DocumentContext ctx) {
@@ -217,15 +214,21 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     private Statement visitNewDeclarationAssignment(NewAssignmentContext ctx) {
         Statement declaration;
-        Expression var = getNewExpression(ctx);
+        Expression value = visitNewCall(ctx.newCall());
 
+        // Neio new call
         if (ctx.EQUALS() == null) {
-            String type = ctx.newCall().CLASS_NAME() == null ? ctx.newCall().VAR_WITH_TYPE().getText() : ctx.newCall().CLASS_NAME().getText();
-            declaration = ooFactory().createLocalVariable(ooFactory().createTypeReference(type), ctx.CAMEL_CASE().getText(), var);
-        } else {
-            TypeReference type = ooFactory().createTypeReference(ctx.var().fieldName().getText());
-            declaration = ooFactory().createLocalVariable(type, ctx.var().CAMEL_CASE().getText(), var);
+            String type = ctx.newCall().CLASS_NAME() == null
+                    ? ctx.newCall().VAR_WITH_TYPE().getText()
+                    : ctx.newCall().CLASS_NAME().getText();
+            declaration = ooFactory().createLocalVariable(type, ctx.CAMEL_CASE().getText(), value);
         }
+        // Java new call
+        else {
+            TypeReference type = ooFactory().createTypeReference(ctx.var().fieldName().getText());
+            declaration = ooFactory().createLocalVariable(type, ctx.var().CAMEL_CASE().getText(), value);
+        }
+
         return declaration;
     }
 
@@ -262,9 +265,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         }
 
         List<Expression> parameters = visitParameters(ctx.parameters());
-        ConstructorInvocation c = ooFactory().createConstructorInvocation(type, expressionFactory().createNameExpression(type));
-        c.addAllArguments(parameters);
-        return c;
+        return expressionFactory().createConstructor(type, null, parameters);
     }
 
     @Override
@@ -289,7 +290,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     @Override
     public List<Expression> visitParameters(ParametersContext ctx) {
         List<Expression> parameters = new ArrayList<>();
-        ctx.parameter().forEach(this::visitParameter);
+        ctx.parameter().forEach(a -> parameters.add(visitParameter(a)));
 
         return parameters;
     }
@@ -298,6 +299,10 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     public Expression visitParameter(ParameterContext ctx) {
         if (ctx.CAMEL_CASE() != null) {
             return expressionFactory().createNameExpression(ctx.CAMEL_CASE().getText());
+        } else if (ctx.DIGIT() != null) {
+            StringBuilder number = new StringBuilder();
+            ctx.DIGIT().forEach(d -> number.append(d.getText()));
+            return ooFactory().createIntegerLiteral(number.toString());
         } else {
             return visitMethodCall(ctx.methodCall());
         }

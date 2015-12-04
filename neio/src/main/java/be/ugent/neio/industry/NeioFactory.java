@@ -63,6 +63,10 @@ public class NeioFactory extends Java7Factory {
         return m;
     }
 
+    public LocalVariableDeclarator createLocalVariable(String type, String name, Expression e) {
+        return createLocalVariable(createTypeReference(type), name, e);
+    }
+
     public LocalVariableDeclarator createLocalVariable(TypeReference type, String name, Expression e) {
         LocalVariableDeclarator declarator = new LocalVariableDeclarator(type);
         declarator.add(new VariableDeclaration(name, e));

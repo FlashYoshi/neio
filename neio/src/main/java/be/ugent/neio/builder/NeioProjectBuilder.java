@@ -12,7 +12,7 @@ import java.io.File;
 /**
  * @author Titouan Vervack
  */
-public class ClassBuilder {
+public class NeioProjectBuilder {
 
     public View build(String configfilePath) {
         Config.setCaching(true);
@@ -27,14 +27,6 @@ public class ClassBuilder {
         File configFile = new File(configfilePath);
         XMLProjectLoader config = new XMLProjectLoader(workspace);
         Project project = config.project(configFile, null);
-        View view = project.views().get(0);
-
-        try {
-            view.sourceDocuments();
-        } catch (InputException e) {
-            e.printStackTrace();
-        }
-
-        return view;
+        return project.views().get(0);
     }
 }
