@@ -4,23 +4,23 @@ options { tokenVocab = ClassLexer; }
 
 document : namespace
            HEADER CLASS_NAME
+           inheritance*
            body
            EOF;
 
 body : classBody
      | interfaceBody;
 
-classBody : inheritance*
-            (field | method)*;
+classBody : (field | method)*;
 
-interfaceBody : STUB;
+interfaceBody : (decl SEMICOLON)*;
 
 namespace: NAMESPACE chain SEMICOLON;
 
 ////////////UTIL////////////
 inheritance : ( EXTENDS chain
-            | IMPLEMENTS chain)
-            SEMICOLON;
+              | IMPLEMENTS chain)
+              SEMICOLON;
 
 field : var SEMICOLON;
 genericArg : CLASS_NAME | genericType;

@@ -24,6 +24,7 @@ import org.aikodi.chameleon.oo.variable.FormalParameter;
 import org.aikodi.chameleon.support.expression.AssignmentExpression;
 import org.aikodi.chameleon.support.member.simplename.variable.MemberVariableDeclarator;
 import org.aikodi.chameleon.support.modifier.Constructor;
+import org.aikodi.chameleon.support.modifier.Interface;
 import org.aikodi.chameleon.support.modifier.Private;
 import org.aikodi.chameleon.support.modifier.Public;
 import org.aikodi.chameleon.support.statement.ReturnStatement;
@@ -71,31 +72,45 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     private void visitHeader(DocumentContext ctx) {
         String header = ctx.HEADER().getText();
         String klassName = ctx.CLASS_NAME().getText();
-        switch (header) {
-            case CLASS:
-                visitClass(ctx, klassName);
-                break;
-            case INTERFACE:
-                break;
-            default:
-                break;
-        }
+        visitDocument(ctx, klassName, header);
     }
 
-    private void visitClass(DocumentContext ctx, String klassName) {
-        ClassBodyContext body = ctx.body().classBody();
+    private void visitDocument(DocumentContext ctx, String klassName, String header) {
+        InterfaceBodyContext body = ctx.body().interfaceBody();
         NamespaceDeclaration ns = visitNamespace(ctx.namespace());
 
         Type klass = ooFactory().createRegularType(klassName);
         // Every class is allowed to be public for now
         klass.addModifier(new Public());
 
-        visitInheritances(body, klass);
-        visitFields(body, klass);
-        visitMethods(body, klass);
+        visitInheritances(ctx, klass);
+
+        switch (header) {
+            case CLASS:
+                visitClass(ctx.body().classBody(), klass);
+                break;
+            case INTERFACE:
+                visitInterface(ctx.body().interfaceBody(), klass);
+
+        }
 
         ns.add(klass);
         document.add(ns);
+    }
+
+    private void visitClass(ClassBodyContext ctx, Type klass) {
+        visitFields(ctx, klass);
+        visitMethods(ctx, klass);
+    }
+
+    private void visitInterface(InterfaceBodyContext ctx, Type klass) {
+        klass.addModifier(new Interface());
+        for (DeclContext decl : ctx.decl()) {
+            String returnType = decl.CLASS_NAME().getText();
+            Method method = ooFactory().createMethod(decl.methodName().getText(), returnType);
+            method.header().addFormalParameters(visitArguments(decl.arguments()));
+            klass.add(method);
+        }
     }
 
     @Override
@@ -103,8 +118,8 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         return factory().createNamespaceDeclaration(ooFactory().createNamespaceReference(ctx.chain().getText()));
     }
 
-    private void visitInheritances(ClassBodyContext body, Type klass) {
-        for (InheritanceContext inheritance : body.inheritance()) {
+    private void visitInheritances(DocumentContext ctx, Type klass) {
+        for (InheritanceContext inheritance : ctx.inheritance()) {
             klass.addInheritanceRelation(visitInheritance(inheritance));
         }
     }
