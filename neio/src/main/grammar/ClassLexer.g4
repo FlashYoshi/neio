@@ -21,7 +21,7 @@ INTERFACE : 'interface';
 RETURN : 'return';
 NEW : 'new';
 THIS : 'this';
-METHOD_OPTION : 'nested';
+MODIFIER : 'nested';
 NAMESPACE : 'namespace';
 STUB : 'stub';
 ////////////END KEYWORDS////////////

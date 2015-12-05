@@ -10,7 +10,7 @@ document : namespace
 body : classBody
      | interfaceBody;
 
-classBody : extension*
+classBody : inheritance*
             (field | method)*;
 
 interfaceBody : STUB;
@@ -18,7 +18,7 @@ interfaceBody : STUB;
 namespace: NAMESPACE chain SEMICOLON;
 
 ////////////UTIL////////////
-extension : ( EXTENDS chain
+inheritance : ( EXTENDS chain
             | IMPLEMENTS chain)
             SEMICOLON;
 
@@ -36,7 +36,7 @@ parameter : CAMEL_CASE (DIGIT+)?
 parameters : (parameter COMMA)* parameter
            | ;
 
-method : METHOD_OPTION? decl L_CURLY_BRACE block? R_CURLY_BRACE;
+method : MODIFIER? decl L_CURLY_BRACE block? R_CURLY_BRACE;
 decl : CLASS_NAME? methodName L_BRACE arguments R_BRACE;
 call : methodName L_BRACE parameters R_BRACE;
 methodName: CLASS_NAME
