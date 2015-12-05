@@ -11,6 +11,7 @@ import org.aikodi.chameleon.core.modifier.Modifier;
 import org.aikodi.chameleon.core.namespacedeclaration.NamespaceDeclaration;
 import org.aikodi.chameleon.oo.expression.Expression;
 import org.aikodi.chameleon.oo.expression.ExpressionFactory;
+import org.aikodi.chameleon.oo.expression.Literal;
 import org.aikodi.chameleon.oo.expression.MethodInvocation;
 import org.aikodi.chameleon.oo.method.Method;
 import org.aikodi.chameleon.oo.plugin.ObjectOrientedFactory;
@@ -76,7 +77,6 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     private void visitDocument(DocumentContext ctx, String klassName, String header) {
-        InterfaceBodyContext body = ctx.body().interfaceBody();
         NamespaceDeclaration ns = visitNamespace(ctx.namespace());
 
         Type klass = ooFactory().createRegularType(klassName);
@@ -91,7 +91,9 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
                 break;
             case INTERFACE:
                 visitInterface(ctx.body().interfaceBody(), klass);
-
+                break;
+            default:
+                throw new IllegalArgumentException("Header was unknown: " + header);
         }
 
         ns.add(klass);
@@ -348,10 +350,8 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     public Expression visitParameter(ParameterContext ctx) {
         if (ctx.CAMEL_CASE() != null) {
             return eFactory().createNameExpression(ctx.CAMEL_CASE().getText());
-        } else if (ctx.DIGIT() != null) {
-            StringBuilder number = new StringBuilder();
-            ctx.DIGIT().forEach(d -> number.append(d.getText()));
-            return ooFactory().createIntegerLiteral(number.toString());
+        } else if (ctx.literal() != null) {
+            return visitLiteral(ctx.literal());
         } else {
             return visitMethodCall(ctx.methodCall());
         }
@@ -440,6 +440,18 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     @Override
+    public Literal visitLiteral(@NotNull LiteralContext ctx) {
+        if (ctx.DIGIT() != null && !ctx.DIGIT().isEmpty()) {
+            StringBuilder number = new StringBuilder();
+            ctx.DIGIT().forEach(d -> number.append(d.getText()));
+
+            return ooFactory().createIntegerLiteral(number.toString());
+        } else {
+            return ooFactory().createStringLiteral(ctx.STRING_LITERAL().getText());
+        }
+    }
+
+    @Override
     public ReturnStatement visitReturnCall(ReturnCallContext ctx) {
         Expression e;
         if (ctx.newCall() != null) {
@@ -448,6 +460,8 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
             e = eFactory().createNameExpression(ctx.CAMEL_CASE().getText());
         } else if (ctx.methodCall() != null) {
             e = visitMethodCall(ctx.methodCall());
+        } else if (ctx.literal() != null) {
+            e = visitLiteral(ctx.literal());
         } else {
             throw new IllegalArgumentException("Nothing to assign to: " + ctx.getText());
         }

@@ -26,6 +26,8 @@ NAMESPACE : 'namespace';
 STUB : 'stub';
 ////////////END KEYWORDS////////////
 
+fragment N_D_QUOTE : ~["];
+STRING_LITERAL : D_QUOTE N_D_QUOTE* D_QUOTE;
 
 fragment CAPITALED : CAPITAL LETTER+;
 CLASS_NAME : CAPITALED+;
@@ -45,6 +47,7 @@ L_BRACE : '(';
 R_BRACE : ')';
 L_CURLY_BRACE : '{';
 R_CURLY_BRACE : '}';
+D_QUOTE : '"';
 DIGIT : [0-9];
 
 METHOD_NAME : ~[()\r\n \t;.,:<>]+;

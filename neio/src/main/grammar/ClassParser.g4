@@ -35,19 +35,23 @@ arguments : (var COMMA)* var
 
 parameter : CAMEL_CASE (DIGIT+)?
           | methodCall
-          | DIGIT+;
+          | literal;
 parameters : (parameter COMMA)* parameter
            | ;
 
-method : MODIFIER? decl L_CURLY_BRACE block? R_CURLY_BRACE;
+literal : STRING_LITERAL
+        | DIGIT+;
+
+method : MODIFIER? decl L_CURLY_BRACE block R_CURLY_BRACE;
 decl : CLASS_NAME? methodName L_BRACE arguments R_BRACE;
 call : methodName L_BRACE parameters R_BRACE;
 methodName: CLASS_NAME
           | CAMEL_CASE
           | METHOD_NAME;
 
-block : statement+
-        returnCall?;
+block : statement*
+        returnCall?
+        | ;
 
 statement : ( assignment
             | methodCall
@@ -56,7 +60,7 @@ statement : ( assignment
 
 methodCall : (chain PERIOD)? call;
 
-assignment : (thisChain | var | CAMEL_CASE) EQUALS (CAMEL_CASE | thisChain | methodCall);
+assignment : (thisChain | var | CAMEL_CASE) EQUALS (CAMEL_CASE | thisChain | methodCall | literal);
 thisChain : (THIS PERIOD)? (chain PERIOD | (CLASS_NAME | CAMEL_CASE));
 
 chain : (CLASS_NAME | CAMEL_CASE) (PERIOD (CLASS_NAME | CAMEL_CASE))*;
@@ -66,7 +70,9 @@ newAssignment : newCall CAMEL_CASE
 
 newCall : NEW (CLASS_NAME | genericType) L_BRACE parameters R_BRACE;
 
-returnCall : ( RETURN newCall
-             | RETURN CAMEL_CASE
-             | RETURN methodCall)
+returnCall : RETURN
+             ( newCall
+             | CAMEL_CASE
+             | methodCall
+             | literal)
              SEMICOLON;

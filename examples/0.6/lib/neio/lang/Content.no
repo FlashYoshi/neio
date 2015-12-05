@@ -1,8 +1,13 @@
 namespace neio.lang;
 
 class Content
+implements neio.lang.Texable;
 List<Content> content;
 
 Content() {
     content = new List<Content>();
+}
+
+String toTex() {
+	return "";
 }

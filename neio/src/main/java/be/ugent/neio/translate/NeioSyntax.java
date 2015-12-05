@@ -42,7 +42,7 @@ public class NeioSyntax extends Java7Syntax {
     public String toCodeLiteral(Literal literal) {
         try {
             String literalText = super.toCodeLiteral(literal);
-            if (literal.getType().getFullyQualifiedName().equals("java.lang.String")) {
+            if (literal.getType().getFullyQualifiedName().equals("java.lang.String") && !literalText.startsWith("\"")) {
                 return "\"" + literalText + "\"";
             } else {
                 return literalText;

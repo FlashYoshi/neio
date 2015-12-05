@@ -24,3 +24,7 @@ Paragraph newline(String parText) {
 	
     return p;
 }
+
+String toTex() {
+	return "";
+}

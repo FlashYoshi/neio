@@ -8,3 +8,7 @@ String text;
 Text(String text) {
     this.text = text;
 }
+
+String toTex() {
+	return text;
+}
