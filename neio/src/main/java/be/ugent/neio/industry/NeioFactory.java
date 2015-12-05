@@ -1,15 +1,14 @@
 package be.ugent.neio.industry;
 
-import be.kuleuven.cs.distrinet.jnome.core.expression.invocation.ConstructorInvocation;
 import be.kuleuven.cs.distrinet.jnome.core.method.JavaMethod;
 import be.kuleuven.cs.distrinet.jnome.core.type.BasicJavaTypeReference;
+import be.kuleuven.cs.distrinet.jnome.core.type.GenericTypeReference;
 import be.kuleuven.cs.distrinet.jnome.core.type.RegularJavaType;
 import be.kuleuven.cs.distrinet.jnome.input.Java7Factory;
 import org.aikodi.chameleon.core.namespace.Namespace;
 import org.aikodi.chameleon.core.namespace.NamespaceReference;
 import org.aikodi.chameleon.core.namespacedeclaration.DemandImport;
 import org.aikodi.chameleon.core.namespacedeclaration.Import;
-import org.aikodi.chameleon.core.reference.CrossReferenceTarget;
 import org.aikodi.chameleon.oo.expression.Expression;
 import org.aikodi.chameleon.oo.expression.Literal;
 import org.aikodi.chameleon.oo.method.Implementation;
@@ -21,6 +20,8 @@ import org.aikodi.chameleon.oo.statement.Statement;
 import org.aikodi.chameleon.oo.type.BasicTypeReference;
 import org.aikodi.chameleon.oo.type.RegularType;
 import org.aikodi.chameleon.oo.type.TypeReference;
+import org.aikodi.chameleon.oo.type.generics.EqualityTypeArgument;
+import org.aikodi.chameleon.oo.type.generics.TypeArgument;
 import org.aikodi.chameleon.oo.type.inheritance.SubtypeRelation;
 import org.aikodi.chameleon.oo.variable.VariableDeclaration;
 import org.aikodi.chameleon.support.expression.RegularLiteral;
@@ -28,6 +29,8 @@ import org.aikodi.chameleon.support.member.simplename.variable.MemberVariableDec
 import org.aikodi.chameleon.support.statement.ReturnStatement;
 import org.aikodi.chameleon.support.statement.StatementExpression;
 import org.aikodi.chameleon.support.variable.LocalVariableDeclarator;
+
+import java.util.List;
 
 public class NeioFactory extends Java7Factory {
 
@@ -78,14 +81,6 @@ public class NeioFactory extends Java7Factory {
         return new JavaMethod(new SimpleNameMethodHeader(methodName, createTypeReference(returnType)));
     }
 
-    public BasicJavaTypeReference createBasicJavaTypeReference(String typeRef) {
-        return new BasicJavaTypeReference(typeRef);
-    }
-
-    public ConstructorInvocation createConstructorInvocation(String typeRef, CrossReferenceTarget target) {
-        return new ConstructorInvocation(createBasicJavaTypeReference(typeRef), target);
-    }
-
     public Implementation createImplementation(Block b) {
         return new RegularImplementation(b);
     }
@@ -112,5 +107,22 @@ public class NeioFactory extends Java7Factory {
 
     public Literal createLiteral(TypeReference type, String value) {
         return new RegularLiteral(type, value);
+    }
+
+    public TypeArgument createTypeArgument(String type) {
+        return createTypeArgument(createTypeReference(type));
+    }
+
+    public TypeArgument createTypeArgument(TypeReference type) {
+        // TODO: Is this correct?
+        return new EqualityTypeArgument(type);
+    }
+
+    public GenericTypeReference createGenericTypeReference(String target, List<TypeArgument> typeArguments) {
+        return new GenericTypeReference(createBasicJavaTypeReference(target), typeArguments);
+    }
+
+    private BasicJavaTypeReference createBasicJavaTypeReference(String fqn) {
+        return new BasicJavaTypeReference(fqn);
     }
 }

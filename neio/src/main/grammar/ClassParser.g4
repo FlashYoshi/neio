@@ -23,8 +23,11 @@ inheritance : ( EXTENDS chain
             SEMICOLON;
 
 field : var SEMICOLON;
+genericArg : CLASS_NAME | genericType;
+genericArgs : genericArg (COMMA genericArg)*;
+genericType : CLASS_NAME SMALLER genericArgs BIGGER;
 fieldName : CLASS_NAME
-          | VAR_WITH_TYPE;
+          | genericType;
 var : fieldName CAMEL_CASE;
 
 arguments : (var COMMA)* var
@@ -61,7 +64,7 @@ chain : (CLASS_NAME | CAMEL_CASE) (PERIOD (CLASS_NAME | CAMEL_CASE))*;
 newAssignment : newCall CAMEL_CASE
               | (var | CAMEL_CASE) EQUALS newCall;
 
-newCall : NEW (CLASS_NAME | VAR_WITH_TYPE) L_BRACE parameters R_BRACE;
+newCall : NEW (CLASS_NAME | genericType) L_BRACE parameters R_BRACE;
 
 returnCall : ( RETURN newCall
              | RETURN CAMEL_CASE

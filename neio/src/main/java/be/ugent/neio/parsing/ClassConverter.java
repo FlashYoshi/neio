@@ -18,6 +18,7 @@ import org.aikodi.chameleon.oo.statement.Block;
 import org.aikodi.chameleon.oo.statement.Statement;
 import org.aikodi.chameleon.oo.type.Type;
 import org.aikodi.chameleon.oo.type.TypeReference;
+import org.aikodi.chameleon.oo.type.generics.TypeArgument;
 import org.aikodi.chameleon.oo.type.inheritance.InheritanceRelation;
 import org.aikodi.chameleon.oo.variable.FormalParameter;
 import org.aikodi.chameleon.support.expression.AssignmentExpression;
@@ -26,6 +27,7 @@ import org.aikodi.chameleon.support.modifier.Constructor;
 import org.aikodi.chameleon.support.modifier.Private;
 import org.aikodi.chameleon.support.modifier.Public;
 import org.aikodi.chameleon.support.statement.ReturnStatement;
+import org.antlr.v4.runtime.misc.NotNull;
 import org.neio.antlr.ClassParser.*;
 import org.neio.antlr.ClassParserBaseVisitor;
 
@@ -224,17 +226,46 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         // Neio new call
         if (ctx.EQUALS() == null) {
             String type = ctx.newCall().CLASS_NAME() == null
-                    ? ctx.newCall().VAR_WITH_TYPE().getText()
+                    ? ctx.newCall().genericType().getText()
                     : ctx.newCall().CLASS_NAME().getText();
             declaration = ooFactory().createLocalVariable(type, ctx.CAMEL_CASE().getText(), value);
         }
         // Java new call
         else {
-            TypeReference type = ooFactory().createTypeReference(ctx.var().fieldName().getText());
+            FieldNameContext fieldName = ctx.var().fieldName();
+            TypeReference type;
+            if (ctx.var().fieldName().genericType() != null) {
+                type = visitGenericType(fieldName.genericType());
+            } else {
+                type = ooFactory().createTypeReference(fieldName.getText());
+            }
+
             declaration = ooFactory().createLocalVariable(type, ctx.var().CAMEL_CASE().getText(), value);
         }
 
         return declaration;
+    }
+
+    @Override
+    public TypeReference visitGenericType(GenericTypeContext ctx) {
+        return ooFactory().createGenericTypeReference(ctx.CLASS_NAME().getText(), visitGenericArgs(ctx.genericArgs()));
+    }
+
+    @Override
+    public List<TypeArgument> visitGenericArgs(@NotNull GenericArgsContext ctx) {
+        List<TypeArgument> arguments = new ArrayList<>();
+        ctx.genericArg().forEach(a -> arguments.add(visitGenericArg(a)));
+
+        return arguments;
+    }
+
+    @Override
+    public TypeArgument visitGenericArg(@NotNull GenericArgContext ctx) {
+        if (ctx.CLASS_NAME() != null) {
+            return ooFactory().createTypeArgument(ctx.CLASS_NAME().getText());
+        } else {
+            return ooFactory().createTypeArgument(visitGenericType(ctx.genericType()));
+        }
     }
 
     private boolean varDeclaration(NewAssignmentContext ctx) {
@@ -266,7 +297,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         if (ctx.CLASS_NAME() != null) {
             type = ctx.CLASS_NAME().getText();
         } else {
-            type = ctx.VAR_WITH_TYPE().getText();
+            type = ctx.genericType().getText();
         }
 
         List<Expression> parameters = visitParameters(ctx.parameters());

@@ -30,7 +30,6 @@ STUB : 'stub';
 fragment CAPITALED : CAPITAL LETTER+;
 CLASS_NAME : CAPITALED+;
 CAMEL_CASE : LETTER+ CAPITALED*;
-VAR_WITH_TYPE : CLASS_NAME (SMALLER VAR_WITH_TYPE BIGGER)?;
 
 PERIOD : '.';
 COMMA : ',';
@@ -48,4 +47,4 @@ L_CURLY_BRACE : '{';
 R_CURLY_BRACE : '}';
 DIGIT : [0-9];
 
-METHOD_NAME : ~[()\r\n \t;.,:]+;
+METHOD_NAME : ~[()\r\n \t;.,:<>]+;
