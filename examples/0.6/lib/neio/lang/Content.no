@@ -4,5 +4,5 @@ class Content
 List<Content> content;
 
 Content() {
-    content = new List();
+    content = new List<Content>();
 }

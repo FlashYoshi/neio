@@ -45,11 +45,9 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     private final Document document;
     private final Neio neio;
-    private final JavaView view;
 
     public ClassConverter(Document document, JavaView view) {
         this.document = document;
-        this.view = view;
         this.neio = view.language(Neio.class);
     }
 
