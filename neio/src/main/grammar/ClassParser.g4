@@ -40,7 +40,9 @@ parameters : (parameter COMMA)* parameter
            | ;
 
 literal : STRING_LITERAL
-        | DIGIT+;
+        | integer;
+
+integer : DIGIT+;
 
 method : MODIFIER? decl L_CURLY_BRACE block R_CURLY_BRACE;
 decl : CLASS_NAME? methodName L_BRACE arguments R_BRACE;
@@ -55,15 +57,24 @@ block : statement*
 
 statement : ( assignment
             | methodCall
-            | newAssignment)
+            | newAssignment
+            | forloop)
             SEMICOLON;
 
-methodCall : (chain PERIOD)? call;
+forloop: FOR L_BRACE forDecl R_BRACE L_CURLY_BRACE block R_CURLY_BRACE;
+forDecl : INT CAMEL_CASE EQUALS (integer | methodCall) SEMICOLON comparison SEMICOLON assignment;
+comparison : CAMEL_CASE operator (integer | methodCall);
 
-assignment : (thisChain | var | CAMEL_CASE) EQUALS (CAMEL_CASE | thisChain | methodCall | literal);
-thisChain : (THIS PERIOD)? (chain PERIOD | (CLASS_NAME | CAMEL_CASE));
+operator : SMALLER
+         | BIGGER
+         | EQUALS EQUALS;
 
-chain : (CLASS_NAME | CAMEL_CASE) (PERIOD (CLASS_NAME | CAMEL_CASE))*;
+methodCall : (thisChain PERIOD)? call;
+
+assignment : (thisChain | var | CAMEL_CASE) EQUALS (CAMEL_CASE | methodCall | literal) (PLUS (CAMEL_CASE | methodCall | literal))*;
+thisChain : ((THIS | SUPER) PERIOD)? chain;
+
+chain : (CLASS_NAME | CAMEL_CASE | call) (PERIOD (CLASS_NAME | CAMEL_CASE | call))*;
 
 newAssignment : newCall CAMEL_CASE
               | (var | CAMEL_CASE) EQUALS newCall;
@@ -71,8 +82,11 @@ newAssignment : newCall CAMEL_CASE
 newCall : NEW (CLASS_NAME | genericType) L_BRACE parameters R_BRACE;
 
 returnCall : RETURN
-             ( newCall
-             | CAMEL_CASE
-             | methodCall
-             | literal)
+             returnIntern
+             (PLUS returnIntern)*
              SEMICOLON;
+
+returnIntern : ( newCall
+               | CAMEL_CASE
+               | methodCall
+               | literal);

@@ -322,7 +322,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     @Override
     public Expression visitMethodCall(MethodCallContext ctx) {
         Expression e = null;
-        ChainContext chain = ctx.chain();
+        ThisChainContext chain = ctx.thisChain();
         if (chain != null) {
             e = eFactory().createNameExpression(chain.getText());
         }
@@ -361,7 +361,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     private Expression getAssignmentVar(AssignmentContext ctx) {
         if (ctx.thisChain() != null && !ctx.thisChain().isEmpty()) {
-            return visitThisChain(ctx.thisChain().get(0));
+            return visitThisChain(ctx.thisChain());
         } else if (ctx.CAMEL_CASE() != null) {
             return eFactory().createNameExpression(ctx.CAMEL_CASE().get(0).getText());
         } else {
@@ -372,12 +372,16 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     public Expression visitThisChain(ThisChainContext ctx) {
         String chain = getChain(ctx);
         String prefix = getPrefix(chain);
+        String thisOrSuper = "";
+        if (ctx.THIS() != null || ctx.SUPER() != null) {
+            thisOrSuper = ctx.THIS() == null ? ctx.SUPER().getText() : ctx.THIS().getText();
+        }
 
         if (prefix.isEmpty()) {
             return eFactory().createNameExpression(chain);
         } else {
             String varName = getSuffix(chain);
-            return eFactory().createNameExpression(varName, eFactory().createNamedTarget(prefix));
+            return eFactory().createNameExpression(varName, eFactory().createNamedTarget(thisOrSuper + prefix));
         }
     }
 
@@ -400,49 +404,36 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     private String getChain(ThisChainContext ctx) {
         String chain = "";
 
-        if (ctx.THIS() != null) {
-            chain += ctx.THIS().getText() + ".";
+        if (ctx.THIS() != null || ctx.SUPER() != null) {
+            chain += (ctx.THIS() == null ? ctx.SUPER().getText() : ctx.THIS().getText()) + ".";
         }
 
         if (ctx.chain() != null) {
             chain += ctx.chain().getText();
         }
 
-        if (ctx.CLASS_NAME() != null) {
-            chain += ctx.CLASS_NAME().getText();
-        }
-
-        if (ctx.CAMEL_CASE() != null) {
-            chain += ctx.CAMEL_CASE().getText();
-        }
-
         return chain;
     }
 
     private Expression getAssignmentValue(AssignmentContext ctx) {
-        if (ctx.CAMEL_CASE() != null && !ctx.CAMEL_CASE().isEmpty()) {
-            return eFactory().createNameExpression(ctx.CAMEL_CASE().get(0).getText());
-        } else if (ctx.thisChain() != null && !ctx.thisChain().isEmpty()) {
-            int index = 0;
-            if (ctx.thisChain().size() > 1) {
-                index = 1;
+        if (ctx.PLUS().isEmpty()) {
+            if (ctx.CAMEL_CASE() != null && !ctx.CAMEL_CASE().isEmpty()) {
+                return eFactory().createNameExpression(ctx.CAMEL_CASE().get(0).getText());
+            } else if (ctx.methodCall() != null) {
+                return visitMethodCall(ctx.methodCall(0));
+            } else {
+                throw new IllegalArgumentException("Nothing assignable found: " + ctx.getText());
             }
-
-            return visitThisChain(ctx.thisChain().get(index));
-        } else if (ctx.methodCall() != null) {
-            return visitMethodCall(ctx.methodCall());
         } else {
-            throw new IllegalArgumentException("Nothing assignable found: " + ctx.getText());
+            // TODO: do the plus
+            return null;
         }
     }
 
     @Override
     public Literal visitLiteral(@NotNull LiteralContext ctx) {
-        if (ctx.DIGIT() != null && !ctx.DIGIT().isEmpty()) {
-            StringBuilder number = new StringBuilder();
-            ctx.DIGIT().forEach(d -> number.append(d.getText()));
-
-            return ooFactory().createIntegerLiteral(number.toString());
+        if (ctx.integer() != null) {
+            return ooFactory().createIntegerLiteral(ctx.integer().getText());
         } else {
             return ooFactory().createStringLiteral(ctx.STRING_LITERAL().getText());
         }
@@ -450,6 +441,17 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     @Override
     public ReturnStatement visitReturnCall(ReturnCallContext ctx) {
+        Expression e;
+        if (ctx.PLUS().isEmpty()) {
+            return ooFactory().createReturnStatement(visitReturnIntern(ctx.returnIntern(0)));
+        } else {
+            // TODO: do the plus
+            return null;
+        }
+    }
+
+    @Override
+    public Expression visitReturnIntern(@NotNull ReturnInternContext ctx) {
         Expression e;
         if (ctx.newCall() != null) {
             e = visitNewCall(ctx.newCall());
@@ -463,6 +465,6 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
             throw new IllegalArgumentException("Nothing to assign to: " + ctx.getText());
         }
 
-        return ooFactory().createReturnStatement(e);
+        return e;
     }
 }

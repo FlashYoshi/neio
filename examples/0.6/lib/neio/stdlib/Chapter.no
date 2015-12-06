@@ -26,5 +26,14 @@ Paragraph newline(String parText) {
 }
 
 String toTex() {
-	return "";
+	return "\\" + getSubs() + "section*{" + title + "}";
+}
+
+String getSubs() {
+	String subs = "";
+	for (int i = 1; i < level; i = i + 1) {
+		subs = subs + "sub";
+	};
+	
+	return subs;
 }

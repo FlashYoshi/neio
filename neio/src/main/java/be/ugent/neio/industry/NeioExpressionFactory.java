@@ -7,6 +7,7 @@ import be.ugent.neio.expression.NeioMethodInvocation;
 import org.aikodi.chameleon.core.reference.CrossReferenceTarget;
 import org.aikodi.chameleon.oo.expression.Expression;
 import org.aikodi.chameleon.oo.expression.MethodInvocation;
+import org.aikodi.chameleon.oo.expression.NameExpression;
 import org.aikodi.chameleon.oo.type.TypeReference;
 
 import java.util.ArrayList;

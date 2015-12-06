@@ -21,8 +21,11 @@ INTERFACE : 'interface';
 RETURN : 'return';
 NEW : 'new';
 THIS : 'this';
+FOR : 'for';
+SUPER : 'super';
 MODIFIER : 'nested';
 NAMESPACE : 'namespace';
+INT : 'int';
 STUB : 'stub';
 ////////////END KEYWORDS////////////
 

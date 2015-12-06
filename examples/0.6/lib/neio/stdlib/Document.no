@@ -18,3 +18,13 @@ Paragraph newline(String parText) {
 	
     return p;
 }
+
+String toTex() {
+	return "\\documentclass{article}
+\\usepackage{a4wide}
+\\setlength{\parindent}{0em}
+\\setlength{\parskip}{1em}
+\\begin{document}"
+	+ super.toTex()
+	+ "\\end{document}";
+}
