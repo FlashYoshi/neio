@@ -321,15 +321,12 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     @Override
     public Expression visitMethodCall(MethodCallContext ctx) {
-        Expression e;
-        String chain = ctx.chain().getText();
-        String prefix = getPrefix(chain);
-
-        if (getPrefix(chain).isEmpty()) {
-            e = eFactory().createNameExpression(chain);
-        } else {
-            e = eFactory().createNameExpression(prefix, eFactory().createNamedTarget(getSuffix(chain)));
+        Expression e = null;
+        ChainContext chain = ctx.chain();
+        if (chain != null) {
+            e = eFactory().createNameExpression(chain.getText());
         }
+
         MethodInvocation invocation = eFactory().createInvocation(ctx.call().methodName().getText(), e);
         if (!ctx.call().parameters().isEmpty()) {
             invocation.addAllArguments(visitParameters(ctx.call().parameters()));
