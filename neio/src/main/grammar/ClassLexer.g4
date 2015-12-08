@@ -10,7 +10,7 @@ WS : [\t ] -> channel(HIDDEN);
 NEWLINE : '\r'? '\n' -> skip;
 
 ////////////START KEYWORDS////////////
-PACKAGE : 'package';
+NAMESPACE : 'namespace';
 CLASS : 'class';
 INTERFACE : 'interface';
 EXTENDS : 'extends';
@@ -21,14 +21,13 @@ THIS : 'this';
 SUPER : 'super';
 FOR : 'for';
 NESTED : 'nested';
-INT : 'int';
 TRUE : 'true';
 FALSE : 'false';
 NULL : 'null';
 STUB : 'stub';
 ////////////END KEYWORDS////////////
 
-fragment N_D_QUOTE : ~["] | B_SLASH D_QUOTE;
+fragment N_D_QUOTE : ~["] | ~[\\] B_SLASH D_QUOTE;
 StringLiteral : D_QUOTE N_D_QUOTE* D_QUOTE;
 fragment N_QUOTE : ~['] | B_SLASH QUOTE;
 CharLiteral : QUOTE N_QUOTE QUOTE;
@@ -52,9 +51,9 @@ HAT : '^';
 L_SHIFT : '<<';
 RR_SHIFT : '>>>';
 R_SHIFT : '>>';
-SEQ : '<=';
+LEQ : '<=';
 SMALLER : '<';
-GEQ : '>';
+GEQ : '>=';
 BIGGER : '>';
 L_BRACE : '(';
 R_BRACE : ')';
@@ -64,9 +63,9 @@ D_QUOTE : '"';
 QUOTE : '\'';
 SLASH : '/';
 B_SLASH : '\\';
-DIGIT : [0-9];
-LETTER : [a-zA-Z];
-CHAR : LETTER | DIGIT;
+fragment DIGIT : [0-9];
+fragment LETTER : [a-zA-Z];
+fragment CHAR : LETTER | DIGIT;
 
 Integer : DIGIT+;
 Double : DIGIT DOT DIGIT;
