@@ -425,10 +425,14 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
                 throw new IllegalArgumentException("Nothing assignable found: " + ctx.getText());
             }
         } else {
-            // TODO: do the plus
-            return null;
+
+            MethodInvocation result = eFactory().createInfixOperatorInvocation(ctx.PLUS(0), ctx.);
+            result.addArgument((Expression) visit(ctx.right));
+            return result;
         }
     }
+
+
 
     @Override
     public Literal visitLiteral(@NotNull LiteralContext ctx) {

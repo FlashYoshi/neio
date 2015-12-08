@@ -2,91 +2,70 @@ parser grammar ClassParser;
 
 options { tokenVocab = ClassLexer; }
 
-document : namespace
-           HEADER CLASS_NAME
-           inheritance*
+document : package
+           classDef
            body
            EOF;
 
+package : PACKAGE identifier;
+identifier : Identifier (DOT Identifier)*;
+
+classDef : HEADER Identifier inheritance*;
+inheritance : ( EXTENDS identifier
+              | IMPLEMENTS identifier)
+              SCOLON;
+
 body : classBody
-     | interfaceBody;
+     | interfaceBody
+     | ;
 
-classBody : (field | method)*;
+classBody : decl | method;
 
-interfaceBody : (decl SEMICOLON)*;
+interfaceBody : method SCOLON;
 
-namespace: NAMESPACE chain SEMICOLON;
+method : modifier return=Identifier name=(Identifier | MethodIdentifier) arguments LC_BRACE block RC_BRACE;
+modifier : NESTED
+         | ;
 
-////////////UTIL////////////
-inheritance : ( EXTENDS chain
-              | IMPLEMENTS chain)
-              SEMICOLON;
+block : statement*;
+statement : expression SCOLON
+          | RETURN expression SCOLON
+          | var=expression EQUALS val=expression SEMI #assignmentStatement
+          | VAR Identifier COLON type ( ASSIGN expression)? SEMI # varDeclaration
+          ;
 
-field : var SEMICOLON;
-genericArg : CLASS_NAME | genericType;
-genericArgs : genericArg (COMMA genericArg)*;
-genericType : CLASS_NAME SMALLER genericArgs BIGGER;
-fieldName : CLASS_NAME
-          | genericType;
-var : fieldName CAMEL_CASE;
+literal : StringLiteral     #stringLiteral
+        | CharLiteral       #charLiteral
+        | Integer           #intLiteral
+        | Double            #doubleLiteral
+        | (TRUE | FALSE)    #boolLiteral
+        | NULL              #nullLiteral
+        ;
 
-arguments : (var COMMA)* var
-          | ;
+expression : literal                    #literalExpression
+           | decl                       #declExpression
+           | newCall                    #newExpression
+           | L_BRACE expression R_BRACE #parExpression
+           | SUPER                      #superExpression
+           | THIS                       #selfExpression
+           | Identifier                 #identifierExpression
+           | expression DOT name=(Identifier | MethodIdentifier) args=arguments #qualifiedCallExpression
+           | name=Identifier args=arguments #selfCallExpression
+           | left=expression op=HAT right=expression #exponentiationExpression
+           | left=expression op=(STAR|SLASH|PERCENT) right=expression #highPriorityNumbericalExpression
+           | left=expression op=(PLUS|MINUS) right=expression #lowPriorityNumbericalExpression
+           | left=expression op=(L_SHIFT | RR_SHIFT | R_SHIFT) right=expression #shiftExpression
+           | left=expression op=(SEQ | GEQ | BIGGER | SMALLER) right=expression #orderExpression
+           | left=expression op=(EQUAL | NOT_EQUAL) right=expression #equalityExpression
+           | left=expression op=AMPERSAND right=expression #ampersandExpression
+           | left=expression op=PIPE right=expression #pipeExpression
+           | left=expression op=AND right=expression #andExpression
+           | left=expression op=OR right=expression #orExpression
+           ;
 
-parameter : CAMEL_CASE (DIGIT+)?
-          | methodCall
-          | literal;
-parameters : (parameter COMMA)* parameter
-           | ;
+newCall : NEW expression DOT (Identifier | MethodIdentifier) arguments;
+arguments : L_BRACE expression (COMMA expression)* R_BRACE #someArguments
+          | L_BRACE R_BRACE #emptyArguments
+          ;
 
-literal : STRING_LITERAL
-        | integer;
-
-integer : DIGIT+;
-
-method : MODIFIER? decl L_CURLY_BRACE block R_CURLY_BRACE;
-decl : CLASS_NAME? methodName L_BRACE arguments R_BRACE;
-call : methodName L_BRACE parameters R_BRACE;
-methodName: CLASS_NAME
-          | CAMEL_CASE
-          | METHOD_NAME;
-
-block : statement*
-        returnCall?
-        | ;
-
-statement : ( assignment
-            | methodCall
-            | newAssignment
-            | forloop)
-            SEMICOLON;
-
-forloop: FOR L_BRACE forDecl R_BRACE L_CURLY_BRACE block R_CURLY_BRACE;
-forDecl : INT CAMEL_CASE EQUALS (integer | methodCall) SEMICOLON comparison SEMICOLON assignment;
-comparison : CAMEL_CASE operator (integer | methodCall);
-
-operator : SMALLER
-         | BIGGER
-         | EQUALS EQUALS;
-
-methodCall : (thisChain PERIOD)? call;
-
-assignment : (thisChain | var | CAMEL_CASE) EQUALS (CAMEL_CASE | methodCall | literal) (PLUS (CAMEL_CASE | methodCall | literal))*;
-thisChain : ((THIS | SUPER) PERIOD)? chain;
-
-chain : (CLASS_NAME | CAMEL_CASE | call) (PERIOD (CLASS_NAME | CAMEL_CASE | call))*;
-
-newAssignment : newCall CAMEL_CASE
-              | (var | CAMEL_CASE) EQUALS newCall;
-
-newCall : NEW (CLASS_NAME | genericType) L_BRACE parameters R_BRACE;
-
-returnCall : RETURN
-             returnIntern
-             (PLUS returnIntern)*
-             SEMICOLON;
-
-returnIntern : ( newCall
-               | CAMEL_CASE
-               | methodCall
-               | literal);
+decl : Identifier Identifier;
