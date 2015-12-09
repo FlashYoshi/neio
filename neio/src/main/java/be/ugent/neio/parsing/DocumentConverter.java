@@ -60,7 +60,7 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         // Strip the brackets
         String documentType = header.substring(1, header.length() - 1);
 
-        return expressionFactory().createConstructor(documentType, null);
+        return expressionFactory().createConstructorInvocation(documentType, null);
     }
 
     public Expression visitBody(DocumentContext ctx, Expression expression) {

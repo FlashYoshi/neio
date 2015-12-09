@@ -5,7 +5,7 @@ implements neio.lang.Texable;
 List<Content> content;
 
 Content() {
-    content = new List<Content>();
+    content = new ArrayList<Content>();
 }
 
 String toTex() {

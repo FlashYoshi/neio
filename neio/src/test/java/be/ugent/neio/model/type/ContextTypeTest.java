@@ -80,7 +80,7 @@ public class ContextTypeTest {
     @Test
     public void testMethodFind() throws LookupException, ProjectException, InputException {
         Method method = createTestMethod();
-        Expression ci = eFactory().createConstructor(doc, null);
+        Expression ci = eFactory().createConstructorInvocation(doc, null);
         NeioMethodInvocation mi0 = new NeioMethodInvocation("#", ci);
         mi0.addArgument(ooFactory().createStringLiteral("test1"));
         addToMethod(method, mi0);
@@ -122,7 +122,7 @@ public class ContextTypeTest {
     @Test(expected = LookupException.class)
     public void testNoMethodFound() throws ProjectException, InputException, LookupException {
         Method method = createTestMethod();
-        Expression ci = eFactory().createConstructor(doc, null);
+        Expression ci = eFactory().createConstructorInvocation(doc, null);
         NeioMethodInvocation mi0 = new NeioMethodInvocation("###", ci);
         mi0.addArgument(ooFactory().createStringLiteral("test1"));
         mi0.addArgument(ooFactory().createIntegerLiteral("3"));

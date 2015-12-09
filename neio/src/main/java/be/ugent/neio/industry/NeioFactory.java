@@ -5,16 +5,14 @@ import be.kuleuven.cs.distrinet.jnome.core.type.BasicJavaTypeReference;
 import be.kuleuven.cs.distrinet.jnome.core.type.GenericTypeReference;
 import be.kuleuven.cs.distrinet.jnome.core.type.RegularJavaType;
 import be.kuleuven.cs.distrinet.jnome.input.Java7Factory;
+import be.ugent.neio.expression.SuperLiteral;
 import org.aikodi.chameleon.core.namespace.Namespace;
 import org.aikodi.chameleon.core.namespace.NamespaceReference;
 import org.aikodi.chameleon.core.namespacedeclaration.DemandImport;
 import org.aikodi.chameleon.core.namespacedeclaration.Import;
 import org.aikodi.chameleon.oo.expression.Expression;
 import org.aikodi.chameleon.oo.expression.Literal;
-import org.aikodi.chameleon.oo.method.Implementation;
-import org.aikodi.chameleon.oo.method.Method;
-import org.aikodi.chameleon.oo.method.RegularImplementation;
-import org.aikodi.chameleon.oo.method.SimpleNameMethodHeader;
+import org.aikodi.chameleon.oo.method.*;
 import org.aikodi.chameleon.oo.statement.Block;
 import org.aikodi.chameleon.oo.statement.Statement;
 import org.aikodi.chameleon.oo.type.BasicTypeReference;
@@ -23,11 +21,13 @@ import org.aikodi.chameleon.oo.type.TypeReference;
 import org.aikodi.chameleon.oo.type.generics.EqualityTypeArgument;
 import org.aikodi.chameleon.oo.type.generics.TypeArgument;
 import org.aikodi.chameleon.oo.type.inheritance.SubtypeRelation;
+import org.aikodi.chameleon.oo.variable.FormalParameter;
 import org.aikodi.chameleon.oo.variable.VariableDeclaration;
+import org.aikodi.chameleon.support.expression.NullLiteral;
 import org.aikodi.chameleon.support.expression.RegularLiteral;
+import org.aikodi.chameleon.support.expression.ThisLiteral;
 import org.aikodi.chameleon.support.member.simplename.variable.MemberVariableDeclarator;
-import org.aikodi.chameleon.support.statement.ReturnStatement;
-import org.aikodi.chameleon.support.statement.StatementExpression;
+import org.aikodi.chameleon.support.statement.*;
 import org.aikodi.chameleon.support.variable.LocalVariableDeclarator;
 
 import java.util.List;
@@ -81,6 +81,10 @@ public class NeioFactory extends Java7Factory {
         return new JavaMethod(new SimpleNameMethodHeader(methodName, createTypeReference(returnType)));
     }
 
+    public Method createMethod(MethodHeader methodHeader) {
+        return new JavaMethod(methodHeader);
+    }
+
     public Implementation createImplementation(Block b) {
         return new RegularImplementation(b);
     }
@@ -97,12 +101,36 @@ public class NeioFactory extends Java7Factory {
         return new Block();
     }
 
+    public Literal createDoubleLiteral(String value) {
+        return createLiteral(createTypeReference("java.lang.Double"), value);
+    }
+
+    public Literal createCharLiteral(String value) {
+        return createLiteral(createTypeReference("java.lang.Character"), value);
+    }
+
+    public Literal createBooleanLiteral(String value) {
+        return createLiteral(createTypeReference("java.lang.Boolean"), value);
+    }
+
+    public Literal createNullLiteral() {
+        return new NullLiteral();
+    }
+
     public Literal createStringLiteral(String value) {
         return createLiteral(createTypeReference("java.lang.String"), value);
     }
 
     public Literal createIntegerLiteral(String value) {
         return createLiteral(createTypeReference("java.lang.Integer"), value);
+    }
+
+    public Literal createThisLiteral() {
+        return new ThisLiteral();
+    }
+
+    public Literal createSuperLiteral() {
+        return new SuperLiteral();
     }
 
     public Literal createLiteral(TypeReference type, String value) {
@@ -122,7 +150,27 @@ public class NeioFactory extends Java7Factory {
         return new GenericTypeReference(createBasicJavaTypeReference(target), typeArguments);
     }
 
-    private BasicJavaTypeReference createBasicJavaTypeReference(String fqn) {
+    public BasicJavaTypeReference createBasicJavaTypeReference(String fqn) {
         return new BasicJavaTypeReference(fqn);
+    }
+
+    public SimpleNameMethodHeader createMethodHeader(String name, String type) {
+        return new SimpleNameMethodHeader(name, createTypeReference(type));
+    }
+
+    public FormalParameter createParameter(String name, TypeReference type) {
+        return new FormalParameter(name, type);
+    }
+
+    public ForControl createForControl(ForInit init, Expression condition, StatementExprList update) {
+        return new SimpleForControl(init, condition, update);
+    }
+
+    public ForStatement createForStatement(ForControl control, Statement statement) {
+        return new ForStatement(control, statement);
+    }
+
+    public StatementExpression createStatementExpression(Expression expression) {
+        return new StatementExpression(expression);
     }
 }

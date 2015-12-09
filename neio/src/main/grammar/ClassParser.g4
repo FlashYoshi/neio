@@ -19,22 +19,26 @@ body : classBody
      | interfaceBody
      | ;
 
-classBody : ( decl SCOLON
-            | assignmentExpression SCOLON
+classBody : ( fieldDecl SCOLON
+            | fieldAssignmentExpression SCOLON
             | method)+;
 
-interfaceBody : (methodHeader SCOLON)+;
+interfaceBody : (methodExpression SCOLON)+;
 
-method : methodHeader LC_BRACE block RC_BRACE;
-methodHeader : modifier returnType=type? name=(Identifier | MethodIdentifier) arguments;
-modifier : NESTED
-         | ;
+fieldDecl : type Identifier;
+fieldAssignmentExpression : var=fieldDecl EQUALS val=expression;
+
+method : methodExpression LC_BRACE block RC_BRACE;
+methodExpression : modifier* methodHeader L_BRACE parameters? R_BRACE;
+methodHeader : returnType=type? name=(Identifier | MethodIdentifier);
+modifier : NESTED;
 
 block : statement*;
 statement : expression SCOLON           #expressionStatement
           | RETURN expression SCOLON    #returnStatement
-          | assignmentExpression SCOLON #assignStatement
-          | FOR L_BRACE assignmentExpression SCOLON expression SCOLON assignmentExpression R_BRACE LC_BRACE block RC_BRACE #forLoop
+          | neioNewCall SCOLON          #newStatement
+          | assignmentExpression SCOLON #assignmentStatement
+          | FOR L_BRACE init=assignmentExpression SCOLON cond=expression SCOLON update=assignmentExpression R_BRACE LC_BRACE block RC_BRACE #forLoop
           ;
 assignmentExpression : var=expression EQUALS val=expression;
 
@@ -48,11 +52,11 @@ literal : StringLiteral     #stringLiteral
 
 expression : literal                    #literalExpression
            | decl                       #declExpression
-           | newCall                    #newExpression
            | L_BRACE expression R_BRACE #parExpression
            | SUPER                      #superExpression
            | THIS                       #selfExpression
            | Identifier                 #identifierExpression
+		   | constructorCall	        #newExpression
            | expression DOT Identifier  #chainExpression
            | expression DOT name=(Identifier | MethodIdentifier) args=arguments #qualifiedCallExpression
            | name=Identifier args=arguments #selfCallExpression
@@ -68,16 +72,19 @@ expression : literal                    #literalExpression
            | left=expression op=OR right=expression #orExpression
            ;
 
-newCall : NEW (expression DOT)? type arguments              #javaNewCall
-        | NEW (expression DOT)? type arguments Identifier   #neioNewCall
-        ;
+constructorCall : NEW type arguments;
+neioNewCall : NEW type arguments Identifier;
+
 arguments : L_BRACE expression (COMMA expression)* R_BRACE #someArguments
           | L_BRACE R_BRACE #emptyArguments
           ;
 
-type : Identifier (DOT Identifier)* (SMALLER typeParameterList BIGGER)?;
-typeParameterList : typeParameterList COMMA Identifier #typeParameters
-                  | Identifier                         #typeParameter
+parameters : parameter (COMMA parameter)*;
+parameter : type Identifier;
+
+type : Identifier (DOT Identifier)* (SMALLER typeArgumentList BIGGER)?;
+typeArgumentList : typeArgumentList COMMA Identifier #typeArguments
+                  | Identifier                       #typeArgument
                   ;
 
 decl : type Identifier;
