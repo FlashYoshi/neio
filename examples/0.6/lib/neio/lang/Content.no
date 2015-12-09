@@ -5,9 +5,14 @@ implements neio.lang.Texable;
 List<Content> content;
 
 Content() {
-    content = new List<Content>();
+    content = new ArrayList<Content>();
 }
 
 String toTex() {
-	return "";
+	String tex = "";
+	for (int i = 0; i < content.size(); i = i + 1) {
+		tex = tex + content.get(i).toTex();
+	}
+	
+	return tex;
 }

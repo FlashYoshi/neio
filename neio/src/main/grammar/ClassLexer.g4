@@ -8,46 +8,67 @@ MULTILINE_COMMENT : '/*' .*? '*/' -> channel(HIDDEN);
 
 WS : [\t ] -> channel(HIDDEN);
 NEWLINE : '\r'? '\n' -> skip;
-fragment CAPITAL : [A-Z];
-fragment LETTER : [a-z];
-fragment CHAR : [a-zA-Z0-9];
-
 
 ////////////START KEYWORDS////////////
-EXTENDS : 'extends';
-IMPLEMENTS : 'implements';
+NAMESPACE : 'namespace';
 CLASS : 'class';
 INTERFACE : 'interface';
+EXTENDS : 'extends';
+IMPLEMENTS : 'implements';
 RETURN : 'return';
 NEW : 'new';
 THIS : 'this';
-MODIFIER : 'nested';
-NAMESPACE : 'namespace';
+SUPER : 'super';
+FOR : 'for';
+NESTED : 'nested';
+TRUE : 'true';
+FALSE : 'false';
+NULL : 'null';
 STUB : 'stub';
 ////////////END KEYWORDS////////////
 
-fragment N_D_QUOTE : ~["];
-STRING_LITERAL : D_QUOTE N_D_QUOTE* D_QUOTE;
+fragment N_D_QUOTE : ~["] | ~[\\] B_SLASH D_QUOTE;
+StringLiteral : D_QUOTE N_D_QUOTE* D_QUOTE;
+fragment N_QUOTE : ~['] | B_SLASH QUOTE;
+CharLiteral : QUOTE N_QUOTE QUOTE;
 
-fragment CAPITALED : CAPITAL LETTER+;
-CLASS_NAME : CAPITALED+;
-CAMEL_CASE : LETTER+ CAPITALED*;
-
-PERIOD : '.';
+DOT : '.';
 COMMA : ',';
 COLON : ':';
-SEMICOLON : ';';
+SCOLON : ';';
+EQUAL : '==';
+NOT_EQUAL : '!=';
+AND : '&&';
+AMPERSAND : '&';
+OR : '||';
+PIPE : '|';
 EQUALS : '=';
 PLUS : '+';
 MINUS : '-';
 STAR : '*';
+PERCENT : '%';
+HAT : '^';
+L_SHIFT : '<<';
+RR_SHIFT : '>>>';
+R_SHIFT : '>>';
+LEQ : '<=';
 SMALLER : '<';
+GEQ : '>=';
 BIGGER : '>';
 L_BRACE : '(';
 R_BRACE : ')';
-L_CURLY_BRACE : '{';
-R_CURLY_BRACE : '}';
+LC_BRACE : '{';
+RC_BRACE : '}';
 D_QUOTE : '"';
-DIGIT : [0-9];
+QUOTE : '\'';
+SLASH : '/';
+B_SLASH : '\\';
+fragment DIGIT : [0-9];
+fragment LETTER : [a-zA-Z];
+fragment CHAR : LETTER | DIGIT;
 
-METHOD_NAME : ~[()\r\n \t;.,:<>]+;
+Integer : DIGIT+;
+Double : DIGIT DOT DIGIT;
+Identifier : CHAR+;
+
+MethodIdentifier : ~[()\r\n \t;.,:<>]+;

@@ -3,76 +3,88 @@ parser grammar ClassParser;
 options { tokenVocab = ClassLexer; }
 
 document : namespace
-           HEADER CLASS_NAME
-           inheritance*
+           classDef
            body
            EOF;
 
+namespace : NAMESPACE namespaceReference SCOLON;
+namespaceReference : Identifier (DOT Identifier)*;
+
+classDef : HEADER Identifier inheritance*;
+inheritance : ( EXTENDS type
+              | IMPLEMENTS type)
+              SCOLON;
+
 body : classBody
-     | interfaceBody;
+     | interfaceBody
+     | ;
 
-classBody : (field | method)*;
+classBody : ( fieldDecl SCOLON
+            | fieldAssignmentExpression SCOLON
+            | method)+;
 
-interfaceBody : (decl SEMICOLON)*;
+interfaceBody : (methodExpression SCOLON)+;
 
-namespace: NAMESPACE chain SEMICOLON;
+fieldDecl : type Identifier;
+fieldAssignmentExpression : var=fieldDecl EQUALS val=expression;
 
-////////////UTIL////////////
-inheritance : ( EXTENDS chain
-              | IMPLEMENTS chain)
-              SEMICOLON;
+method : methodExpression LC_BRACE block RC_BRACE;
+methodExpression : modifier* methodHeader L_BRACE parameters? R_BRACE;
+methodHeader : returnType=type? name=(Identifier | MethodIdentifier);
+modifier : NESTED;
 
-field : var SEMICOLON;
-genericArg : CLASS_NAME | genericType;
-genericArgs : genericArg (COMMA genericArg)*;
-genericType : CLASS_NAME SMALLER genericArgs BIGGER;
-fieldName : CLASS_NAME
-          | genericType;
-var : fieldName CAMEL_CASE;
+block : statement*;
+statement : expression SCOLON           #expressionStatement
+          | RETURN expression SCOLON    #returnStatement
+          | neioNewCall SCOLON          #newStatement
+          | assignmentExpression SCOLON #assignmentStatement
+          | FOR L_BRACE init=assignmentExpression SCOLON cond=expression SCOLON update=assignmentExpression R_BRACE LC_BRACE block RC_BRACE #forLoop
+          ;
+assignmentExpression : var=expression EQUALS val=expression;
 
-arguments : (var COMMA)* var
-          | ;
+literal : StringLiteral     #stringLiteral
+        | CharLiteral       #charLiteral
+        | Integer           #intLiteral
+        | Double            #doubleLiteral
+        | (TRUE | FALSE)    #boolLiteral
+        | NULL              #nullLiteral
+        ;
 
-parameter : CAMEL_CASE (DIGIT+)?
-          | methodCall
-          | literal;
-parameters : (parameter COMMA)* parameter
-           | ;
+expression : literal                    #literalExpression
+           | decl                       #declExpression
+           | L_BRACE expression R_BRACE #parExpression
+           | SUPER                      #superExpression
+           | THIS                       #selfExpression
+           | Identifier                 #identifierExpression
+		   | constructorCall	        #newExpression
+           | expression DOT Identifier  #chainExpression
+           | expression DOT name=(Identifier | MethodIdentifier) args=arguments #qualifiedCallExpression
+           | name=Identifier args=arguments #selfCallExpression
+           | left=expression op=HAT right=expression #exponentiationExpression
+           | left=expression op=(STAR|SLASH|PERCENT) right=expression #highPriorityNumbericalExpression
+           | left=expression op=(PLUS|MINUS) right=expression #lowPriorityNumbericalExpression
+           | left=expression op=(L_SHIFT | RR_SHIFT | R_SHIFT) right=expression #shiftExpression
+           | left=expression op=(LEQ | GEQ | BIGGER | SMALLER) right=expression #orderExpression
+           | left=expression op=(EQUAL | NOT_EQUAL) right=expression #equalityExpression
+           | left=expression op=AMPERSAND right=expression #ampersandExpression
+           | left=expression op=PIPE right=expression #pipeExpression
+           | left=expression op=AND right=expression #andExpression
+           | left=expression op=OR right=expression #orExpression
+           ;
 
-literal : STRING_LITERAL
-        | DIGIT+;
+constructorCall : NEW type arguments;
+neioNewCall : NEW type arguments Identifier;
 
-method : MODIFIER? decl L_CURLY_BRACE block R_CURLY_BRACE;
-decl : CLASS_NAME? methodName L_BRACE arguments R_BRACE;
-call : methodName L_BRACE parameters R_BRACE;
-methodName: CLASS_NAME
-          | CAMEL_CASE
-          | METHOD_NAME;
+arguments : L_BRACE expression (COMMA expression)* R_BRACE #someArguments
+          | L_BRACE R_BRACE #emptyArguments
+          ;
 
-block : statement*
-        returnCall?
-        | ;
+parameters : parameter (COMMA parameter)*;
+parameter : type Identifier;
 
-statement : ( assignment
-            | methodCall
-            | newAssignment)
-            SEMICOLON;
+type : Identifier (DOT Identifier)* (SMALLER typeArgumentList BIGGER)?;
+typeArgumentList : typeArgumentList COMMA Identifier #typeArguments
+                  | Identifier                       #typeArgument
+                  ;
 
-methodCall : (chain PERIOD)? call;
-
-assignment : (thisChain | var | CAMEL_CASE) EQUALS (CAMEL_CASE | thisChain | methodCall | literal);
-thisChain : (THIS PERIOD)? (chain PERIOD | (CLASS_NAME | CAMEL_CASE));
-
-chain : (CLASS_NAME | CAMEL_CASE) (PERIOD (CLASS_NAME | CAMEL_CASE))*;
-
-newAssignment : newCall CAMEL_CASE
-              | (var | CAMEL_CASE) EQUALS newCall;
-
-newCall : NEW (CLASS_NAME | genericType) L_BRACE parameters R_BRACE;
-
-returnCall : RETURN
-             ( newCall
-             | CAMEL_CASE
-             | methodCall
-             | literal)
-             SEMICOLON;
+decl : type Identifier;

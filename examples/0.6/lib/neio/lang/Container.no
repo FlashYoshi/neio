@@ -2,7 +2,3 @@ namespace neio.lang;
 
 class Container
 extends neio.lang.Content;
-
-String toTex() {
-	return "";
-}
