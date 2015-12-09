@@ -2,10 +2,10 @@ namespace neio.lang;
 
 class Content
 implements neio.lang.Texable;
-List<Content> content;
+java.util.List<Content> content;
 
 Content() {
-    content = new ArrayList<Content>();
+    content = new java.util.ArrayList<Content>();
 }
 
 String toTex() {

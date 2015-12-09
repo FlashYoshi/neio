@@ -1,6 +1,7 @@
 package be.ugent.neio.parsing;
 
 import be.kuleuven.cs.distrinet.jnome.core.expression.invocation.ConstructorInvocation;
+import be.kuleuven.cs.distrinet.jnome.core.modifier.Implements;
 import be.kuleuven.cs.distrinet.jnome.core.type.BasicJavaTypeReference;
 import be.kuleuven.cs.distrinet.jnome.workspace.JavaView;
 import be.ugent.neio.industry.NeioExpressionFactory;
@@ -29,7 +30,7 @@ import org.aikodi.chameleon.support.expression.AssignmentExpression;
 import org.aikodi.chameleon.support.member.simplename.variable.MemberVariableDeclarator;
 import org.aikodi.chameleon.support.modifier.Constructor;
 import org.aikodi.chameleon.support.modifier.Interface;
-import org.aikodi.chameleon.support.modifier.Private;
+import org.aikodi.chameleon.support.modifier.Protected;
 import org.aikodi.chameleon.support.modifier.Public;
 import org.aikodi.chameleon.support.statement.ForControl;
 import org.aikodi.chameleon.support.statement.ForStatement;
@@ -127,7 +128,12 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     @Override
     public SubtypeRelation visitInheritance(@NotNull InheritanceContext ctx) {
-        return ooFactory().createSubtypeRelation(visitType(ctx.type()));
+        SubtypeRelation relation = ooFactory().createSubtypeRelation(visitType(ctx.type()));
+        if (ctx.IMPLEMENTS() != null) {
+            relation.addModifier(new Implements());
+        }
+
+        return relation;
     }
 
     private void visitClass(ClassBodyContext ctx, Type klass) {
@@ -160,8 +166,8 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     @Override
     public MemberVariableDeclarator visitFieldDecl(@NotNull FieldDeclContext ctx) {
         MemberVariableDeclarator declarator = ooFactory().createMemberVariableDeclarator(ctx.Identifier().getText(), visitType(ctx.type()));
-        // All fields should be private
-        declarator.addModifier(new Private());
+        // TODO: All fields should be private, protected right now for ease of use
+        declarator.addModifier(new Protected());
 
         return declarator;
     }

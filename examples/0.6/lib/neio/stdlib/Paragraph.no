@@ -2,3 +2,13 @@ namespace neio.stdlib;
 
 class Paragraph
 extends neio.lang.Content;
+
+neio.lang.Text text;
+
+Paragraph(String parText) {
+	text = new neio.lang.Text(parText);
+}
+
+String toTex() {
+	return text.toTex();
+}
