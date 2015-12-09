@@ -6,6 +6,7 @@ import be.ugent.neio.language.Neio;
 import be.ugent.neio.model.document.TextDocument;
 import be.ugent.neio.util.Variable;
 import org.aikodi.chameleon.core.lookup.LookupException;
+import org.aikodi.chameleon.oo.expression.Expression;
 import org.aikodi.chameleon.oo.expression.ExpressionFactory;
 import org.aikodi.chameleon.oo.method.ExpressionImplementation;
 import org.aikodi.chameleon.oo.method.RegularImplementation;
@@ -42,7 +43,14 @@ public class Java8Generator extends AbstractJava8Generator {
         id = 0;
         replaceExpressionImplementations(neioDocument);
         replaceMethodChain(neioDocument);
+        addLatexPrint(neioDocument);
         return neioDocument;
+    }
+
+    private void addLatexPrint(TextDocument neioDocument) {
+        List<Expression> arguments = new ArrayList<>();
+        arguments.add(eFactory().createMethodInvocation("toTex", oFactory().createTypeReference(VAR_NAME + "0"), new ArrayList<>()));
+        neioDocument.getBlock().addStatement(oFactory().createStatement(eFactory().createMethodInvocation("println", oFactory().createTypeReference("System.out"), arguments)));
     }
 
     private void replaceMethodChain(TextDocument neioDocument) throws LookupException {
@@ -119,6 +127,10 @@ public class Java8Generator extends AbstractJava8Generator {
 
     private String getVarName() {
         return VAR_NAME + (id++);
+    }
+
+    private String getCurrentVarName() {
+        return VAR_NAME + (id == 0 ? id : id - 1);
     }
 
     protected void replaceExpressionImplementations(TextDocument javaDocument) {
