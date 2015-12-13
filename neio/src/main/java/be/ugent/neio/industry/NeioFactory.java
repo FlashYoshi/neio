@@ -142,7 +142,6 @@ public class NeioFactory extends Java7Factory {
     }
 
     public TypeArgument createTypeArgument(TypeReference type) {
-        // TODO: Is this correct?
         return new EqualityTypeArgument(type);
     }
 
