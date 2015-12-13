@@ -9,11 +9,11 @@ import be.ugent.neio.industry.NeioFactory;
 import be.ugent.neio.language.Neio;
 import be.ugent.neio.model.modifier.Nested;
 import org.aikodi.chameleon.core.document.Document;
-import org.aikodi.chameleon.core.factory.Factory;
 import org.aikodi.chameleon.core.lookup.LookupException;
 import org.aikodi.chameleon.core.modifier.Modifier;
 import org.aikodi.chameleon.core.namespace.NamespaceReference;
 import org.aikodi.chameleon.core.namespacedeclaration.NamespaceDeclaration;
+import org.aikodi.chameleon.core.reference.CrossReferenceTarget;
 import org.aikodi.chameleon.exception.ChameleonProgrammerException;
 import org.aikodi.chameleon.oo.expression.*;
 import org.aikodi.chameleon.oo.method.Method;
@@ -59,10 +59,6 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         this.neio = view.language(Neio.class);
     }
 
-    protected Factory factory() {
-        return neio.plugin(Factory.class);
-    }
-
     protected NeioFactory ooFactory() {
         return (NeioFactory) neio.plugin(ObjectOrientedFactory.class);
     }
@@ -71,9 +67,9 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         return (NeioExpressionFactory) neio.plugin(ExpressionFactory.class);
     }
 
-    public Object visitDocument(DocumentContext ctx) {
+    public Document visitDocument(DocumentContext ctx) {
         visitHeader(ctx);
-        return null;
+        return document;
     }
 
     private void visitHeader(DocumentContext ctx) {
@@ -220,7 +216,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     @Override
-    public Object visitAssignmentStatement(@NotNull AssignmentStatementContext ctx) {
+    public Statement visitAssignmentStatement(@NotNull AssignmentStatementContext ctx) {
         return ooFactory().createStatement(visitAssignmentExpression(ctx.assignmentExpression()));
     }
 
@@ -262,8 +258,13 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     @Override
-    public Object visitNewStatement(@NotNull NewStatementContext ctx) {
-        return visit(ctx.neioNewCall());
+    public Expression visitNewExpression(@NotNull NewExpressionContext ctx) {
+        return visitConstructorCall(ctx.constructorCall());
+    }
+
+    @Override
+    public Statement visitNewStatement(@NotNull NewStatementContext ctx) {
+        return visitNeioNewCall(ctx.neioNewCall());
     }
 
     @Override
@@ -272,8 +273,8 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     @Override
-    public Literal visitSuperExpression(@NotNull SuperExpressionContext ctx) {
-        return ooFactory().createSuperLiteral();
+    public CrossReferenceTarget visitSuperExpression(@NotNull SuperExpressionContext ctx) {
+        return ooFactory().createSuper();
     }
 
     @Override
@@ -288,7 +289,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     @Override
     public NameExpression visitChainExpression(@NotNull ChainExpressionContext ctx) {
-        return eFactory().createNameExpression(ctx.Identifier().getText(), (Expression) visit(ctx.expression()));
+        return eFactory().createNameExpression(ctx.Identifier().getText(), (CrossReferenceTarget) visit(ctx.expression()));
     }
 
     @Override
@@ -297,8 +298,8 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     @Override
-    public Object visitQualifiedCallExpression(@NotNull QualifiedCallExpressionContext ctx) {
-        Expression target = (Expression) visit(ctx.expression());
+    public Expression visitQualifiedCallExpression(@NotNull QualifiedCallExpressionContext ctx) {
+        CrossReferenceTarget target = (CrossReferenceTarget) visit(ctx.expression());
         Expression result;
         if (ctx.args != null) {
             result = eFactory().createInvocation(ctx.name.getText(), target);
@@ -353,14 +354,14 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     @Override
-    public Object visitAmpersandExpression(@NotNull AmpersandExpressionContext ctx) {
+    public Expression visitAmpersandExpression(@NotNull AmpersandExpressionContext ctx) {
         MethodInvocation result = eFactory().createInfixOperatorInvocation(ctx.op.getText(), (Expression) visit(ctx.left));
         result.addArgument((Expression) visit(ctx.right));
         return result;
     }
 
     @Override
-    public Object visitPipeExpression(@NotNull PipeExpressionContext ctx) {
+    public Expression visitPipeExpression(@NotNull PipeExpressionContext ctx) {
         MethodInvocation result = eFactory().createInfixOperatorInvocation(ctx.op.getText(), (Expression) visit(ctx.left));
         result.addArgument((Expression) visit(ctx.right));
         return result;

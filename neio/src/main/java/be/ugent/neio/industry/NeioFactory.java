@@ -2,14 +2,13 @@ package be.ugent.neio.industry;
 
 import be.kuleuven.cs.distrinet.jnome.core.method.JavaMethod;
 import be.kuleuven.cs.distrinet.jnome.core.type.BasicJavaTypeReference;
-import be.kuleuven.cs.distrinet.jnome.core.type.GenericTypeReference;
 import be.kuleuven.cs.distrinet.jnome.core.type.RegularJavaType;
 import be.kuleuven.cs.distrinet.jnome.input.Java7Factory;
-import be.ugent.neio.expression.SuperLiteral;
 import org.aikodi.chameleon.core.namespace.Namespace;
 import org.aikodi.chameleon.core.namespace.NamespaceReference;
 import org.aikodi.chameleon.core.namespacedeclaration.DemandImport;
 import org.aikodi.chameleon.core.namespacedeclaration.Import;
+import org.aikodi.chameleon.core.reference.CrossReferenceTarget;
 import org.aikodi.chameleon.oo.expression.Expression;
 import org.aikodi.chameleon.oo.expression.Literal;
 import org.aikodi.chameleon.oo.method.*;
@@ -25,12 +24,11 @@ import org.aikodi.chameleon.oo.variable.FormalParameter;
 import org.aikodi.chameleon.oo.variable.VariableDeclaration;
 import org.aikodi.chameleon.support.expression.NullLiteral;
 import org.aikodi.chameleon.support.expression.RegularLiteral;
+import org.aikodi.chameleon.support.expression.SuperTarget;
 import org.aikodi.chameleon.support.expression.ThisLiteral;
 import org.aikodi.chameleon.support.member.simplename.variable.MemberVariableDeclarator;
 import org.aikodi.chameleon.support.statement.*;
 import org.aikodi.chameleon.support.variable.LocalVariableDeclarator;
-
-import java.util.List;
 
 public class NeioFactory extends Java7Factory {
 
@@ -129,10 +127,6 @@ public class NeioFactory extends Java7Factory {
         return new ThisLiteral();
     }
 
-    public Literal createSuperLiteral() {
-        return new SuperLiteral();
-    }
-
     public Literal createLiteral(TypeReference type, String value) {
         return new RegularLiteral(type, value);
     }
@@ -143,10 +137,6 @@ public class NeioFactory extends Java7Factory {
 
     public TypeArgument createTypeArgument(TypeReference type) {
         return new EqualityTypeArgument(type);
-    }
-
-    public GenericTypeReference createGenericTypeReference(String target, List<TypeArgument> typeArguments) {
-        return new GenericTypeReference(createBasicJavaTypeReference(target), typeArguments);
     }
 
     public BasicJavaTypeReference createBasicJavaTypeReference(String fqn) {
@@ -171,5 +161,9 @@ public class NeioFactory extends Java7Factory {
 
     public StatementExpression createStatementExpression(Expression expression) {
         return new StatementExpression(expression);
+    }
+
+    public CrossReferenceTarget createSuper() {
+        return new SuperTarget();
     }
 }
