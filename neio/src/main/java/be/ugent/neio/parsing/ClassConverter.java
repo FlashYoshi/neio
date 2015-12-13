@@ -14,6 +14,7 @@ import org.aikodi.chameleon.core.lookup.LookupException;
 import org.aikodi.chameleon.core.modifier.Modifier;
 import org.aikodi.chameleon.core.namespace.NamespaceReference;
 import org.aikodi.chameleon.core.namespacedeclaration.NamespaceDeclaration;
+import org.aikodi.chameleon.exception.ChameleonProgrammerException;
 import org.aikodi.chameleon.oo.expression.*;
 import org.aikodi.chameleon.oo.method.Method;
 import org.aikodi.chameleon.oo.method.MethodHeader;
@@ -28,10 +29,7 @@ import org.aikodi.chameleon.oo.variable.FormalParameter;
 import org.aikodi.chameleon.oo.variable.VariableDeclaration;
 import org.aikodi.chameleon.support.expression.AssignmentExpression;
 import org.aikodi.chameleon.support.member.simplename.variable.MemberVariableDeclarator;
-import org.aikodi.chameleon.support.modifier.Constructor;
-import org.aikodi.chameleon.support.modifier.Interface;
-import org.aikodi.chameleon.support.modifier.Protected;
-import org.aikodi.chameleon.support.modifier.Public;
+import org.aikodi.chameleon.support.modifier.*;
 import org.aikodi.chameleon.support.statement.ForControl;
 import org.aikodi.chameleon.support.statement.ForStatement;
 import org.aikodi.chameleon.support.statement.StatementExprList;
@@ -166,8 +164,11 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     @Override
     public MemberVariableDeclarator visitFieldDecl(@NotNull FieldDeclContext ctx) {
         MemberVariableDeclarator declarator = ooFactory().createMemberVariableDeclarator(ctx.Identifier().getText(), visitType(ctx.type()));
-        // TODO: All fields should be private, protected right now for ease of use
-        declarator.addModifier(new Protected());
+        if (ctx.modifier() != null) {
+            declarator.addModifier(visitModifier(ctx.modifier()));
+        } else {
+            declarator.addModifier(new Private());
+        }
 
         return declarator;
     }
@@ -427,7 +428,15 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     @Override
     public Modifier visitModifier(@NotNull ModifierContext ctx) {
-        return new Nested();
+        if (ctx.PROTECTED() != null) {
+            return new Protected();
+        } else if (ctx.PUBLIC() != null) {
+            return new Public();
+        } else if (ctx.NESTED() != null) {
+            return new Nested();
+        } else {
+            throw new ChameleonProgrammerException("Unknown modifier encountered: " + ctx.getText());
+        }
     }
 
     @Override

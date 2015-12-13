@@ -2,7 +2,7 @@ namespace neio.lang;
 
 class Content
 implements neio.lang.Texable;
-java.util.List<Content> content;
+protected java.util.List<Content> content;
 
 Content() {
     content = new java.util.ArrayList<Content>();
@@ -11,7 +11,7 @@ Content() {
 String toTex() {
 	String tex = "";
 	for (int i = 0; i < content.size(); i = i + 1) {
-		tex = tex + content.get(i).toTex();
+		tex = tex + "\n" + content.get(i).toTex();
 	}
 	
 	return tex;

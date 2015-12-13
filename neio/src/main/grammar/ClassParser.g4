@@ -25,13 +25,15 @@ classBody : ( fieldDecl SCOLON
 
 interfaceBody : (methodExpression SCOLON)+;
 
-fieldDecl : type Identifier;
+fieldDecl : modifier? type Identifier;
 fieldAssignmentExpression : var=fieldDecl EQUALS val=expression;
 
 method : methodExpression LC_BRACE block RC_BRACE;
 methodExpression : modifier* methodHeader L_BRACE parameters? R_BRACE;
 methodHeader : returnType=type? name=(Identifier | MethodIdentifier);
-modifier : NESTED;
+modifier : PROTECTED
+         | PUBLIC
+         | NESTED;
 
 block : statement*;
 statement : expression SCOLON           #expressionStatement

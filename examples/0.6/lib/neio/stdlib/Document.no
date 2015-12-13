@@ -20,11 +20,11 @@ Paragraph newline(String parText) {
 }
 
 String toTex() {
-	return "\\documentclass{article}" +
-			  "\\usepackage{a4wide}" +
-			  "\\setlength{\\parindent}{0em}" +
-			  "\\setlength{\\parskip}{1em}" +
-			  "\\begin{document}" +
+	return "\\documentclass{article}\n" +
+			  "\\usepackage{a4wide}\n" +
+			  "\\setlength{\\parindent}{0em}\n" +
+			  "\\setlength{\\parskip}{1em}\n" +
+			  "\\begin{document}\n" +
 			  super.toTex() +
-			  "\\end{document}";
+			  "\n\\end{document}\n";
 }

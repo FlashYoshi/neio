@@ -19,6 +19,8 @@ RETURN : 'return';
 NEW : 'new';
 THIS : 'this';
 SUPER : 'super';
+PROTECTED : 'protected';
+PUBLIC : 'public';
 FOR : 'for';
 NESTED : 'nested';
 TRUE : 'true';
