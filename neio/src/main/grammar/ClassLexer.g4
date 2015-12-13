@@ -1,8 +1,5 @@
 lexer grammar ClassLexer;
 
-HEADER : HEADER_CONTENT;
-fragment HEADER_CONTENT : CLASS | INTERFACE;
-
 COMMENT : '//' ~[\r\n]* -> channel(HIDDEN);
 MULTILINE_COMMENT : '/*' .*? '*/' -> channel(HIDDEN);
 
@@ -21,6 +18,7 @@ THIS : 'this';
 SUPER : 'super';
 PROTECTED : 'protected';
 PUBLIC : 'public';
+VOID : 'void';
 FOR : 'for';
 NESTED : 'nested';
 TRUE : 'true';

@@ -26,7 +26,7 @@ import org.aikodi.chameleon.oo.type.TypeReference;
 import org.aikodi.chameleon.oo.type.generics.TypeArgument;
 import org.aikodi.chameleon.oo.type.inheritance.SubtypeRelation;
 import org.aikodi.chameleon.oo.variable.FormalParameter;
-import org.aikodi.chameleon.oo.variable.VariableDeclaration;
+import org.aikodi.chameleon.oo.variable.RegularVariable;
 import org.aikodi.chameleon.support.expression.AssignmentExpression;
 import org.aikodi.chameleon.support.member.simplename.variable.MemberVariableDeclarator;
 import org.aikodi.chameleon.support.modifier.*;
@@ -43,9 +43,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static be.ugent.neio.util.Keywords.CLASS;
-import static be.ugent.neio.util.Keywords.INTERFACE;
-
 /**
  * @author Titouan Vervack
  */
@@ -53,10 +50,13 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     private final Document document;
     private final Neio neio;
+    // Can not use keyword
+    private boolean interphase;
 
     public ClassConverter(Document document, JavaView view) {
         this.document = document;
         this.neio = view.language(Neio.class);
+        interphase = false;
     }
 
     protected NeioFactory ooFactory() {
@@ -67,42 +67,29 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         return (NeioExpressionFactory) neio.plugin(ExpressionFactory.class);
     }
 
+    private boolean isInterface() {
+        return interphase;
+    }
+
+    private void setInterface() {
+        interphase = true;
+    }
+
     public Document visitDocument(DocumentContext ctx) {
-        visitHeader(ctx);
-        return document;
-    }
-
-    private void visitHeader(DocumentContext ctx) {
-        String header = ctx.classDef().HEADER().getText();
-        String klassName = ctx.classDef().Identifier().getText();
-        visitDocument(ctx, klassName, header);
-    }
-
-    private void visitDocument(DocumentContext ctx, String klassName, String header) {
         NamespaceDeclaration ns = visitNamespace(ctx.namespace());
 
-        Type klass = ooFactory().createRegularType(klassName);
-        // Every class is allowed to be public for now
-        klass.addModifier(new Public());
-
+        Type type = visitClassDef(ctx.classDef());
 
         for (InheritanceContext inheritance : ctx.classDef().inheritance()) {
-            klass.addInheritanceRelation(visitInheritance(inheritance));
+            type.addInheritanceRelation(visitInheritance(inheritance));
         }
 
-        switch (header) {
-            case CLASS:
-                visitClass(ctx.body().classBody(), klass);
-                break;
-            case INTERFACE:
-                visitInterface(ctx.body().interfaceBody(), klass);
-                break;
-            default:
-                throw new IllegalArgumentException("Header was unknown: " + header);
-        }
+        visitBody(ctx.body(), type);
 
-        ns.add(klass);
+        ns.add(type);
         document.add(ns);
+
+        return document;
     }
 
     @Override
@@ -121,6 +108,20 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     @Override
+    public Type visitClassDef(@NotNull ClassDefContext ctx) {
+        Type type = ooFactory().createRegularType(ctx.Identifier().getText());
+        // Every class is allowed to be public for now
+        type.addModifier(new Public());
+
+        if (ctx.header().INTERFACE() != null) {
+            type.addModifier(new Interface());
+            setInterface();
+        }
+
+        return type;
+    }
+
+    @Override
     public SubtypeRelation visitInheritance(@NotNull InheritanceContext ctx) {
         SubtypeRelation relation = ooFactory().createSubtypeRelation(visitType(ctx.type()));
         if (ctx.IMPLEMENTS() != null) {
@@ -130,10 +131,11 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         return relation;
     }
 
-    private void visitClass(ClassBodyContext ctx, Type klass) {
+    private void visitBody(BodyContext ctx, Type klass) {
         if (ctx == null) {
             return;
         }
+
         for (FieldDeclContext decl : ctx.fieldDecl()) {
             klass.add(visitFieldDecl(decl));
         }
@@ -145,15 +147,9 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         for (MethodContext method : ctx.method()) {
             klass.add(visitMethod(method));
         }
-    }
 
-    private void visitInterface(InterfaceBodyContext ctx, Type klass) {
-        klass.addModifier(new Interface());
-        if (ctx != null) {
-            for (MethodExpressionContext methodExpr : ctx.methodExpression()) {
-                Method method = visitMethodExpression(methodExpr);
-                klass.add(method);
-            }
+        for (MethodExpressionContext method : ctx.methodExpression()) {
+            klass.add(visitMethodExpression(method));
         }
     }
 
@@ -162,7 +158,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         MemberVariableDeclarator declarator = ooFactory().createMemberVariableDeclarator(ctx.Identifier().getText(), visitType(ctx.type()));
         if (ctx.modifier() != null) {
             declarator.addModifier(visitModifier(ctx.modifier()));
-        } else {
+        } else if (!isInterface()) {
             declarator.addModifier(new Private());
         }
 
@@ -176,15 +172,16 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     @Override
     public MemberVariableDeclarator visitFieldAssignmentExpression(@NotNull FieldAssignmentExpressionContext ctx) {
-        MemberVariableDeclarator var = visitFieldDecl(ctx.var);
+        MemberVariableDeclarator varDecl = visitFieldDecl(ctx.var);
         // visitFieldDecl should have filled in exactly one variable
         try {
-            ((VariableDeclaration) var.declarations().get(0)).setInitialization((Expression) visit(ctx.val));
+            RegularVariable var = (RegularVariable) varDecl.declarations().get(0);
+            return ooFactory().createMemberVariableDeclarator(var.name(), var.getTypeReference(), (Expression) visit(ctx.val));
         } catch (LookupException e) {
             e.printStackTrace();
         }
 
-        return var;
+        return varDecl;
     }
 
     @Override
@@ -410,11 +407,13 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     @Override
     public MethodHeader visitMethodHeader(@NotNull MethodHeaderContext ctx) {
         String returnType;
-        if (ctx.returnType != null) {
-            returnType = ctx.returnType.getText();
+        if (ctx.type() != null) {
+            returnType = ctx.type().getText();
         }
         // Method is a constructor
-        else {
+        else if (ctx.VOID() != null) {
+            returnType = ctx.VOID().getText();
+        } else {
             returnType = ctx.name.getText();
         }
 

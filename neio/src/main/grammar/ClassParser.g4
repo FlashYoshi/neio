@@ -10,27 +10,22 @@ document : namespace
 namespace : NAMESPACE namespaceReference SCOLON;
 namespaceReference : Identifier (DOT Identifier)*;
 
-classDef : HEADER Identifier inheritance*;
+classDef : header Identifier inheritance* SCOLON;
+header : CLASS | INTERFACE;
 inheritance : ( EXTENDS type
-              | IMPLEMENTS type)
-              SCOLON;
+              | IMPLEMENTS type);
 
-body : classBody
-     | interfaceBody
-     | ;
-
-classBody : ( fieldDecl SCOLON
-            | fieldAssignmentExpression SCOLON
-            | method)+;
-
-interfaceBody : (methodExpression SCOLON)+;
+body : ( fieldDecl SCOLON
+       | fieldAssignmentExpression SCOLON
+       | (methodExpression SCOLON | method))+
+       | ;
 
 fieldDecl : modifier? type Identifier;
 fieldAssignmentExpression : var=fieldDecl EQUALS val=expression;
 
 method : methodExpression LC_BRACE block RC_BRACE;
 methodExpression : modifier* methodHeader L_BRACE parameters? R_BRACE;
-methodHeader : returnType=type? name=(Identifier | MethodIdentifier);
+methodHeader : (type | VOID)? name=(Identifier | MethodIdentifier);
 modifier : PROTECTED
          | PUBLIC
          | NESTED;
