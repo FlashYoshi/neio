@@ -1,5 +1,5 @@
 namespace neio.lang;
 
-interface Texable
+interface Texable;
 
 String toTex();

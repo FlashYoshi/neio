@@ -1,9 +1,6 @@
 namespace neio.stdlib;
 
-class Document
-extends neio.lang.Container;
-
-neio.lang.Text title;
+class Document extends neio.lang.Container;
 
 Chapter #(String title) {
     new Chapter(title, 1) chapter;

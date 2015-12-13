@@ -1,7 +1,7 @@
 namespace neio.lang;
 
-class Content
-implements neio.lang.Texable;
+class Content implements neio.lang.Texable;
+
 protected java.util.List<Content> content;
 
 Content() {

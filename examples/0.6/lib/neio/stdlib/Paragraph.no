@@ -1,7 +1,6 @@
 namespace neio.stdlib;
 
-class Paragraph
-extends neio.lang.Content;
+class Paragraph extends neio.lang.Content;
 
 neio.lang.Text text;
 
