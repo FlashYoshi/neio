@@ -170,9 +170,8 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     @Override
-    public VariableReference visitDecl(@NotNull DeclContext ctx) {
-        // FIXME: do this correctly
-        return eFactory().createVariableReference(" ", ooFactory().createTypeReference(visitType(ctx.type()).toString() + " " + ctx.Identifier().getText()));
+    public LocalVariableDeclarator visitVariableDeclaration(@NotNull VariableDeclarationContext ctx) {
+        return ooFactory().createLocalVariable(visitType(ctx.type()), ctx.Identifier().getText(), (Expression) visit(ctx.expression()));
     }
 
     @Override
@@ -231,25 +230,20 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     @Override
+    public Statement visitVariableDeclarationStatement(@NotNull VariableDeclarationStatementContext ctx) {
+        return visitVariableDeclaration(ctx.variableDeclaration());
+    }
+
+    @Override
     public ForStatement visitForLoop(@NotNull ForLoopContext ctx) {
-        AssignmentExpression init = visitAssignmentExpression(ctx.init);
-        // Get the variable values out manually as lookup will not work yet at this point
-        VariableReference var = (VariableReference) init.variableExpression();
-        LocalVariableDeclarator declarator = ooFactory().createLocalVariable((TypeReference) var.getTarget(),
-                var.name(),
-                init.getValue());
+        LocalVariableDeclarator init = visitVariableDeclaration(ctx.init);
 
         AssignmentExpression update = visitAssignmentExpression(ctx.update);
         StatementExprList list = new StatementExprList();
         list.addStatement(ooFactory().createStatementExpression(update));
 
-        ForControl control = ooFactory().createForControl(declarator, (Expression) visit(ctx.cond), list);
+        ForControl control = ooFactory().createForControl(init, (Expression) visit(ctx.cond), list);
         return ooFactory().createForStatement(control, visitBlock(ctx.block()));
-    }
-
-    @Override
-    public Expression visitDeclExpression(@NotNull DeclExpressionContext ctx) {
-        return visitDecl(ctx.decl());
     }
 
     @Override

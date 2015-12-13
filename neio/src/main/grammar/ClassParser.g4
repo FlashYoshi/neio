@@ -40,8 +40,10 @@ statement : expression SCOLON           #expressionStatement
           | RETURN expression SCOLON    #returnStatement
           | neioNewCall SCOLON          #newStatement
           | assignmentExpression SCOLON #assignmentStatement
-          | FOR L_BRACE init=assignmentExpression SCOLON cond=expression SCOLON update=assignmentExpression R_BRACE LC_BRACE block RC_BRACE #forLoop
+          | variableDeclaration SCOLON  #variableDeclarationStatement
+          | FOR L_BRACE init=variableDeclaration SCOLON cond=expression SCOLON update=assignmentExpression R_BRACE LC_BRACE block RC_BRACE #forLoop
           ;
+variableDeclaration : type Identifier (EQUALS expression);
 assignmentExpression : var=expression EQUALS val=expression;
 
 literal : StringLiteral     #stringLiteral
@@ -53,7 +55,6 @@ literal : StringLiteral     #stringLiteral
         ;
 
 expression : literal                    #literalExpression
-           | decl                       #declExpression
            | L_BRACE expression R_BRACE #parExpression
            | SUPER                      #superExpression
            | THIS                       #selfExpression
@@ -88,5 +89,3 @@ type : Identifier (DOT Identifier)* (SMALLER typeArgumentList BIGGER)?;
 typeArgumentList : typeArgumentList COMMA Identifier #typeArguments
                   | Identifier                       #typeArgument
                   ;
-
-decl : type Identifier;
