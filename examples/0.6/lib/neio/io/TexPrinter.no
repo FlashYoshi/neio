@@ -1,0 +1,17 @@
+namespace neio.io;
+
+/**
+ * @author Titouan Vervack
+ */
+class TexPrinter implements Writer;
+
+neio.lang.Content content;
+
+TexPrinter(neio.lang.Content content) {
+	this.content = content;
+}
+
+void write(String name) {
+	System.out.println("% Name: " + name + "\n");
+	System.out.println(content.toTex());
+}

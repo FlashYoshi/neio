@@ -58,8 +58,12 @@ public class NeioFactory extends Java7Factory {
     }
 
     public MemberVariableDeclarator createMemberVariableDeclarator(String name, TypeReference type) {
+        return createMemberVariableDeclarator(name, type, null);
+    }
+
+    public MemberVariableDeclarator createMemberVariableDeclarator(String name, TypeReference type, Expression expression) {
         MemberVariableDeclarator m = new MemberVariableDeclarator(type);
-        m.add(new VariableDeclaration(name));
+        m.add(new VariableDeclaration(name, expression));
 
         return m;
     }

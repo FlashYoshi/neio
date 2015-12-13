@@ -33,20 +33,14 @@ public class NeioExpressionFactory extends JavaExpressionFactory {
 
     public MethodInvocation createMethodInvocation(String methodName, CrossReferenceTarget prefix, List<Expression> arguments) {
         MethodInvocation mi = new NeioMethodInvocation(methodName, prefix);
-        mi.addAllArguments(arguments);
+        if (arguments != null) {
+            mi.addAllArguments(arguments);
+        }
 
         return mi;
     }
 
-    public VariableReference createVariableReference(String name, TypeReference type) {
-        return new VariableReference(name, type);
-    }
-
     public ParExpression createParExpression(Expression expression) {
         return new ParExpression(expression);
-    }
-
-    public SuperTarget createSuper() {
-        return new SuperTarget();
     }
 }

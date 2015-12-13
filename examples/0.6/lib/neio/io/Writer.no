@@ -1,0 +1,8 @@
+namespace neio.io;
+
+/**
+ * @author Titouan Vervack
+ */
+interface Writer;
+
+void write(String name);

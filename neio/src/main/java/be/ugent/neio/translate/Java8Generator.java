@@ -8,6 +8,7 @@ import be.ugent.neio.util.Variable;
 import org.aikodi.chameleon.core.lookup.LookupException;
 import org.aikodi.chameleon.oo.expression.Expression;
 import org.aikodi.chameleon.oo.expression.ExpressionFactory;
+import org.aikodi.chameleon.oo.expression.MethodInvocation;
 import org.aikodi.chameleon.oo.method.ExpressionImplementation;
 import org.aikodi.chameleon.oo.method.RegularImplementation;
 import org.aikodi.chameleon.oo.plugin.ObjectOrientedFactory;
@@ -24,9 +25,13 @@ import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static be.ugent.neio.util.Constants.DEFAULT_WRITER;
+import static be.ugent.neio.util.Constants.WRITE_METHOD;
+
 public class Java8Generator extends AbstractJava8Generator {
 
     private static final String VAR_NAME = "var";
+    public static final String ROOT_VAR = VAR_NAME + "0";
     private Neio neio;
     private int id;
 
@@ -44,13 +49,21 @@ public class Java8Generator extends AbstractJava8Generator {
         replaceExpressionImplementations(neioDocument);
         replaceMethodChain(neioDocument);
         addLatexPrint(neioDocument);
+
         return neioDocument;
     }
 
     private void addLatexPrint(TextDocument neioDocument) {
+        Block block = neioDocument.getBlock();
         List<Expression> arguments = new ArrayList<>();
-        arguments.add(eFactory().createMethodInvocation("toTex", oFactory().createTypeReference(VAR_NAME + "0"), new ArrayList<>()));
-        neioDocument.getBlock().addStatement(oFactory().createStatement(eFactory().createMethodInvocation("println", oFactory().createTypeReference("System.out"), arguments)));
+        arguments.add(eFactory().createNameExpression(ROOT_VAR));
+        Expression ci = eFactory().createConstructorInvocation(DEFAULT_WRITER, null, arguments);
+
+        List<Expression> miArguments = new ArrayList<>();
+        miArguments.add(oFactory().createStringLiteral(neioDocument.getName()));
+        MethodInvocation mi = eFactory().createMethodInvocation(WRITE_METHOD, ci, miArguments);
+
+        block.addStatement(oFactory().createStatement(mi));
     }
 
     private void replaceMethodChain(TextDocument neioDocument) throws LookupException {
