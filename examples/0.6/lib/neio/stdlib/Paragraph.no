@@ -12,5 +12,5 @@ Paragraph(String parText) {
 }
 
 String toTex() {
-	return text.toTex();
+	return "\\par " + text.toTex();
 }
