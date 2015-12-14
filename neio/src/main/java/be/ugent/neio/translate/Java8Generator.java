@@ -62,7 +62,7 @@ public class Java8Generator extends AbstractJava8Generator {
         Expression ci = eFactory().createConstructorInvocation(DEFAULT_WRITER, null, arguments);
 
         List<Expression> miArguments = new ArrayList<>();
-        miArguments.add(oFactory().createStringLiteral(AUTO_GEN_DIR + "/" + neioDocument.getName()));
+        miArguments.add(oFactory().createStringLiteral(neioDocument.getName()));
         MethodInvocation mi = eFactory().createMethodInvocation(WRITE_METHOD, ci, miArguments);
 
         block.addStatement(oFactory().createStatement(mi));

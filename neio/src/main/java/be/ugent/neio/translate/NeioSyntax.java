@@ -3,7 +3,6 @@ package be.ugent.neio.translate;
 import be.kuleuven.cs.distrinet.jnome.core.expression.invocation.JavaInfixOperatorInvocation;
 import be.kuleuven.cs.distrinet.jnome.output.Java7Syntax;
 import be.ugent.neio.model.modifier.Nested;
-import org.aikodi.chameleon.core.element.Element;
 import org.aikodi.chameleon.core.lookup.LookupException;
 import org.aikodi.chameleon.core.modifier.Modifier;
 import org.aikodi.chameleon.exception.ChameleonProgrammerException;
@@ -22,10 +21,7 @@ import org.aikodi.chameleon.support.statement.CatchClause;
 import org.aikodi.chameleon.support.statement.StatementExpression;
 import org.aikodi.chameleon.support.statement.TryStatement;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Titouan Vervack
@@ -78,14 +74,9 @@ public class NeioSyntax extends Java7Syntax {
 
     @Override
     public String toCodeStatementExpression(StatementExpression stat) {
+        // This will deduce if a basic try catch is needed for this statement and print it out if it is needed
         if (stat.nearestAncestor(TryStatement.class) == null && stat.getExpression() instanceof MethodInvocation) {
-            List<ExceptionClause> exceptions = null;
-            try {
-                exceptions = ((MethodInvocation) stat.getExpression()).getElement().children(ExceptionClause.class);
-            } catch (LookupException e) {
-                e.printStackTrace();
-            }
-
+            Set exceptions = getExceptions((MethodInvocation) stat.getExpression());
             if (exceptions != null && !exceptions.isEmpty()) {
                 Block parent = (Block) stat.parent();
 
@@ -95,15 +86,15 @@ public class NeioSyntax extends Java7Syntax {
                 TryStatement tryStatement = new TryStatement(tryBlock);
 
                 Literal left = new RegularLiteral(new BasicTypeReference("java.lang.String"), "Exception encountered: ");
-                JavaInfixOperatorInvocation plus = new JavaInfixOperatorInvocation("+", left);
-                plus.addArgument(new NameExpression("e"));
+                JavaInfixOperatorInvocation catchPrint = new JavaInfixOperatorInvocation("+", left);
+                catchPrint.addArgument(new NameExpression("e"));
 
                 RegularMethodInvocation rmi = new RegularMethodInvocation("println", new BasicTypeReference("System.err"));
-                rmi.addArgument(plus);
-                Statement statement = new StatementExpression(rmi);
+                rmi.addArgument(catchPrint);
+                Statement catchStatement = new StatementExpression(rmi);
 
                 Block catchBlock = new Block();
-                catchBlock.addStatement(statement);
+                catchBlock.addStatement(catchStatement);
 
                 FormalParameter parameter = new FormalParameter("e", new BasicTypeReference("java.lang.Exception"));
                 tryStatement.addCatchClause(new CatchClause(parameter, catchBlock));
@@ -117,7 +108,22 @@ public class NeioSyntax extends Java7Syntax {
             }
         }
 
+        // No try catch needed, print as usual
         return super.toCodeStatementExpression(stat);
+    }
+
+    private Set getExceptions(MethodInvocation mi) {
+        Set exceptions = null;
+        try {
+            List<ExceptionClause> list = mi.getElement().children(ExceptionClause.class);
+            if (list != null && !list.isEmpty()) {
+                exceptions = list.get(0).getExceptionTypes(mi);
+            }
+        } catch (LookupException e) {
+            e.printStackTrace();
+        }
+
+        return exceptions;
     }
 
     @Override
