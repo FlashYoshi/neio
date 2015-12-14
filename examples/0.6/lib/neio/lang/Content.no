@@ -1,11 +1,13 @@
 namespace neio.lang;
 
-class Content implements neio.lang.Texable;
+import java.util.*;
 
-protected java.util.List<Content> content;
+class Content implements Texable;
+
+protected List<Content> content;
 
 Content() {
-    content = new java.util.ArrayList<Content>();
+    content = new ArrayList<Content>();
 }
 
 String toTex() {

@@ -3,12 +3,15 @@ parser grammar ClassParser;
 options { tokenVocab = ClassLexer; }
 
 document : namespace
+           importDeclaration*
            classDef
            body
            EOF;
 
 namespace : NAMESPACE namespaceReference SCOLON;
 namespaceReference : Identifier (DOT Identifier)*;
+
+importDeclaration : IMPORT type (DOT STAR)? SCOLON;
 
 classDef : header Identifier inheritance* SCOLON;
 header : CLASS | INTERFACE;

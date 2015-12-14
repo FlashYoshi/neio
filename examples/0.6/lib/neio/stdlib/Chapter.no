@@ -1,7 +1,8 @@
 namespace neio.stdlib;
 
-class Chapter
-extends neio.lang.Content;
+import neio.lang.Content;
+
+class Chapter extends Content;
 
 String title;
 Integer level;
