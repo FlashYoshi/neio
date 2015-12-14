@@ -15,9 +15,11 @@ TexFileWriter(Content content) {
 	this.content = content;
 }
 
-void write(String name) {
+String write(String name) {
 	String toWrite = "% Name: " + name + "\n" + content.toTex();
 	Path path = Paths.get(name + ".tex");
 	Files.write(path, Arrays.asList(toWrite.split("\n")));
 	System.out.println("Wrote " + path.toAbsolutePath());
+	
+	return path.toAbsolutePath().toString();
 }

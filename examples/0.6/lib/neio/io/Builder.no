@@ -3,6 +3,6 @@ namespace neio.io;
 /**
  * @author Titouan Vervack
  */
-interface Writer;
+interface Builder;
 
-String write(String name);
+void build(String name);

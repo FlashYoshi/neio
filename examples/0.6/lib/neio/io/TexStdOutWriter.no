@@ -13,7 +13,9 @@ TexStdOutWriter(Content content) {
 	this.content = content;
 }
 
-void write(String name) {
+String write(String name) {
 	System.out.println("% Name: " + name + "\n");
 	System.out.println(content.toTex());
+	
+	return null;
 }

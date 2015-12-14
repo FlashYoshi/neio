@@ -15,9 +15,11 @@ import org.aikodi.chameleon.oo.plugin.ObjectOrientedFactory;
 import org.aikodi.chameleon.oo.statement.Block;
 import org.aikodi.chameleon.oo.statement.Statement;
 import org.aikodi.chameleon.oo.type.Type;
+import org.aikodi.chameleon.oo.variable.VariableDeclaration;
 import org.aikodi.chameleon.support.member.simplename.method.NormalMethod;
 import org.aikodi.chameleon.support.member.simplename.method.RegularMethodInvocation;
 import org.aikodi.chameleon.support.statement.ReturnStatement;
+import org.aikodi.chameleon.support.variable.LocalVariableDeclarator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,9 +27,7 @@ import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static be.ugent.neio.util.Constants.AUTO_GEN_DIR;
-import static be.ugent.neio.util.Constants.DEFAULT_WRITER;
-import static be.ugent.neio.util.Constants.WRITE_METHOD;
+import static be.ugent.neio.util.Constants.*;
 
 public class Java8Generator extends AbstractJava8Generator {
 
@@ -49,12 +49,13 @@ public class Java8Generator extends AbstractJava8Generator {
         id = 0;
         replaceExpressionImplementations(neioDocument);
         replaceMethodChain(neioDocument);
-        addLatexPrint(neioDocument);
+        String writerReturn = callWriter(neioDocument);
+        callBuilder(neioDocument, writerReturn);
 
         return neioDocument;
     }
 
-    private void addLatexPrint(TextDocument neioDocument) {
+    private String callWriter(TextDocument neioDocument) {
         Block block = neioDocument.getBlock();
 
         List<Expression> arguments = new ArrayList<>();
@@ -64,8 +65,24 @@ public class Java8Generator extends AbstractJava8Generator {
         List<Expression> miArguments = new ArrayList<>();
         miArguments.add(oFactory().createStringLiteral(neioDocument.getName()));
         MethodInvocation mi = eFactory().createMethodInvocation(WRITE_METHOD, ci, miArguments);
+        LocalVariableDeclarator varDecl = new LocalVariableDeclarator(oFactory().createTypeReference("java.lang.String"));
+        String varName = getVarName();
+        VariableDeclaration var = new VariableDeclaration(varName, mi);
+        varDecl.add(var);
 
-        block.addStatement(oFactory().createStatement(mi));
+        block.addStatement(varDecl);
+        return varName;
+    }
+
+    private void callBuilder(TextDocument neioDocument, String writerReturn) {
+        List<Expression> arguments = new ArrayList<>();
+        Expression ci = eFactory().createConstructorInvocation(DEFAULT_BUILDER, null, arguments);
+
+        List<Expression> miArguments = new ArrayList<>();
+        miArguments.add(eFactory().createNameExpression(writerReturn));
+        MethodInvocation mi = eFactory().createMethodInvocation(BUILD_METHOD, ci, miArguments);
+
+        neioDocument.getBlock().addStatement(oFactory().createStatement(mi));
     }
 
     private void replaceMethodChain(TextDocument neioDocument) throws LookupException {
