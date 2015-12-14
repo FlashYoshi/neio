@@ -1,0 +1,21 @@
+namespace neio.io;
+
+import java.nio.file.*;
+import java.util.Arrays;
+import neio.lang.Content;
+
+/**
+ * @author Titouan Vervack
+ */
+class TexFileWriter implements Writer;
+
+Content content;
+
+TexFileWriter(Content content) {
+	this.content = content;
+}
+
+void write(String name) {
+	String toWrite = "% Name: " + name + "\n" + content.toTex();
+	Files.write(Paths.get(name + ".tex"), Arrays.asList(toWrite.split("\n")));
+}

@@ -25,6 +25,7 @@ import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static be.ugent.neio.util.Constants.AUTO_GEN_DIR;
 import static be.ugent.neio.util.Constants.DEFAULT_WRITER;
 import static be.ugent.neio.util.Constants.WRITE_METHOD;
 
@@ -55,12 +56,13 @@ public class Java8Generator extends AbstractJava8Generator {
 
     private void addLatexPrint(TextDocument neioDocument) {
         Block block = neioDocument.getBlock();
+
         List<Expression> arguments = new ArrayList<>();
         arguments.add(eFactory().createNameExpression(ROOT_VAR));
         Expression ci = eFactory().createConstructorInvocation(DEFAULT_WRITER, null, arguments);
 
         List<Expression> miArguments = new ArrayList<>();
-        miArguments.add(oFactory().createStringLiteral(neioDocument.getName()));
+        miArguments.add(oFactory().createStringLiteral(AUTO_GEN_DIR + "/" + neioDocument.getName()));
         MethodInvocation mi = eFactory().createMethodInvocation(WRITE_METHOD, ci, miArguments);
 
         block.addStatement(oFactory().createStatement(mi));
@@ -140,10 +142,6 @@ public class Java8Generator extends AbstractJava8Generator {
 
     private String getVarName() {
         return VAR_NAME + (id++);
-    }
-
-    private String getCurrentVarName() {
-        return VAR_NAME + (id == 0 ? id : id - 1);
     }
 
     protected void replaceExpressionImplementations(TextDocument javaDocument) {

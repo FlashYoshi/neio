@@ -1,13 +1,15 @@
 namespace neio.io;
 
+import neio.lang.Content;
+
 /**
  * @author Titouan Vervack
  */
-class TexPrinter implements Writer;
+class TexStdOutWriter implements Writer;
 
-neio.lang.Content content;
+Content content;
 
-TexPrinter(neio.lang.Content content) {
+TexStdOutWriter(Content content) {
 	this.content = content;
 }
 

@@ -12,6 +12,7 @@ import org.aikodi.chameleon.core.reference.CrossReferenceTarget;
 import org.aikodi.chameleon.oo.expression.Expression;
 import org.aikodi.chameleon.oo.expression.Literal;
 import org.aikodi.chameleon.oo.method.*;
+import org.aikodi.chameleon.oo.namespacedeclaration.TypeImport;
 import org.aikodi.chameleon.oo.statement.Block;
 import org.aikodi.chameleon.oo.statement.Statement;
 import org.aikodi.chameleon.oo.type.BasicTypeReference;
@@ -169,5 +170,9 @@ public class NeioFactory extends Java7Factory {
 
     public CrossReferenceTarget createSuper() {
         return new SuperTarget();
+    }
+
+    public Import createTypeImport(TypeReference typeReference) {
+        return new TypeImport(typeReference);
     }
 }
