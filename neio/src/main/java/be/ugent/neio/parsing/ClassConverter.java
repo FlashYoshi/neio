@@ -2,6 +2,7 @@ package be.ugent.neio.parsing;
 
 import be.kuleuven.cs.distrinet.jnome.core.expression.invocation.ConstructorInvocation;
 import be.kuleuven.cs.distrinet.jnome.core.modifier.Implements;
+import be.kuleuven.cs.distrinet.jnome.core.statement.JavaTryStatement;
 import be.kuleuven.cs.distrinet.jnome.core.type.BasicJavaTypeReference;
 import be.kuleuven.cs.distrinet.jnome.workspace.JavaView;
 import be.ugent.neio.industry.NeioExpressionFactory;
@@ -12,6 +13,7 @@ import org.aikodi.chameleon.core.document.Document;
 import org.aikodi.chameleon.core.lookup.LookupException;
 import org.aikodi.chameleon.core.modifier.Modifier;
 import org.aikodi.chameleon.core.namespace.NamespaceReference;
+import org.aikodi.chameleon.core.namespacedeclaration.Import;
 import org.aikodi.chameleon.core.namespacedeclaration.NamespaceDeclaration;
 import org.aikodi.chameleon.core.reference.CrossReferenceTarget;
 import org.aikodi.chameleon.exception.ChameleonProgrammerException;
@@ -30,9 +32,7 @@ import org.aikodi.chameleon.oo.variable.RegularVariable;
 import org.aikodi.chameleon.support.expression.AssignmentExpression;
 import org.aikodi.chameleon.support.member.simplename.variable.MemberVariableDeclarator;
 import org.aikodi.chameleon.support.modifier.*;
-import org.aikodi.chameleon.support.statement.ForControl;
-import org.aikodi.chameleon.support.statement.ForStatement;
-import org.aikodi.chameleon.support.statement.StatementExprList;
+import org.aikodi.chameleon.support.statement.*;
 import org.aikodi.chameleon.support.variable.LocalVariableDeclarator;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.TerminalNode;
@@ -78,6 +78,10 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     public Document visitDocument(DocumentContext ctx) {
         NamespaceDeclaration ns = visitNamespace(ctx.namespace());
 
+        for (ImportDeclarationContext importCtx : ctx.importDeclaration()) {
+            ns.addImport(visitImportDeclaration(importCtx));
+        }
+
         Type type = visitClassDef(ctx.classDef());
 
         for (InheritanceContext inheritance : ctx.classDef().inheritance()) {
@@ -105,6 +109,15 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     @Override
     public NamespaceReference visitNamespaceReference(@NotNull NamespaceReferenceContext ctx) {
         return ooFactory().createNamespaceReference(ctx.getText());
+    }
+
+    @Override
+    public Import visitImportDeclaration(@NotNull ImportDeclarationContext ctx) {
+        if (ctx.STAR() != null) {
+            return ooFactory().createDemandImport(ctx.type().getText());
+        } else {
+            return ooFactory().createTypeImport(visitType(ctx.type()));
+        }
     }
 
     @Override
