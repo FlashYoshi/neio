@@ -20,6 +20,8 @@ SUPER : 'super';
 PROTECTED : 'protected';
 PUBLIC : 'public';
 VOID : 'void';
+IF : 'if';
+ELSE : 'else';
 FOR : 'for';
 NESTED : 'nested';
 TRUE : 'true';

@@ -2,7 +2,6 @@ package be.ugent.neio.parsing;
 
 import be.kuleuven.cs.distrinet.jnome.core.expression.invocation.ConstructorInvocation;
 import be.kuleuven.cs.distrinet.jnome.core.modifier.Implements;
-import be.kuleuven.cs.distrinet.jnome.core.statement.JavaTryStatement;
 import be.kuleuven.cs.distrinet.jnome.core.type.BasicJavaTypeReference;
 import be.kuleuven.cs.distrinet.jnome.workspace.JavaView;
 import be.ugent.neio.industry.NeioExpressionFactory;
@@ -32,7 +31,10 @@ import org.aikodi.chameleon.oo.variable.RegularVariable;
 import org.aikodi.chameleon.support.expression.AssignmentExpression;
 import org.aikodi.chameleon.support.member.simplename.variable.MemberVariableDeclarator;
 import org.aikodi.chameleon.support.modifier.*;
-import org.aikodi.chameleon.support.statement.*;
+import org.aikodi.chameleon.support.statement.ForControl;
+import org.aikodi.chameleon.support.statement.ForStatement;
+import org.aikodi.chameleon.support.statement.IfThenElseStatement;
+import org.aikodi.chameleon.support.statement.StatementExprList;
 import org.aikodi.chameleon.support.variable.LocalVariableDeclarator;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.TerminalNode;
@@ -254,6 +256,24 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
         ForControl control = ooFactory().createForControl(init, (Expression) visit(ctx.cond), list);
         return ooFactory().createForStatement(control, visitBlock(ctx.block()));
+    }
+
+    @Override
+    public IfThenElseStatement visitIfStatement(@NotNull IfStatementContext ctx) {
+        return visitIfteStatement(ctx.ifteStatement());
+    }
+
+    @Override
+    public IfThenElseStatement visitIfteStatement(@NotNull IfteStatementContext ctx) {
+        Expression expression = (Expression) visit(ctx.ifCondition);
+        Statement elseStatement = null;
+        if (ctx.elseBlock != null) {
+            elseStatement = visitBlock(ctx.elseBlock);
+        } else if (ctx.elif != null) {
+            elseStatement = visitIfteStatement(ctx.elif);
+        }
+
+        return ooFactory().createIfStatement(expression, visitBlock(ctx.ifBlock), elseStatement);
     }
 
     @Override

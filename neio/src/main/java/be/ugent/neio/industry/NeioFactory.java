@@ -11,6 +11,7 @@ import org.aikodi.chameleon.core.namespacedeclaration.Import;
 import org.aikodi.chameleon.core.reference.CrossReferenceTarget;
 import org.aikodi.chameleon.oo.expression.Expression;
 import org.aikodi.chameleon.oo.expression.Literal;
+import org.aikodi.chameleon.oo.expression.VariableReference;
 import org.aikodi.chameleon.oo.method.*;
 import org.aikodi.chameleon.oo.namespacedeclaration.TypeImport;
 import org.aikodi.chameleon.oo.statement.Block;
@@ -174,5 +175,13 @@ public class NeioFactory extends Java7Factory {
 
     public Import createTypeImport(TypeReference typeReference) {
         return new TypeImport(typeReference);
+    }
+
+    public IfThenElseStatement createIfStatement(Expression expression, Statement ifStatement, Statement elseStatement) {
+        return new IfThenElseStatement(expression, ifStatement, elseStatement);
+    }
+
+    public VariableReference createVariableReference(String varName, CrossReferenceTarget target) {
+        return new VariableReference(varName, target);
     }
 }
