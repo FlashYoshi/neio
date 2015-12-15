@@ -47,7 +47,6 @@ public class Java8Generator extends AbstractJava8Generator {
     public TextDocument createJavaDocument(TextDocument neioDocument) throws LookupException {
         neio = neio(neioDocument);
         id = 0;
-        replaceExpressionImplementations(neioDocument);
         replaceMethodChain(neioDocument);
         String writerReturn = callWriter(neioDocument);
         callBuilder(neioDocument, writerReturn);
@@ -159,15 +158,5 @@ public class Java8Generator extends AbstractJava8Generator {
 
     private String getVarName() {
         return VAR_NAME + (id++);
-    }
-
-    protected void replaceExpressionImplementations(TextDocument javaDocument) {
-        javaDocument.getBlock().apply(ExpressionImplementation.class, implementation -> {
-            Block body = new Block();
-            // We move the expression instead of cloning it
-            body.addStatement(new ReturnStatement(implementation.expression()));
-            RegularImplementation replacement = new RegularImplementation(body);
-            implementation.replaceWith(replacement);
-        });
     }
 }
