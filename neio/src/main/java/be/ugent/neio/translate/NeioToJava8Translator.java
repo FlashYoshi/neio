@@ -93,6 +93,6 @@ public class NeioToJava8Translator extends IncrementalTranslator<Neio, Java7> {
         // There is only the main method
         Method main = document.nearestDescendants(Method.class).get(0);
         NeioFactory ooFactory = (NeioFactory) document.language().plugin(ObjectOrientedFactory.class);
-        main.implementation().replaceWith(ooFactory.createImplementation(document.getBlock()));
+        main.setImplementation(ooFactory.createImplementation(document.getBlock()));
     }
 }

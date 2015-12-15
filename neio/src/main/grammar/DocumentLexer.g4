@@ -1,33 +1,22 @@
 lexer grammar DocumentLexer;
 
-HEADER : L_SQ_BRACE CHAR+ R_SQ_BRACE;
+HEADER : LS_BRACE CHAR+ RS_BRACE;
 COMMENT : '//' ~[\r\n]* NL+ -> channel(HIDDEN);
 MULTILINE_COMMENT : '/*' .*? '*/' NL+ -> channel(HIDDEN);
+
+CODE : TB_QUOTE .+? TB_QUOTE;
 
 WS : [\t ] -> channel(HIDDEN);
 NL : '\r'? '\n';
 fragment CHAR : [a-zA-Z0-9];
-fragment VALID_CHAR : [a-zA-Z0-9.,!?'];
+fragment VALID_CHAR : [a-zA-Z0-9.,!?"'];
 
 STUB : 'stub';
 
-PERIOD : '.';
-COMMA : ',';
-COLON : ':';
-SEMICOLON : ';';
-EQUALS : '=';
-PLUS : '+';
-MINUS : '-';
-STAR : '*';
-SMALLER : '<';
-BIGGER : '>';
-HASH : '#';
-L_BRACE : '(';
-R_BRACE : ')';
-L_CURLY_BRACE : '{';
-R_CURLY_BRACE : '}';
-L_SQ_BRACE : '[';
-R_SQ_BRACE : ']';
-DOUBLE_QUOTE : '"';
+fragment LS_BRACE : '[';
+fragment RS_BRACE : ']';
+fragment TB_QUOTE : '```';
+
+MethodName : [#*];
 
 WORD : VALID_CHAR+;

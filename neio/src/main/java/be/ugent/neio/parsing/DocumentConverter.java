@@ -11,14 +11,24 @@ import org.aikodi.chameleon.oo.expression.Expression;
 import org.aikodi.chameleon.oo.expression.ExpressionFactory;
 import org.aikodi.chameleon.oo.plugin.ObjectOrientedFactory;
 import org.aikodi.chameleon.oo.statement.Block;
+import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.Lexer;
+import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.tree.TerminalNode;
-import org.neio.antlr.DocumentParser.ContentContext;
-import org.neio.antlr.DocumentParser.DocumentContext;
-import org.neio.antlr.DocumentParser.SentenceContext;
+import org.neio.antlr.ClassLexer;
+import org.neio.antlr.ClassParser;
+import org.neio.antlr.DocumentParser.*;
 import org.neio.antlr.DocumentParserBaseVisitor;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+
+import static be.ugent.neio.util.Constants.PREV;
 
 
 /**
@@ -28,9 +38,13 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
 
     private final Neio neio;
     private final TextDocument document;
+    private final JavaView view;
+    private Expression previousExpression = null;
+    private Block block = null;
 
     public DocumentConverter(Document document, JavaView view) {
         this.document = (TextDocument) document;
+        this.view = view;
         this.neio = view.language(Neio.class);
     }
 
@@ -44,11 +58,8 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
 
     @Override
     public TextDocument visitDocument(DocumentContext ctx) {
-        Expression headerExpression = visitHeader(ctx);
-        Expression expression = visitBody(ctx, headerExpression);
-
-        Block block = ooFactory().createBlock();
-        block.addStatement(ooFactory().createStatement(expression));
+        previousExpression = visitHeader(ctx);
+        Block block = visitBody(ctx.body());
 
         document.setBlock(block);
         return document;
@@ -63,49 +74,58 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         return expressionFactory().createConstructorInvocation(documentType, null);
     }
 
-    public Expression visitBody(DocumentContext ctx, Expression expression) {
-        for (ContentContext c : ctx.body().content()) {
-            expression = visitContent(c, expression);
-        }
+    @Override
+    public Block visitBody(BodyContext ctx) {
+        block = ooFactory().createBlock();
+        ctx.content().forEach(this::visitContent);
 
-        return expression;
+        block.addStatement(ooFactory().createStatement(previousExpression));
+        return block;
     }
 
-    public Expression visitContent(ContentContext ctx, Expression previousExpression) {
-        Expression expression;
+    public Block visitContent(ContentContext ctx) {
         if (ctx.prefixCall() != null) {
-            expression = visitPrefixCall(ctx, previousExpression);
+            previousExpression = visitPrefixCall(ctx.prefixCall());
         } else if (ctx.postfixCall() != null) {
-            expression = visitPostFixCall(ctx, previousExpression);
+            previousExpression = visitPostFixCall(ctx.postfixCall());
         } else if (ctx.text() != null) {
-            expression = visitText(ctx, previousExpression);
+            previousExpression = visitText(ctx.text());
+        } else if (ctx.CODE() != null) {
+            // Make a statements from the previous expression if it is an actual expression
+            if (!previousExpression.toString().equals(PREV)) {
+                block.addStatement(ooFactory().createStatement(previousExpression));
+            }
+            block.addBlock(visitCode(ctx.CODE()));
+            previousExpression = expressionFactory().createNameExpression(PREV);
         } else {
             throw new ChameleonProgrammerException("Method could not be found!");
         }
 
-        return expression;
+        return null;
     }
 
-    private Expression visitPrefixCall(ContentContext ctx, Expression previousExpression) {
+    @Override
+    public Expression visitPrefixCall(PrefixCallContext ctx) {
         // Find the method name and print it
         String methodName = "";
-        for (TerminalNode h : ctx.prefixCall().HASH()) {
+        for (TerminalNode h : ctx.MethodName()) {
             methodName += h;
         }
 
         // Find the arguments
-        String argument = createSentence(ctx.prefixCall().sentence().WORD());
+        String argument = visitSentence(ctx.sentence());
         List<Expression> arguments = new ArrayList<>();
         arguments.add(ooFactory().createStringLiteral(argument));
 
         return expressionFactory().createMethodInvocation(methodName, previousExpression, arguments);
     }
 
-    private Expression visitPostFixCall(ContentContext ctx, Expression previousExpression) {
+    private Expression visitPostFixCall(PostfixCallContext ctx) {
         return null;
     }
 
-    private String createSentence(List<TerminalNode> nodes) {
+    public String visitSentence(SentenceContext ctx) {
+        List<TerminalNode> nodes = ctx.WORD();
         String result = "";
         for (int j = 0; j < nodes.size(); j++) {
             TerminalNode tn = nodes.get(j);
@@ -120,12 +140,13 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         return result;
     }
 
-    private Expression visitText(ContentContext ctx, Expression previousExpression) {
+    @Override
+    public Expression visitText(TextContext ctx) {
         String paragraph = "";
-        List<SentenceContext> sentences = ctx.text().sentence();
+        List<SentenceContext> sentences = ctx.sentence();
         for (int i = 0; i < sentences.size(); i++) {
             SentenceContext s = sentences.get(i);
-            paragraph += createSentence(s.WORD());
+            paragraph += visitSentence(s);
 
             // Do not add a newline to the end of the paragraph
             if (i != sentences.size() - 1) {
@@ -140,5 +161,24 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         arguments.add(ooFactory().createStringLiteral(paragraph));
 
         return expressionFactory().createMethodInvocation(methodName, previousExpression, arguments);
+    }
+
+    public Block visitCode(TerminalNode node) {
+        String code = node.getText();
+        // Remove the backquotes and add the required curly braces
+        code = "{" + code.substring(3, code.length() - 3) + "}";
+        InputStream stream = new ByteArrayInputStream(code.getBytes(StandardCharsets.UTF_8));
+        ANTLRInputStream input = null;
+        try {
+            input = new ANTLRInputStream(stream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Lexer lexer = new ClassLexer(input);
+        TokenStream tokens = new CommonTokenStream(lexer);
+
+        ClassParser parser = new ClassParser(tokens);
+        Block block = new ClassConverter(document, view).visitBlock(parser.block());
+        return block;
     }
 }

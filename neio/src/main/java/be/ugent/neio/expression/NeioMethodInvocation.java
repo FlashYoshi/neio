@@ -15,6 +15,12 @@ public class NeioMethodInvocation extends JavaMethodInvocation {
         super(name, target);
     }
 
+    // Needed to have the clones of this class keep their types, else they turn into JavaMethodInvocations of course
+    @Override
+    protected NeioMethodInvocation cloneSelf() {
+        return new NeioMethodInvocation(name(), null);
+    }
+
     @Override
     protected Type actualType() throws LookupException {
         Type returnType = super.actualType();

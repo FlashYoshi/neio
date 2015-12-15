@@ -1,16 +1,18 @@
 package be.ugent.neio.translate;
 
+import be.ugent.neio.expression.NeioMethodInvocation;
 import be.ugent.neio.industry.NeioExpressionFactory;
 import be.ugent.neio.industry.NeioFactory;
 import be.ugent.neio.language.Neio;
 import be.ugent.neio.model.document.TextDocument;
 import be.ugent.neio.util.Variable;
 import org.aikodi.chameleon.core.lookup.LookupException;
+import org.aikodi.chameleon.core.reference.CrossReferenceTarget;
+import org.aikodi.chameleon.exception.ChameleonProgrammerException;
 import org.aikodi.chameleon.oo.expression.Expression;
 import org.aikodi.chameleon.oo.expression.ExpressionFactory;
 import org.aikodi.chameleon.oo.expression.MethodInvocation;
-import org.aikodi.chameleon.oo.method.ExpressionImplementation;
-import org.aikodi.chameleon.oo.method.RegularImplementation;
+import org.aikodi.chameleon.oo.method.Method;
 import org.aikodi.chameleon.oo.plugin.ObjectOrientedFactory;
 import org.aikodi.chameleon.oo.statement.Block;
 import org.aikodi.chameleon.oo.statement.Statement;
@@ -18,12 +20,10 @@ import org.aikodi.chameleon.oo.type.Type;
 import org.aikodi.chameleon.oo.variable.VariableDeclaration;
 import org.aikodi.chameleon.support.member.simplename.method.NormalMethod;
 import org.aikodi.chameleon.support.member.simplename.method.RegularMethodInvocation;
-import org.aikodi.chameleon.support.statement.ReturnStatement;
+import org.aikodi.chameleon.support.statement.StatementExpression;
 import org.aikodi.chameleon.support.variable.LocalVariableDeclarator;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -47,11 +47,62 @@ public class Java8Generator extends AbstractJava8Generator {
     public TextDocument createJavaDocument(TextDocument neioDocument) throws LookupException {
         neio = neio(neioDocument);
         id = 0;
+        mergeStatements(neioDocument);
         replaceMethodChain(neioDocument);
         String writerReturn = callWriter(neioDocument);
         callBuilder(neioDocument, writerReturn);
 
         return neioDocument;
+    }
+
+    private void mergeStatements(TextDocument neioDocument) {
+        List<Statement> stats = neioDocument.getBlock().statements();
+        List<Statement> statements = new ArrayList<>();
+        statements.addAll(stats);
+
+        List<RegularMethodInvocation> invocations = new ArrayList<>();
+        for (Statement statement : statements) {
+            RegularMethodInvocation first = getInvocation(statement);
+            CrossReferenceTarget source = first;
+            if (source == null) {
+                continue;
+            }
+
+            // Search for a possible "prev" keyword
+            while (source instanceof RegularMethodInvocation) {
+                if (((RegularMethodInvocation) source).getTarget() != null) {
+                    source = ((RegularMethodInvocation) source).getTarget();
+                } else {
+                    break;
+                }
+            }
+
+            if (source.toString().equals(PREV)) {
+                // Try to find the previous methodchain
+                if (invocations.isEmpty()) {
+                    throw new ChameleonProgrammerException("Can not use the \"prev\" keyword without defining other statements first!");
+                }
+
+                RegularMethodInvocation prevInv = invocations.get(invocations.size() - 1);
+                invocations.remove(prevInv);
+
+                // Attach the methodchain in this statement, to prevInv
+                //prevInv.setUniParent(source.parent());
+                ((NeioMethodInvocation)source.parent()).setTarget(prevInv);
+            }
+
+            invocations.add(first);
+        }
+
+        // Remove the empty statements
+        statements.removeIf(s -> ((StatementExpression)s).getExpression() == null);
+
+        Block block = oFactory().createBlock();
+        block.addStatements(statements);
+        neioDocument.setBlock(block);
+
+        Method main = neioDocument.nearestDescendants(Method.class).get(0);
+        main.setImplementation(oFactory().createImplementation(neioDocument.getBlock()));
     }
 
     private String callWriter(TextDocument neioDocument) {
@@ -92,7 +143,10 @@ public class Java8Generator extends AbstractJava8Generator {
             Stack<RegularMethodInvocation> callStack = new Stack<>();
 
             // MethodInvocations start from the back so push the invocations on a stack to get the correct order
-            RegularMethodInvocation rmi = methodChain.nearestDescendants(RegularMethodInvocation.class).get(0);
+            RegularMethodInvocation rmi = getInvocation(methodChain);
+            if (rmi == null) {
+                continue;
+            }
             while (rmi.getTarget() != null) {
                 callStack.push(rmi);
                 rmi = (RegularMethodInvocation) rmi.getTarget();
@@ -122,6 +176,14 @@ public class Java8Generator extends AbstractJava8Generator {
         Block block = new Block();
         block.addStatements(newStatements);
         neioDocument.setBlock(block);
+    }
+
+    private RegularMethodInvocation getInvocation(Statement statement) {
+        List<RegularMethodInvocation> invocations = statement.nearestDescendants(RegularMethodInvocation.class);
+        if (invocations == null || invocations.isEmpty()) {
+            return null;
+        }
+        return invocations.get(0);
     }
 
     private void fixNestedMethod(RegularMethodInvocation rmi) {

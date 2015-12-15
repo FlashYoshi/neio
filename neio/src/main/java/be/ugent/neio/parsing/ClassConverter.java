@@ -326,8 +326,8 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         CrossReferenceTarget target = (CrossReferenceTarget) visit(ctx.expression());
         Expression result;
         if (ctx.args != null) {
-            result = eFactory().createInvocation(ctx.name.getText(), target);
-            ((List<Expression>) visit(ctx.args)).forEach(((MethodInvocation) result)::addArgument);
+            List<Expression> arguments = ((List<Expression>) visit(ctx.args));
+            result = eFactory().createMethodInvocation(ctx.name.getText(), target, arguments);
         } else {
             result = new NameExpression(ctx.name.getText(), target);
         }

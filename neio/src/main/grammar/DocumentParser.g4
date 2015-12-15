@@ -10,10 +10,11 @@ body : content*;
 
 content : ( prefixCall
           | postfixCall
-          | text)
+          | text
+          | CODE)
           mnl?;
 
-prefixCall : HASH+ sentence ;
+prefixCall : MethodName+ sentence;
 
 text : sentence+;
 

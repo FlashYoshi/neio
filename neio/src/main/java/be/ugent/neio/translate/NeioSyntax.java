@@ -120,7 +120,7 @@ public class NeioSyntax extends Java7Syntax {
                 exceptions = list.get(0).getExceptionTypes(mi);
             }
         } catch (LookupException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
 
         return exceptions;
