@@ -95,7 +95,8 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
             if (!previousExpression.toString().equals(PREV)) {
                 block.addStatement(ooFactory().createStatement(previousExpression));
             }
-            block.addBlock(visitCode(ctx.CODE()));
+            //block.addBlock(visitCode(ctx.CODE()));
+            block.addStatements(visitCode(ctx.CODE()).statements());
             previousExpression = expressionFactory().createNameExpression(PREV);
         } else {
             throw new ChameleonProgrammerException("Method could not be found!");

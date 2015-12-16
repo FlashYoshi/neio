@@ -5,7 +5,7 @@ import neio.lang.Content;
 
 class Paragraph extends Content;
 
-neio.lang.Text text;
+Text text;
 
 Paragraph(String parText) {
 	text = new Text(parText);

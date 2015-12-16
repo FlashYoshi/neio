@@ -220,7 +220,9 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
         Block block = ooFactory().createBlock();
         for (StatementContext statement : ctx.statement()) {
-            block.addStatement((Statement) visit(statement));
+            if (statement != null) {
+                block.addStatement((Statement) visit(statement));
+            }
         }
 
         return block;

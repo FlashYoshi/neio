@@ -11,6 +11,14 @@ Chapter #(String title) {
     return chapter;
 }
 
+Itemize *(String text) {
+	Itemize itemize = new Itemize();
+	itemize.*(new ItemizeItem(text, 1));
+    content.add(itemize);
+
+    return itemize;
+}
+
 Paragraph newline(String parText) {
     new Paragraph(parText) p;
     content.add(p);

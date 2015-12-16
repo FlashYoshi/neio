@@ -87,7 +87,6 @@ public class Java8Generator extends AbstractJava8Generator {
                 invocations.remove(prevInv);
 
                 // Attach the methodchain in this statement, to prevInv
-                //prevInv.setUniParent(source.parent());
                 ((NeioMethodInvocation)source.parent()).setTarget(prevInv);
             }
 
@@ -196,7 +195,7 @@ public class Java8Generator extends AbstractJava8Generator {
 
     private boolean isNested(String name) {
         String c = firstChar(name);
-        Pattern p = Pattern.compile("^" + c + c + "+$");
+        Pattern p = Pattern.compile("^[" + c + "][" + c + "]+$");
         Matcher m = p.matcher(name);
         return m.matches();
     }
