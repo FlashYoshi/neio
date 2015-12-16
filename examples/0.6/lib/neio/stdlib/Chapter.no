@@ -19,13 +19,13 @@ nested Chapter #(String title, Integer level) {
     return chapter;
 }
 
-ItemizeItem *(String text) {
+Itemize *(String text) {
 	Itemize itemize = new Itemize();
 	ItemizeItem item = new ItemizeItem(text, itemize, 1);
 	itemize.*(item);
     content.add(itemize);
 
-    return item;
+    return itemize;
 }
 
 Paragraph newline(String parText) {

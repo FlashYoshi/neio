@@ -13,7 +13,8 @@ Chapter #(String title) {
 
 Itemize *(String text) {
 	Itemize itemize = new Itemize();
-	itemize.*(new ItemizeItem(text, 1));
+	ItemizeItem item = new ItemizeItem(text, itemize, 1);
+	itemize.*(item);
     content.add(itemize);
 
     return itemize;

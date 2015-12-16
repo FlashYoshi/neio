@@ -14,3 +14,10 @@ ItemizeItem *(ItemizeItem item) {
 	
 	return item;
 }
+
+ItemizeItem *(String text) {
+	ItemizeItem item = new ItemizeItem(text, 1);
+	content.add(item);
+	
+	return item;
+}
