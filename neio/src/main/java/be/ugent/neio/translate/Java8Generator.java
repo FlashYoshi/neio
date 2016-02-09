@@ -29,7 +29,7 @@ import java.util.regex.Pattern;
 
 import static be.ugent.neio.util.Constants.*;
 
-public class Java8Generator extends AbstractJava8Generator {
+public class Java8Generator {
 
     private static final String VAR_NAME = "var";
     public static final String ROOT_VAR = VAR_NAME + "0";
@@ -45,7 +45,7 @@ public class Java8Generator extends AbstractJava8Generator {
     }
 
     public TextDocument createJavaDocument(TextDocument neioDocument) throws LookupException {
-        neio = neio(neioDocument);
+        neio = neioDocument.language(Neio.class);
         id = 0;
         mergeStatements(neioDocument);
         replaceMethodChain(neioDocument);
