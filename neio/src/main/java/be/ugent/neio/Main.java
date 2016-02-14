@@ -18,6 +18,8 @@ import static be.ugent.neio.util.Constants.EXTENSION;
 
 public class Main {
 
+    private static final boolean DEBUG = false;
+
     /**
      * args[1] = input file
      * <p>
@@ -75,7 +77,7 @@ public class Main {
                     new ExtensionPredicate(EXTENSION), new LazyFileTextFactory());
             view.addSource(scanner);
 
-            NeioScriptBuilder builder = new NeioScriptBuilder(view, false);
+            NeioScriptBuilder builder = new NeioScriptBuilder(view, DEBUG);
             try {
                 builder.buildAll(scanner.documents(), output, null);
             } catch (BuildException | InputException e) {

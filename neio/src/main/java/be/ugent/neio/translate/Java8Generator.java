@@ -47,7 +47,7 @@ public class Java8Generator {
     public TextDocument createJavaDocument(TextDocument neioDocument) throws LookupException {
         neio = neioDocument.language(Neio.class);
         id = 0;
-        mergeStatements(neioDocument);
+        //mergeStatements(neioDocument);
         replaceMethodChain(neioDocument);
         String writerReturn = callWriter(neioDocument);
         callBuilder(neioDocument, writerReturn);
@@ -55,6 +55,11 @@ public class Java8Generator {
         return neioDocument;
     }
 
+    /**
+     * Merges the prev statements with the one before it
+     *
+     * @param neioDocument The document whose statements have to be merged
+     */
     private void mergeStatements(TextDocument neioDocument) {
         List<Statement> stats = neioDocument.getBlock().statements();
         List<Statement> statements = new ArrayList<>();
@@ -87,14 +92,14 @@ public class Java8Generator {
                 invocations.remove(prevInv);
 
                 // Attach the methodchain in this statement, to prevInv
-                ((NeioMethodInvocation)source.parent()).setTarget(prevInv);
+                ((NeioMethodInvocation) source.parent()).setTarget(prevInv);
             }
 
             invocations.add(first);
         }
 
         // Remove the empty statements
-        statements.removeIf(s -> ((StatementExpression)s).getExpression() == null);
+        statements.removeIf(s -> ((StatementExpression) s).getExpression() == null);
 
         Block block = oFactory().createBlock();
         block.addStatements(statements);
@@ -104,6 +109,12 @@ public class Java8Generator {
         main.setImplementation(oFactory().createImplementation(neioDocument.getBlock()));
     }
 
+    /**
+     * Creates a document writer and calls the write method on it creating a TeX/JS/... string
+     *
+     * @param neioDocument The document to write
+     * @return The variable name of the generated string
+     */
     private String callWriter(TextDocument neioDocument) {
         Block block = neioDocument.getBlock();
 
@@ -123,6 +134,12 @@ public class Java8Generator {
         return varName;
     }
 
+    /**
+     * Builds the TeX/JS/... string into a real document such as a PDF
+     *
+     * @param neioDocument The document to build
+     * @param writerReturn The variable name of the TeX/JS/... string
+     */
     private void callBuilder(TextDocument neioDocument, String writerReturn) {
         List<Expression> arguments = new ArrayList<>();
         Expression ci = eFactory().createConstructorInvocation(DEFAULT_BUILDER, null, arguments);
@@ -134,6 +151,12 @@ public class Java8Generator {
         neioDocument.getBlock().addStatement(oFactory().createStatement(mi));
     }
 
+    /**
+     * Transforms the methodchains into variable declarations
+     *
+     * @param neioDocument The document in which to find the methodchains
+     * @throws LookupException
+     */
     private void replaceMethodChain(TextDocument neioDocument) throws LookupException {
         List<Statement> newStatements = new ArrayList<>();
         Stack<Variable> variables = new Stack<>();
@@ -146,12 +169,21 @@ public class Java8Generator {
             if (rmi == null) {
                 continue;
             }
+            CrossReferenceTarget methodchainPrefix = null;
             while (rmi.getTarget() != null) {
                 callStack.push(rmi);
-                rmi = (RegularMethodInvocation) rmi.getTarget();
+                // Are we dealing with a prev keyword
+                if (rmi.getTarget().toString().equals(PREV)) {
+                    rmi.setTarget(eFactory().createNameExpression(getVarName()));
+                    methodchainPrefix = rmi.getTarget();
+                } else {
+                    rmi = (RegularMethodInvocation) rmi.getTarget();
+                }
             }
-            // Push the constructor call on the stack
-            callStack.push(rmi);
+            if (methodchainPrefix != null) {
+                // Push the constructor call on the stack
+                callStack.push(rmi);
+            }
 
             while (!callStack.isEmpty()) {
                 RegularMethodInvocation call = callStack.pop();
@@ -163,7 +195,12 @@ public class Java8Generator {
                 String prefix = getPrefix(type, variables);
 
                 RegularMethodInvocation clone = (RegularMethodInvocation) call.clone();
-                clone.setTarget(prefix == null ? null : eFactory().createNameExpression(prefix));
+                if (methodchainPrefix != null) {
+                    clone.setTarget(methodchainPrefix);
+                    methodchainPrefix = null;
+                } else {
+                    clone.setTarget(prefix == null ? null : eFactory().createNameExpression(prefix));
+                }
 
                 String varName = getVarName();
                 Statement s = oFactory().createLocalVariable(neio.createTypeReference(returnType.name()), varName, clone);
@@ -185,6 +222,11 @@ public class Java8Generator {
         return invocations.get(0);
     }
 
+    /**
+     * Creates a valid methodname for Java
+     *
+     * @param rmi The methodinvocation to transform
+     */
     private void fixNestedMethod(RegularMethodInvocation rmi) {
         String name = rmi.name();
         if (isNested(name)) {
@@ -193,6 +235,9 @@ public class Java8Generator {
         }
     }
 
+    /**
+     * Checks if a method seems nested
+     */
     private boolean isNested(String name) {
         String c = firstChar(name);
         Pattern p = Pattern.compile("^[" + c + "][" + c + "]+$");
