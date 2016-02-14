@@ -58,7 +58,9 @@ literal : StringLiteral     #stringLiteral
 
 expression : literal                    #literalExpression
            | SUPER                      #superExpression
+           | SUPER arguments            #superDelegation
            | THIS                       #selfExpression
+           | THIS arguments             #thisDelegation
            | Identifier                 #identifierExpression
 		   | constructorCall	        #newExpression
            | expression DOT Identifier  #chainExpression

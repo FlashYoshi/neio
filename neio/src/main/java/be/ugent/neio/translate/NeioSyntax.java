@@ -1,6 +1,8 @@
 package be.ugent.neio.translate;
 
+import be.kuleuven.cs.distrinet.jnome.core.expression.invocation.ConstructorInvocation;
 import be.kuleuven.cs.distrinet.jnome.core.expression.invocation.JavaInfixOperatorInvocation;
+import be.kuleuven.cs.distrinet.jnome.core.type.BasicJavaTypeReference;
 import be.kuleuven.cs.distrinet.jnome.output.Java7Syntax;
 import be.ugent.neio.model.modifier.Nested;
 import org.aikodi.chameleon.core.lookup.LookupException;
@@ -19,6 +21,7 @@ import org.aikodi.chameleon.support.expression.RegularLiteral;
 import org.aikodi.chameleon.support.member.simplename.method.RegularMethodInvocation;
 import org.aikodi.chameleon.support.statement.CatchClause;
 import org.aikodi.chameleon.support.statement.StatementExpression;
+import org.aikodi.chameleon.support.statement.ThrowStatement;
 import org.aikodi.chameleon.support.statement.TryStatement;
 
 import java.util.*;
@@ -74,7 +77,7 @@ public class NeioSyntax extends Java7Syntax {
 
     @Override
     public String toCodeStatementExpression(StatementExpression stat) {
-        // This will deduce if a basic try catch is needed for this statement and print it out if it is needed
+        // This will deduce if a basic try catch is needed for this statement and create it if need be
         if (stat.nearestAncestor(TryStatement.class) == null && stat.getExpression() instanceof MethodInvocation) {
             Set exceptions = getExceptions((MethodInvocation) stat.getExpression());
             if (exceptions != null && !exceptions.isEmpty()) {
@@ -85,16 +88,22 @@ public class NeioSyntax extends Java7Syntax {
 
                 TryStatement tryStatement = new TryStatement(tryBlock);
 
+                // Create error message
                 Literal left = new RegularLiteral(new BasicTypeReference("java.lang.String"), "Exception encountered: ");
                 JavaInfixOperatorInvocation catchPrint = new JavaInfixOperatorInvocation("+", left);
                 catchPrint.addArgument(new NameExpression("e"));
 
-                RegularMethodInvocation rmi = new RegularMethodInvocation("println", new BasicTypeReference("System.err"));
+                // Create a throw of a NeioRuntimeException
+                ConstructorInvocation runtimeException = new ConstructorInvocation(new BasicJavaTypeReference("neio.stdlib.NeioRuntimeException"), null);
+                runtimeException.addArgument(catchPrint);
+                ThrowStatement catchThrow = new ThrowStatement(runtimeException);
+
+                /*RegularMethodInvocation rmi = new RegularMethodInvocation("println", new BasicTypeReference("System.err"));
                 rmi.addArgument(catchPrint);
-                Statement catchStatement = new StatementExpression(rmi);
+                Statement catchStatement = new StatementExpression(rmi);*/
 
                 Block catchBlock = new Block();
-                catchBlock.addStatement(catchStatement);
+                catchBlock.addStatement(catchThrow);
 
                 FormalParameter parameter = new FormalParameter("e", new BasicTypeReference("java.lang.Exception"));
                 tryStatement.addCatchClause(new CatchClause(parameter, catchBlock));
@@ -108,7 +117,7 @@ public class NeioSyntax extends Java7Syntax {
             }
         }
 
-        // No try catch needed, print as usual
+        // No try catch needed, create code as usual
         return super.toCodeStatementExpression(stat);
     }
 

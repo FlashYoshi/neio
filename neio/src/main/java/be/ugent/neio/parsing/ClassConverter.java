@@ -1,6 +1,8 @@
 package be.ugent.neio.parsing;
 
 import be.kuleuven.cs.distrinet.jnome.core.expression.invocation.ConstructorInvocation;
+import be.kuleuven.cs.distrinet.jnome.core.expression.invocation.SuperConstructorDelegation;
+import be.kuleuven.cs.distrinet.jnome.core.expression.invocation.ThisConstructorDelegation;
 import be.kuleuven.cs.distrinet.jnome.core.modifier.Implements;
 import be.kuleuven.cs.distrinet.jnome.core.type.BasicJavaTypeReference;
 import be.kuleuven.cs.distrinet.jnome.workspace.JavaView;
@@ -304,8 +306,26 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     @Override
+    public SuperConstructorDelegation visitSuperDelegation(@NotNull SuperDelegationContext ctx) {
+        SuperConstructorDelegation delegation = ooFactory().createSuperDelegation();
+        List<Expression> arguments = ((List<Expression>) visit(ctx.arguments()));
+        delegation.addAllArguments(arguments);
+
+        return delegation;
+    }
+
+    @Override
     public Literal visitSelfExpression(@NotNull SelfExpressionContext ctx) {
         return ooFactory().createThisLiteral();
+    }
+
+    @Override
+    public ThisConstructorDelegation visitThisDelegation(@NotNull ThisDelegationContext ctx) {
+        ThisConstructorDelegation delegation = ooFactory().createThisDelegation();
+        List<Expression> arguments = ((List<Expression>) visit(ctx.arguments()));
+        delegation.addAllArguments(arguments);
+
+        return delegation;
     }
 
     @Override

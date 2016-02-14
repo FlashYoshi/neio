@@ -23,7 +23,9 @@ import org.aikodi.chameleon.support.member.simplename.method.RegularMethodInvoca
 import org.aikodi.chameleon.support.statement.StatementExpression;
 import org.aikodi.chameleon.support.variable.LocalVariableDeclarator;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -47,7 +49,7 @@ public class Java8Generator {
     public TextDocument createJavaDocument(TextDocument neioDocument) throws LookupException {
         neio = neioDocument.language(Neio.class);
         id = 0;
-        //mergeStatements(neioDocument);
+        mergeStatements(neioDocument);
         replaceMethodChain(neioDocument);
         String writerReturn = callWriter(neioDocument);
         callBuilder(neioDocument, writerReturn);
@@ -169,21 +171,12 @@ public class Java8Generator {
             if (rmi == null) {
                 continue;
             }
-            CrossReferenceTarget methodchainPrefix = null;
+
             while (rmi.getTarget() != null) {
                 callStack.push(rmi);
-                // Are we dealing with a prev keyword
-                if (rmi.getTarget().toString().equals(PREV)) {
-                    rmi.setTarget(eFactory().createNameExpression(getVarName()));
-                    methodchainPrefix = rmi.getTarget();
-                } else {
-                    rmi = (RegularMethodInvocation) rmi.getTarget();
-                }
+                rmi = (RegularMethodInvocation) rmi.getTarget();
             }
-            if (methodchainPrefix != null) {
-                // Push the constructor call on the stack
-                callStack.push(rmi);
-            }
+            callStack.push(rmi);
 
             while (!callStack.isEmpty()) {
                 RegularMethodInvocation call = callStack.pop();
@@ -195,17 +188,13 @@ public class Java8Generator {
                 String prefix = getPrefix(type, variables);
 
                 RegularMethodInvocation clone = (RegularMethodInvocation) call.clone();
-                if (methodchainPrefix != null) {
-                    clone.setTarget(methodchainPrefix);
-                    methodchainPrefix = null;
-                } else {
-                    clone.setTarget(prefix == null ? null : eFactory().createNameExpression(prefix));
-                }
+                clone.setTarget(prefix == null ? null : eFactory().createNameExpression(prefix));
 
                 String varName = getVarName();
-                Statement s = oFactory().createLocalVariable(neio.createTypeReference(returnType.name()), varName, clone);
+                LocalVariableDeclarator lvd = oFactory().createLocalVariable(neio.createTypeReference(returnType.name()), varName, clone);
+
                 variables.push(new Variable(returnType.name(), varName));
-                newStatements.add(s);
+                newStatements.add(lvd);
             }
         }
 

@@ -1,5 +1,7 @@
 package be.ugent.neio.industry;
 
+import be.kuleuven.cs.distrinet.jnome.core.expression.invocation.SuperConstructorDelegation;
+import be.kuleuven.cs.distrinet.jnome.core.expression.invocation.ThisConstructorDelegation;
 import be.kuleuven.cs.distrinet.jnome.core.method.JavaMethod;
 import be.kuleuven.cs.distrinet.jnome.core.type.BasicJavaTypeReference;
 import be.kuleuven.cs.distrinet.jnome.core.type.RegularJavaType;
@@ -169,7 +171,7 @@ public class NeioFactory extends Java7Factory {
         return new StatementExpression(expression);
     }
 
-    public CrossReferenceTarget createSuper() {
+    public SuperTarget createSuper() {
         return new SuperTarget();
     }
 
@@ -181,7 +183,11 @@ public class NeioFactory extends Java7Factory {
         return new IfThenElseStatement(expression, ifStatement, elseStatement);
     }
 
-    public VariableReference createVariableReference(String varName, CrossReferenceTarget target) {
-        return new VariableReference(varName, target);
+    public SuperConstructorDelegation createSuperDelegation() {
+        return new SuperConstructorDelegation();
+    }
+
+    public ThisConstructorDelegation createThisDelegation() {
+        return new ThisConstructorDelegation();
     }
 }
