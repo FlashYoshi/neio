@@ -91,10 +91,8 @@ public class Java8Generator {
                 }
 
                 RegularMethodInvocation prevInv = invocations.get(invocations.size() - 1);
-                invocations.remove(prevInv);
-
                 // Attach the methodchain in this statement, to prevInv
-                ((NeioMethodInvocation) source.parent()).setTarget(prevInv);
+                source.replaceWith(prevInv);
             }
 
             invocations.add(first);
