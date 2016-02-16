@@ -11,6 +11,12 @@ Chapter #(String title) {
     return chapter;
 }
 
+Chapter addChapter(Chapter chapter) {
+	content.add(chapter);
+	
+	return chapter;
+}
+
 Itemize *(String text) {
 	Itemize itemize = new Itemize();
 	ItemizeItem item = new ItemizeItem(text, itemize, 1);

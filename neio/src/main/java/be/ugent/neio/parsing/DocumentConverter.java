@@ -28,9 +28,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-import static be.ugent.neio.util.Constants.PREV;
-
-
 /**
  * @author Titouan Vervack
  */
@@ -79,7 +76,9 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         block = ooFactory().createBlock();
         ctx.content().forEach(this::visitContent);
 
-        block.addStatement(ooFactory().createStatement(previousExpression));
+        if (previousExpression != null) {
+            block.addStatement(ooFactory().createStatement(previousExpression));
+        }
         return block;
     }
 
@@ -91,13 +90,14 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         } else if (ctx.text() != null) {
             previousExpression = visitText(ctx.text());
         } else if (ctx.CODE() != null) {
-            // Make a statements from the previous expression if it is an actual expression
-            if (!previousExpression.toString().equals(PREV)) {
+            Block codeBlock = visitCode(ctx.CODE());
+            if (codeBlock.nbStatements() != 0) {
+                // A block of code has been found, round up the expressions found before this block
                 block.addStatement(ooFactory().createStatement(previousExpression));
+                block.addStatements(codeBlock.statements());
+                // TODO: fix prev
+                previousExpression = null;
             }
-            //block.addBlock(visitCode(ctx.CODE()));
-            block.addStatements(visitCode(ctx.CODE()).statements());
-            previousExpression = expressionFactory().createNameExpression(PREV);
         } else {
             throw new ChameleonProgrammerException("Method could not be found!");
         }
