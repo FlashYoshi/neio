@@ -1,0 +1,21 @@
+@Deprecated(We now use compound return types)
+Builder methoden maken een nieuw object aan en geven dit terug (oproepen met ".") of ze geven de parent terug (oproepen met ":")
+Builder methoden zijn de standaard want in een opmaaktaal build je een document.
+Maar wat met andere methoden? Dit zijn utility methoden, deze maak je aan door "utility" in het begin van de methodedeclaratie te zetten.
+
+
+@SyntacticSugar
+`new Constructor(arg1, arg2) varName;`
+`ObjectName varName = new Constructor(arg1, arg2);`
+Are the two ways of creating new objects and assigning them to a variable.
+
+
+`has package1.package2.class1.class2.methode;`
+This will import a method from another class.
+In practice this will probably copy paste a method from one class into another one.
+
+
+@SyntacticSugar
+`Chapter addChapter alias for #(Chapter chapter, int level)`
+Header for the # method which also creates an alias "addChapter" for the method.
+This can be achieved by automatically generating the method twice with a different name.
