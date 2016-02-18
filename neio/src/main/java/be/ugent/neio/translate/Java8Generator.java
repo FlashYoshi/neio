@@ -4,6 +4,7 @@ import be.ugent.neio.industry.NeioExpressionFactory;
 import be.ugent.neio.industry.NeioFactory;
 import be.ugent.neio.language.Neio;
 import be.ugent.neio.model.document.TextDocument;
+import be.ugent.neio.util.Connections;
 import be.ugent.neio.util.Variable;
 import org.aikodi.chameleon.core.element.Element;
 import org.aikodi.chameleon.core.lookup.LookupException;
@@ -12,10 +13,12 @@ import org.aikodi.chameleon.exception.ChameleonProgrammerException;
 import org.aikodi.chameleon.oo.expression.Expression;
 import org.aikodi.chameleon.oo.expression.ExpressionFactory;
 import org.aikodi.chameleon.oo.expression.MethodInvocation;
+import org.aikodi.chameleon.oo.expression.NameExpression;
 import org.aikodi.chameleon.oo.method.Method;
 import org.aikodi.chameleon.oo.plugin.ObjectOrientedFactory;
 import org.aikodi.chameleon.oo.statement.Block;
 import org.aikodi.chameleon.oo.statement.Statement;
+import org.aikodi.chameleon.oo.type.RegularType;
 import org.aikodi.chameleon.oo.type.Type;
 import org.aikodi.chameleon.oo.variable.VariableDeclaration;
 import org.aikodi.chameleon.support.member.simplename.method.NormalMethod;
@@ -23,9 +26,8 @@ import org.aikodi.chameleon.support.member.simplename.method.RegularMethodInvoca
 import org.aikodi.chameleon.support.statement.StatementExpression;
 import org.aikodi.chameleon.support.variable.LocalVariableDeclarator;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Stack;
+import java.sql.Connection;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,7 +36,7 @@ import static be.ugent.neio.util.Constants.*;
 public class Java8Generator {
 
     private static final String VAR_NAME = "$var";
-    public static final String ROOT_VAR = VAR_NAME + "0";
+    public static final String ROOT = VAR_NAME + "0";
     private Neio neio;
     private int id;
 
@@ -84,7 +86,7 @@ public class Java8Generator {
                 }
             }
 
-            if (source.toString().equals(PREV)) {
+            if (source.toString().equals(THIS)) {
                 // Try to find the previous methodchain
                 if (invocations.isEmpty()) {
                     throw new ChameleonProgrammerException("Can not use the \"prev\" keyword without defining other statements first!");
@@ -110,6 +112,83 @@ public class Java8Generator {
     }
 
     /**
+     * Transforms the methodchains into variable declarations
+     *
+     * @param neioDocument The document in which to find the methodchains
+     * @throws LookupException
+     */
+    private void replaceMethodChain(TextDocument neioDocument) throws LookupException {
+        List<Statement> newStatements = new ArrayList<>();
+        // The defined variables
+        Stack<Variable> variables = new Stack<>();
+        Connections<String> connections = new Connections<>();
+
+        for (Element methodChain : neioDocument.getBlock().statements()) {
+            Stack<RegularMethodInvocation> callStack = new Stack<>();
+
+            // MethodInvocations start from the back so push the invocations on a stack to get the correct order
+            RegularMethodInvocation inv;
+            while ((inv = getInvocation(methodChain)) != null) {
+                callStack.push(inv);
+                methodChain = inv;
+            }
+
+            // There are no method invocations in this statement e.g. empty variable assignment
+            // The statement is clear to be directly translated
+            if (callStack.isEmpty()) {
+                org.aikodi.chameleon.core.variable.Variable var = getVarDeclaration(methodChain).variable();
+                variables.push(new Variable(var.getType().name(), var.name()));
+                newStatements.add((Statement) methodChain);
+            }
+
+            // Turn the methodchain into local variables, one by one
+            while (!callStack.isEmpty()) {
+                RegularMethodInvocation call = callStack.pop();
+                fixNestedMethod(call);
+
+                if (call.getTarget() != null && call.getTarget().toString().equals(THIS)) {
+                    //THIS found, substitute it by the last rootconnected variable
+                    String last = connections.getLast(ROOT);
+                    NameExpression expression = eFactory().createNameExpression(last);
+                    call.getTarget().replaceWith(expression);
+                }
+
+                NormalMethod method = call.getElement();
+                Type type = method.nearestAncestor(Type.class);
+                Type returnType = method.returnType();
+
+                // Add a prefix if this is not a constructor
+                String prefix = method.isTrue(neio.CONSTRUCTOR) ? null : getPrefix(type, variables);
+
+                RegularMethodInvocation clone = (RegularMethodInvocation) call.clone();
+                clone.setTarget(prefix == null ? null : eFactory().createNameExpression(prefix));
+
+                String varName;
+                VariableDeclaration var;
+                if ((var = getVarDeclaration(methodChain)) != null) {
+                    // Use the variable name defined in the statement
+                    varName = var.name();
+                } else {
+                    // Create a new variable name
+                    varName = getVarName();
+                }
+                LocalVariableDeclarator lvd = oFactory().createLocalVariable(neio.createTypeReference(returnType.name()), varName, clone);
+
+                variables.push(new Variable(returnType.name(), varName));
+                newStatements.add(lvd);
+
+                if (prefix != null) {
+                    connections.connect(varName, prefix);
+                }
+            }
+        }
+
+        Block block = new Block();
+        block.addStatements(newStatements);
+        neioDocument.setBlock(block);
+    }
+
+    /**
      * Creates a document writer and calls the write method on it creating a TeX/JS/... string
      *
      * @param neioDocument The document to write
@@ -119,7 +198,7 @@ public class Java8Generator {
         Block block = neioDocument.getBlock();
 
         List<Expression> arguments = new ArrayList<>();
-        arguments.add(eFactory().createNameExpression(ROOT_VAR));
+        arguments.add(eFactory().createNameExpression(ROOT));
         Expression ci = eFactory().createConstructorInvocation(DEFAULT_WRITER, null, arguments);
 
         List<Expression> miArguments = new ArrayList<>();
@@ -152,70 +231,6 @@ public class Java8Generator {
     }
 
     /**
-     * Transforms the methodchains into variable declarations
-     *
-     * @param neioDocument The document in which to find the methodchains
-     * @throws LookupException
-     */
-    private void replaceMethodChain(TextDocument neioDocument) throws LookupException {
-        List<Statement> newStatements = new ArrayList<>();
-        // The defined variables
-        Stack<Variable> variables = new Stack<>();
-
-        for (Element methodChain : neioDocument.getBlock().statements()) {
-            Stack<RegularMethodInvocation> callStack = new Stack<>();
-
-            // MethodInvocations start from the back so push the invocations on a stack to get the correct order
-            RegularMethodInvocation inv;
-            while ((inv = getInvocation(methodChain)) != null) {
-                callStack.push(inv);
-                methodChain = inv;
-            }
-
-            // There are no method invocations in this statement e.g. empty variable assignment
-            // The statement is clear to be directly translated
-            if (callStack.isEmpty()) {
-                // TODO: should a variable be added to variables?
-                newStatements.add((Statement) methodChain);
-            }
-
-            // Turn the methodchain into local variables, one by one
-            while (!callStack.isEmpty()) {
-                RegularMethodInvocation call = callStack.pop();
-                fixNestedMethod(call);
-
-                NormalMethod method = call.getElement();
-                Type type = method.nearestAncestor(Type.class);
-                Type returnType = method.returnType();
-
-                // Add a prefix if this is not a constructor
-                String prefix = method.isTrue(neio.CONSTRUCTOR) ? null : getPrefix(type, variables);
-
-                RegularMethodInvocation clone = (RegularMethodInvocation) call.clone();
-                clone.setTarget(prefix == null ? null : eFactory().createNameExpression(prefix));
-
-                String varName;
-                VariableDeclaration var;
-                if ((var = getVarDeclaration(methodChain)) != null) {
-                    // Use the variable name defined in the statement
-                    varName = var.name();
-                } else {
-                    // Create a new variable name
-                    varName = getVarName();
-                }
-                LocalVariableDeclarator lvd = oFactory().createLocalVariable(neio.createTypeReference(returnType.name()), varName, clone);
-
-                variables.push(new Variable(returnType.name(), varName));
-                newStatements.add(lvd);
-            }
-        }
-
-        Block block = new Block();
-        block.addStatements(newStatements);
-        neioDocument.setBlock(block);
-    }
-
-    /**
      * Get the nearest element of type T
      *
      * @param element The element in which to look for the nearest element
@@ -239,7 +254,12 @@ public class Java8Generator {
      * @return The variable declaration
      */
     private VariableDeclaration getVarDeclaration(Element statement) {
-        return getNearestElement(statement, VariableDeclaration.class);
+        VariableDeclaration variableDeclaration = statement.nearestAncestor(VariableDeclaration.class);
+        if (variableDeclaration == null) {
+            return getNearestElement(statement, VariableDeclaration.class);
+        } else {
+            return variableDeclaration;
+        }
     }
 
     /**
