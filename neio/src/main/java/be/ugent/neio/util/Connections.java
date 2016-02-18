@@ -13,6 +13,9 @@ import java.util.Set;
  */
 public class Connections<T> {
 
+    //We use a HashMap due to constant time puts and gets
+    //the LinkedHashMap is used for easily getting the most recently added item
+    //whilst holding on to those constant time complexities.
     private HashMap<T, LinkedHashMap<T, Object>> connections = new HashMap<>();
 
     /**
