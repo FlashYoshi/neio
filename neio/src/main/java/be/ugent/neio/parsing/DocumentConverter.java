@@ -28,6 +28,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+import static be.ugent.neio.util.Constants.THIS;
+
 /**
  * @author Titouan Vervack
  */
@@ -83,23 +85,32 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
     }
 
     public Block visitContent(ContentContext ctx) {
-        if (ctx.prefixCall() != null) {
-            previousExpression = visitPrefixCall(ctx.prefixCall());
-        } else if (ctx.postfixCall() != null) {
-            previousExpression = visitPostFixCall(ctx.postfixCall());
-        } else if (ctx.text() != null) {
-            previousExpression = visitText(ctx.text());
-        } else if (ctx.CODE() != null) {
+        if (ctx.CODE() != null) {
             Block codeBlock = visitCode(ctx.CODE());
             if (codeBlock.nbStatements() != 0) {
                 // A block of code has been found, round up the expressions found before this block
-                block.addStatement(ooFactory().createStatement(previousExpression));
+                if (previousExpression != null) {
+                    block.addStatement(ooFactory().createStatement(previousExpression));
+                }
                 block.addStatements(codeBlock.statements());
                 // TODO: fix prev
                 previousExpression = null;
             }
         } else {
-            throw new ChameleonProgrammerException("Method could not be found!");
+            // If the previous expression was a codeblock and there's more neioscript
+            // add THIS as prefix to connect back to the rest of the document
+            if (previousExpression == null) {
+                previousExpression = expressionFactory().createNameExpression(THIS);
+            }
+            if (ctx.prefixCall() != null) {
+                previousExpression = visitPrefixCall(ctx.prefixCall());
+            } else if (ctx.postfixCall() != null) {
+                previousExpression = visitPostFixCall(ctx.postfixCall());
+            } else if (ctx.text() != null) {
+                previousExpression = visitText(ctx.text());
+            } else {
+                throw new ChameleonProgrammerException("Method could not be found!");
+            }
         }
 
         return null;
@@ -179,7 +190,6 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         TokenStream tokens = new CommonTokenStream(lexer);
 
         ClassParser parser = new ClassParser(tokens);
-        Block block = new ClassConverter(document, view).visitBlock(parser.block());
-        return block;
+        return new ClassConverter(document, view).visitBlock(parser.block());
     }
 }
