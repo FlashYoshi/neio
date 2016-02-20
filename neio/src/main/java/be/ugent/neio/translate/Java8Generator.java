@@ -5,10 +5,10 @@ import be.ugent.neio.industry.NeioFactory;
 import be.ugent.neio.language.Neio;
 import be.ugent.neio.model.document.TextDocument;
 import be.ugent.neio.util.Connections;
-import be.ugent.neio.util.Variable;
 import org.aikodi.chameleon.core.element.Element;
 import org.aikodi.chameleon.core.lookup.LookupException;
 import org.aikodi.chameleon.core.reference.CrossReferenceTarget;
+import org.aikodi.chameleon.core.variable.Variable;
 import org.aikodi.chameleon.exception.ChameleonProgrammerException;
 import org.aikodi.chameleon.oo.expression.Expression;
 import org.aikodi.chameleon.oo.expression.ExpressionFactory;
@@ -18,7 +18,6 @@ import org.aikodi.chameleon.oo.method.Method;
 import org.aikodi.chameleon.oo.plugin.ObjectOrientedFactory;
 import org.aikodi.chameleon.oo.statement.Block;
 import org.aikodi.chameleon.oo.statement.Statement;
-import org.aikodi.chameleon.oo.type.RegularType;
 import org.aikodi.chameleon.oo.type.Type;
 import org.aikodi.chameleon.oo.variable.VariableDeclaration;
 import org.aikodi.chameleon.support.member.simplename.method.NormalMethod;
@@ -26,8 +25,9 @@ import org.aikodi.chameleon.support.member.simplename.method.RegularMethodInvoca
 import org.aikodi.chameleon.support.statement.StatementExpression;
 import org.aikodi.chameleon.support.variable.LocalVariableDeclarator;
 
-import java.sql.Connection;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -136,8 +136,8 @@ public class Java8Generator {
             // There are no method invocations in this statement e.g. empty variable assignment
             // The statement is clear to be directly translated
             if (callStack.isEmpty()) {
-                org.aikodi.chameleon.core.variable.Variable var = getVarDeclaration(methodChain).variable();
-                variables.push(new Variable(var.getType().name(), var.name()));
+                Variable var = getVarDeclaration(methodChain).variable();
+                variables.push(var);
                 newStatements.add((Statement) methodChain);
             }
 
@@ -150,11 +150,12 @@ public class Java8Generator {
                     //THIS found, substitute it by the last rootconnected variable
                     String last = connections.getLast(ROOT);
                     NameExpression expression = eFactory().createNameExpression(last);
-                    call.getTarget().replaceWith(expression);
+                    call.setTarget(expression);
                 }
 
                 NormalMethod method = call.getElement();
                 Type type = method.nearestAncestor(Type.class);
+                // Type instead of TypeReference as TypeReference does not return a TypeReference with fqn
                 Type returnType = method.returnType();
 
                 // Add a prefix if this is not a constructor
@@ -172,9 +173,9 @@ public class Java8Generator {
                     // Create a new variable name
                     varName = getVarName();
                 }
-                LocalVariableDeclarator lvd = oFactory().createLocalVariable(neio.createTypeReference(returnType.name()), varName, clone);
+                LocalVariableDeclarator lvd = oFactory().createLocalVariable(neio.createTypeReference(returnType.getFullyQualifiedName()), varName, clone);
 
-                variables.push(new Variable(returnType.name(), varName));
+                variables.push(lvd.variableDeclarations().get(0).variable());
                 newStatements.add(lvd);
 
                 if (prefix != null) {
@@ -302,8 +303,8 @@ public class Java8Generator {
     private String getPrefix(Type type, Stack<Variable> variables) throws LookupException {
         while (!variables.isEmpty()) {
             Variable var = variables.peek();
-            if (var.getTypeName().equals(type.name())) {
-                return var.getVarName();
+            if (var.getTypeReference().toString().equals(type.toString())) {
+                return var.name();
             } else {
                 variables.pop();
             }
