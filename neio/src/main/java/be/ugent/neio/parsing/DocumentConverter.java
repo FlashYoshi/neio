@@ -93,14 +93,13 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
                     block.addStatement(ooFactory().createStatement(previousExpression));
                 }
                 block.addStatements(codeBlock.statements());
-                // TODO: fix prev
                 previousExpression = null;
             }
         } else {
             // If the previous expression was a codeblock and there's more neioscript
             // add THIS as prefix to connect back to the rest of the document
             if (previousExpression == null) {
-                previousExpression = expressionFactory().createNameExpression(THIS);
+                previousExpression = ooFactory().createThisLiteral();
             }
             if (ctx.prefixCall() != null) {
                 previousExpression = visitPrefixCall(ctx.prefixCall());

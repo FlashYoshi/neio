@@ -20,12 +20,14 @@ import org.aikodi.chameleon.oo.statement.Block;
 import org.aikodi.chameleon.oo.statement.Statement;
 import org.aikodi.chameleon.oo.type.Type;
 import org.aikodi.chameleon.oo.variable.VariableDeclaration;
+import org.aikodi.chameleon.support.expression.ThisLiteral;
 import org.aikodi.chameleon.support.member.simplename.method.NormalMethod;
 import org.aikodi.chameleon.support.member.simplename.method.RegularMethodInvocation;
 import org.aikodi.chameleon.support.statement.StatementExpression;
 import org.aikodi.chameleon.support.variable.LocalVariableDeclarator;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 import java.util.regex.Matcher;
@@ -118,11 +120,10 @@ public class Java8Generator {
      * @throws LookupException
      */
     private void replaceMethodChain(TextDocument neioDocument) throws LookupException {
-        List<Statement> newStatements = new ArrayList<>();
+        Block block = new Block();
         // The defined variables
         Stack<Variable> variables = new Stack<>();
         Connections<String> connections = new Connections<>();
-
         for (Element methodChain : neioDocument.getBlock().statements()) {
             Stack<RegularMethodInvocation> callStack = new Stack<>();
 
@@ -138,7 +139,7 @@ public class Java8Generator {
             if (callStack.isEmpty()) {
                 Variable var = getVarDeclaration(methodChain).variable();
                 variables.push(var);
-                newStatements.add((Statement) methodChain);
+                block.addStatement((Statement) methodChain);
             }
 
             // Turn the methodchain into local variables, one by one
@@ -146,11 +147,12 @@ public class Java8Generator {
                 RegularMethodInvocation call = callStack.pop();
                 fixNestedMethod(call);
 
-                if (call.getTarget() != null && call.getTarget().toString().equals(THIS)) {
+                // FIXME: instanceof until ThisLiteral stops wrongfully being a literal
+                if (call.getTarget() != null && call.getTarget() instanceof ThisLiteral) {
                     //THIS found, substitute it by the last rootconnected variable
                     String last = connections.getLast(ROOT);
                     NameExpression expression = eFactory().createNameExpression(last);
-                    call.setTarget(expression);
+                    call.getTarget().replaceWith(expression);
                 }
 
                 NormalMethod method = call.getElement();
@@ -160,7 +162,6 @@ public class Java8Generator {
 
                 // Add a prefix if this is not a constructor
                 String prefix = method.isTrue(neio.CONSTRUCTOR) ? null : getPrefix(type, variables);
-
                 RegularMethodInvocation clone = (RegularMethodInvocation) call.clone();
                 clone.setTarget(prefix == null ? null : eFactory().createNameExpression(prefix));
 
@@ -176,7 +177,7 @@ public class Java8Generator {
                 LocalVariableDeclarator lvd = oFactory().createLocalVariable(neio.createTypeReference(returnType.getFullyQualifiedName()), varName, clone);
 
                 variables.push(lvd.variableDeclarations().get(0).variable());
-                newStatements.add(lvd);
+                block.addStatement(lvd);
 
                 if (prefix != null) {
                     connections.connect(varName, prefix);
@@ -184,8 +185,6 @@ public class Java8Generator {
             }
         }
 
-        Block block = new Block();
-        block.addStatements(newStatements);
         neioDocument.setBlock(block);
     }
 

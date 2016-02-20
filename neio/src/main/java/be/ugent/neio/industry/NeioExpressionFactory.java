@@ -31,8 +31,8 @@ public class NeioExpressionFactory extends JavaExpressionFactory {
         return ci;
     }
 
-    public MethodInvocation createMethodInvocation(String methodName, CrossReferenceTarget prefix, List<Expression> arguments) {
-        MethodInvocation mi = new NeioMethodInvocation(methodName, prefix);
+    public NeioMethodInvocation createMethodInvocation(String methodName, CrossReferenceTarget prefix, List<Expression> arguments) {
+        NeioMethodInvocation mi = new NeioMethodInvocation(methodName, prefix);
         if (arguments != null) {
             mi.addAllArguments(arguments);
         }
