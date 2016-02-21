@@ -205,7 +205,7 @@ public class Java8Generator {
                 }
                 LocalVariableDeclarator lvd = oFactory().createLocalVariable(neio.createTypeReference(returnType.name()), varName, clone);
 
-                variables.push(new Variable(returnType.name(), varName));
+                variables.push(new Variable(returnType, varName));
                 newStatements.add(lvd);
             }
         }
@@ -282,7 +282,14 @@ public class Java8Generator {
     private String getPrefix(Type type, Stack<Variable> variables) throws LookupException {
         while (!variables.isEmpty()) {
             Variable var = variables.peek();
-            if (var.getTypeName().equals(type.name())) {
+            boolean found = false;
+            for (Type t : var.getType().getSelfAndAllSuperTypesView()) {
+                if (t.name().equals(type.name())) {
+                    found = true;
+                    break;
+                }
+            }
+            if (found) {
                 return var.getVarName();
             } else {
                 variables.pop();

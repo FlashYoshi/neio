@@ -10,15 +10,12 @@ import org.aikodi.chameleon.core.namespace.Namespace;
 import org.aikodi.chameleon.core.namespace.NamespaceReference;
 import org.aikodi.chameleon.core.namespacedeclaration.DemandImport;
 import org.aikodi.chameleon.core.namespacedeclaration.Import;
-import org.aikodi.chameleon.core.reference.CrossReferenceTarget;
 import org.aikodi.chameleon.oo.expression.Expression;
 import org.aikodi.chameleon.oo.expression.Literal;
-import org.aikodi.chameleon.oo.expression.VariableReference;
 import org.aikodi.chameleon.oo.method.*;
 import org.aikodi.chameleon.oo.namespacedeclaration.TypeImport;
 import org.aikodi.chameleon.oo.statement.Block;
 import org.aikodi.chameleon.oo.statement.Statement;
-import org.aikodi.chameleon.oo.type.BasicTypeReference;
 import org.aikodi.chameleon.oo.type.RegularType;
 import org.aikodi.chameleon.oo.type.TypeReference;
 import org.aikodi.chameleon.oo.type.generics.EqualityTypeArgument;
@@ -46,7 +43,7 @@ public class NeioFactory extends Java7Factory {
     }
 
     public TypeReference createTypeReference(String name) {
-        return new BasicTypeReference(name);
+        return new BasicJavaTypeReference(name);
     }
 
     public Import createDemandImport(String fqn) {

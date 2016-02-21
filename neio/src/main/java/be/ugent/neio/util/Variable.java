@@ -1,24 +1,26 @@
 package be.ugent.neio.util;
 
+import org.aikodi.chameleon.oo.type.Type;
+
 /**
  * @author Titouan Vervack
  */
 public class Variable {
 
-    private String typeName;
+    private Type type;
     private String varName;
 
-    public Variable(String typeName, String varName) {
-        this.typeName = typeName;
+    public Variable(Type type, String varName) {
+        this.type = type;
         this.varName = varName;
     }
 
-    public String getTypeName() {
-        return typeName;
+    public Type getType() {
+        return type;
     }
 
-    public void setTypeName(String typeName) {
-        this.typeName = typeName;
+    public void setType(Type typeName) {
+        this.type = type;
     }
 
     public String getVarName() {
