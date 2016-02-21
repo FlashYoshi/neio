@@ -5,16 +5,17 @@ import be.kuleuven.cs.distrinet.jnome.core.expression.invocation.JavaInfixOperat
 import be.kuleuven.cs.distrinet.jnome.core.type.BasicJavaTypeReference;
 import be.kuleuven.cs.distrinet.jnome.output.Java7Syntax;
 import be.ugent.neio.model.modifier.Nested;
+import org.aikodi.chameleon.core.element.Element;
 import org.aikodi.chameleon.core.lookup.LookupException;
 import org.aikodi.chameleon.core.modifier.Modifier;
 import org.aikodi.chameleon.exception.ChameleonProgrammerException;
 import org.aikodi.chameleon.oo.expression.Literal;
 import org.aikodi.chameleon.oo.expression.MethodInvocation;
 import org.aikodi.chameleon.oo.expression.NameExpression;
+import org.aikodi.chameleon.oo.expression.ParExpression;
 import org.aikodi.chameleon.oo.method.Method;
 import org.aikodi.chameleon.oo.method.exception.ExceptionClause;
 import org.aikodi.chameleon.oo.statement.Block;
-import org.aikodi.chameleon.oo.statement.Statement;
 import org.aikodi.chameleon.oo.type.BasicTypeReference;
 import org.aikodi.chameleon.oo.variable.FormalParameter;
 import org.aikodi.chameleon.support.expression.RegularLiteral;
@@ -40,6 +41,23 @@ public class NeioSyntax extends Java7Syntax {
         map.put("=", "equalSign");
         map.put("-", "dash");
         ALIASES = Collections.unmodifiableMap(map);
+    }
+
+    @Override
+    public String toCode(Element element) {
+        if (isParExpression(element)) {
+            return toCodeParExpression((ParExpression) element);
+        }
+
+        return super.toCode(element);
+    }
+
+    protected boolean isParExpression(Element e) {
+        return e instanceof ParExpression;
+    }
+
+    protected String toCodeParExpression(ParExpression e) {
+        return "(" + toCode(e.expression()) + ")";
     }
 
     @Override
