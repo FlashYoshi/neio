@@ -17,6 +17,9 @@ fragment LS_BRACE : '[';
 fragment RS_BRACE : ']';
 fragment TB_QUOTE : '```';
 
-MethodName : [#*];
+fragment HASH : '#';
+fragment DASH : '-';
+fragment STAR : '*';
+MethodName : HASH | DASH | STAR;
 
 WORD : VALID_CHAR+;

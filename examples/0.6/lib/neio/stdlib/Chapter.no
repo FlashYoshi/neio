@@ -28,6 +28,15 @@ Itemize *(String text) {
     return itemize;
 }
 
+Enumerate -(String text) {
+	Enumerate enumerate = new Enumerate();
+	EnumerateItem item = new EnumerateItem(text, enumerate, 1);
+	enumerate.-(item);
+    content.add(enumerate);
+
+    return enumerate;
+}
+
 Paragraph newline(String parText) {
     new Paragraph(parText) p;
     content.add(p);

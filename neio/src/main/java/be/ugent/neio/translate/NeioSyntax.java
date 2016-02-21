@@ -38,6 +38,7 @@ public class NeioSyntax extends Java7Syntax {
         map.put("#", "hash");
         map.put("*", "star");
         map.put("=", "equalSign");
+        map.put("-", "dash");
         ALIASES = Collections.unmodifiableMap(map);
     }
 

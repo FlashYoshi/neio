@@ -1,0 +1,23 @@
+namespace neio.stdlib;
+
+import neio.lang.Text;
+import neio.lang.Content;
+
+class Enumerate extends Content;
+
+String toTex() {
+	return "\\begin{enumerate}\n" + super.toTex() + "\\end{enumerate}\n";
+}
+
+EnumerateItem -(EnumerateItem item) {
+	content.add(item);
+	
+	return item;
+}
+
+EnumerateItem -(String text) {
+	EnumerateItem item = new EnumerateItem(text, 1);
+	content.add(item);
+	
+	return item;
+}
