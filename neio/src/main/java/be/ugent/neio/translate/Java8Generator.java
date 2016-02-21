@@ -1,5 +1,6 @@
 package be.ugent.neio.translate;
 
+import be.kuleuven.cs.distrinet.jnome.core.expression.JavaNameExpression;
 import be.ugent.neio.industry.NeioExpressionFactory;
 import be.ugent.neio.industry.NeioFactory;
 import be.ugent.neio.language.Neio;
@@ -13,7 +14,6 @@ import org.aikodi.chameleon.exception.ChameleonProgrammerException;
 import org.aikodi.chameleon.oo.expression.Expression;
 import org.aikodi.chameleon.oo.expression.ExpressionFactory;
 import org.aikodi.chameleon.oo.expression.MethodInvocation;
-import org.aikodi.chameleon.oo.expression.NameExpression;
 import org.aikodi.chameleon.oo.method.Method;
 import org.aikodi.chameleon.oo.plugin.ObjectOrientedFactory;
 import org.aikodi.chameleon.oo.statement.Block;
@@ -27,7 +27,6 @@ import org.aikodi.chameleon.support.statement.StatementExpression;
 import org.aikodi.chameleon.support.variable.LocalVariableDeclarator;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 import java.util.regex.Matcher;
@@ -120,15 +119,20 @@ public class Java8Generator {
      * @throws LookupException
      */
     private void replaceMethodChain(TextDocument neioDocument) throws LookupException {
-        Block block = new Block();
         // The defined variables
         Stack<Variable> variables = new Stack<>();
         Connections<String> connections = new Connections<>();
-        for (Element methodChain : neioDocument.getBlock().statements()) {
+
+        Block block = neioDocument.getBlock();
+        List<Statement> statements = new ArrayList<>();
+        statements.addAll(block.statements());
+
+        for (Statement statement : statements) {
             Stack<RegularMethodInvocation> callStack = new Stack<>();
 
             // MethodInvocations start from the back so push the invocations on a stack to get the correct order
             RegularMethodInvocation inv;
+            Element methodChain = statement;
             while ((inv = getInvocation(methodChain)) != null) {
                 callStack.push(inv);
                 methodChain = inv;
@@ -151,7 +155,7 @@ public class Java8Generator {
                 if (call.getTarget() != null && call.getTarget() instanceof ThisLiteral) {
                     //THIS found, substitute it by the last rootconnected variable
                     String last = connections.getLast(ROOT);
-                    NameExpression expression = eFactory().createNameExpression(last);
+                    JavaNameExpression expression = eFactory().createNameExpression(last);
                     call.getTarget().replaceWith(expression);
                 }
 
@@ -174,7 +178,7 @@ public class Java8Generator {
                     // Create a new variable name
                     varName = getVarName();
                 }
-                LocalVariableDeclarator lvd = oFactory().createLocalVariable(neio.createTypeReference(returnType.getFullyQualifiedName()), varName, clone);
+                LocalVariableDeclarator lvd = oFactory().createLocalVariable(returnType.getFullyQualifiedName(), varName, clone);
 
                 variables.push(lvd.variableDeclarations().get(0).variable());
                 block.addStatement(lvd);
@@ -183,9 +187,12 @@ public class Java8Generator {
                     connections.connect(varName, prefix);
                 }
             }
+
+            // Remove the old statement from the block that will printed to Java
+            block.removeStatement(statement);
         }
 
-        neioDocument.setBlock(block);
+        //neioDocument.setBlock(block);
     }
 
     /**

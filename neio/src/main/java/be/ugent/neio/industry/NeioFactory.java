@@ -46,7 +46,7 @@ public class NeioFactory extends Java7Factory {
     }
 
     public TypeReference createTypeReference(String name) {
-        return new BasicTypeReference(name);
+        return new BasicJavaTypeReference(name);
     }
 
     public Import createDemandImport(String fqn) {
@@ -83,7 +83,7 @@ public class NeioFactory extends Java7Factory {
         return declarator;
     }
 
-    public Method createMethod(String methodName, String returnType) {
+    public JavaMethod createMethod(String methodName, String returnType) {
         return new JavaMethod(new SimpleNameMethodHeader(methodName, createTypeReference(returnType)));
     }
 
