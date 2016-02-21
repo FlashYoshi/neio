@@ -29,7 +29,8 @@ fieldAssignmentExpression : var=fieldDecl EQUALS val=expression;
 method : methodExpression block;
 methodExpression : modifier* methodHeader L_BRACE parameters? R_BRACE;
 methodHeader : (type | VOID)? name=(Identifier | MethodIdentifier | STAR | MINUS);
-modifier : PROTECTED
+modifier : PRIVATE
+         | PROTECTED
          | PUBLIC
          | NESTED;
 

@@ -485,7 +485,9 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     @Override
     public Modifier visitModifier(@NotNull ModifierContext ctx) {
-        if (ctx.PROTECTED() != null) {
+        if (ctx.PRIVATE() != null) {
+            return new Private();
+        } else if (ctx.PROTECTED() != null) {
             return new Protected();
         } else if (ctx.PUBLIC() != null) {
             return new Public();

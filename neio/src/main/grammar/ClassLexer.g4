@@ -17,6 +17,7 @@ RETURN : 'return';
 NEW : 'new';
 THIS : 'this';
 SUPER : 'super';
+PRIVATE : 'private';
 PROTECTED : 'protected';
 PUBLIC : 'public';
 VOID : 'void';
