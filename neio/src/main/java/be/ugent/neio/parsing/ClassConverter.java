@@ -170,6 +170,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         }
     }
 
+
     @Override
     public MemberVariableDeclarator visitFieldDecl(@NotNull FieldDeclContext ctx) {
         MemberVariableDeclarator declarator = ooFactory().createMemberVariableDeclarator(ctx.Identifier().getText(), visitType(ctx.type()));
@@ -442,14 +443,21 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     public Method visitMethodExpression(@NotNull MethodExpressionContext ctx) {
         MethodHeader methodHeader = visitMethodHeader(ctx.methodHeader());
         Method method = ooFactory().createMethod(methodHeader);
-        // All methods can be public for now
-        method.addModifier(new Public());
+
         if (methodHeader.name().equals(methodHeader.returnTypeReference().toString())) {
             method.addModifier(new Constructor());
         }
 
+        boolean addPublic = ctx.modifier().isEmpty();
         for (ModifierContext modifier : ctx.modifier()) {
+            if (modifier.NESTED() != null && !modifier.NESTED().getText().isEmpty() && ctx.modifier().size() == 1) {
+                addPublic = true;
+            }
             method.addModifier(visitModifier(modifier));
+        }
+
+        if (addPublic) {
+            method.addModifier(new Public());
         }
 
         if (ctx.parameters() != null) {
