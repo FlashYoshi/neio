@@ -5,9 +5,10 @@ import neio.lang.Content;
 
 class EnumerateItem extends Content;
 
-Text text;
-Integer level;
-Enumerate enumerate;
+protected Text text;
+protected Integer level;
+protected Enumerate enumerate;
+
 
 EnumerateItem(String text, Integer level) {
 	this.text = new Text(text);
