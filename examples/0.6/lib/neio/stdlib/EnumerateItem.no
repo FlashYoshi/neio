@@ -36,10 +36,17 @@ nested EnumerateItem -(String text, Integer level) {
 	return item;
 }
 
-String toTex() {
-	String result = "\\item " + text.toTex();
-	if (content.isEmpty()) {
-	} else {
+public String toTex() {
+    return toTex(null);
+}
+
+String toTex(String option) {
+	String item = "\\item";
+	if ((option != null) && (option.length() > 0)) {
+		item = item + "[" + option + "]";
+	}
+	String result = item + text.toTex();
+	if (content.size() > 0) {
 		result = result + "\n" + super.toTex();
 	}
 	

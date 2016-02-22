@@ -33,11 +33,5 @@ nested FibItem -(String text, Integer level) {
 }
 
 String toTex() {
-	String result = "\\item[" + fib.getNumber() + "] " + text.toTex();
-	if (content.isEmpty()) {
-	} else {
-		result = result + "\n" + super.toTex();
-	}
-	
-	return result;
+	return super.toTex(level + "." + fib.getNumber());
 }

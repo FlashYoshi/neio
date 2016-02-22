@@ -13,7 +13,7 @@ Content() {
 String toTex() {
     StringBuilder tex = new StringBuilder();
     for (int i = 0; i < content.size(); i = i + 1) {
-        tex.append("\n" + content.get(i).toTex());
+        tex.append("\n").append(content.get(i).toTex());
     }
 
     return tex.toString();
