@@ -14,7 +14,8 @@ content : ( prefixCall
           | CODE)
           mnl?;
 
-prefixCall : MethodName+ sentence;
+prefixCall : MethodName+ sentence
+           | BANG (LS_BRACE WORD+ RS_BRACE)? L_BRACE WORD R_BRACE;
 
 text : sentence+;
 

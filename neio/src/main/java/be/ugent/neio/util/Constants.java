@@ -15,4 +15,5 @@ public class Constants {
     public static final String AUTO_GEN_DIR = "./gen";
     @Deprecated
     public static final String PREV = "prev";
+    public static final String IMAGE = "image";
 }

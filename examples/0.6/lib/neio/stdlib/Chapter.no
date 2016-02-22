@@ -44,6 +44,13 @@ Paragraph newline(String parText) {
     return p;
 }
 
+Image image(String caption, String imageName) {
+	new Image(caption, imageName) neioImage;
+	content.add(neioImage);
+	
+	return neioImage;
+}
+
 String toTex() {
 	return "\\" + getSubs() + "section*{" + title + "}" + super.toTex();
 }

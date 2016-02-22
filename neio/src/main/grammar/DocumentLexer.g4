@@ -13,13 +13,16 @@ fragment VALID_CHAR : [a-zA-Z0-9.,!?"'];
 
 STUB : 'stub';
 
-fragment LS_BRACE : '[';
-fragment RS_BRACE : ']';
+LS_BRACE : '[';
+RS_BRACE : ']';
+L_BRACE : '(';
+R_BRACE : ')';
 fragment TB_QUOTE : '```';
 
 fragment HASH : '#';
 fragment DASH : '-';
 fragment STAR : '*';
+BANG : '!';
 MethodName : HASH | DASH | STAR;
 
 WORD : VALID_CHAR+;
