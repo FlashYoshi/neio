@@ -44,6 +44,8 @@ String toTex(String option) {
 	String item = "\\item";
 	if ((option != null) && (option.length() > 0)) {
 		item = item + "[" + option + "]";
+	} else {
+		item = item + " ";
 	}
 	String result = item + text.toTex();
 	if (content.size() > 0) {
