@@ -1,0 +1,12 @@
+namespace neio.stdlib;
+
+import neio.lang.Container;
+
+class FibDocument extends Document;
+
+FibChapter #(String title) {
+    new FibChapter(title, 1) chapter;
+    content.add(chapter);
+
+    return chapter;
+}

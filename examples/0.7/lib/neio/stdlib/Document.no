@@ -1,0 +1,52 @@
+namespace neio.stdlib;
+
+import neio.lang.Container;
+
+class Document extends Container;
+
+Chapter #(String title) {
+    new Chapter(title, 1) chapter;
+    content.add(chapter);
+
+    return chapter;
+}
+
+Chapter addChapter(Chapter chapter) {
+	content.add(chapter);
+	
+	return chapter;
+}
+
+Itemize *(String text) {
+	Itemize itemize = new Itemize();
+	ItemizeItem item = new ItemizeItem(text, itemize, 1);
+	itemize.*(item);
+    content.add(itemize);
+
+    return itemize;
+}
+
+Paragraph newline(String parText) {
+    new Paragraph(parText) p;
+    content.add(p);
+	
+    return p;
+}
+
+Image image(String caption, String imageName) {
+	new Image(caption, imageName) neioImage;
+	content.add(neioImage);
+	
+	return neioImage;
+}
+
+String toTex() {
+	return "\\documentclass{article}\n" +
+			  "\\usepackage{a4wide}\n" +
+			  "\\usepackage{graphicx}\n" +
+			  "\\setlength{\\parindent}{0em}\n" +
+			  "\\setlength{\\parskip}{1em}\n" +
+			  "\\begin{document}\n" +
+			  super.toTex() +
+			  "\n\\end{document}\n";
+}

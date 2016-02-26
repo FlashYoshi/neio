@@ -1,0 +1,5 @@
+namespace neio.lang;
+
+interface Texable;
+
+String toTex();

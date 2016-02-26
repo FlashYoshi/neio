@@ -1,0 +1,65 @@
+namespace neio.stdlib;
+
+import neio.lang.Content;
+
+class Chapter extends Content;
+
+String title;
+Integer level;
+
+Chapter(String title, Integer level) {
+    this.title = title;
+    this.level = level;
+}
+
+nested Chapter #(String title, Integer level) {
+    new Chapter(title, level) chapter;
+    content.add(chapter);
+	
+    return chapter;
+}
+
+Itemize *(String text) {
+	Itemize itemize = new Itemize();
+	ItemizeItem item = new ItemizeItem(text, itemize, 1);
+	itemize.*(item);
+    content.add(itemize);
+
+    return itemize;
+}
+
+Enumerate -(String text) {
+	Enumerate enumerate = new Enumerate();
+	EnumerateItem item = new EnumerateItem(text, enumerate, 1);
+	enumerate.-(item);
+    content.add(enumerate);
+
+    return enumerate;
+}
+
+Paragraph newline(String parText) {
+    new Paragraph(parText) p;
+    content.add(p);
+	
+    return p;
+}
+
+Image image(String caption, String imageName) {
+	new Image(caption, imageName) neioImage;
+	content.add(neioImage);
+	
+	return neioImage;
+}
+
+String toTex() {
+	return "\\" + getSubs() + "section*{" + title + "}" + super.toTex();
+}
+
+String getSubs() {
+	String subs = "";
+	for (int i = 1; i < level; i = i + 1) {
+		subs = subs + "sub";
+	}
+	
+	return subs;
+}

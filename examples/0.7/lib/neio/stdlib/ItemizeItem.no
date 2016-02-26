@@ -1,0 +1,45 @@
+namespace neio.stdlib;
+
+import neio.lang.Text;
+import neio.lang.Content;
+
+class ItemizeItem extends Content;
+
+Text text;
+Integer level;
+Itemize itemize;
+
+ItemizeItem(String text, Integer level) {
+	this.text = new Text(text);
+	this.level = level;
+}
+
+ItemizeItem(String text, Itemize itemize, Integer level) {
+	this.text = new Text(text);
+	this.itemize = itemize;
+	this.level = level;
+}
+
+nested ItemizeItem *(String text, Integer level) {
+	ItemizeItem item = null;
+	if (level > this.level) {
+		Itemize list = new Itemize();
+		item = new ItemizeItem(text, list, level);
+		list.*(item);
+		content.add(list);
+	} else {
+		item = new ItemizeItem(text, level);
+		itemize.*(item);
+	}
+	
+	return item;
+}
+
+String toTex() {
+	String result = "\\item " + text.toTex();
+	if (content.size() > 0) {
+		result = result + "\n" + super.toTex();
+	}
+	
+	return result;
+}
