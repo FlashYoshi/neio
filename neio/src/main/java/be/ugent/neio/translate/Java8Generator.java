@@ -1,19 +1,16 @@
 package be.ugent.neio.translate;
 
-import be.kuleuven.cs.distrinet.jnome.core.expression.JavaNameExpression;
 import be.ugent.neio.industry.NeioExpressionFactory;
 import be.ugent.neio.industry.NeioFactory;
 import be.ugent.neio.language.Neio;
 import be.ugent.neio.model.document.TextDocument;
 import org.aikodi.chameleon.core.element.Element;
 import org.aikodi.chameleon.core.lookup.LookupException;
-import org.aikodi.chameleon.core.reference.CrossReferenceTarget;
 import org.aikodi.chameleon.core.variable.Variable;
 import org.aikodi.chameleon.exception.ChameleonProgrammerException;
 import org.aikodi.chameleon.oo.expression.Expression;
 import org.aikodi.chameleon.oo.expression.ExpressionFactory;
 import org.aikodi.chameleon.oo.expression.MethodInvocation;
-import org.aikodi.chameleon.oo.method.Method;
 import org.aikodi.chameleon.oo.plugin.ObjectOrientedFactory;
 import org.aikodi.chameleon.oo.statement.Block;
 import org.aikodi.chameleon.oo.statement.Statement;
@@ -22,7 +19,6 @@ import org.aikodi.chameleon.oo.variable.VariableDeclaration;
 import org.aikodi.chameleon.support.expression.ThisLiteral;
 import org.aikodi.chameleon.support.member.simplename.method.NormalMethod;
 import org.aikodi.chameleon.support.member.simplename.method.RegularMethodInvocation;
-import org.aikodi.chameleon.support.statement.StatementExpression;
 import org.aikodi.chameleon.support.variable.LocalVariableDeclarator;
 
 import java.util.ArrayList;
@@ -51,64 +47,12 @@ public class Java8Generator {
     public TextDocument createJavaDocument(TextDocument neioDocument) throws LookupException {
         neio = neioDocument.language(Neio.class);
         id = 0;
-        //mergeStatements(neioDocument);
+
         replaceMethodChain(neioDocument.getBlock());
         String writerReturn = callWriter(neioDocument);
         callBuilder(neioDocument, writerReturn);
 
         return neioDocument;
-    }
-
-    /**
-     * Merges the prev statements with the one before it
-     *
-     * @param neioDocument The document whose statements have to be merged
-     */
-    private void mergeStatements(TextDocument neioDocument) {
-        List<Statement> stats = neioDocument.getBlock().statements();
-        List<Statement> statements = new ArrayList<>();
-        statements.addAll(stats);
-
-        List<RegularMethodInvocation> invocations = new ArrayList<>();
-        for (Statement statement : statements) {
-            RegularMethodInvocation first = getInvocation(statement);
-            CrossReferenceTarget source = first;
-            if (source == null) {
-                continue;
-            }
-
-            // Search for a possible "prev" keyword
-            while (source instanceof RegularMethodInvocation) {
-                if (((RegularMethodInvocation) source).getTarget() != null) {
-                    source = ((RegularMethodInvocation) source).getTarget();
-                } else {
-                    break;
-                }
-            }
-
-            if (source.toString().equals(THIS)) {
-                // Try to find the previous methodchain
-                if (invocations.isEmpty()) {
-                    throw new ChameleonProgrammerException("Can not use the \"prev\" keyword without defining other statements first!");
-                }
-
-                RegularMethodInvocation prevInv = invocations.get(invocations.size() - 1);
-                // Attach the methodchain in this statement, to prevInv
-                source.replaceWith(prevInv);
-            }
-
-            invocations.add(first);
-        }
-
-        // Remove the empty statements
-        statements.removeIf(s -> ((StatementExpression) s).getExpression() == null);
-
-        Block block = oFactory().createBlock();
-        block.addStatements(statements);
-        neioDocument.setBlock(block);
-
-        Method main = neioDocument.nearestDescendants(Method.class).get(0);
-        main.setImplementation(oFactory().createImplementation(neioDocument.getBlock()));
     }
 
     /**
@@ -188,8 +132,6 @@ public class Java8Generator {
             // Remove the old statement from the block that will printed to Java
             block.removeStatement(statement);
         }
-
-        //neioDocument.setBlock(block);
     }
 
     private void processInlineBlock(String lastElement, Block block) {
