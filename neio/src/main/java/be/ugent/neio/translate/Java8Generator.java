@@ -5,7 +5,6 @@ import be.ugent.neio.industry.NeioExpressionFactory;
 import be.ugent.neio.industry.NeioFactory;
 import be.ugent.neio.language.Neio;
 import be.ugent.neio.model.document.TextDocument;
-import be.ugent.neio.util.Connections;
 import org.aikodi.chameleon.core.element.Element;
 import org.aikodi.chameleon.core.lookup.LookupException;
 import org.aikodi.chameleon.core.reference.CrossReferenceTarget;
@@ -53,7 +52,7 @@ public class Java8Generator {
         neio = neioDocument.language(Neio.class);
         id = 0;
         //mergeStatements(neioDocument);
-        replaceMethodChain(neioDocument);
+        replaceMethodChain(neioDocument.getBlock());
         String writerReturn = callWriter(neioDocument);
         callBuilder(neioDocument, writerReturn);
 
@@ -115,35 +114,37 @@ public class Java8Generator {
     /**
      * Transforms the methodchains into variable declarations
      *
-     * @param neioDocument The document in which to find the methodchains
+     * @param block The block in which to find the methodchains
      * @throws LookupException
      */
-    private void replaceMethodChain(TextDocument neioDocument) throws LookupException {
+    private void replaceMethodChain(Block block) throws LookupException {
         // The defined variables
         Stack<Variable> variables = new Stack<>();
-        Connections<String> connections = new Connections<>();
+        // Use a string as we constantly have to create new NameExpressions
+        String lastElement = null;
 
-        Block block = neioDocument.getBlock();
         List<Statement> statements = new ArrayList<>();
         statements.addAll(block.statements());
 
         for (Statement statement : statements) {
-            Stack<RegularMethodInvocation> callStack = new Stack<>();
+            // Is this is a Block?
+            // If so, it is an inline code block
+            if (getNearestElement(statement, Statement.class) != null) {
+                processInlineBlock(lastElement, (Block) statement);
+                // Remove the statement and add it again to make sure it is in the correct position
+                block.removeStatement(statement);
+                block.addStatement(statement);
+                continue;
 
+            }
+
+            Stack<RegularMethodInvocation> callStack = new Stack<>();
             // MethodInvocations start from the back so push the invocations on a stack to get the correct order
             RegularMethodInvocation inv;
             Element methodChain = statement;
             while ((inv = getInvocation(methodChain)) != null) {
                 callStack.push(inv);
                 methodChain = inv;
-            }
-
-            // There are no method invocations in this statement e.g. empty variable assignment
-            // The statement is clear to be directly translated
-            if (callStack.isEmpty()) {
-                Variable var = getVarDeclaration(methodChain).variable();
-                variables.push(var);
-                block.addStatement((Statement) methodChain);
             }
 
             // Turn the methodchain into local variables, one by one
@@ -153,18 +154,17 @@ public class Java8Generator {
 
                 // FIXME: instanceof until ThisLiteral stops wrongfully being a literal
                 if (call.getTarget() != null && call.getTarget() instanceof ThisLiteral) {
-                    //THIS found, substitute it by the last rootconnected variable
-                    String last = connections.getLast(ROOT);
-                    JavaNameExpression expression = eFactory().createNameExpression(last);
-                    call.getTarget().replaceWith(expression);
+                    //THIS found, substitute it by the last element
+                    call.getTarget().replaceWith(eFactory().createNameExpression(lastElement));
                 }
 
+                // Get the method to know which type the variable will have to be (= returntype)
                 NormalMethod method = call.getElement();
-                Type type = method.nearestAncestor(Type.class);
                 // Type instead of TypeReference as TypeReference does not return a TypeReference with fqn
                 Type returnType = method.returnType();
 
                 // Add a prefix if this is not a constructor
+                Type type = method.nearestAncestor(Type.class);
                 String prefix = method.isTrue(neio.CONSTRUCTOR) ? null : getPrefix(type, variables);
                 RegularMethodInvocation clone = (RegularMethodInvocation) call.clone();
                 clone.setTarget(prefix == null ? null : eFactory().createNameExpression(prefix));
@@ -181,11 +181,8 @@ public class Java8Generator {
                 LocalVariableDeclarator lvd = oFactory().createLocalVariable(returnType.getFullyQualifiedName(), varName, clone);
 
                 variables.push(lvd.variableDeclarations().get(0).variable());
+                lastElement = variables.peek().name();
                 block.addStatement(lvd);
-
-                if (prefix != null) {
-                    connections.connect(varName, prefix);
-                }
             }
 
             // Remove the old statement from the block that will printed to Java
@@ -193,6 +190,16 @@ public class Java8Generator {
         }
 
         //neioDocument.setBlock(block);
+    }
+
+    private void processInlineBlock(String lastElement, Block block) {
+        if (lastElement == null) {
+            throw new ChameleonProgrammerException("Inline code blocks are not allowed as the first element in a document!");
+        }
+
+        for (Element replacee : block.nearestDescendants(ThisLiteral.class)) {
+            replacee.replaceWith(eFactory().createNameExpression(lastElement));
+        }
     }
 
     /**

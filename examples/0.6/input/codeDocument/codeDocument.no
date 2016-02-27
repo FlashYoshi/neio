@@ -9,10 +9,10 @@ This is the first paragraph of our simple document.
 
 ## Chapter 1.1
 But for this to be a real document we do of course need more than one chapter and more than one indentation level, so... voila!
-```
+/*```
 this.#("Chapter 17.1", 2)
     .newline("Nice paragraph!");
-```
+```*/
 // TODO: fix inline use of reserved signs
 //It shouldn't matter if we add the space after the #'s or not
 ###Chapter 1.1.1
@@ -24,16 +24,14 @@ Well LaTeX has one more level of indentation, so we should make use of it!
 Chapter test = new Chapter("Test",1);
 ```
 
-```
+/*```
 Chapter chap = new Chapter("Chapter 18.1", 2);
 chap.newline("This is a coded paragraph");
 //this.#(chap);
-```
+```*/
 # Chapter 2
 Lastly a chapter ending with two paragraphs should do the trick
 
 This is the end of this very exciting document, but let's first try to make this paragraph a little longer. Only 80 characters per line when we have these giant screens is a bit outdated isn't it?
 Let's also add some more newlines to see how we deal with those.
-
-
 

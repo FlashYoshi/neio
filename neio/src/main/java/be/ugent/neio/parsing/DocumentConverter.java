@@ -92,7 +92,7 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
                 if (previousExpression != null) {
                     block.addStatement(ooFactory().createStatement(previousExpression));
                 }
-                block.addStatements(codeBlock.statements());
+                block.addStatement(codeBlock);
                 previousExpression = null;
             }
         } else {
