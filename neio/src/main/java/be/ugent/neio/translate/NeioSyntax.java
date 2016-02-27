@@ -98,10 +98,6 @@ public class NeioSyntax extends Java7Syntax {
                 runtimeException.addArgument(catchPrint);
                 ThrowStatement catchThrow = new ThrowStatement(runtimeException);
 
-                /*RegularMethodInvocation rmi = new RegularMethodInvocation("println", new BasicTypeReference("System.err"));
-                rmi.addArgument(catchPrint);
-                Statement catchStatement = new StatementExpression(rmi);*/
-
                 Block catchBlock = new Block();
                 catchBlock.addStatement(catchThrow);
 
