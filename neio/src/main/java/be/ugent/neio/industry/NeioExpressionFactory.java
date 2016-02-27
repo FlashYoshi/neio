@@ -4,13 +4,11 @@ import be.kuleuven.cs.distrinet.jnome.core.expression.invocation.ConstructorInvo
 import be.kuleuven.cs.distrinet.jnome.core.type.BasicJavaTypeReference;
 import be.kuleuven.cs.distrinet.jnome.input.JavaExpressionFactory;
 import be.ugent.neio.expression.NeioMethodInvocation;
+import be.ugent.neio.expression.NeioNameExpression;
 import org.aikodi.chameleon.core.reference.CrossReferenceTarget;
 import org.aikodi.chameleon.oo.expression.Expression;
-import org.aikodi.chameleon.oo.expression.MethodInvocation;
 import org.aikodi.chameleon.oo.expression.ParExpression;
-import org.aikodi.chameleon.oo.expression.VariableReference;
 import org.aikodi.chameleon.oo.type.TypeReference;
-import org.aikodi.chameleon.support.expression.SuperTarget;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,5 +40,9 @@ public class NeioExpressionFactory extends JavaExpressionFactory {
 
     public ParExpression createParExpression(Expression expression) {
         return new ParExpression(expression);
+    }
+
+    public NeioNameExpression createNeioNameExpression(String name) {
+        return new NeioNameExpression(name);
     }
 }
