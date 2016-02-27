@@ -85,23 +85,31 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
     }
 
     public Block visitContent(ContentContext ctx) {
-        if (ctx.prefixCall() != null) {
-            previousExpression = visitPrefixCall(ctx.prefixCall());
-        } else if (ctx.postfixCall() != null) {
-            previousExpression = visitPostFixCall(ctx.postfixCall());
-        } else if (ctx.text() != null) {
-            previousExpression = visitText(ctx.text());
-        } else if (ctx.CODE() != null) {
+        if (ctx.CODE() != null) {
             Block codeBlock = visitCode(ctx.CODE());
             if (codeBlock.nbStatements() != 0) {
                 // A block of code has been found, round up the expressions found before this block
-                block.addStatement(ooFactory().createStatement(previousExpression));
-                block.addStatements(codeBlock.statements());
-                // TODO: fix prev
+                if (previousExpression != null) {
+                    block.addStatement(ooFactory().createStatement(previousExpression));
+                }
+                block.addStatement(codeBlock);
                 previousExpression = null;
             }
         } else {
-            throw new ChameleonProgrammerException("Method could not be found!");
+            // If the previous expression was a codeblock and there's more neioscript
+            // add THIS as prefix to connect back to the rest of the document
+            if (previousExpression == null) {
+                previousExpression = ooFactory().createThisLiteral();
+            }
+            if (ctx.prefixCall() != null) {
+                previousExpression = visitPrefixCall(ctx.prefixCall());
+            } else if (ctx.postfixCall() != null) {
+                previousExpression = visitPostFixCall(ctx.postfixCall());
+            } else if (ctx.text() != null) {
+                previousExpression = visitText(ctx.text());
+            } else {
+                throw new ChameleonProgrammerException("Method could not be found!");
+            }
         }
 
         return null;
@@ -130,7 +138,7 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
             arguments.add(ooFactory().createStringLiteral(ctx.WORD().get(ctx.WORD().size() - 1).getText()));
         }
 
-        return expressionFactory().createMethodInvocation(methodName, previousExpression, arguments);
+        return expressionFactory().createNeioMethodInvocation(methodName, previousExpression, arguments);
     }
 
     private Expression visitPostFixCall(PostfixCallContext ctx) {
@@ -173,7 +181,7 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         List<Expression> arguments = new ArrayList<>();
         arguments.add(ooFactory().createStringLiteral(paragraph));
 
-        return expressionFactory().createMethodInvocation(methodName, previousExpression, arguments);
+        return expressionFactory().createNeioMethodInvocation(methodName, previousExpression, arguments);
     }
 
     public Block visitCode(TerminalNode node) {
@@ -191,7 +199,6 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         TokenStream tokens = new CommonTokenStream(lexer);
 
         ClassParser parser = new ClassParser(tokens);
-        Block block = new ClassConverter(document, view).visitBlock(parser.block());
-        return block;
+        return new ClassConverter(document, view).visitBlock(parser.block());
     }
 }

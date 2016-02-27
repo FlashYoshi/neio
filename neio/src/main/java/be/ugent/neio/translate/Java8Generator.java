@@ -4,23 +4,22 @@ import be.ugent.neio.industry.NeioExpressionFactory;
 import be.ugent.neio.industry.NeioFactory;
 import be.ugent.neio.language.Neio;
 import be.ugent.neio.model.document.TextDocument;
-import be.ugent.neio.util.Variable;
 import org.aikodi.chameleon.core.element.Element;
 import org.aikodi.chameleon.core.lookup.LookupException;
-import org.aikodi.chameleon.core.reference.CrossReferenceTarget;
+import org.aikodi.chameleon.core.variable.Variable;
 import org.aikodi.chameleon.exception.ChameleonProgrammerException;
 import org.aikodi.chameleon.oo.expression.Expression;
 import org.aikodi.chameleon.oo.expression.ExpressionFactory;
 import org.aikodi.chameleon.oo.expression.MethodInvocation;
-import org.aikodi.chameleon.oo.method.Method;
+import org.aikodi.chameleon.oo.expression.NameExpression;
 import org.aikodi.chameleon.oo.plugin.ObjectOrientedFactory;
 import org.aikodi.chameleon.oo.statement.Block;
 import org.aikodi.chameleon.oo.statement.Statement;
 import org.aikodi.chameleon.oo.type.Type;
 import org.aikodi.chameleon.oo.variable.VariableDeclaration;
+import org.aikodi.chameleon.support.expression.ThisLiteral;
 import org.aikodi.chameleon.support.member.simplename.method.NormalMethod;
 import org.aikodi.chameleon.support.member.simplename.method.RegularMethodInvocation;
-import org.aikodi.chameleon.support.statement.StatementExpression;
 import org.aikodi.chameleon.support.variable.LocalVariableDeclarator;
 
 import java.util.ArrayList;
@@ -34,7 +33,7 @@ import static be.ugent.neio.util.Constants.*;
 public class Java8Generator {
 
     private static final String VAR_NAME = "$var";
-    public static final String ROOT_VAR = VAR_NAME + "0";
+    public static final String ROOT = VAR_NAME + "0";
     private Neio neio;
     private int id;
 
@@ -49,8 +48,8 @@ public class Java8Generator {
     public TextDocument createJavaDocument(TextDocument neioDocument) throws LookupException {
         neio = neioDocument.language(Neio.class);
         id = 0;
-        //mergeStatements(neioDocument);
-        replaceMethodChain(neioDocument);
+
+        neioDocument.setBlock(replaceMethodChain(neioDocument.getBlock()));
         String writerReturn = callWriter(neioDocument);
         callBuilder(neioDocument, writerReturn);
 
@@ -58,55 +57,102 @@ public class Java8Generator {
     }
 
     /**
-     * Merges the prev statements with the one before it
+     * Transforms the methodchains into variable declarations
      *
-     * @param neioDocument The document whose statements have to be merged
+     * @param oldBlock The block in which to find the methodchains
+     * @throws LookupException
      */
-    private void mergeStatements(TextDocument neioDocument) {
-        List<Statement> stats = neioDocument.getBlock().statements();
-        List<Statement> statements = new ArrayList<>();
-        statements.addAll(stats);
+    private Block replaceMethodChain(Block oldBlock) throws LookupException {
+        // The defined variables
+        Stack<Variable> variables = new Stack<>();
+        // Use a string as we constantly have to create new NameExpressions
+        String lastElement = null;
 
-        List<RegularMethodInvocation> invocations = new ArrayList<>();
-        for (Statement statement : statements) {
-            RegularMethodInvocation first = getInvocation(statement);
-            CrossReferenceTarget source = first;
-            if (source == null) {
+        Block block = new Block();
+        oldBlock.replaceWith(block);
+        for (Statement statement : oldBlock.statements()) {
+            // Is this is a Block?
+            // If so, it is an inline code block
+            if (getNearestElement(statement, Statement.class) != null) {
+                block.addStatement(statement);
+                processInlineBlock(lastElement, (Block) statement, variables);
                 continue;
+
+            }
+            // Add the statement to the new block so that it can do lookups using the new block
+            block.addStatement(statement);
+
+            Stack<RegularMethodInvocation> callStack = new Stack<>();
+            // MethodInvocations start from the back so push the invocations on a stack to get the correct order
+            RegularMethodInvocation inv;
+            Element methodChain = statement;
+            while ((inv = getInvocation(methodChain)) != null) {
+                callStack.push(inv);
+                methodChain = inv;
             }
 
-            // Search for a possible "prev" keyword
-            while (source instanceof RegularMethodInvocation) {
-                if (((RegularMethodInvocation) source).getTarget() != null) {
-                    source = ((RegularMethodInvocation) source).getTarget();
+            // Turn the methodchain into local variables, one by one
+            while (!callStack.isEmpty()) {
+                RegularMethodInvocation call = callStack.pop();
+                fixNestedMethod(call);
+
+                // FIXME: instanceof until ThisLiteral stops wrongfully being a literal
+                if (call.getTarget() != null && call.getTarget() instanceof ThisLiteral) {
+                    //THIS found, substitute it by the last element
+                    call.getTarget().replaceWith(eFactory().createNeioNameExpression(lastElement));
+                }
+
+                // Get the method to know which type the variable will have to be (= returntype)
+                NormalMethod method = call.getElement();
+                // Type instead of TypeReference as TypeReference does not return a TypeReference with fqn
+                Type returnType = method.returnType();
+
+                // Add a prefix if this is not a constructor
+                Type type = method.nearestAncestor(Type.class);
+                String prefix = method.isTrue(neio.CONSTRUCTOR) ? null : getPrefix(type, variables);
+                RegularMethodInvocation clone = (RegularMethodInvocation) call.clone();
+                clone.setTarget(prefix == null ? null : eFactory().createNeioNameExpression(prefix));
+
+                String varName;
+                VariableDeclaration var;
+                if ((var = getVarDeclaration(methodChain)) != null) {
+                    // Use the variable name defined in the statement
+                    varName = var.name();
                 } else {
-                    break;
+                    // Create a new variable name
+                    varName = getVarName();
                 }
+                LocalVariableDeclarator lvd = oFactory().createLocalVariable(returnType.getFullyQualifiedName(), varName, clone);
+
+                variables.push(lvd.variableDeclarations().get(0).variable());
+                lastElement = variables.peek().name();
+                block.addStatement(lvd);
             }
 
-            if (source.toString().equals(PREV)) {
-                // Try to find the previous methodchain
-                if (invocations.isEmpty()) {
-                    throw new ChameleonProgrammerException("Can not use the \"prev\" keyword without defining other statements first!");
-                }
-
-                RegularMethodInvocation prevInv = invocations.get(invocations.size() - 1);
-                // Attach the methodchain in this statement, to prevInv
-                source.replaceWith(prevInv);
-            }
-
-            invocations.add(first);
+            // Remove the old statement from the block that will printed to Java
+            block.removeStatement(statement);
         }
 
-        // Remove the empty statements
-        statements.removeIf(s -> ((StatementExpression) s).getExpression() == null);
+        return block;
+    }
 
-        Block block = oFactory().createBlock();
-        block.addStatements(statements);
-        neioDocument.setBlock(block);
+    private void processInlineBlock(String lastElement, Block block, Stack<Variable> variables) throws LookupException {
+        if (lastElement == null) {
+            throw new ChameleonProgrammerException("Inline code blocks are not allowed as the first element in a document!");
+        }
 
-        Method main = neioDocument.nearestDescendants(Method.class).get(0);
-        main.setImplementation(oFactory().createImplementation(neioDocument.getBlock()));
+        for (Element replacee : block.nearestDescendants(ThisLiteral.class)) {
+            NameExpression replacer = eFactory().createNeioNameExpression(lastElement);
+            replacee.replaceWith(replacer);
+
+            RegularMethodInvocation mi = (RegularMethodInvocation) replacer.parent();
+            // Am I the target of a method invocation?
+            if (mi.getTarget().equals(replacer)) {
+                NormalMethod method = mi.getElement();
+                Type type = method.nearestAncestor(Type.class);
+                replacer.replaceWith(eFactory().createNeioNameExpression(getPrefix(type, variables)));
+            }
+        }
     }
 
     /**
@@ -119,12 +165,12 @@ public class Java8Generator {
         Block block = neioDocument.getBlock();
 
         List<Expression> arguments = new ArrayList<>();
-        arguments.add(eFactory().createNameExpression(ROOT_VAR));
+        arguments.add(eFactory().createNameExpression(ROOT));
         Expression ci = eFactory().createConstructorInvocation(DEFAULT_WRITER, null, arguments);
 
         List<Expression> miArguments = new ArrayList<>();
         miArguments.add(oFactory().createStringLiteral(neioDocument.getName()));
-        MethodInvocation mi = eFactory().createMethodInvocation(WRITE_METHOD, ci, miArguments);
+        MethodInvocation mi = eFactory().createNeioMethodInvocation(WRITE_METHOD, ci, miArguments);
         LocalVariableDeclarator varDecl = new LocalVariableDeclarator(oFactory().createTypeReference("java.lang.String"));
         String varName = getVarName();
         VariableDeclaration var = new VariableDeclaration(varName, mi);
@@ -146,73 +192,9 @@ public class Java8Generator {
 
         List<Expression> miArguments = new ArrayList<>();
         miArguments.add(eFactory().createNameExpression(writerReturn));
-        MethodInvocation mi = eFactory().createMethodInvocation(BUILD_METHOD, ci, miArguments);
+        MethodInvocation mi = eFactory().createNeioMethodInvocation(BUILD_METHOD, ci, miArguments);
 
         neioDocument.getBlock().addStatement(oFactory().createStatement(mi));
-    }
-
-    /**
-     * Transforms the methodchains into variable declarations
-     *
-     * @param neioDocument The document in which to find the methodchains
-     * @throws LookupException
-     */
-    private void replaceMethodChain(TextDocument neioDocument) throws LookupException {
-        List<Statement> newStatements = new ArrayList<>();
-        // The defined variables
-        Stack<Variable> variables = new Stack<>();
-
-        for (Element methodChain : neioDocument.getBlock().statements()) {
-            Stack<RegularMethodInvocation> callStack = new Stack<>();
-
-            // MethodInvocations start from the back so push the invocations on a stack to get the correct order
-            RegularMethodInvocation inv;
-            while ((inv = getInvocation(methodChain)) != null) {
-                callStack.push(inv);
-                methodChain = inv;
-            }
-
-            // There are no method invocations in this statement e.g. empty variable assignment
-            // The statement is clear to be directly translated
-            if (callStack.isEmpty()) {
-                // TODO: should a variable be added to variables?
-                newStatements.add((Statement) methodChain);
-            }
-
-            // Turn the methodchain into local variables, one by one
-            while (!callStack.isEmpty()) {
-                RegularMethodInvocation call = callStack.pop();
-                fixNestedMethod(call);
-
-                NormalMethod method = call.getElement();
-                Type type = method.nearestAncestor(Type.class);
-                Type returnType = method.returnType();
-
-                // Add a prefix if this is not a constructor
-                String prefix = method.isTrue(neio.CONSTRUCTOR) ? null : getPrefix(type, variables);
-
-                RegularMethodInvocation clone = (RegularMethodInvocation) call.clone();
-                clone.setTarget(prefix == null ? null : eFactory().createNameExpression(prefix));
-
-                String varName;
-                VariableDeclaration var;
-                if ((var = getVarDeclaration(methodChain)) != null) {
-                    // Use the variable name defined in the statement
-                    varName = var.name();
-                } else {
-                    // Create a new variable name
-                    varName = getVarName();
-                }
-                LocalVariableDeclarator lvd = oFactory().createLocalVariable(neio.createTypeReference(returnType.name()), varName, clone);
-
-                variables.push(new Variable(returnType, varName));
-                newStatements.add(lvd);
-            }
-        }
-
-        Block block = new Block();
-        block.addStatements(newStatements);
-        neioDocument.setBlock(block);
     }
 
     /**
@@ -239,7 +221,12 @@ public class Java8Generator {
      * @return The variable declaration
      */
     private VariableDeclaration getVarDeclaration(Element statement) {
-        return getNearestElement(statement, VariableDeclaration.class);
+        VariableDeclaration variableDeclaration = statement.nearestAncestor(VariableDeclaration.class);
+        if (variableDeclaration == null) {
+            return getNearestElement(statement, VariableDeclaration.class);
+        } else {
+            return variableDeclaration;
+        }
     }
 
     /**
@@ -279,7 +266,8 @@ public class Java8Generator {
         return String.valueOf(s.charAt(0));
     }
 
-    private String getPrefix(Type type, Stack<Variable> variables) throws LookupException {
+    private String getPrefix(Type type, Stack<Variable> stack) throws LookupException {
+        Stack<Variable> variables = (Stack<Variable>) stack.clone();
         while (!variables.isEmpty()) {
             Variable var = variables.peek();
             boolean found = false;
@@ -290,7 +278,7 @@ public class Java8Generator {
                 }
             }
             if (found) {
-                return var.getVarName();
+                return var.name();
             } else {
                 variables.pop();
             }

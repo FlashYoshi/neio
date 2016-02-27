@@ -80,7 +80,7 @@ public class NeioFactory extends Java7Factory {
         return declarator;
     }
 
-    public Method createMethod(String methodName, String returnType) {
+    public JavaMethod createMethod(String methodName, String returnType) {
         return new JavaMethod(new SimpleNameMethodHeader(methodName, createTypeReference(returnType)));
     }
 

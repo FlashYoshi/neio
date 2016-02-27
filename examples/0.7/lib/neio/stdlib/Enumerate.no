@@ -1,0 +1,46 @@
+namespace neio.stdlib;
+
+import neio.lang.Text;
+import neio.lang.Content;
+
+class Enumerate extends Content;
+
+// This option tells the enumerate how to enumerate
+protected String option = null;
+
+String toTex() {
+	return header() + super.toTex() + finalizer();
+}
+
+protected String header() {
+	String header = "\\begin{enumerate}";
+	if ((option != null) && (option.length() > 0)) {
+		header = header + "[" + option + "]";
+	}
+	
+	return header + "\n";
+}
+
+Enumerate setOption(String option) {
+	this.option = option;
+	
+	return this;
+}
+
+// Finalize already exists in java.lang.Object
+protected String finalizer() {
+	return "\\end{enumerate}\n";
+}
+
+EnumerateItem -(EnumerateItem item) {
+	content.add(item);
+	
+	return item;
+}
+
+EnumerateItem -(String text) {
+	EnumerateItem item = new EnumerateItem(text, 1);
+	content.add(item);
+	
+	return item;
+}

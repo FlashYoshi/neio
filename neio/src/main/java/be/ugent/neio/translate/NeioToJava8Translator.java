@@ -56,7 +56,6 @@ public class NeioToJava8Translator extends IncrementalTranslator<Neio, Java7> {
         if (!debug) {
             document = createJavaDocument(document);
         }
-        finishDocument(document);
         result.add(document);
 
         return result;
@@ -87,12 +86,5 @@ public class NeioToJava8Translator extends IncrementalTranslator<Neio, Java7> {
             ns.addImport(ooFactory.createDemandImport(namespace.fullyQualifiedName()));
         }
         document.add(ns);
-    }
-
-    private void finishDocument(TextDocument document) {
-        // There is only the main method
-        Method main = document.nearestDescendants(Method.class).get(0);
-        NeioFactory ooFactory = (NeioFactory) document.language().plugin(ObjectOrientedFactory.class);
-        main.setImplementation(ooFactory.createImplementation(document.getBlock()));
     }
 }

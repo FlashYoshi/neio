@@ -117,10 +117,6 @@ public class NeioSyntax extends Java7Syntax {
                 runtimeException.addArgument(catchPrint);
                 ThrowStatement catchThrow = new ThrowStatement(runtimeException);
 
-                /*RegularMethodInvocation rmi = new RegularMethodInvocation("println", new BasicTypeReference("System.err"));
-                rmi.addArgument(catchPrint);
-                Statement catchStatement = new StatementExpression(rmi);*/
-
                 Block catchBlock = new Block();
                 catchBlock.addStatement(catchThrow);
 
@@ -148,7 +144,7 @@ public class NeioSyntax extends Java7Syntax {
                 exceptions = list.get(0).getExceptionTypes(mi);
             }
         } catch (LookupException e) {
-            e.printStackTrace();
+            System.err.println("Lookup exception when trying to find throws: " + e.getMessage());
         }
 
         return exceptions;
