@@ -1,11 +1,9 @@
 package be.ugent.neio.translate;
 
-import be.ugent.neio.expression.NeioMethodInvocation;
 import be.ugent.neio.industry.NeioExpressionFactory;
 import be.ugent.neio.industry.NeioFactory;
 import be.ugent.neio.language.Neio;
 import be.ugent.neio.model.document.TextDocument;
-import org.aikodi.chameleon.core.Config;
 import org.aikodi.chameleon.core.element.Element;
 import org.aikodi.chameleon.core.lookup.LookupException;
 import org.aikodi.chameleon.core.variable.Variable;
@@ -13,6 +11,7 @@ import org.aikodi.chameleon.exception.ChameleonProgrammerException;
 import org.aikodi.chameleon.oo.expression.Expression;
 import org.aikodi.chameleon.oo.expression.ExpressionFactory;
 import org.aikodi.chameleon.oo.expression.MethodInvocation;
+import org.aikodi.chameleon.oo.expression.NameExpression;
 import org.aikodi.chameleon.oo.plugin.ObjectOrientedFactory;
 import org.aikodi.chameleon.oo.statement.Block;
 import org.aikodi.chameleon.oo.statement.Statement;
@@ -21,7 +20,6 @@ import org.aikodi.chameleon.oo.variable.VariableDeclaration;
 import org.aikodi.chameleon.support.expression.ThisLiteral;
 import org.aikodi.chameleon.support.member.simplename.method.NormalMethod;
 import org.aikodi.chameleon.support.member.simplename.method.RegularMethodInvocation;
-import org.aikodi.chameleon.support.statement.StatementExpression;
 import org.aikodi.chameleon.support.variable.LocalVariableDeclarator;
 
 import java.util.ArrayList;
@@ -51,7 +49,7 @@ public class Java8Generator {
         neio = neioDocument.language(Neio.class);
         id = 0;
 
-        replaceMethodChain(neioDocument.getBlock());
+        neioDocument.setBlock(replaceMethodChain(neioDocument.getBlock()));
         String writerReturn = callWriter(neioDocument);
         callBuilder(neioDocument, writerReturn);
 
@@ -64,7 +62,7 @@ public class Java8Generator {
      * @param oldBlock The block in which to find the methodchains
      * @throws LookupException
      */
-    private void replaceMethodChain(Block oldBlock) throws LookupException {
+    private Block replaceMethodChain(Block oldBlock) throws LookupException {
         // The defined variables
         Stack<Variable> variables = new Stack<>();
         // Use a string as we constantly have to create new NameExpressions
@@ -76,8 +74,8 @@ public class Java8Generator {
             // Is this is a Block?
             // If so, it is an inline code block
             if (getNearestElement(statement, Statement.class) != null) {
-                processInlineBlock(lastElement, (Block) statement);
                 block.addStatement(statement);
+                processInlineBlock(lastElement, (Block) statement, variables);
                 continue;
 
             }
@@ -134,15 +132,26 @@ public class Java8Generator {
             // Remove the old statement from the block that will printed to Java
             block.removeStatement(statement);
         }
+
+        return block;
     }
 
-    private void processInlineBlock(String lastElement, Block block) {
+    private void processInlineBlock(String lastElement, Block block, Stack<Variable> variables) throws LookupException {
         if (lastElement == null) {
             throw new ChameleonProgrammerException("Inline code blocks are not allowed as the first element in a document!");
         }
 
         for (Element replacee : block.nearestDescendants(ThisLiteral.class)) {
-            replacee.replaceWith(eFactory().createNeioNameExpression(lastElement));
+            NameExpression replacer = eFactory().createNeioNameExpression(lastElement);
+            replacee.replaceWith(replacer);
+
+            RegularMethodInvocation mi = (RegularMethodInvocation) replacer.parent();
+            // Am I the target of a method invocation?
+            if (mi.getTarget().equals(replacer)) {
+                NormalMethod method = mi.getElement();
+                Type type = method.nearestAncestor(Type.class);
+                replacer.replaceWith(eFactory().createNeioNameExpression(getPrefix(type, variables)));
+            }
         }
     }
 
@@ -257,7 +266,8 @@ public class Java8Generator {
         return String.valueOf(s.charAt(0));
     }
 
-    private String getPrefix(Type type, Stack<Variable> variables) throws LookupException {
+    private String getPrefix(Type type, Stack<Variable> stack) throws LookupException {
+        Stack<Variable> variables = (Stack<Variable>) stack.clone();
         while (!variables.isEmpty()) {
             Variable var = variables.peek();
             if (var.getTypeReference().toString().equals(type.toString())) {
