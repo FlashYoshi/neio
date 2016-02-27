@@ -1,9 +1,11 @@
 package be.ugent.neio.translate;
 
+import be.ugent.neio.expression.NeioMethodInvocation;
 import be.ugent.neio.industry.NeioExpressionFactory;
 import be.ugent.neio.industry.NeioFactory;
 import be.ugent.neio.language.Neio;
 import be.ugent.neio.model.document.TextDocument;
+import org.aikodi.chameleon.core.Config;
 import org.aikodi.chameleon.core.element.Element;
 import org.aikodi.chameleon.core.lookup.LookupException;
 import org.aikodi.chameleon.core.variable.Variable;
@@ -19,6 +21,7 @@ import org.aikodi.chameleon.oo.variable.VariableDeclaration;
 import org.aikodi.chameleon.support.expression.ThisLiteral;
 import org.aikodi.chameleon.support.member.simplename.method.NormalMethod;
 import org.aikodi.chameleon.support.member.simplename.method.RegularMethodInvocation;
+import org.aikodi.chameleon.support.statement.StatementExpression;
 import org.aikodi.chameleon.support.variable.LocalVariableDeclarator;
 
 import java.util.ArrayList;
@@ -58,29 +61,28 @@ public class Java8Generator {
     /**
      * Transforms the methodchains into variable declarations
      *
-     * @param block The block in which to find the methodchains
+     * @param oldBlock The block in which to find the methodchains
      * @throws LookupException
      */
-    private void replaceMethodChain(Block block) throws LookupException {
+    private void replaceMethodChain(Block oldBlock) throws LookupException {
         // The defined variables
         Stack<Variable> variables = new Stack<>();
         // Use a string as we constantly have to create new NameExpressions
         String lastElement = null;
 
-        List<Statement> statements = new ArrayList<>();
-        statements.addAll(block.statements());
-
-        for (Statement statement : statements) {
+        Block block = new Block();
+        oldBlock.replaceWith(block);
+        for (Statement statement : oldBlock.statements()) {
             // Is this is a Block?
             // If so, it is an inline code block
             if (getNearestElement(statement, Statement.class) != null) {
                 processInlineBlock(lastElement, (Block) statement);
-                // Remove the statement and add it again to make sure it is in the correct position
-                block.removeStatement(statement);
                 block.addStatement(statement);
                 continue;
 
             }
+            // Add the statement to the new block so that it can do lookups using the new block
+            block.addStatement(statement);
 
             Stack<RegularMethodInvocation> callStack = new Stack<>();
             // MethodInvocations start from the back so push the invocations on a stack to get the correct order
@@ -99,7 +101,7 @@ public class Java8Generator {
                 // FIXME: instanceof until ThisLiteral stops wrongfully being a literal
                 if (call.getTarget() != null && call.getTarget() instanceof ThisLiteral) {
                     //THIS found, substitute it by the last element
-                    call.getTarget().replaceWith(eFactory().createNameExpression(lastElement));
+                    call.getTarget().replaceWith(eFactory().createNeioNameExpression(lastElement));
                 }
 
                 // Get the method to know which type the variable will have to be (= returntype)
@@ -111,7 +113,7 @@ public class Java8Generator {
                 Type type = method.nearestAncestor(Type.class);
                 String prefix = method.isTrue(neio.CONSTRUCTOR) ? null : getPrefix(type, variables);
                 RegularMethodInvocation clone = (RegularMethodInvocation) call.clone();
-                clone.setTarget(prefix == null ? null : eFactory().createNameExpression(prefix));
+                clone.setTarget(prefix == null ? null : eFactory().createNeioNameExpression(prefix));
 
                 String varName;
                 VariableDeclaration var;
@@ -140,7 +142,7 @@ public class Java8Generator {
         }
 
         for (Element replacee : block.nearestDescendants(ThisLiteral.class)) {
-            replacee.replaceWith(eFactory().createNameExpression(lastElement));
+            replacee.replaceWith(eFactory().createNeioNameExpression(lastElement));
         }
     }
 
