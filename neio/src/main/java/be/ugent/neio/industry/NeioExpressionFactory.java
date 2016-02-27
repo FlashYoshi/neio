@@ -1,6 +1,7 @@
 package be.ugent.neio.industry;
 
 import be.kuleuven.cs.distrinet.jnome.core.expression.invocation.ConstructorInvocation;
+import be.kuleuven.cs.distrinet.jnome.core.expression.invocation.JavaMethodInvocation;
 import be.kuleuven.cs.distrinet.jnome.core.type.BasicJavaTypeReference;
 import be.kuleuven.cs.distrinet.jnome.input.JavaExpressionFactory;
 import be.ugent.neio.expression.NeioMethodInvocation;
@@ -29,7 +30,16 @@ public class NeioExpressionFactory extends JavaExpressionFactory {
         return ci;
     }
 
-    public NeioMethodInvocation createMethodInvocation(String methodName, CrossReferenceTarget prefix, List<Expression> arguments) {
+    public JavaMethodInvocation createMethodInvocation(String methodName, CrossReferenceTarget prefix, List<Expression> arguments) {
+        JavaMethodInvocation mi = new JavaMethodInvocation(methodName, prefix);
+        if (arguments != null) {
+            mi.addAllArguments(arguments);
+        }
+
+        return mi;
+    }
+
+    public NeioMethodInvocation createNeioMethodInvocation(String methodName, CrossReferenceTarget prefix, List<Expression> arguments) {
         NeioMethodInvocation mi = new NeioMethodInvocation(methodName, prefix);
         if (arguments != null) {
             mi.addAllArguments(arguments);

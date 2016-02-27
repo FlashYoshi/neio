@@ -28,8 +28,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-import static be.ugent.neio.util.Constants.THIS;
-
 /**
  * @author Titouan Vervack
  */
@@ -128,7 +126,7 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         List<Expression> arguments = new ArrayList<>();
         arguments.add(ooFactory().createStringLiteral(argument));
 
-        return expressionFactory().createMethodInvocation(methodName, previousExpression, arguments);
+        return expressionFactory().createNeioMethodInvocation(methodName, previousExpression, arguments);
     }
 
     private Expression visitPostFixCall(PostfixCallContext ctx) {
@@ -171,7 +169,7 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         List<Expression> arguments = new ArrayList<>();
         arguments.add(ooFactory().createStringLiteral(paragraph));
 
-        return expressionFactory().createMethodInvocation(methodName, previousExpression, arguments);
+        return expressionFactory().createNeioMethodInvocation(methodName, previousExpression, arguments);
     }
 
     public Block visitCode(TerminalNode node) {

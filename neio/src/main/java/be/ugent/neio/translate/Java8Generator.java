@@ -170,7 +170,7 @@ public class Java8Generator {
 
         List<Expression> miArguments = new ArrayList<>();
         miArguments.add(oFactory().createStringLiteral(neioDocument.getName()));
-        MethodInvocation mi = eFactory().createMethodInvocation(WRITE_METHOD, ci, miArguments);
+        MethodInvocation mi = eFactory().createNeioMethodInvocation(WRITE_METHOD, ci, miArguments);
         LocalVariableDeclarator varDecl = new LocalVariableDeclarator(oFactory().createTypeReference("java.lang.String"));
         String varName = getVarName();
         VariableDeclaration var = new VariableDeclaration(varName, mi);
@@ -192,7 +192,7 @@ public class Java8Generator {
 
         List<Expression> miArguments = new ArrayList<>();
         miArguments.add(eFactory().createNameExpression(writerReturn));
-        MethodInvocation mi = eFactory().createMethodInvocation(BUILD_METHOD, ci, miArguments);
+        MethodInvocation mi = eFactory().createNeioMethodInvocation(BUILD_METHOD, ci, miArguments);
 
         neioDocument.getBlock().addStatement(oFactory().createStatement(mi));
     }
