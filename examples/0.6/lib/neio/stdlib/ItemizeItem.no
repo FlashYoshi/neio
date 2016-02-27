@@ -37,8 +37,7 @@ nested ItemizeItem *(String text, Integer level) {
 
 String toTex() {
 	String result = "\\item " + text.toTex();
-	if (content.isEmpty()) {
-	} else {
+	if (content.size() > 0) {
 		result = result + "\n" + super.toTex();
 	}
 	

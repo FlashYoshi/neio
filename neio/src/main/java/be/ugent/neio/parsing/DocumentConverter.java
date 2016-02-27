@@ -28,6 +28,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+import static be.ugent.neio.util.Constants.IMAGE;
+
 /**
  * @author Titouan Vervack
  */
@@ -117,14 +119,24 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
     public Expression visitPrefixCall(PrefixCallContext ctx) {
         // Find the method name and print it
         String methodName = "";
-        for (TerminalNode h : ctx.MethodName()) {
-            methodName += h;
-        }
-
-        // Find the arguments
-        String argument = visitSentence(ctx.sentence());
         List<Expression> arguments = new ArrayList<>();
-        arguments.add(ooFactory().createStringLiteral(argument));
+        if (ctx.MethodName() != null && !ctx.MethodName().isEmpty()) {
+            for (TerminalNode h : ctx.MethodName()) {
+                methodName += h;
+            }
+
+            // Find the arguments
+            String argument = visitSentence(ctx.sentence());
+            arguments.add(ooFactory().createStringLiteral(argument));
+        } else {
+            methodName = IMAGE;
+            String caption = "";
+            for (int i = 0; i < ctx.WORD().size() - 1; i++) {
+                caption += ctx.WORD().get(i).getText() + " ";
+            }
+            arguments.add(ooFactory().createStringLiteral(caption));
+            arguments.add(ooFactory().createStringLiteral(ctx.WORD().get(ctx.WORD().size() - 1).getText()));
+        }
 
         return expressionFactory().createNeioMethodInvocation(methodName, previousExpression, arguments);
     }

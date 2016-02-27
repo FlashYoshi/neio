@@ -13,5 +13,5 @@ public class Constants {
     public static final String BASE = "../examples/" + VERSION;
     public static final String NEIO_HOME = BASE + "/neio";
     public static final String AUTO_GEN_DIR = "./gen";
-    public static final String THIS = "this";
+    public static final String IMAGE = "image";
 }

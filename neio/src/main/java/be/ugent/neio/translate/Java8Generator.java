@@ -270,7 +270,14 @@ public class Java8Generator {
         Stack<Variable> variables = (Stack<Variable>) stack.clone();
         while (!variables.isEmpty()) {
             Variable var = variables.peek();
-            if (var.getTypeReference().toString().equals(type.toString())) {
+            boolean found = false;
+            for (Type t : var.getType().getSelfAndAllSuperTypesView()) {
+                if (t.name().equals(type.name())) {
+                    found = true;
+                    break;
+                }
+            }
+            if (found) {
                 return var.name();
             } else {
                 variables.pop();

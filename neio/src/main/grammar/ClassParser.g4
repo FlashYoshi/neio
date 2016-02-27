@@ -28,8 +28,9 @@ fieldAssignmentExpression : var=fieldDecl EQUALS val=expression;
 
 method : methodExpression block;
 methodExpression : modifier* methodHeader L_BRACE parameters? R_BRACE;
-methodHeader : (type | VOID)? name=(Identifier | MethodIdentifier | STAR);
-modifier : PROTECTED
+methodHeader : (type | VOID)? name=(Identifier | MethodIdentifier | STAR | MINUS);
+modifier : PRIVATE
+         | PROTECTED
          | PUBLIC
          | NESTED;
 
@@ -65,7 +66,7 @@ expression : literal                    #literalExpression
 		   | constructorCall	        #newExpression
            | expression DOT Identifier  #chainExpression
            | L_BRACE expression R_BRACE #parExpression
-           | expression DOT name=(Identifier | MethodIdentifier | STAR) args=arguments #qualifiedCallExpression
+           | expression DOT name=(Identifier | MethodIdentifier | STAR| MINUS) args=arguments #qualifiedCallExpression
            | name=Identifier args=arguments                                     #selfCallExpression
            | left=expression op=OR right=expression                             #orExpression
            | left=expression op=AND right=expression                            #andExpression

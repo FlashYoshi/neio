@@ -59,12 +59,12 @@ Chapter 1.1 would be on the same level which is obviously not what we want.
 
 Concluding this we see that "this" has to point to the last constructive object. This is the last
 object that is connected to the root document.
-Having to recursively check for each variable if it is connected to the root will slow down
-compile time dramatically. Instead of having a method that looks for it, we can use a boolean
-"rootConnected" that is set for every base-object "Content". This can be set depending on
-the fact that the parent has this boolean set to true or not, when we add the new item to some
-other Content. Once some part is attached to the root document, all children's boolean should
-be set to true.
+To allow this, we can save a datastructure that remembers the connections between two variables.
+When var1 uses var0 we say that var1 is connected to var0. Using this we create sets of connected
+variables. When a top level variable connects with another top level variable, their sets merge.
+Now we can just find the last root connected variable from the root set.
+Warning: This however means that destruction should be treated specially. It should remove an item
+from the set, or destruction of elements should not be allowed.
 
 "this" will be translated by the Neio compiler to the latest root connected variable. This means
 that "this" used in inline code, or "this" that has been automatically generated to connect the
