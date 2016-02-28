@@ -6,6 +6,7 @@ import java.util.*;
 class Content implements Texable;
 
 private List<Content> content;
+private Content parent;
 protected ContentF factory;
 
 Content() {
@@ -15,8 +16,17 @@ Content() {
 
 Content addContent(Content c) {
 	content.add(c);
+	c.setParent(this);
 	
 	return c;
+}
+
+void setParent(Content c) {
+	parent = c;
+}
+
+Content parent() {
+	return parent;
 }
 
 Integer contentSize() {
