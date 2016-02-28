@@ -1,7 +1,0 @@
-namespace neio.stdlib;
-
-class NeioRuntimeException extends RuntimeException;
-
-NeioRuntimeException(String message) {
-	super(message);
-}

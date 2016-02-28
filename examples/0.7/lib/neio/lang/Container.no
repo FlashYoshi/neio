@@ -1,3 +1,0 @@
-namespace neio.lang;
-
-class Container extends Content;
