@@ -67,7 +67,7 @@ expression : literal                    #literalExpression
            | expression DOT Identifier  #chainExpression
            | L_BRACE expression R_BRACE #parExpression
            | expression DOT name=(Identifier | MethodIdentifier | STAR| MINUS) args=arguments #qualifiedCallExpression
-           | name=Identifier args=arguments                                     #selfCallExpression
+           | name=(Identifier | MethodIdentifier | STAR | MINUS) args=arguments #selfCallExpression
            | left=expression op=OR right=expression                             #orExpression
            | left=expression op=AND right=expression                            #andExpression
            | left=expression op=HAT right=expression                            #exponentiationExpression

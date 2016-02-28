@@ -10,7 +10,7 @@ This is the first paragraph of our simple document.
 ## Chapter 1.1
 But for this to be a real document we do of course need more than one chapter and more than one indentation level, so... voila!
 ```
-this.#("Chapter 17.1", 2)
+#("Chapter 17.1", 2)
     .newline("Nice paragraph!");
 ```
 // TODO: fix inline use of reserved signs
@@ -27,7 +27,7 @@ Chapter test = new Chapter("Test",1);
 ```
 Chapter chap = new Chapter("Chapter 18.1", 2);
 chap.newline("This is a coded paragraph");
-this.addChapter(chap);
+addChapter(chap);
 ```
 # Chapter 2
 Lastly a chapter ending with two paragraphs should do the trick
