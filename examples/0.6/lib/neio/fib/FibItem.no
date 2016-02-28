@@ -1,0 +1,37 @@
+namespace neio.fib;
+
+import neio.stdlib.*;
+import neio.lang.Text;
+import neio.lang.Content;
+
+class FibItem extends EnumerateItem;
+
+Enumerate fib;
+
+FibItem(String text, Integer level) {
+	super(text, level);
+}
+
+FibItem(String text, Enumerate fib, Integer level) {
+	super(text, fib, level);
+	this.fib = fib;
+}
+
+nested EnumerateItem -(String text, Integer level) {
+	EnumerateItem item = null;
+	if (level > this.level) {
+		Enumerate list = factory.createEnumerate();
+		item = factory.createEnumerateItem(text, list, level);
+		list.-(item);
+		content.add(list);
+	} else {
+		item = factory.createEnumerateItem(text, fib, level);
+		fib.-(item);
+	}
+	
+	return item;
+}
+
+String toTex() {
+	return super.toTex(level + "." + fib.getNumber());
+}

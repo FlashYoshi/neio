@@ -44,3 +44,7 @@ EnumerateItem -(String text) {
 	
 	return item;
 }
+
+Integer getNumber() {
+	return 0;
+}
