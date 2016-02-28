@@ -39,7 +39,7 @@ EnumerateItem -(EnumerateItem item) {
 }
 
 EnumerateItem -(String text) {
-	EnumerateItem item = new EnumerateItem(text, 1);
+	EnumerateItem item = factory.createEnumerateItem(text, this, 1);
 	content.add(item);
 	
 	return item;

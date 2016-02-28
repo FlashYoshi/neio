@@ -24,19 +24,6 @@ protected String finalizer() {
 	return "\\end{description}\n";
 }
 
-FibItem -(FibItem item) {
-	content.add(item);
-	
-	return item;
-}
-
-EnumerateItem -(String text) {
-	EnumerateItem item = factory.createEnumerateItem(text, this, 1);
-	content.add(item);
-	
-	return item;
-}
-
 Integer getNumber() {
 	index = index + 1;
 	if (index <= 2) {
