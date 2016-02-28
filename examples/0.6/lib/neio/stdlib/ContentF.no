@@ -1,0 +1,48 @@
+namespace neio.stdlib;
+
+import neio.lang.Text;
+
+class ContentF extends Factory;
+
+ContentF() {
+}
+
+Chapter createChapter(String title, Integer level) {
+	return new Chapter(title, level);
+}
+
+Itemize createItemize() {
+	return new Itemize();
+}
+
+ItemizeItem createItemizeItem(String text, Integer level) {
+	return new ItemizeItem(text, level);
+}
+
+ItemizeItem createItemizeItem(String text, Itemize itemize, Integer level) {
+	return new ItemizeItem(text, itemize, level);
+}
+
+Enumerate createEnumerate() {
+	return new Enumerate();
+}
+
+EnumerateItem createEnumerateItem(String text, Integer level) {
+	return new EnumerateItem(text, level);
+}
+
+EnumerateItem createEnumerateItem(String text, Enumerate enumerate, Integer level) {
+	return new EnumerateItem(text, enumerate, level);
+}
+
+Paragraph createParagraph(String text) {
+	return new Paragraph(text);
+}
+
+Image createImage(String caption, String imageName) {
+	return new Image(caption, imageName);
+}
+
+Text createText(String text) {
+	return new Text(text);
+}

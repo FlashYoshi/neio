@@ -16,7 +16,7 @@ ItemizeItem *(ItemizeItem item) {
 }
 
 ItemizeItem *(String text) {
-	ItemizeItem item = new ItemizeItem(text, 1);
+	ItemizeItem item = factory.createItemizeItem(text, 1);
 	content.add(item);
 	
 	return item;

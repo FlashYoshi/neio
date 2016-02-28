@@ -13,15 +13,15 @@ Chapter(String title, Integer level) {
 }
 
 nested Chapter #(String title, Integer level) {
-    new Chapter(title, level) chapter;
+    Chapter chapter = factory.createChapter(title, level);
     content.add(chapter);
 	
     return chapter;
 }
 
 Itemize *(String text) {
-	Itemize itemize = new Itemize();
-	ItemizeItem item = new ItemizeItem(text, itemize, 1);
+	Itemize itemize = factory.createItemize();
+	ItemizeItem item = factory.createItemizeItem(text, itemize, 1);
 	itemize.*(item);
     content.add(itemize);
 
@@ -29,8 +29,8 @@ Itemize *(String text) {
 }
 
 Enumerate -(String text) {
-	Enumerate enumerate = new Enumerate();
-	EnumerateItem item = new EnumerateItem(text, enumerate, 1);
+	Enumerate enumerate = factory.createEnumerate();
+	EnumerateItem item = factory.createEnumerateItem(text, enumerate, 1);
 	enumerate.-(item);
     content.add(enumerate);
 
@@ -38,14 +38,14 @@ Enumerate -(String text) {
 }
 
 Paragraph newline(String parText) {
-    new Paragraph(parText) p;
+    Paragraph p = factory.createParagraph(parText);
     content.add(p);
 	
     return p;
 }
 
 Image image(String caption, String imageName) {
-	new Image(caption, imageName) neioImage;
+	Image neioImage = factory.createImage(caption, imageName);
 	content.add(neioImage);
 	
 	return neioImage;

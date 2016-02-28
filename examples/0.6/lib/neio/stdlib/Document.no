@@ -14,7 +14,7 @@ Document() {
 }
 
 Chapter #(String title) {
-    new Chapter(title, 1) chapter;
+    Chapter chapter = factory.createChapter(title, 1);
     content.add(chapter);
 
     return chapter;
@@ -27,8 +27,8 @@ Chapter addChapter(Chapter chapter) {
 }
 
 Itemize *(String text) {
-	Itemize itemize = new Itemize();
-	ItemizeItem item = new ItemizeItem(text, itemize, 1);
+	Itemize itemize = factory.createItemize();
+	ItemizeItem item = factory.createItemizeItem(text, itemize, 1);
 	itemize.*(item);
     content.add(itemize);
 
@@ -36,14 +36,14 @@ Itemize *(String text) {
 }
 
 Paragraph newline(String parText) {
-    new Paragraph(parText) p;
+    Paragraph p = factory.createParagraph(parText);
     content.add(p);
 	
     return p;
 }
 
 Image image(String caption, String imageName) {
-	new Image(caption, imageName) neioImage;
+	Image neioImage = factory.createImage(caption, imageName);
 	content.add(neioImage);
 	
 	return neioImage;
