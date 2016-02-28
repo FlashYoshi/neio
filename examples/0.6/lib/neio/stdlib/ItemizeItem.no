@@ -26,7 +26,7 @@ nested ItemizeItem *(String text, Integer level) {
 		Itemize list = new Itemize();
 		item = new ItemizeItem(text, list, level);
 		list.*(item);
-		content.add(list);
+		addContent(list);
 	} else {
 		item = new ItemizeItem(text, level);
 		itemize.*(item);
@@ -37,7 +37,7 @@ nested ItemizeItem *(String text, Integer level) {
 
 String toTex() {
 	String result = "\\item " + text.toTex();
-	if (content.size() > 0) {
+	if (contentSize() > 0) {
 		result = result + "\n" + super.toTex();
 	}
 	

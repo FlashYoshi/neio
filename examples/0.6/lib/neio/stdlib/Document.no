@@ -15,13 +15,13 @@ Document() {
 
 Chapter #(String title) {
     Chapter chapter = factory.createChapter(title, 1);
-    content.add(chapter);
+    addContent(chapter);
 
     return chapter;
 }
 
 Chapter addChapter(Chapter chapter) {
-	content.add(chapter);
+	addContent(chapter);
 	
 	return chapter;
 }
@@ -30,21 +30,21 @@ Itemize *(String text) {
 	Itemize itemize = factory.createItemize();
 	ItemizeItem item = factory.createItemizeItem(text, itemize, 1);
 	itemize.*(item);
-    content.add(itemize);
+    addContent(itemize);
 
     return itemize;
 }
 
 Paragraph newline(String parText) {
     Paragraph p = factory.createParagraph(parText);
-    content.add(p);
+    addContent(p);
 	
     return p;
 }
 
 Image image(String caption, String imageName) {
 	Image neioImage = factory.createImage(caption, imageName);
-	content.add(neioImage);
+	addContent(neioImage);
 	
 	return neioImage;
 }

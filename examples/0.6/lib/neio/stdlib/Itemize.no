@@ -10,14 +10,14 @@ String toTex() {
 }
 
 ItemizeItem *(ItemizeItem item) {
-	content.add(item);
+	addContent(item);
 	
 	return item;
 }
 
 ItemizeItem *(String text) {
 	ItemizeItem item = factory.createItemizeItem(text, 1);
-	content.add(item);
+	addContent(item);
 	
 	return item;
 }
