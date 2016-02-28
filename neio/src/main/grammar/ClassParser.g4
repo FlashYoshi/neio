@@ -66,6 +66,7 @@ expression : literal                    #literalExpression
 		   | constructorCall	        #newExpression
            | expression DOT Identifier  #chainExpression
            | L_BRACE expression R_BRACE #parExpression
+           | L_BRACE type R_BRACE expression #castExpression
            | expression DOT name=(Identifier | MethodIdentifier | STAR| MINUS) args=arguments #qualifiedCallExpression
            | name=(Identifier | MethodIdentifier | STAR | MINUS) args=arguments #selfCallExpression
            | left=expression op=OR right=expression                             #orExpression

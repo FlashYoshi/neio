@@ -31,6 +31,7 @@ import org.aikodi.chameleon.oo.type.inheritance.SubtypeRelation;
 import org.aikodi.chameleon.oo.variable.FormalParameter;
 import org.aikodi.chameleon.oo.variable.RegularVariable;
 import org.aikodi.chameleon.support.expression.AssignmentExpression;
+import org.aikodi.chameleon.support.expression.ClassCastExpression;
 import org.aikodi.chameleon.support.member.simplename.variable.MemberVariableDeclarator;
 import org.aikodi.chameleon.support.modifier.*;
 import org.aikodi.chameleon.support.statement.ForControl;
@@ -40,6 +41,7 @@ import org.aikodi.chameleon.support.statement.StatementExprList;
 import org.aikodi.chameleon.support.variable.LocalVariableDeclarator;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.TerminalNode;
+import org.neio.antlr.ClassParser;
 import org.neio.antlr.ClassParser.*;
 import org.neio.antlr.ClassParserBaseVisitor;
 
@@ -252,6 +254,11 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     @Override
     public Statement visitVariableDeclarationStatement(@NotNull VariableDeclarationStatementContext ctx) {
         return visitVariableDeclaration(ctx.variableDeclaration());
+    }
+
+    @Override
+    public ClassCastExpression visitCastExpression(@NotNull CastExpressionContext ctx) {
+        return eFactory().createClassCastExpression((TypeReference) visit(ctx.type()), (Expression) visit(ctx.expression()));
     }
 
     @Override
