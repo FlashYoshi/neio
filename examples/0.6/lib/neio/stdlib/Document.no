@@ -1,8 +1,17 @@
 namespace neio.stdlib;
 
 import neio.lang.Container;
+import java.util.List;
+import java.util.ArrayList;
 
 class Document extends Container;
+
+private List<String> packages = new ArrayList<String>();
+
+Document() {
+	packages.add("a4wide");
+	packages.add("graphicx");
+}
 
 Chapter #(String title) {
     new Chapter(title, 1) chapter;
@@ -41,12 +50,17 @@ Image image(String caption, String imageName) {
 }
 
 String toTex() {
-	return "\\documentclass{article}\n" +
-			  "\\usepackage{a4wide}\n" +
-			  "\\usepackage{graphicx}\n" +
+	String tex = "\\documentclass{article}\n";
+	for (int i = 0; i < packages.size(); i = i + 1) {
+		tex = tex + "\\usepackage{" + packages.get(i) + "}\n";
+	}
+	
+	tex = tex +
 			  "\\setlength{\\parindent}{0em}\n" +
 			  "\\setlength{\\parskip}{1em}\n" +
 			  "\\begin{document}\n" +
 			  super.toTex() +
 			  "\n\\end{document}\n";
+
+	return tex;
 }
