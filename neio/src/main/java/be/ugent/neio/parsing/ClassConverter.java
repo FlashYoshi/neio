@@ -194,7 +194,10 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         // visitFieldDecl should have filled in exactly one variable
         try {
             RegularVariable var = (RegularVariable) varDecl.declarations().get(0);
-            return ooFactory().createMemberVariableDeclarator(var.name(), var.getTypeReference(), (Expression) visit(ctx.val));
+            MemberVariableDeclarator mvd = ooFactory().createMemberVariableDeclarator(var.name(), var.getTypeReference(), (Expression) visit(ctx.val));
+            mvd.addModifiers(varDecl.modifiers());
+
+            return mvd;
         } catch (LookupException e) {
             e.printStackTrace();
         }
