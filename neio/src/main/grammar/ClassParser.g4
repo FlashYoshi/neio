@@ -38,8 +38,8 @@ block : LC_BRACE statement* RC_BRACE;
 statement : expression SCOLON           #expressionStatement
           | RETURN expression? SCOLON   #returnStatement
           | neioNewCall SCOLON          #newStatement
-          | assignmentExpression SCOLON #assignmentStatement
           | variableDeclaration SCOLON  #variableDeclarationStatement
+          | assignmentExpression SCOLON #assignmentStatement
           | ifteStatement               #ifStatement
           | WHILE L_BRACE expression R_BRACE (block | SCOLON) #whileLoop
           | FOR L_BRACE init=variableDeclaration SCOLON cond=expression SCOLON update=assignmentExpression R_BRACE block #forLoop

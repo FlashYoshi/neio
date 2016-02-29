@@ -33,8 +33,40 @@ Integer contentSize() {
 	return content.size();
 }
 
+List<Content> content() {
+	return content;
+}
+
 void setFactory(ContentF factory) {
 	this.factory = factory;
+}
+
+List<Content> ancestors() {
+	List<Content> list = new ArrayList<Content>();
+	Content p = parent();
+	
+	while (p != null) {
+		list.add(p);
+		p = p.parent();
+	}
+	
+	return list;
+}
+
+List<Content> descendants() {
+	return descendants(content());
+}
+
+protected List<Content> descendants(List<Content> input) {
+	List<Content> list = new ArrayList<Content>();
+	
+	for (int i = 0; i < input.size(); i = i + 1) {
+		Content current = input.get(i);
+		list.add(current);
+		list.addAll(descendants(current.content()));
+	}
+	
+	return list;
 }
 
 String toTex() {
