@@ -1,5 +1,6 @@
 package be.ugent.neio.industry;
 
+import be.kuleuven.cs.distrinet.jnome.core.expression.ClassLiteral;
 import be.kuleuven.cs.distrinet.jnome.core.expression.invocation.SuperConstructorDelegation;
 import be.kuleuven.cs.distrinet.jnome.core.expression.invocation.ThisConstructorDelegation;
 import be.kuleuven.cs.distrinet.jnome.core.method.JavaMethod;
@@ -104,6 +105,10 @@ public class NeioFactory extends Java7Factory {
         return new Block();
     }
 
+    public ClassLiteral createClassLiteral(String identifier) {
+        return new ClassLiteral(createTypeReference(identifier));
+    }
+
     public Literal createDoubleLiteral(String value) {
         return createLiteral(createTypeReference("java.lang.Double"), value);
     }
@@ -186,5 +191,9 @@ public class NeioFactory extends Java7Factory {
 
     public ThisConstructorDelegation createThisDelegation() {
         return new ThisConstructorDelegation();
+    }
+
+    public WhileStatement createWhileStatement(Expression expression, Statement statement) {
+        return new WhileStatement(expression, statement);
     }
 }

@@ -24,6 +24,7 @@ VOID : 'void';
 IF : 'if';
 ELSE : 'else';
 FOR : 'for';
+WHILE : 'while';
 NESTED : 'nested';
 TRUE : 'true';
 FALSE : 'false';

@@ -34,14 +34,10 @@ import org.aikodi.chameleon.support.expression.AssignmentExpression;
 import org.aikodi.chameleon.support.expression.ClassCastExpression;
 import org.aikodi.chameleon.support.member.simplename.variable.MemberVariableDeclarator;
 import org.aikodi.chameleon.support.modifier.*;
-import org.aikodi.chameleon.support.statement.ForControl;
-import org.aikodi.chameleon.support.statement.ForStatement;
-import org.aikodi.chameleon.support.statement.IfThenElseStatement;
-import org.aikodi.chameleon.support.statement.StatementExprList;
+import org.aikodi.chameleon.support.statement.*;
 import org.aikodi.chameleon.support.variable.LocalVariableDeclarator;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.TerminalNode;
-import org.neio.antlr.ClassParser;
 import org.neio.antlr.ClassParser.*;
 import org.neio.antlr.ClassParserBaseVisitor;
 
@@ -248,7 +244,12 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     @Override
     public Statement visitReturnStatement(@NotNull ReturnStatementContext ctx) {
-        return ooFactory().createReturnStatement((Expression) visit(ctx.expression()));
+        Expression e = null;
+        if (ctx.expression() != null && !ctx.expression().isEmpty()) {
+            e = (Expression) visit(ctx.expression());
+        }
+
+        return ooFactory().createReturnStatement(e);
     }
 
     @Override
@@ -259,6 +260,16 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     @Override
     public ClassCastExpression visitCastExpression(@NotNull CastExpressionContext ctx) {
         return eFactory().createClassCastExpression((TypeReference) visit(ctx.type()), (Expression) visit(ctx.expression()));
+    }
+
+    @Override
+    public WhileStatement visitWhileLoop(@NotNull WhileLoopContext ctx) {
+        Statement statement = null;
+        if (ctx.block() != null && !ctx.block().isEmpty()) {
+            statement = visitBlock(ctx.block());
+        }
+
+        return ooFactory().createWhileStatement((Expression) visit(ctx.expression()), statement);
     }
 
     @Override
@@ -567,6 +578,11 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         arguments.add(ooFactory().createTypeArgument(ctx.Identifier().getText()));
 
         return arguments;
+    }
+
+    @Override
+    public Object visitClassLiteral(@NotNull ClassLiteralContext ctx) {
+        return ooFactory().createClassLiteral(ctx.Identifier().getText());
     }
 
     @Override

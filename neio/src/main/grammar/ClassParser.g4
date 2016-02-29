@@ -36,11 +36,12 @@ modifier : PRIVATE
 
 block : LC_BRACE statement* RC_BRACE;
 statement : expression SCOLON           #expressionStatement
-          | RETURN expression SCOLON    #returnStatement
+          | RETURN expression? SCOLON   #returnStatement
           | neioNewCall SCOLON          #newStatement
           | assignmentExpression SCOLON #assignmentStatement
           | variableDeclaration SCOLON  #variableDeclarationStatement
           | ifteStatement               #ifStatement
+          | WHILE L_BRACE expression R_BRACE (block | SCOLON) #whileLoop
           | FOR L_BRACE init=variableDeclaration SCOLON cond=expression SCOLON update=assignmentExpression R_BRACE block #forLoop
           ;
 
@@ -55,6 +56,7 @@ literal : StringLiteral     #stringLiteral
         | Double            #doubleLiteral
         | (TRUE | FALSE)    #boolLiteral
         | NULL              #nullLiteral
+        | Identifier DOT CLASS  #classLiteral
         ;
 
 expression : literal                    #literalExpression
