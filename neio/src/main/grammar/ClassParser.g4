@@ -56,10 +56,10 @@ literal : StringLiteral     #stringLiteral
         | Double            #doubleLiteral
         | (TRUE | FALSE)    #boolLiteral
         | NULL              #nullLiteral
-        | Identifier DOT CLASS  #classLiteral
         ;
 
 expression : literal                    #literalExpression
+           | Identifier DOT CLASS       #classLiteral
            | SUPER                      #superExpression
            | SUPER arguments            #superDelegation
            | THIS                       #selfExpression

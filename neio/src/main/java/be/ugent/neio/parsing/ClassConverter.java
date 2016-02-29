@@ -1,5 +1,6 @@
 package be.ugent.neio.parsing;
 
+import be.kuleuven.cs.distrinet.jnome.core.expression.ClassLiteral;
 import be.kuleuven.cs.distrinet.jnome.core.expression.invocation.ConstructorInvocation;
 import be.kuleuven.cs.distrinet.jnome.core.expression.invocation.SuperConstructorDelegation;
 import be.kuleuven.cs.distrinet.jnome.core.expression.invocation.ThisConstructorDelegation;
@@ -581,7 +582,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     @Override
-    public Object visitClassLiteral(@NotNull ClassLiteralContext ctx) {
+    public ClassLiteral visitClassLiteral(@NotNull ClassLiteralContext ctx) {
         return ooFactory().createClassLiteral(ctx.Identifier().getText());
     }
 

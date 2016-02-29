@@ -21,7 +21,7 @@ This is the end of this very exciting document, but let's first try to make this
 Let's also add some more newlines to see how we deal with those.
 
 ```
-parent().setFactory(new FibF());
+nearestAncestor(Chapter.class).setFactory(new FibF());
 ```
 - Item 1
 - Item 2
