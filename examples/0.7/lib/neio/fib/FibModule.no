@@ -1,0 +1,13 @@
+namespace neio.fib;
+
+import neio.stdlib.*;
+import neio.lang.Text;
+
+class FibModule extends AbstractModule;
+
+protected void configure() {
+	install(new FactoryModuleBuilder()
+	 .implement(Enumerate.class, Enumerate.class);
+     .implement(EnumerateItem.class, FibItem.class)
+     .build(FibF.class));
+}
