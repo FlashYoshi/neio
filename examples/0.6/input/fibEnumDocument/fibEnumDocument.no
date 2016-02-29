@@ -1,5 +1,5 @@
 // As always, we start out by mentioning that this is a document
-[FibDocument]
+[Document]
 
 /* These multi-line comments
     Should also work
@@ -20,6 +20,9 @@ Lastly a chapter ending with two paragraphs should do the trick
 This is the end of this very exciting document, but let's first try to make this paragraph a little longer. Only 80 characters per line when we have these giant screens is a bit outdated isn't it?
 Let's also add some more newlines to see how we deal with those.
 
+```
+parent().setFactory(new FibF());
+```
 - Item 1
 - Item 2
 - Item 3

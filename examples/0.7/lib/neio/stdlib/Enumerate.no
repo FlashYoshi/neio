@@ -8,6 +8,11 @@ class Enumerate extends Content;
 // This option tells the enumerate how to enumerate
 protected String option = null;
 
+@Inject
+Enumerate(Factory factory) {
+	this.factory = factory;
+}
+
 String toTex() {
 	return header() + super.toTex() + finalizer();
 }
@@ -33,14 +38,18 @@ protected String finalizer() {
 }
 
 EnumerateItem -(EnumerateItem item) {
-	content.add(item);
+	addContent(item);
 	
 	return item;
 }
 
 EnumerateItem -(String text) {
-	EnumerateItem item = new EnumerateItem(text, 1);
-	content.add(item);
+	EnumerateItem item = factory.createEnumerateItem(text, this, 1);
+	addContent(item);
 	
 	return item;
+}
+
+Integer getNumber() {
+	return 0;
 }

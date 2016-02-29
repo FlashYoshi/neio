@@ -9,12 +9,16 @@ Text text;
 Integer level;
 Itemize itemize;
 
-ItemizeItem(String text, Integer level) {
+@AssistedInject
+ItemizeItem(Factory factory, @Assisted String text, Integer level) {
+	this.factory = factory;
 	this.text = new Text(text);
 	this.level = level;
 }
 
-ItemizeItem(String text, Itemize itemize, Integer level) {
+@AssistedInject
+ItemizeItem(Factory factory, @Assisted String text, Itemize itemize, Integer level) {
+	this.factory = factory;
 	this.text = new Text(text);
 	this.itemize = itemize;
 	this.level = level;
@@ -26,7 +30,7 @@ nested ItemizeItem *(String text, Integer level) {
 		Itemize list = new Itemize();
 		item = new ItemizeItem(text, list, level);
 		list.*(item);
-		content.add(list);
+		addContent(list);
 	} else {
 		item = new ItemizeItem(text, level);
 		itemize.*(item);
@@ -37,7 +41,7 @@ nested ItemizeItem *(String text, Integer level) {
 
 String toTex() {
 	String result = "\\item " + text.toTex();
-	if (content.size() > 0) {
+	if (contentSize() > 0) {
 		result = result + "\n" + super.toTex();
 	}
 	

@@ -152,8 +152,14 @@ public class NeioSyntax extends Java7Syntax {
 
     @Override
     public String toCodeRegularMethodInvocation(RegularMethodInvocation inv) {
-        inv.setName(createValidMethodname(inv.name()));
-        return super.toCodeRegularMethodInvocation(inv);
+        // Print with a name that Java can work with
+        String old = inv.name();
+        inv.setName(createValidMethodname(old));
+
+        String result = super.toCodeRegularMethodInvocation(inv);
+        inv.setName(old);
+
+        return result;
     }
 
     // Creates a valid method name as Neio allows for symbols in its methodnames

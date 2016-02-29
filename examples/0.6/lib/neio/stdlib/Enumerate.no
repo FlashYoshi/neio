@@ -33,14 +33,18 @@ protected String finalizer() {
 }
 
 EnumerateItem -(EnumerateItem item) {
-	content.add(item);
+	addContent(item);
 	
 	return item;
 }
 
 EnumerateItem -(String text) {
-	EnumerateItem item = new EnumerateItem(text, 1);
-	content.add(item);
+	EnumerateItem item = factory.createEnumerateItem(text, this, 1);
+	addContent(item);
 	
 	return item;
+}
+
+Integer getNumber() {
+	return 0;
 }

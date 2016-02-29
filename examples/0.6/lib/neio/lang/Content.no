@@ -1,13 +1,40 @@
 namespace neio.lang;
 
+import neio.stdlib.ContentF;
 import java.util.*;
 
 class Content implements Texable;
 
-protected List<Content> content;
+private List<Content> content;
+private Content parent;
+protected ContentF factory;
 
 Content() {
     content = new ArrayList<Content>();
+	factory = new ContentF();
+}
+
+Content addContent(Content c) {
+	content.add(c);
+	c.setParent(this);
+	
+	return c;
+}
+
+void setParent(Content c) {
+	parent = c;
+}
+
+Content parent() {
+	return parent;
+}
+
+Integer contentSize() {
+	return content.size();
+}
+
+void setFactory(ContentF factory) {
+	this.factory = factory;
 }
 
 String toTex() {

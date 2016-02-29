@@ -1,5 +1,6 @@
-namespace neio.stdlib;
+namespace neio.fib;
 
+import neio.stdlib.*;
 import neio.lang.Text;
 import neio.lang.Content;
 
@@ -21,19 +22,6 @@ protected String header() {
 // Finalize already exists in java.lang.Object
 protected String finalizer() {
 	return "\\end{description}\n";
-}
-
-FibItem -(FibItem item) {
-	content.add(item);
-	
-	return item;
-}
-
-FibItem -(String text) {
-	FibItem item = new FibItem(text, 1, this);
-	content.add(item);
-	
-	return item;
 }
 
 Integer getNumber() {

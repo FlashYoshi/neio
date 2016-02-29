@@ -1,5 +1,6 @@
 package be.ugent.neio.translate;
 
+import be.kuleuven.cs.distrinet.jnome.core.expression.invocation.JavaMethodInvocation;
 import be.ugent.neio.industry.NeioExpressionFactory;
 import be.ugent.neio.industry.NeioFactory;
 import be.ugent.neio.language.Neio;
@@ -141,18 +142,31 @@ public class Java8Generator {
             throw new ChameleonProgrammerException("Inline code blocks are not allowed as the first element in a document!");
         }
 
-        for (Element replacee : block.nearestDescendants(ThisLiteral.class)) {
+        // Replace occurences of 'this'
+        for (Element replacee : block.descendants(ThisLiteral.class)) {
             NameExpression replacer = eFactory().createNeioNameExpression(lastElement);
             replacee.replaceWith(replacer);
 
             RegularMethodInvocation mi = (RegularMethodInvocation) replacer.parent();
             // Am I the target of a method invocation?
             if (mi.getTarget().equals(replacer)) {
-                NormalMethod method = mi.getElement();
-                Type type = method.nearestAncestor(Type.class);
-                replacer.replaceWith(eFactory().createNeioNameExpression(getPrefix(type, variables)));
+                setThis(mi, replacer, variables);
             }
         }
+
+        for (JavaMethodInvocation jmi : block.descendants(JavaMethodInvocation.class)) {
+            // This is a method invocation that should be called on 'this'
+            if (jmi.getTarget() == null) {
+                jmi.setTarget(eFactory().createNeioNameExpression(lastElement));
+                setThis(jmi, jmi.getTarget(), variables);
+            }
+        }
+    }
+
+    private void setThis(RegularMethodInvocation mi, Element replacee, Stack<Variable> variables) throws LookupException {
+        NormalMethod method = mi.getElement();
+        Type type = method.nearestAncestor(Type.class);
+        replacee.replaceWith(eFactory().createNeioNameExpression(getPrefix(type, variables)));
     }
 
     /**

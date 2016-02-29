@@ -9,7 +9,7 @@ void build(String name) {
 	if (name != null) {
 		String command = "pdflatex " + name;
 		
-		Runtime.getRuntime().exec(command);
+		Runtime.getRuntime().exec(command).waitFor();
 		
 		String texlessName = name.substring(0, name.length() - 4);
 		name = texlessName + ".pdf";

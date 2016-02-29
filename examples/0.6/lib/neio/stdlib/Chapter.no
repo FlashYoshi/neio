@@ -13,40 +13,40 @@ Chapter(String title, Integer level) {
 }
 
 nested Chapter #(String title, Integer level) {
-    new Chapter(title, level) chapter;
-    content.add(chapter);
+    Chapter chapter = factory.createChapter(title, level);
+    addContent(chapter);
 	
     return chapter;
 }
 
 Itemize *(String text) {
-	Itemize itemize = new Itemize();
-	ItemizeItem item = new ItemizeItem(text, itemize, 1);
+	Itemize itemize = factory.createItemize();
+	ItemizeItem item = factory.createItemizeItem(text, itemize, 1);
 	itemize.*(item);
-    content.add(itemize);
+    addContent(itemize);
 
     return itemize;
 }
 
 Enumerate -(String text) {
-	Enumerate enumerate = new Enumerate();
-	EnumerateItem item = new EnumerateItem(text, enumerate, 1);
+	Enumerate enumerate = factory.createEnumerate();
+	EnumerateItem item = factory.createEnumerateItem(text, enumerate, 1);
 	enumerate.-(item);
-    content.add(enumerate);
+    addContent(enumerate);
 
     return enumerate;
 }
 
 Paragraph newline(String parText) {
-    new Paragraph(parText) p;
-    content.add(p);
+    Paragraph p = factory.createParagraph(parText);
+    addContent(p);
 	
     return p;
 }
 
 Image image(String caption, String imageName) {
-	new Image(caption, imageName) neioImage;
-	content.add(neioImage);
+	Image neioImage = factory.createImage(caption, imageName);
+	addContent(neioImage);
 	
 	return neioImage;
 }

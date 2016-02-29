@@ -11,12 +11,12 @@ protected Enumerate enumerate;
 
 
 EnumerateItem(String text, Integer level) {
-	this.text = new Text(text);
+	this.text = factory.createText(text);
 	this.level = level;
 }
 
 EnumerateItem(String text, Enumerate enumerate, Integer level) {
-	this.text = new Text(text);
+	this.text = factory.createText(text);
 	this.enumerate = enumerate;
 	this.level = level;
 }
@@ -24,12 +24,12 @@ EnumerateItem(String text, Enumerate enumerate, Integer level) {
 nested EnumerateItem -(String text, Integer level) {
 	EnumerateItem item = null;
 	if (level > this.level) {
-		Enumerate list = new Enumerate();
-		item = new EnumerateItem(text, list, level);
+		Enumerate list = factory.createEnumerate();
+		item = factory.createEnumerateItem(text, list, level);
 		list.-(item);
-		content.add(list);
+		addContent(list);
 	} else {
-		item = new EnumerateItem(text, level);
+		item = factory.createEnumerateItem(text, enumerate, level);
 		enumerate.-(item);
 	}
 	
@@ -48,7 +48,7 @@ String toTex(String option) {
 		item = item + " ";
 	}
 	String result = item + text.toTex();
-	if (content.size() > 0) {
+	if (contentSize() > 0) {
 		result = result + "\n" + super.toTex();
 	}
 	
