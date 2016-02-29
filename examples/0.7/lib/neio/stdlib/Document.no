@@ -1,0 +1,66 @@
+namespace neio.stdlib;
+
+import neio.lang.Container;
+import java.util.List;
+import java.util.ArrayList;
+
+class Document extends Container;
+
+private List<String> packages = new ArrayList<String>();
+
+Document() {
+	packages.add("a4wide");
+	packages.add("graphicx");
+}
+
+Chapter #(String title) {
+    Chapter chapter = factory.createChapter(title, 1);
+    addContent(chapter);
+
+    return chapter;
+}
+
+Chapter addChapter(Chapter chapter) {
+	addContent(chapter);
+	
+	return chapter;
+}
+
+Itemize *(String text) {
+	Itemize itemize = factory.createItemize();
+	ItemizeItem item = factory.createItemizeItem(text, itemize, 1);
+	itemize.*(item);
+    addContent(itemize);
+
+    return itemize;
+}
+
+Paragraph newline(String parText) {
+    Paragraph p = factory.createParagraph(parText);
+    addContent(p);
+	
+    return p;
+}
+
+Image image(String caption, String imageName) {
+	Image neioImage = factory.createImage(caption, imageName);
+	addContent(neioImage);
+	
+	return neioImage;
+}
+
+String toTex() {
+	String tex = "\\documentclass{article}\n";
+	for (int i = 0; i < packages.size(); i = i + 1) {
+		tex = tex + "\\usepackage{" + packages.get(i) + "}\n";
+	}
+	
+	tex = tex +
+			  "\\setlength{\\parindent}{0em}\n" +
+			  "\\setlength{\\parskip}{1em}\n" +
+			  "\\begin{document}\n" +
+			  super.toTex() +
+			  "\n\\end{document}\n";
+
+	return tex;
+}

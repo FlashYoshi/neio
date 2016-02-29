@@ -1,0 +1,21 @@
+namespace neio.stdlib;
+
+import neio.lang.Text;
+import neio.lang.Content;
+
+class Paragraph extends Content;
+
+Text text;
+
+@Inject
+Paragraph(Factory factory) {
+	this.factory = factory;
+}
+
+Paragraph(String parText) {
+	text = factory.createText(parText);
+}
+
+String toTex() {
+	return "\\par " + text.toTex();
+}
