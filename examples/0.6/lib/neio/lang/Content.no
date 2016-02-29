@@ -53,6 +53,19 @@ List<Content> ancestors() {
 	return list;
 }
 
+Content nearestAncestor(Class c) {
+	Content p = parent();
+	while (p != null) {
+		if (c.isInstance(p)) {
+			return p;
+		}
+		
+		p = p.parent();
+	}
+	
+	return p;
+}
+
 List<Content> descendants() {
 	return descendants(content());
 }
