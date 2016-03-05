@@ -7,11 +7,13 @@ class Content implements Texable;
 
 private List<Content> content;
 private Content parent;
-@Inject protected Factory factory;
+protected ContentF factory;
+protected Map<Class, Class> classMapping;
 
 Content() {
     content = new ArrayList<Content>();
 	factory = new ContentF();
+	classMapping = new HashMap<Class, Class>();
 }
 
 Content addContent(Content c) {
@@ -33,8 +35,111 @@ Integer contentSize() {
 	return content.size();
 }
 
+List<Content> content() {
+	return content;
+}
+
 void setFactory(ContentF factory) {
 	this.factory = factory;
+}
+
+List<Content> ancestors() {
+	List<Content> list = new ArrayList<Content>();
+	Content p = parent();
+	
+	while (p != null) {
+		list.add(p);
+		p = p.parent();
+	}
+	
+	return list;
+}
+
+Content nearestAncestor(Class c) {
+	Content p = parent();
+	while (p != null) {
+		if (c.isInstance(p)) {
+			return p;
+		}
+		
+		p = p.parent();
+	}
+	
+	return p;
+}
+
+List<Content> descendants() {
+	return descendants(content());
+}
+
+protected List<Content> descendants(List<Content> input) {
+	List<Content> list = new ArrayList<Content>();
+	
+	for (int i = 0; i < input.size(); i = i + 1) {
+		Content current = input.get(i);
+		list.add(current);
+		list.addAll(descendants(current.content()));
+	}
+	
+	return list;
+}
+
+private final Map<Class, Class> _classMapping = new HashMap<>();
+private final Set<Class> _uses = new HashSet<>();
+
+final Class classMapping(klass) {
+	return _classMapping.get(klass);
+}
+
+public final <T> void addClassMapping(Class<T> oldClass, Class<? extends T> newClass) {
+	_classMapping.put(oldClass, newClass);
+}
+
+public final void addUse(Class klass) {
+	_uses.add(klass);
+}
+
+public final boolean usesClass(Class klass) {
+	return _uses.contains(klass);
+}
+
+final <T> T getClass(Class<T> klass, Class[] paramTypes, Object[] params) {
+	Class result = classMapping(klass);
+	Content current = parent();
+	while ((current != null) && (result == null)) {
+		result = current.classMapping(klass);
+		current = current.parent();
+	}
+	
+	if (result == null) {
+		return getInstance(klass, paramTypes, params);
+	} else {
+		return (T) getInstance(result, paramTypes, params);
+	}
+}
+
+private <T> T getInstance(Class<T> klass, Class[] paramTypes, Object[] params) {
+	try {
+		Constructor<T> cons = klass.getConstructor(paramTypes);
+		return cons.newInstance(params);
+	} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
+		e.printStackTrace();
+		System.exit(1);
+	}
+
+	return null;
+}
+
+public final <T> void use(Class<? extends T> newClass, Class<T> oldClass) {
+	Content current = this;
+	while (current != null && !current.usesClass(oldClass)) {
+		current = current.parent();
+	}
+
+	if (current != null) {
+		current.addClassMapping(oldClass, newClass);
+		current.addUse(newClass);
+	}
 }
 
 String toTex() {

@@ -43,7 +43,7 @@ public class NeioFactory extends Java7Factory {
         return new RegularJavaType(name);
     }
 
-    public TypeReference createTypeReference(String name) {
+    public BasicJavaTypeReference createTypeReference(String name) {
         return new BasicJavaTypeReference(name);
     }
 

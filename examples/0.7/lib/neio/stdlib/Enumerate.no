@@ -8,11 +8,6 @@ class Enumerate extends Content;
 // This option tells the enumerate how to enumerate
 protected String option = null;
 
-@Inject
-Enumerate(Factory factory) {
-	this.factory = factory;
-}
-
 String toTex() {
 	return header() + super.toTex() + finalizer();
 }

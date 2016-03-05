@@ -7,9 +7,7 @@ class Chapter extends Content;
 String title;
 Integer level;
 
-@Inject
-Chapter(Factory factory, @Assisted String title, @AssistedInteger level) {
-	this.factory = factory;
+Chapter(String title, Integer level) {
     this.title = title;
     this.level = level;
 }

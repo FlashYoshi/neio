@@ -9,16 +9,12 @@ Text text;
 Integer level;
 Itemize itemize;
 
-@AssistedInject
-ItemizeItem(Factory factory, @Assisted String text, Integer level) {
-	this.factory = factory;
+ItemizeItem(String text, Integer level) {
 	this.text = new Text(text);
 	this.level = level;
 }
 
-@AssistedInject
-ItemizeItem(Factory factory, @Assisted String text, Itemize itemize, Integer level) {
-	this.factory = factory;
+ItemizeItem(String text, Itemize itemize, Integer level) {
 	this.text = new Text(text);
 	this.itemize = itemize;
 	this.level = level;

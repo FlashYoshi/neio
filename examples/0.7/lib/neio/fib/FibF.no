@@ -5,20 +5,23 @@ import neio.lang.Text;
 
 class FibF extends ContentF;
 
-private final Provider<Factory> factory;
-
-FibF() {
-	this.factory = this;
-}
-
 Enumerate createEnumerate() {
-	return new FibEnumerate();
+	FibEnumerate e = new FibEnumerate();
+	e.setFactory(this);
+	
+	return e;
 }
 
 EnumerateItem createEnumerateItem(String text, Integer level) {
-	return new FibItem(text, level);
+	FibItem i = new FibItem(text, level);
+	i.setFactory(this);
+	
+	return i;
 }
 
 EnumerateItem createEnumerateItem(String text, Enumerate enumerate, Integer level) {
-	return new FibItem(text, enumerate, level);
+	FibItem i = new FibItem(text, enumerate, level);
+	i.setFactory(this);
+	
+	return i;
 }

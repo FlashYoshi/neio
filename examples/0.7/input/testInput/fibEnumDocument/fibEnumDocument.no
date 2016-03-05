@@ -1,0 +1,35 @@
+// As always, we start out by mentioning that this is a document
+[Document]
+
+/* These multi-line comments
+    Should also work
+*/
+# Chapter 1
+This is the first paragraph of our simple document.
+
+## Chapter 1.1
+But for this to be a real document we do of course need more than one chapter and more than one indentation level, so... voila!
+
+// It shouldn't matter if we add the space after the #'s or not
+###Chapter 1.1.1
+Well LaTeX has one more level of indentation, so we should make use of it!
+
+# Chapter 2
+Lastly a chapter ending with two paragraphs should do the trick
+
+This is the end of this very exciting document, but let's first try to make this paragraph a little longer. Only 80 characters per line when we have these giant screens is a bit outdated isn't it?
+Let's also add some more newlines to see how we deal with those.
+
+```
+use(FibEnumerate.class, Enumerate.class);
+```
+- Item 1
+- Item 2
+- Item 3
+- Item 3.1
+- Item 3.2
+-- Item 4
+-- Item 5
+-- Item 6
+--- Item 7
+--- Item 8

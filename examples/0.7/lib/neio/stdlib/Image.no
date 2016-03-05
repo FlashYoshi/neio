@@ -9,9 +9,7 @@ String caption;
 String name;
 String PNG = ".png";
 
-@Inject
-Image(Factory factory, @Assisted("caption") String caption, @Assisted("caption") String name) {
-	this.factory = factory;
+Image(String caption, String name) {
 	this.caption = caption;
 	this.name = name;
 }

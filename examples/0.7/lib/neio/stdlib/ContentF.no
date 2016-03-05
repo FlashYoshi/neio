@@ -2,12 +2,9 @@ namespace neio.stdlib;
 
 import neio.lang.Text;
 
-class ContentF implements Factory;
-
-private final Provider<Factory> factory;
+class ContentF extends Factory;
 
 ContentF() {
-	this.factory = this;
 }
 
 Chapter createChapter(String title, Integer level) {

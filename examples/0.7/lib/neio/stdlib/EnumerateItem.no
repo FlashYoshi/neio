@@ -9,16 +9,13 @@ protected Text text;
 protected Integer level;
 protected Enumerate enumerate;
 
-@AssistedInject
-EnumerateItem(Factory factory, @Assisted String text, @Assisted Integer level) {
-	this.factory = factory;
+
+EnumerateItem(String text, Integer level) {
 	this.text = factory.createText(text);
 	this.level = level;
 }
 
-@AssistedInject
-EnumerateItem(Factory factory, @Assisted String text, @Assisted Enumerate enumerate, @Assisted Integer level) {
-	this.factory = factory;
+EnumerateItem(String text, Enumerate enumerate, Integer level) {
 	this.text = factory.createText(text);
 	this.enumerate = enumerate;
 	this.level = level;
