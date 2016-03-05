@@ -7,13 +7,9 @@ class Content implements Texable;
 
 private List<Content> content;
 private Content parent;
-protected ContentF factory;
-protected Map<Class, Class> classMapping;
 
 Content() {
     content = new ArrayList<Content>();
-	factory = new ContentF();
-	classMapping = new HashMap<Class, Class>();
 }
 
 Content addContent(Content c) {
@@ -37,10 +33,6 @@ Integer contentSize() {
 
 List<Content> content() {
 	return content;
-}
-
-void setFactory(ContentF factory) {
-	this.factory = factory;
 }
 
 List<Content> ancestors() {
@@ -84,10 +76,10 @@ protected List<Content> descendants(List<Content> input) {
 	return list;
 }
 
-private final Map<Class, Class> _classMapping = new HashMap<>();
-private final Set<Class> _uses = new HashSet<>();
+private final Map<Class, Class> _classMapping = new HashMap<Class, Class>();
+private final Set<Class> _uses = new HashSet<Class>();
 
-final Class classMapping(klass) {
+final Class classMapping(Class klass) {
 	return _classMapping.get(klass);
 }
 

@@ -1,6 +1,0 @@
-namespace neio.stdlib;
-
-class Factory;
-
-Factory() {
-}
