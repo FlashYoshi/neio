@@ -72,6 +72,9 @@ D_QUOTE : '"';
 QUOTE : '\'';
 SLASH : '/';
 B_SLASH : '\\';
+Q_MARK : '?';
+ARRAY : '[]';
+E_MARK : '!';
 fragment DIGIT : [0-9];
 fragment LETTER : [a-zA-Z];
 fragment UNDERSCORE : '_';
@@ -82,4 +85,4 @@ Integer : DIGIT+;
 Double : DIGIT DOT DIGIT;
 Identifier : CHAR+;
 
-MethodIdentifier : ~[()\r\n \t;.,:<>]+;
+MethodIdentifier : ~[!\[\]()\r\n \t;.,:<>]+;

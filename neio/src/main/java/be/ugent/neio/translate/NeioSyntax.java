@@ -9,21 +9,16 @@ import org.aikodi.chameleon.core.element.Element;
 import org.aikodi.chameleon.core.lookup.LookupException;
 import org.aikodi.chameleon.core.modifier.Modifier;
 import org.aikodi.chameleon.exception.ChameleonProgrammerException;
-import org.aikodi.chameleon.oo.expression.Literal;
-import org.aikodi.chameleon.oo.expression.MethodInvocation;
-import org.aikodi.chameleon.oo.expression.NameExpression;
-import org.aikodi.chameleon.oo.expression.ParExpression;
+import org.aikodi.chameleon.oo.expression.*;
 import org.aikodi.chameleon.oo.method.Method;
 import org.aikodi.chameleon.oo.method.exception.ExceptionClause;
 import org.aikodi.chameleon.oo.statement.Block;
+import org.aikodi.chameleon.oo.statement.Statement;
 import org.aikodi.chameleon.oo.type.BasicTypeReference;
 import org.aikodi.chameleon.oo.variable.FormalParameter;
 import org.aikodi.chameleon.support.expression.RegularLiteral;
 import org.aikodi.chameleon.support.member.simplename.method.RegularMethodInvocation;
-import org.aikodi.chameleon.support.statement.CatchClause;
-import org.aikodi.chameleon.support.statement.StatementExpression;
-import org.aikodi.chameleon.support.statement.ThrowStatement;
-import org.aikodi.chameleon.support.statement.TryStatement;
+import org.aikodi.chameleon.support.statement.*;
 
 import java.util.*;
 
@@ -95,11 +90,25 @@ public class NeioSyntax extends Java7Syntax {
     }
 
     @Override
+    public String toCodeReturn(ReturnStatement stat) {
+        String result = addCatchAll(stat.getExpression());
+
+        return result != null ? result : super.toCodeReturn(stat);
+    }
+
+    @Override
     public String toCodeStatementExpression(StatementExpression stat) {
+        String result = addCatchAll(stat.getExpression());
+
+        return result != null ? result : super.toCodeStatementExpression(stat);
+    }
+
+    private String addCatchAll(Expression expr) {
         // This will deduce if a basic try catch is needed for this statement and create it if need be
-        if (stat.nearestAncestor(TryStatement.class) == null && stat.getExpression() instanceof MethodInvocation) {
-            Set exceptions = getExceptions((MethodInvocation) stat.getExpression());
+        if (expr.nearestAncestor(TryStatement.class) == null && expr instanceof MethodInvocation) {
+            Set exceptions = getExceptions((MethodInvocation) expr);
             if (exceptions != null && !exceptions.isEmpty()) {
+                Statement stat = (Statement) expr.parent();
                 Block parent = (Block) stat.parent();
 
                 Block tryBlock = new Block();
@@ -132,8 +141,7 @@ public class NeioSyntax extends Java7Syntax {
             }
         }
 
-        // No try catch needed, create code as usual
-        return super.toCodeStatementExpression(stat);
+        return null;
     }
 
     private Set getExceptions(MethodInvocation mi) {

@@ -73,6 +73,7 @@ expression : literal                    #literalExpression
            | L_BRACE type R_BRACE expression #castExpression
            | expression DOT name=(Identifier | MethodIdentifier | STAR| MINUS) args=arguments #qualifiedCallExpression
            | name=(Identifier | MethodIdentifier | STAR | MINUS) args=arguments #selfCallExpression
+           | op=E_MARK right=expression                                         #notExpression
            | left=expression op=OR right=expression                             #orExpression
            | left=expression op=AND right=expression                            #andExpression
            | left=expression op=HAT right=expression                            #exponentiationExpression
@@ -95,9 +96,10 @@ arguments : L_BRACE expression (COMMA expression)* R_BRACE #someArguments
 parameters : parameter (COMMA parameter)*;
 parameter : type Identifier;
 
-type : Identifier (DOT Identifier)* (SMALLER typeArgumentList BIGGER)?;
+type : Identifier (DOT Identifier)* (SMALLER typeArgumentList BIGGER)? (ARRAY)?;
 typeArgumentList : typeArgumentList COMMA type  #typeArguments
                  | type                         #typeArgument
+                 | Q_MARK EXTENDS bound=type    #boundedTypeArgument
                  ;
 
 typeParameterList : typeParameterList COMMA type  #typeParameters

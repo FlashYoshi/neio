@@ -1,6 +1,5 @@
 namespace neio.lang;
 
-import neio.stdlib.ContentF;
 import java.util.*;
 
 class Content implements Texable;
@@ -49,15 +48,22 @@ List<Content> ancestors() {
 
 Content nearestAncestor(Class c) {
 	Content p = parent();
-	while (p != null) {
-		if (c.isInstance(p)) {
-			return p;
-		}
-		
+	while ((p != null) && (!c.isInstance(p))) {
 		p = p.parent();
 	}
 	
 	return p;
+}
+
+List<Content> siblings(Class c) {
+	Content p = parent();
+	List<Content> siblings = new ArrayList<Content>();
+	if (p != null) {
+		siblings = p.descendants();
+		siblings.remove(this);
+	}
+	
+	return siblings;
 }
 
 List<Content> descendants() {
@@ -111,20 +117,12 @@ final <T> T getClass(Class<T> klass, Class[] paramTypes, Object[] params) {
 }
 
 private <T> T getInstance(Class<T> klass, Class[] paramTypes, Object[] params) {
-	try {
-		Constructor<T> cons = klass.getConstructor(paramTypes);
-		return cons.newInstance(params);
-	} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
-		e.printStackTrace();
-		System.exit(1);
-	}
-
-	return null;
+	return klass.getConstructor(paramTypes).newInstance(params);
 }
 
 public final <T> void use(Class<? extends T> newClass, Class<T> oldClass) {
 	Content current = this;
-	while (current != null && !current.usesClass(oldClass)) {
+	while ((current != null) && (!current.usesClass(oldClass))) {
 		current = current.parent();
 	}
 

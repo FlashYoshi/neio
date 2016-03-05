@@ -6,6 +6,7 @@ import be.kuleuven.cs.distrinet.jnome.core.expression.invocation.SuperConstructo
 import be.kuleuven.cs.distrinet.jnome.core.expression.invocation.ThisConstructorDelegation;
 import be.kuleuven.cs.distrinet.jnome.core.modifier.Implements;
 import be.kuleuven.cs.distrinet.jnome.core.type.BasicJavaTypeReference;
+import be.kuleuven.cs.distrinet.jnome.core.type.JavaTypeReference;
 import be.kuleuven.cs.distrinet.jnome.workspace.JavaView;
 import be.ugent.neio.industry.NeioExpressionFactory;
 import be.ugent.neio.industry.NeioFactory;
@@ -425,6 +426,11 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     @Override
+    public Object visitNotExpression(@NotNull NotExpressionContext ctx) {
+        return eFactory().createPrefixOperatorInvocation(ctx.op.getText(), (Expression) visit(ctx.right));
+    }
+
+    @Override
     public Expression visitAmpersandExpression(@NotNull AmpersandExpressionContext ctx) {
         MethodInvocation result = eFactory().createInfixOperatorInvocation(ctx.op.getText(), (Expression) visit(ctx.left));
         result.addArgument((Expression) visit(ctx.right));
@@ -556,16 +562,23 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     @Override
-    public BasicJavaTypeReference visitType(@NotNull TypeContext ctx) {
+    public JavaTypeReference visitType(@NotNull TypeContext ctx) {
+        String name = visitIdentifiers(ctx.Identifier());
+        JavaTypeReference type;
+
+        // The type is an array
+        if (ctx.ARRAY() != null) {
+            type = ooFactory().createArrayTypeReference(name);
+        } else {
+            type = ooFactory().createTypeReference(name);
+        }
         if (ctx.typeArgumentList() != null) {
             List<TypeArgument> typeArguments = (List<TypeArgument>) visit(ctx.typeArgumentList());
-
-            BasicJavaTypeReference type = ooFactory().createBasicJavaTypeReference(visitIdentifiers(ctx.Identifier()));
-            type.addAllArguments(typeArguments);
-            return type;
-        } else {
-            return ooFactory().createTypeReference(visitIdentifiers(ctx.Identifier()));
+            // TODO: How do we add typeargument to a javatypereference?
+            ((BasicJavaTypeReference) type).addAllArguments(typeArguments);
         }
+
+        return type;
     }
 
     @Override
@@ -574,7 +587,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
         if (ctx != null) {
             typeParams.addAll((List<TypeParameter>) visit(ctx.typeParameterList()));
-            typeParams.add(ooFactory().createTypeParameter(visitType(ctx.type()).name()));
+            typeParams.add(ooFactory().createTypeParameter(((BasicJavaTypeReference) visitType(ctx.type())).name()));
         }
 
         return typeParams;
@@ -583,7 +596,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     @Override
     public List<TypeParameter> visitTypeParameter(@NotNull TypeParameterContext ctx) {
         List<TypeParameter> typeParams = new ArrayList<>();
-        typeParams.add(ooFactory().createTypeParameter(visitType(ctx.type()).name()));
+        typeParams.add(ooFactory().createTypeParameter(((BasicJavaTypeReference) visitType(ctx.type())).name()));
 
         return typeParams;
     }
@@ -595,7 +608,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         if (ctx != null) {
             // This means visitTypeArguments and visitTypeArgument both have to return a list
             typeArguments.addAll((List<TypeArgument>) visit(ctx.typeArgumentList()));
-            typeArguments.add(ooFactory().createTypeArgument(visitType(ctx.type()).name()));
+            typeArguments.add(ooFactory().createTypeArgument(((BasicJavaTypeReference) visitType(ctx.type())).name()));
         }
 
         return typeArguments;
@@ -607,7 +620,19 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     @Override
     public List<TypeArgument> visitTypeArgument(@NotNull TypeArgumentContext ctx) {
         List<TypeArgument> arguments = new ArrayList<>();
-        arguments.add(ooFactory().createTypeArgument(visitType(ctx.type()).name()));
+
+        arguments.add(ooFactory().createTypeArgument(((BasicJavaTypeReference) visitType(ctx.type())).name()));
+
+        return arguments;
+    }
+
+    @Override
+    public Object visitBoundedTypeArgument(@NotNull BoundedTypeArgumentContext ctx) {
+        List<TypeArgument> arguments = new ArrayList<>();
+        if (ctx.Q_MARK() != null) {
+            String name = ((BasicJavaTypeReference) visitType(ctx.bound)).name();
+            arguments.add(ooFactory().createExtendsWildcard(name));
+        }
 
         return arguments;
     }
