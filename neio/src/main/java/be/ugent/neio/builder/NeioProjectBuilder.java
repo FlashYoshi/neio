@@ -19,7 +19,6 @@ public class NeioProjectBuilder {
         LanguageRepository repo = new LanguageRepository();
         Workspace workspace = new Workspace(repo);
 
-        repo.add(new Java7LanguageFactory().create());
         Neio neio = new NeioLanguageFactory().create();
         repo.add(neio);
         ((NeioProjectConfigurator) neio.plugin(ProjectConfigurator.class)).searchInParent();
