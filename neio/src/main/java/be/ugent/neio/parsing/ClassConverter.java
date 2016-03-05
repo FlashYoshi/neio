@@ -28,6 +28,7 @@ import org.aikodi.chameleon.oo.statement.Statement;
 import org.aikodi.chameleon.oo.type.Type;
 import org.aikodi.chameleon.oo.type.TypeReference;
 import org.aikodi.chameleon.oo.type.generics.TypeArgument;
+import org.aikodi.chameleon.oo.type.generics.TypeParameter;
 import org.aikodi.chameleon.oo.type.inheritance.SubtypeRelation;
 import org.aikodi.chameleon.oo.variable.FormalParameter;
 import org.aikodi.chameleon.oo.variable.RegularVariable;
@@ -173,9 +174,10 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     @Override
     public MemberVariableDeclarator visitFieldDecl(@NotNull FieldDeclContext ctx) {
         MemberVariableDeclarator declarator = ooFactory().createMemberVariableDeclarator(ctx.Identifier().getText(), visitType(ctx.type()));
-        if (ctx.modifier() != null) {
-            declarator.addModifier(visitModifier(ctx.modifier()));
-        } else if (!isInterface()) {
+        for (ModifierContext modifier : ctx.modifier()) {
+            declarator.addModifier(visitModifier(modifier));
+        }
+        if (ctx.modifier().isEmpty() && !isInterface()) {
             declarator.addModifier(new Private());
         }
 
@@ -491,6 +493,11 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     @Override
     public MethodHeader visitMethodHeader(@NotNull MethodHeaderContext ctx) {
+        List<TypeParameter> typeParameters = new ArrayList<>();
+        if (ctx.typeParameterList() != null) {
+            typeParameters = (List<TypeParameter>) visit(ctx.typeParameterList());
+        }
+
         String returnType;
         if (ctx.type() != null) {
             returnType = ctx.type().getText();
@@ -502,7 +509,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
             returnType = ctx.name.getText();
         }
 
-        return ooFactory().createMethodHeader(ctx.name.getText(), returnType);
+        return ooFactory().createMethodHeader(ctx.name.getText(), returnType, typeParameters);
     }
 
     @Override
@@ -515,6 +522,10 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
             return new Public();
         } else if (ctx.NESTED() != null) {
             return new Nested();
+        } else if (ctx.FINAL() != null) {
+            return new Final();
+        } else if (ctx.STATIC() != null) {
+            return new Static();
         } else {
             throw new ChameleonProgrammerException("Unknown modifier encountered: " + ctx.getText());
         }
@@ -545,7 +556,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     @Override
-    public TypeReference visitType(@NotNull TypeContext ctx) {
+    public BasicJavaTypeReference visitType(@NotNull TypeContext ctx) {
         if (ctx.typeArgumentList() != null) {
             List<TypeArgument> typeArguments = (List<TypeArgument>) visit(ctx.typeArgumentList());
 
@@ -558,13 +569,33 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     @Override
+    public List<TypeParameter> visitTypeParameters(@NotNull TypeParametersContext ctx) {
+        List<TypeParameter> typeParams = new ArrayList<>();
+
+        if (ctx != null) {
+            typeParams.addAll((List<TypeParameter>) visit(ctx.typeParameterList()));
+            typeParams.add(ooFactory().createTypeParameter(visitType(ctx.type()).name()));
+        }
+
+        return typeParams;
+    }
+
+    @Override
+    public List<TypeParameter> visitTypeParameter(@NotNull TypeParameterContext ctx) {
+        List<TypeParameter> typeParams = new ArrayList<>();
+        typeParams.add(ooFactory().createTypeParameter(visitType(ctx.type()).name()));
+
+        return typeParams;
+    }
+
+    @Override
     public List<TypeArgument> visitTypeArguments(@NotNull TypeArgumentsContext ctx) {
         List<TypeArgument> typeArguments = new ArrayList<>();
 
         if (ctx != null) {
             // This means visitTypeArguments and visitTypeArgument both have to return a list
             typeArguments.addAll((List<TypeArgument>) visit(ctx.typeArgumentList()));
-            typeArguments.add(ooFactory().createTypeArgument(ctx.Identifier().getText()));
+            typeArguments.add(ooFactory().createTypeArgument(visitType(ctx.type()).name()));
         }
 
         return typeArguments;
@@ -576,7 +607,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     @Override
     public List<TypeArgument> visitTypeArgument(@NotNull TypeArgumentContext ctx) {
         List<TypeArgument> arguments = new ArrayList<>();
-        arguments.add(ooFactory().createTypeArgument(ctx.Identifier().getText()));
+        arguments.add(ooFactory().createTypeArgument(visitType(ctx.type()).name()));
 
         return arguments;
     }

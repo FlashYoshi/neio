@@ -20,7 +20,9 @@ import org.aikodi.chameleon.oo.statement.Statement;
 import org.aikodi.chameleon.oo.type.RegularType;
 import org.aikodi.chameleon.oo.type.TypeReference;
 import org.aikodi.chameleon.oo.type.generics.EqualityTypeArgument;
+import org.aikodi.chameleon.oo.type.generics.FormalTypeParameter;
 import org.aikodi.chameleon.oo.type.generics.TypeArgument;
+import org.aikodi.chameleon.oo.type.generics.TypeParameter;
 import org.aikodi.chameleon.oo.type.inheritance.SubtypeRelation;
 import org.aikodi.chameleon.oo.variable.FormalParameter;
 import org.aikodi.chameleon.oo.variable.VariableDeclaration;
@@ -31,6 +33,8 @@ import org.aikodi.chameleon.support.expression.ThisLiteral;
 import org.aikodi.chameleon.support.member.simplename.variable.MemberVariableDeclarator;
 import org.aikodi.chameleon.support.statement.*;
 import org.aikodi.chameleon.support.variable.LocalVariableDeclarator;
+
+import java.util.List;
 
 public class NeioFactory extends Java7Factory {
 
@@ -157,6 +161,13 @@ public class NeioFactory extends Java7Factory {
         return new SimpleNameMethodHeader(name, createTypeReference(type));
     }
 
+    public SimpleNameMethodHeader createMethodHeader(String name, String type, List<TypeParameter> typeArguments) {
+        SimpleNameMethodHeader header = createMethodHeader(name, type);
+        header.addAllTypeParameters(typeArguments);
+
+        return header;
+    }
+
     public FormalParameter createParameter(String name, TypeReference type) {
         return new FormalParameter(name, type);
     }
@@ -195,5 +206,9 @@ public class NeioFactory extends Java7Factory {
 
     public WhileStatement createWhileStatement(Expression expression, Statement statement) {
         return new WhileStatement(expression, statement);
+    }
+
+    public TypeParameter createTypeParameter(String name) {
+        return new FormalTypeParameter(name);
     }
 }
