@@ -14,4 +14,7 @@ public class Constants {
     public static final String NEIO_HOME = BASE + "/neio";
     public static final String AUTO_GEN_DIR = "./gen";
     public static final String IMAGE = "image";
+    public static final String BASE_CLASS = "neio.lang.Content";
+    public static final String ADD_USE = "addUse";
+    public static final String GET_INSTANCE = "getInstance";
 }

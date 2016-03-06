@@ -22,6 +22,7 @@ Let's also add some more newlines to see how we deal with those.
 
 ```
 use(FibEnumerate.class, Enumerate.class);
+use(FibItem.class, EnumerateItem.class);
 ```
 - Item 1
 - Item 2

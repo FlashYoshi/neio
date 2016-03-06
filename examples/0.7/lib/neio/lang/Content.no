@@ -101,7 +101,7 @@ public final boolean usesClass(Class klass) {
 	return _uses.contains(klass);
 }
 
-final <T> T getClass(Class<T> klass, Class[] paramTypes, Object[] params) {
+public final <T> T getInstance(Class<T> klass, Class[] paramTypes, Object[] params) {
 	Class result = classMapping(klass);
 	Content current = parent();
 	while ((current != null) && (result == null)) {
@@ -110,13 +110,13 @@ final <T> T getClass(Class<T> klass, Class[] paramTypes, Object[] params) {
 	}
 	
 	if (result == null) {
-		return getInstance(klass, paramTypes, params);
+		return instantiate(klass, paramTypes, params);
 	} else {
-		return (T) getInstance(result, paramTypes, params);
+		return (T) instantiate(result, paramTypes, params);
 	}
 }
 
-private <T> T getInstance(Class<T> klass, Class[] paramTypes, Object[] params) {
+private <T> T instantiate(Class<T> klass, Class[] paramTypes, Object[] params) {
 	return klass.getConstructor(paramTypes).newInstance(params);
 }
 
