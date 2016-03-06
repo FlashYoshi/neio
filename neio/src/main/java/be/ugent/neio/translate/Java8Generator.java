@@ -72,7 +72,7 @@ public class Java8Generator {
         Block block = new Block();
         oldBlock.replaceWith(block);
         for (Statement statement : oldBlock.statements()) {
-            // Is this is a Block?
+            // Is this a Block?
             // If so, it is an inline code block
             if (getNearestElement(statement, Statement.class) != null) {
                 block.addStatement(statement);

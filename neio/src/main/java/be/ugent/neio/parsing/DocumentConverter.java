@@ -9,12 +9,15 @@ import org.aikodi.chameleon.core.document.Document;
 import org.aikodi.chameleon.exception.ChameleonProgrammerException;
 import org.aikodi.chameleon.oo.expression.Expression;
 import org.aikodi.chameleon.oo.expression.ExpressionFactory;
+import org.aikodi.chameleon.oo.expression.MethodInvocation;
 import org.aikodi.chameleon.oo.plugin.ObjectOrientedFactory;
 import org.aikodi.chameleon.oo.statement.Block;
+import org.aikodi.chameleon.support.statement.StatementExpression;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.TokenStream;
+import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.neio.antlr.ClassLexer;
 import org.neio.antlr.ClassParser;
@@ -107,6 +110,16 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
                 previousExpression = visitPostFixCall(ctx.postfixCall());
             } else if (ctx.text() != null) {
                 previousExpression = visitText(ctx.text());
+            } else if (ctx.customCommand() != null) {
+                // Stop the previous statement
+                if (previousExpression != null) {
+                    block.addStatement(ooFactory().createStatement(previousExpression));
+                }
+                previousExpression = null;
+                Block b = ooFactory().createBlock();
+                MethodInvocation mi = (MethodInvocation) visitCustomCommand(ctx.customCommand());
+                b.addStatement(ooFactory().createStatement(mi));
+                block.addStatement(b);
             } else {
                 throw new ChameleonProgrammerException("Method could not be found!");
             }
@@ -159,6 +172,29 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         }
 
         return result;
+    }
+
+    @Override
+    public Expression visitCustomCommand(@NotNull CustomCommandContext ctx) {
+        // Remove the backslash
+        String code = ctx.getText().substring(1);
+        if (ctx.L_BRACE() == null) {
+            code += "()";
+        }
+        code += ";";
+
+        InputStream stream = new ByteArrayInputStream(code.getBytes(StandardCharsets.UTF_8));
+        ANTLRInputStream input = null;
+        try {
+            input = new ANTLRInputStream(stream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Lexer lexer = new ClassLexer(input);
+        TokenStream tokens = new CommonTokenStream(lexer);
+
+        ClassParser parser = new ClassParser(tokens);
+        return ((StatementExpression) new ClassConverter(document, view).visit(parser.statement())).getExpression();
     }
 
     @Override

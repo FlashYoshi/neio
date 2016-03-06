@@ -6,6 +6,9 @@ MULTILINE_COMMENT : '/*' .*? '*/' NL+ -> channel(HIDDEN);
 
 CODE : TB_QUOTE .+? TB_QUOTE;
 
+ESCAPE : B_SLASH .;
+CC : B_SLASH CHAR CHAR+;
+
 WS : [\t ] -> channel(HIDDEN);
 NL : '\r'? '\n';
 fragment CHAR : [a-zA-Z0-9];
@@ -18,6 +21,7 @@ RS_BRACE : ']';
 L_BRACE : '(';
 R_BRACE : ')';
 fragment TB_QUOTE : '```';
+fragment B_SLASH : '\\';
 
 fragment HASH : '#';
 fragment DASH : '-';
@@ -26,3 +30,5 @@ BANG : '!';
 MethodName : HASH | DASH | STAR;
 
 WORD : VALID_CHAR+;
+
+UNKNOWN : . ;
