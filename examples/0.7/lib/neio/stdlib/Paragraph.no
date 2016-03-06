@@ -7,13 +7,8 @@ class Paragraph extends Content;
 
 Text text;
 
-@Inject
-Paragraph(Factory factory) {
-	this.factory = factory;
-}
-
 Paragraph(String parText) {
-	text = factory.createText(parText);
+	text = new Text(parText);
 }
 
 String toTex() {

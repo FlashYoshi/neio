@@ -6,14 +6,12 @@ import neio.lang.Content;
 
 class FibItem extends EnumerateItem;
 
-@AssistedInject
-FibItem(Factory factory, @Assisted String text, @Assisted Integer level) {
-	super(factory, text, level);
+FibItem(String text, Integer level) {
+	super(text, level);
 }
 
-@AssistedInject
-FibItem(Factory factory, @Assisted String text, @Assisted Enumerate fib, @Assisted Integer level) {
-	super(factory, text, fib, level);
+FibItem(String text, Enumerate fib, Integer level) {
+	super(text, fib, level);
 }
 
 String toTex() {

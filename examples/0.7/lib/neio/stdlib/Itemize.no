@@ -5,11 +5,6 @@ import neio.lang.Content;
 
 class Itemize extends Content;
 
-@Inject
-Itemize(Factory factory) {
-	this.factory = factory;
-}
-
 String toTex() {
 	return "\\begin{itemize}\n" + super.toTex() + "\\end{itemize}\n";
 }
@@ -21,7 +16,7 @@ ItemizeItem *(ItemizeItem item) {
 }
 
 ItemizeItem *(String text) {
-	ItemizeItem item = factory.createItemizeItem(text, 1);
+	ItemizeItem item = new ItemizeItem(text, 1);
 	addContent(item);
 	
 	return item;

@@ -1,0 +1,56 @@
+// As always, we start out by mentioning that this is a document
+[Document]
+
+/* These multi-line comments
+    Should also work
+*/
+# Chapter 1
+This is the first paragraph of our simple document.
+
+## Chapter 1.1
+But for this to be a real document we do of course need more than one chapter and more than one indentation level, so... voila!
+
+```
+use(FibEnumerate.class, Enumerate.class);
+use(FibItem.class, EnumerateItem.class);
+```
+- Item 1
+- Item 2
+- Item 3
+- Item 3.1
+- Item 3.2
+-- Item 4
+-- Item 5
+-- Item 6
+--- Item 7
+--- Item 8
+
+### Chapter 1.1.1
+
+- Item 1
+- Item 2
+- Item 3
+- Item 4
+- Item 5
+- Item 6
+- Item 7
+
+## Chapter 1.2
+
+- Item 1
+- Item 2
+- Item 3
+- Item 4
+- Item 5
+- Item 6
+- Item 7
+
+# Chapter 2
+
+- Item 1
+- Item 2
+- Item 3
+- Item 4
+- Item 5
+- Item 6
+- Item 7

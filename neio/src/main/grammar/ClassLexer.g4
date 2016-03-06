@@ -26,6 +26,8 @@ ELSE : 'else';
 FOR : 'for';
 WHILE : 'while';
 NESTED : 'nested';
+FINAL : 'final';
+STATIC : 'static';
 TRUE : 'true';
 FALSE : 'false';
 NULL : 'null';
@@ -70,12 +72,17 @@ D_QUOTE : '"';
 QUOTE : '\'';
 SLASH : '/';
 B_SLASH : '\\';
+Q_MARK : '?';
+ARRAY : '[]';
+E_MARK : '!';
 fragment DIGIT : [0-9];
 fragment LETTER : [a-zA-Z];
-fragment CHAR : LETTER | DIGIT;
+fragment UNDERSCORE : '_';
+fragment DOLLAR : '$';
+fragment CHAR : LETTER | DIGIT | UNDERSCORE | DOLLAR;
 
 Integer : DIGIT+;
 Double : DIGIT DOT DIGIT;
 Identifier : CHAR+;
 
-MethodIdentifier : ~[()\r\n \t;.,:<>]+;
+MethodIdentifier : ~[!\[\]()\r\n \t;.,:<>]+;

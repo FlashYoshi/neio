@@ -1,6 +1,5 @@
 package be.ugent.neio.builder;
 
-import be.kuleuven.cs.distrinet.jnome.core.language.Java7LanguageFactory;
 import be.ugent.neio.industry.NeioLanguageFactory;
 import be.ugent.neio.language.Neio;
 import be.ugent.neio.language.NeioProjectConfigurator;

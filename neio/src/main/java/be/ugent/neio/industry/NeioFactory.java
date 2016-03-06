@@ -4,6 +4,7 @@ import be.kuleuven.cs.distrinet.jnome.core.expression.ClassLiteral;
 import be.kuleuven.cs.distrinet.jnome.core.expression.invocation.SuperConstructorDelegation;
 import be.kuleuven.cs.distrinet.jnome.core.expression.invocation.ThisConstructorDelegation;
 import be.kuleuven.cs.distrinet.jnome.core.method.JavaMethod;
+import be.kuleuven.cs.distrinet.jnome.core.type.ArrayTypeReference;
 import be.kuleuven.cs.distrinet.jnome.core.type.BasicJavaTypeReference;
 import be.kuleuven.cs.distrinet.jnome.core.type.RegularJavaType;
 import be.kuleuven.cs.distrinet.jnome.input.Java7Factory;
@@ -19,8 +20,7 @@ import org.aikodi.chameleon.oo.statement.Block;
 import org.aikodi.chameleon.oo.statement.Statement;
 import org.aikodi.chameleon.oo.type.RegularType;
 import org.aikodi.chameleon.oo.type.TypeReference;
-import org.aikodi.chameleon.oo.type.generics.EqualityTypeArgument;
-import org.aikodi.chameleon.oo.type.generics.TypeArgument;
+import org.aikodi.chameleon.oo.type.generics.*;
 import org.aikodi.chameleon.oo.type.inheritance.SubtypeRelation;
 import org.aikodi.chameleon.oo.variable.FormalParameter;
 import org.aikodi.chameleon.oo.variable.VariableDeclaration;
@@ -31,6 +31,8 @@ import org.aikodi.chameleon.support.expression.ThisLiteral;
 import org.aikodi.chameleon.support.member.simplename.variable.MemberVariableDeclarator;
 import org.aikodi.chameleon.support.statement.*;
 import org.aikodi.chameleon.support.variable.LocalVariableDeclarator;
+
+import java.util.List;
 
 public class NeioFactory extends Java7Factory {
 
@@ -43,8 +45,12 @@ public class NeioFactory extends Java7Factory {
         return new RegularJavaType(name);
     }
 
-    public TypeReference createTypeReference(String name) {
+    public BasicJavaTypeReference createTypeReference(String name) {
         return new BasicJavaTypeReference(name);
+    }
+
+    public ArrayTypeReference createArrayTypeReference(String name) {
+        return new ArrayTypeReference(createTypeReference(name));
     }
 
     public Import createDemandImport(String fqn) {
@@ -149,12 +155,15 @@ public class NeioFactory extends Java7Factory {
         return new EqualityTypeArgument(type);
     }
 
-    public BasicJavaTypeReference createBasicJavaTypeReference(String fqn) {
-        return new BasicJavaTypeReference(fqn);
-    }
-
     public SimpleNameMethodHeader createMethodHeader(String name, String type) {
         return new SimpleNameMethodHeader(name, createTypeReference(type));
+    }
+
+    public SimpleNameMethodHeader createMethodHeader(String name, String type, List<TypeParameter> typeArguments) {
+        SimpleNameMethodHeader header = createMethodHeader(name, type);
+        header.addAllTypeParameters(typeArguments);
+
+        return header;
     }
 
     public FormalParameter createParameter(String name, TypeReference type) {
@@ -195,5 +204,13 @@ public class NeioFactory extends Java7Factory {
 
     public WhileStatement createWhileStatement(Expression expression, Statement statement) {
         return new WhileStatement(expression, statement);
+    }
+
+    public TypeParameter createTypeParameter(String name) {
+        return new FormalTypeParameter(name);
+    }
+
+    public ExtendsWildcard createExtendsWildcard(String type) {
+        return new ExtendsWildcard(createTypeReference(type));
     }
 }

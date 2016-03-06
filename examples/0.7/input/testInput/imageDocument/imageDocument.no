@@ -1,0 +1,6 @@
+[Document]
+
+# Chapter 1
+This is the first paragraph of our simple document. Next we demonstrate some images.
+!(image1)
+![This is image2](image2)

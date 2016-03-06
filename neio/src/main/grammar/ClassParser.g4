@@ -23,15 +23,17 @@ body : ( fieldDecl SCOLON
        | (methodExpression SCOLON | method))+
        | ;
 
-fieldDecl : modifier? type Identifier;
+fieldDecl : modifier* type Identifier;
 fieldAssignmentExpression : var=fieldDecl EQUALS val=expression;
 
 method : methodExpression block;
 methodExpression : modifier* methodHeader L_BRACE parameters? R_BRACE;
-methodHeader : (type | VOID)? name=(Identifier | MethodIdentifier | STAR | MINUS);
+methodHeader : (SMALLER typeParameterList BIGGER)? (type | VOID)? name=(Identifier | MethodIdentifier | STAR | MINUS);
 modifier : PRIVATE
          | PROTECTED
          | PUBLIC
+         | FINAL
+         | STATIC
          | NESTED;
 
 block : LC_BRACE statement* RC_BRACE;
@@ -71,6 +73,7 @@ expression : literal                    #literalExpression
            | L_BRACE type R_BRACE expression #castExpression
            | expression DOT name=(Identifier | MethodIdentifier | STAR| MINUS) args=arguments #qualifiedCallExpression
            | name=(Identifier | MethodIdentifier | STAR | MINUS) args=arguments #selfCallExpression
+           | op=E_MARK right=expression                                         #notExpression
            | left=expression op=OR right=expression                             #orExpression
            | left=expression op=AND right=expression                            #andExpression
            | left=expression op=HAT right=expression                            #exponentiationExpression
@@ -93,7 +96,12 @@ arguments : L_BRACE expression (COMMA expression)* R_BRACE #someArguments
 parameters : parameter (COMMA parameter)*;
 parameter : type Identifier;
 
-type : Identifier (DOT Identifier)* (SMALLER typeArgumentList BIGGER)?;
-typeArgumentList : typeArgumentList COMMA Identifier #typeArguments
-                  | Identifier                       #typeArgument
+type : Identifier (DOT Identifier)* (SMALLER typeArgumentList BIGGER)? (ARRAY)?;
+typeArgumentList : typeArgumentList COMMA type  #typeArguments
+                 | type                         #typeArgument
+                 | Q_MARK EXTENDS bound=type    #boundedTypeArgument
+                 ;
+
+typeParameterList : typeParameterList COMMA type  #typeParameters
+                  | type                          #typeParameter
                   ;

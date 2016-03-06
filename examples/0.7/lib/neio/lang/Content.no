@@ -1,17 +1,14 @@
 namespace neio.lang;
 
-import neio.stdlib.ContentF;
 import java.util.*;
 
 class Content implements Texable;
 
 private List<Content> content;
 private Content parent;
-@Inject protected Factory factory;
 
 Content() {
     content = new ArrayList<Content>();
-	factory = new ContentF();
 }
 
 Content addContent(Content c) {
@@ -33,8 +30,111 @@ Integer contentSize() {
 	return content.size();
 }
 
-void setFactory(ContentF factory) {
-	this.factory = factory;
+List<Content> content() {
+	return content;
+}
+
+List<Content> ancestors() {
+	List<Content> list = new ArrayList<Content>();
+	Content p = parent();
+	
+	while (p != null) {
+		list.add(p);
+		p = p.parent();
+	}
+	
+	return list;
+}
+
+<T> T nearestAncestor(Class<T> c) {
+	Content p = parent();
+	while ((p != null) && (!c.isInstance(p))) {
+		p = p.parent();
+	}
+	
+	return (T) p;
+}
+
+List<Content> siblings(Class c) {
+	Content p = parent();
+	List<Content> siblings = new ArrayList<Content>();
+	if (p != null) {
+		siblings = p.descendants();
+		siblings.remove(this);
+	}
+	
+	return siblings;
+}
+
+List<Content> descendants() {
+	return descendants(content());
+}
+
+protected List<Content> descendants(List<Content> input) {
+	List<Content> list = new ArrayList<Content>();
+	
+	for (int i = 0; i < input.size(); i = i + 1) {
+		Content current = input.get(i);
+		list.add(current);
+		list.addAll(descendants(current.content()));
+	}
+	
+	return list;
+}
+
+private final Map<Class, Class> _classMapping = new HashMap<Class, Class>();
+private final Set<Class> _uses = new HashSet<Class>();
+
+final Class classMapping(Class klass) {
+	return _classMapping.get(klass);
+}
+
+public final <T> void addClassMapping(Class<T> oldClass, Class<? extends T> newClass) {
+	_classMapping.put(oldClass, newClass);
+}
+
+public final void addUse(Class klass) {
+	_uses.add(klass);
+}
+
+public final boolean usesClass(Class klass) {
+	return _uses.contains(klass);
+}
+
+public final <T> T getInstance(Class<T> klass, Class[] paramTypes, Object[] params) {
+	// Have I been overridden?
+	Class result = classMapping(klass);
+	Content current = parent();
+	// Has any of the parents been overridden?
+	while ((current != null) && (result == null)) {
+		result = current.classMapping(klass);
+		current = current.parent();
+	}
+	
+	// No parents have been overridden
+	if (result == null) {
+		return instantiate(klass, paramTypes, params);
+	}
+	// A parent was overridden, use that type
+	else {
+		return (T) instantiate(result, paramTypes, params);
+	}
+}
+
+private <T> T instantiate(Class<T> klass, Class[] paramTypes, Object[] params) {
+	return klass.getConstructor(paramTypes).newInstance(params);
+}
+
+public final <T> void use(Class<? extends T> newClass, Class<T> oldClass) {
+	Content current = this;
+	while ((current != null) && (!current.usesClass(oldClass))) {
+		current = current.parent();
+	}
+
+	if (current != null) {
+		current.addClassMapping(oldClass, newClass);
+		current.addUse(newClass);
+	}
 }
 
 String toTex() {
