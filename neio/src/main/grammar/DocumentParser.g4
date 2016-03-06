@@ -11,6 +11,7 @@ body : content*;
 content : ( prefixCall
           | postfixCall
           | text
+          | customCommand
           | CODE)
           mnl?;
 
@@ -22,5 +23,5 @@ text : sentence+;
 postfixCall : STUB;
 
 sentence : WORD+ NL;
-
+customCommand : CC L_BRACE (WORD | UNKNOWN)* R_BRACE;
 mnl : NL+;
