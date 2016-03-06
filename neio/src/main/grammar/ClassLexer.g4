@@ -28,6 +28,7 @@ WHILE : 'while';
 NESTED : 'nested';
 FINAL : 'final';
 STATIC : 'static';
+SURROUND : 'surround';
 TRUE : 'true';
 FALSE : 'false';
 NULL : 'null';

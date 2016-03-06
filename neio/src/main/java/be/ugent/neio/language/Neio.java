@@ -15,10 +15,12 @@ import static be.ugent.neio.util.Constants.VERSION;
  */
 public class Neio extends Java7 {
     public static final String NAME = "Neio";
+    public final ChameleonProperty SURROUND;
     public final ChameleonProperty NESTED;
 
     public Neio() {
         super(NAME, new BasicRevision(Arrays.asList(VERSION.split("\\.")).stream().mapToInt(Integer::parseInt).toArray()));
         NESTED = add(new StaticChameleonProperty("nested", Method.class));
+        SURROUND = add(new StaticChameleonProperty("surround", Method.class));
     }
 }

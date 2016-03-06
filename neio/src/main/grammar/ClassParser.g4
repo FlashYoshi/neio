@@ -34,6 +34,7 @@ modifier : PRIVATE
          | PUBLIC
          | FINAL
          | STATIC
+         | SURROUND
          | NESTED;
 
 block : LC_BRACE statement* RC_BRACE;
