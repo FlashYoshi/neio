@@ -13,6 +13,9 @@ Chapter(String title, Integer level) {
 }
 
 nested Chapter #(String title, Integer level) {
+	if (level <= this.level) {
+		return nearestAncestor(Chapter.class).#(title, level);
+	}
     Chapter chapter = new Chapter(title, level);
     addContent(chapter);
 	
