@@ -46,13 +46,13 @@ List<Content> ancestors() {
 	return list;
 }
 
-Content nearestAncestor(Class c) {
+<T> T nearestAncestor(Class<T> c) {
 	Content p = parent();
 	while ((p != null) && (!c.isInstance(p))) {
 		p = p.parent();
 	}
 	
-	return p;
+	return (T) p;
 }
 
 List<Content> siblings(Class c) {
@@ -102,16 +102,21 @@ public final boolean usesClass(Class klass) {
 }
 
 public final <T> T getInstance(Class<T> klass, Class[] paramTypes, Object[] params) {
+	// Have I been overridden?
 	Class result = classMapping(klass);
 	Content current = parent();
+	// Has any of the parents been overridden?
 	while ((current != null) && (result == null)) {
 		result = current.classMapping(klass);
 		current = current.parent();
 	}
 	
+	// No parents have been overridden
 	if (result == null) {
 		return instantiate(klass, paramTypes, params);
-	} else {
+	}
+	// A parent was overridden, use that type
+	else {
 		return (T) instantiate(result, paramTypes, params);
 	}
 }
