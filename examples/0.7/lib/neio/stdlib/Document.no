@@ -6,11 +6,13 @@ import java.util.ArrayList;
 
 class Document extends Container;
 
-private List<String> packages = new ArrayList<String>();
+protected List<String> packages = new ArrayList<String>();
+protected String documentClass;
 
 Document() {
 	packages.add("a4wide");
 	packages.add("graphicx");
+	documentClass = "article";
 }
 
 Chapter #(String title) {
@@ -49,15 +51,18 @@ Image image(String caption, String imageName) {
 	return neioImage;
 }
 
+String documentHeader() {
+	return "\\setlength{\\parindent}{0em}\n" +
+	"\\setlength{\\parskip}{1em}\n";
+}
+
 String toTex() {
-	String tex = "\\documentclass{article}\n";
+	String tex = "\\documentclass{" + documentClass + "}\n";
 	for (int i = 0; i < packages.size(); i = i + 1) {
 		tex = tex + "\\usepackage{" + packages.get(i) + "}\n";
 	}
 	
-	tex = tex +
-			  "\\setlength{\\parindent}{0em}\n" +
-			  "\\setlength{\\parskip}{1em}\n" +
+	tex = tex + documentHeader() +
 			  "\\begin{document}\n" +
 			  super.toTex() +
 			  "\n\\end{document}\n";
