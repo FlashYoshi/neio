@@ -14,10 +14,7 @@ import org.aikodi.chameleon.oo.expression.MethodInvocation;
 import org.aikodi.chameleon.oo.plugin.ObjectOrientedFactory;
 import org.aikodi.chameleon.oo.statement.Block;
 import org.aikodi.chameleon.support.statement.StatementExpression;
-import org.antlr.v4.runtime.ANTLRInputStream;
-import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.Lexer;
-import org.antlr.v4.runtime.TokenStream;
+import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.neio.antlr.ClassLexer;
@@ -118,6 +115,8 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
                 previousExpression = visitPostFixCall(ctx.postfixCall());
             } else if (ctx.text() != null) {
                 previousExpression = visitText(ctx.text());
+            } else if (ctx.TAG() != null) {
+                previousExpression = visitTag(ctx.TAG());
             } else if (ctx.customCommand() != null) {
                 // Stop the previous statement
                 if (previousExpression != null) {
@@ -134,6 +133,29 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         }
 
         return null;
+    }
+
+    private Expression visitTag(TerminalNode node) {
+        String tag = node.getText();
+        tag = tag.substring(1, tag.length() - 1);
+
+        ClassParser.ExpressionContext context = getParser(tag).expression();
+        Expression e = null;
+        ClassConverter converter = new ClassConverter(document, view);
+        if (context instanceof ClassParser.IdentifierExpressionContext) {
+            ClassParser.IdentifierExpressionContext c = (ClassParser.IdentifierExpressionContext) context;
+            e = converter.visitIdentifierExpression(c);
+        } else if (context instanceof ClassParser.LowPriorityNumbericalExpressionContext) {
+            ClassParser.LowPriorityNumbericalExpressionContext c = (ClassParser.LowPriorityNumbericalExpressionContext) context;
+            e = converter.visitLowPriorityNumbericalExpression(c);
+        } else if (context instanceof ClassParser.HighPriorityNumbericalExpressionContext) {
+            ClassParser.HighPriorityNumbericalExpressionContext c = (ClassParser.HighPriorityNumbericalExpressionContext) context;
+            e = converter.visitHighPriorityNumbericalExpression(c);
+        } else {
+            System.err.println("Unknown type of label encountered: " + tag);
+        }
+
+        return e;
     }
 
     @Override
@@ -250,7 +272,11 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         // Add the curly braces required for the parsing of a block
         code = "{" + code + "}";
 
-        InputStream stream = new ByteArrayInputStream(code.getBytes(StandardCharsets.UTF_8));
+        return new ClassConverter(document, view).visitBlock(getParser(code).block());
+    }
+
+    private ClassParser getParser(String s) {
+        InputStream stream = new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
         ANTLRInputStream input = null;
         try {
             input = new ANTLRInputStream(stream);
@@ -260,7 +286,6 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         Lexer lexer = new ClassLexer(input);
         TokenStream tokens = new CommonTokenStream(lexer);
 
-        ClassParser parser = new ClassParser(tokens);
-        return new ClassConverter(document, view).visitBlock(parser.block());
+        return new ClassParser(tokens);
     }
 }

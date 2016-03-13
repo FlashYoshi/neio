@@ -6,6 +6,7 @@ MULTILINE_COMMENT : '/*' .*? '*/' NL+ -> channel(HIDDEN);
 
 INLINE_CODE : DB_QUOTE .+? DB_QUOTE;
 CODE : B_QUOTE .+? B_QUOTE;
+TAG : LC_BRACE .+? RC_BRACE;
 
 ESCAPE : B_SLASH .;
 CC : B_SLASH CHAR CHAR+;
@@ -21,6 +22,8 @@ LS_BRACE : '[';
 RS_BRACE : ']';
 L_BRACE : '(';
 R_BRACE : ')';
+LC_BRACE : '{';
+RC_BRACE : '}';
 fragment B_QUOTE : '`';
 fragment DB_QUOTE : '``';
 fragment B_SLASH : '\\';
