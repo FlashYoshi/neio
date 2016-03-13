@@ -74,14 +74,16 @@ expression : literal                    #literalExpression
            | expression DOT name=(Identifier | MethodIdentifier | STAR| MINUS) args=arguments #qualifiedCallExpression
            | name=(Identifier | MethodIdentifier | STAR | MINUS) args=arguments #selfCallExpression
            | op=E_MARK right=expression                                         #notExpression
+           | left=expression op=(INCR | DECR)                                   #postfixCrementExpression
+           | op=(INCR | DECR) right = expression                                #prefixCrementExpression
            | left=expression op=OR right=expression                             #orExpression
            | left=expression op=AND right=expression                            #andExpression
            | left=expression op=HAT right=expression                            #exponentiationExpression
            | left=expression op=PIPE right=expression                           #pipeExpression
            | left=expression op=AMPERSAND right=expression                      #ampersandExpression
-           | left=expression op=(PLUS|MINUS) right=expression                   #lowPriorityNumbericalExpression
+           | left=expression op=(PLUS | MINUS) right=expression                 #lowPriorityNumbericalExpression
            | left=expression op=(EQUAL | NOT_EQUAL) right=expression            #equalityExpression
-           | left=expression op=(STAR|SLASH|PERCENT) right=expression           #highPriorityNumbericalExpression
+           | left=expression op=(STAR | SLASH | PERCENT) right=expression       #highPriorityNumbericalExpression
            | left=expression op=(L_SHIFT | RR_SHIFT | R_SHIFT) right=expression #shiftExpression
            | left=expression op=(LEQ | GEQ | BIGGER | SMALLER) right=expression #orderExpression
            ;

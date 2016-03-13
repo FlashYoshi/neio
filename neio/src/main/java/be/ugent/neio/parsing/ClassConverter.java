@@ -41,6 +41,7 @@ import org.aikodi.chameleon.support.statement.*;
 import org.aikodi.chameleon.support.variable.LocalVariableDeclarator;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.TerminalNode;
+import org.neio.antlr.ClassParser;
 import org.neio.antlr.ClassParser.*;
 import org.neio.antlr.ClassParserBaseVisitor;
 
@@ -426,7 +427,17 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     @Override
-    public Object visitNotExpression(@NotNull NotExpressionContext ctx) {
+    public Expression visitNotExpression(@NotNull NotExpressionContext ctx) {
+        return eFactory().createPrefixOperatorInvocation(ctx.op.getText(), (Expression) visit(ctx.right));
+    }
+
+    @Override
+    public Expression visitPostfixCrementExpression(@NotNull PostfixCrementExpressionContext ctx) {
+        return eFactory().createPostfixOperatorInvocation(ctx.op.getText(), (Expression) visit(ctx.left));
+    }
+
+    @Override
+    public Expression visitPrefixCrementExpression(@NotNull PrefixCrementExpressionContext ctx) {
         return eFactory().createPrefixOperatorInvocation(ctx.op.getText(), (Expression) visit(ctx.right));
     }
 
