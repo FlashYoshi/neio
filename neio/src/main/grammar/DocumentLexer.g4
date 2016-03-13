@@ -5,7 +5,7 @@ COMMENT : '//' ~[\r\n]* NL+ -> channel(HIDDEN);
 MULTILINE_COMMENT : '/*' .*? '*/' NL+ -> channel(HIDDEN);
 
 INLINE_CODE : DB_QUOTE .+? DB_QUOTE;
-CODE : TB_QUOTE .+? TB_QUOTE;
+CODE : B_QUOTE .+? B_QUOTE;
 
 ESCAPE : B_SLASH .;
 CC : B_SLASH CHAR CHAR+;
@@ -21,7 +21,7 @@ LS_BRACE : '[';
 RS_BRACE : ']';
 L_BRACE : '(';
 R_BRACE : ')';
-fragment TB_QUOTE : '```';
+fragment B_QUOTE : '`';
 fragment DB_QUOTE : '``';
 fragment B_SLASH : '\\';
 

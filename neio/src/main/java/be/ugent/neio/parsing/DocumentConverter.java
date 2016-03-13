@@ -93,7 +93,7 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         if (ctx.CODE() != null || ctx.INLINE_CODE() != null) {
             Block codeBlock;
             if (ctx.CODE() != null) {
-                codeBlock = visitCode(ctx.CODE().getText(), 3);
+                codeBlock = visitCode(ctx.CODE().getText(), 1);
             } else {
                 codeBlock = visitCode(ctx.INLINE_CODE().getText(), 2);
                 codeBlock.setMetadata(new TagImpl(), Neio.INLINE_CODE);
@@ -233,10 +233,18 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         code = code.substring(sepLen, code.length() - sepLen);
         // Add a semicolon if needed
         int index = code.length();
-        while (Pattern.matches("[\t\n\r ]", code.charAt(--index) + ""));
+        while (Pattern.matches("[\t\n\r ]", code.charAt(--index) + "")) ;
 
         if (code.charAt(index) != ';') {
             code = new StringBuilder(code).insert(index + 1, ';').toString();
+        }
+
+        // Add newlines if needed
+        if (code.charAt(0) != '\n') {
+            code = '\n' + code;
+        }
+        if (code.charAt(code.length() - 1) != '\n') {
+            code += '\n';
         }
 
         // Add the curly braces required for the parsing of a block

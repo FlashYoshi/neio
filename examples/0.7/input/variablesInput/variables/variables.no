@@ -14,19 +14,19 @@ For some course I had to work ``int x = 150`` and for another one [y]{180}, that
 
 ``int i = 0;``
 [Image1](treeimg)
-``i++``
+`i++`
 This was an image showing there are more trees in my yard than in my neighbours'.
 
 [Image2](flowerimg)
-``i++``
+`i++`
 I also appear to have more flowers.
 
 [Image3](animalimg)
-``i--``
+`i--`
 But he has more animals coming over.
 
 [Image4](furnitureimg)
-``i++``
+`i++`
 But I have the nicest furniture!
 
 \if(i > 0)
