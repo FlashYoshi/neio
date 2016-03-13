@@ -1,0 +1,23 @@
+[Letter]
+
+``
+	String address = "Sint-pietersnieuwstraat 7";
+	String city = "Ghent";
+	String name = '"Titouan Vervack";
+	String addressee = "Thomas Vanhaskel";
+	String help = "math class";
+	String helpSubject = "helpSubject";
+
+	List<String> closings = new List<String>();
+	closings.add("See you later!");
+	closings.add("Kind regards,");
+	closings.add("With the kindest of salutations,");
+``
+
+Dear {addressee},
+
+Thank you for helping me out with {help}.
+I was able to do great at the {helpSubject} thanks to you.
+
+\random(closings)
+{name}

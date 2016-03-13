@@ -1,0 +1,35 @@
+[Document]
+
+{{
+	String ug = "University of Ghent"
+}}
+
+When I was studying at the {ug} I had to endure a lot of hard courses. But the professors at the {ug} were
+always very helpful and open for questions.
+
+I really enjoyed going to the {ug} and would encourage everyone to go study there!
+
+For some course I had to work ``int x = 150`` and for another one [y]{180}, that's a total of {x + y}!
+
+``int i = 0;``
+[Image1](treeimg)
+``i++``
+This was an image showing there are more trees in my yard than in my neighbours'.
+
+[Image2](flowerimg)
+``i++``
+I also appear to have more flowers.
+
+[Image3](animalimg)
+``i--``
+But he has more animals coming over.
+
+[Image4](furnitureimg)
+``i++``
+But I have the nicest furniture!
+
+\if(i > 0)
+	In the end we can say that my yard is at least {i} points better! // is at least {i} point{(i > 1) ? "s" : ""} better!
+\else
+	Well I still think my yard's better, even if I don't have more good points!
+\fi
