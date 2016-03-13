@@ -6,6 +6,7 @@ import be.ugent.neio.industry.NeioFactory;
 import be.ugent.neio.language.Neio;
 import be.ugent.neio.model.document.TextDocument;
 import org.aikodi.chameleon.core.document.Document;
+import org.aikodi.chameleon.core.tag.TagImpl;
 import org.aikodi.chameleon.exception.ChameleonProgrammerException;
 import org.aikodi.chameleon.oo.expression.Expression;
 import org.aikodi.chameleon.oo.expression.ExpressionFactory;
@@ -30,6 +31,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import static be.ugent.neio.util.Constants.IMAGE;
 
@@ -88,8 +90,14 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
     }
 
     public Block visitContent(ContentContext ctx) {
-        if (ctx.CODE() != null) {
-            Block codeBlock = visitCode(ctx.CODE());
+        if (ctx.CODE() != null || ctx.INLINE_CODE() != null) {
+            Block codeBlock;
+            if (ctx.CODE() != null) {
+                codeBlock = visitCode(ctx.CODE().getText(), 3);
+            } else {
+                codeBlock = visitCode(ctx.INLINE_CODE().getText(), 2);
+                codeBlock.setMetadata(new TagImpl(), Neio.INLINE_CODE);
+            }
             if (codeBlock.nbStatements() != 0) {
                 // A block of code has been found, round up the expressions found before this block
                 if (previousExpression != null) {
@@ -220,10 +228,20 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         return expressionFactory().createNeioMethodInvocation(methodName, previousExpression, arguments);
     }
 
-    public Block visitCode(TerminalNode node) {
-        String code = node.getText();
-        // Remove the backquotes and add the required curly braces
-        code = "{" + code.substring(3, code.length() - 3) + "}";
+    public Block visitCode(String code, int sepLen) {
+        // Remove the separator
+        code = code.substring(sepLen, code.length() - sepLen);
+        // Add a semicolon if needed
+        int index = code.length();
+        while (Pattern.matches("[\t\n\r ]", code.charAt(--index) + ""));
+
+        if (code.charAt(index) != ';') {
+            code = new StringBuilder(code).insert(index + 1, ';').toString();
+        }
+
+        // Add the curly braces required for the parsing of a block
+        code = "{" + code + "}";
+
         InputStream stream = new ByteArrayInputStream(code.getBytes(StandardCharsets.UTF_8));
         ANTLRInputStream input = null;
         try {

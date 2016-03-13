@@ -4,6 +4,7 @@
 	String ug = "University of Ghent"
 ``
 
+/*
 When I was studying at the {ug} I had to endure a lot of hard courses. But the professors at the {ug} were
 always very helpful and open for questions.
 
@@ -32,4 +33,4 @@ But I have the nicest furniture!
 	In the end we can say that my yard is at least {i} points better! // is at least {i} point{(i > 1) ? "s" : ""} better!
 \else
 	Well I still think my yard's better, even if I don't have more good points!
-\fi
+\fi*/

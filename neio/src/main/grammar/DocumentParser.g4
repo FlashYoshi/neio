@@ -12,6 +12,7 @@ content : ( prefixCall
           | postfixCall
           | text
           | customCommand
+          | INLINE_CODE
           | CODE)
           mnl?;
 

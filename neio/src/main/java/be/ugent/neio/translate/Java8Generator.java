@@ -21,6 +21,7 @@ import org.aikodi.chameleon.oo.variable.VariableDeclaration;
 import org.aikodi.chameleon.support.expression.ThisLiteral;
 import org.aikodi.chameleon.support.member.simplename.method.NormalMethod;
 import org.aikodi.chameleon.support.member.simplename.method.RegularMethodInvocation;
+import org.aikodi.chameleon.support.statement.ReturnStatement;
 import org.aikodi.chameleon.support.variable.LocalVariableDeclarator;
 
 import java.util.ArrayList;
@@ -76,7 +77,18 @@ public class Java8Generator {
             // If so, it is an inline code block
             if (getNearestElement(statement, Statement.class) != null) {
                 block.addStatement(statement);
-                processInlineBlock(lastElement, (Block) statement, variables);
+                Block blockStatement = (Block) statement;
+                processScopedBlock(lastElement, blockStatement, variables);
+                if (statement.hasMetadata(Neio.INLINE_CODE)) {
+                    if (statement.hasDescendant(ReturnStatement.class)) {
+                        List<Statement> statements = createDeclarationAndBlock(blockStatement);
+                        block.removeStatement(statement);
+                        block.addStatements(statements);
+                    } else {
+                        block.removeStatement(statement);
+                        block.addStatements((blockStatement.statements()));
+                    }
+                }
                 continue;
 
             }
@@ -137,7 +149,26 @@ public class Java8Generator {
         return block;
     }
 
-    private void processInlineBlock(String lastElement, Block block, Stack<Variable> variables) throws LookupException {
+    private List<Statement> createDeclarationAndBlock(Block block) {
+        ArrayList<Statement> statements = new ArrayList<>();
+        ReturnStatement returnStat = block.nearestDescendants(ReturnStatement.class).get(0);
+        Expression e = returnStat.getExpression();
+        if (!(e instanceof NameExpression)) {
+            System.err.println("You can only return named entities in an inline code block, unknown expression: " + e.toString());
+        } else {
+            try {
+                statements.add(oFactory().createLocalVariable(e.getType().name(), ((NameExpression) e).name(), null));
+            } catch (LookupException e1) {
+                System.err.println(((NameExpression) e).name() + " has not been declared yet!");
+                return statements;
+            }
+            statements.add(block);
+        }
+
+        return statements;
+    }
+
+    private void processScopedBlock(String lastElement, Block block, Stack<Variable> variables) throws LookupException {
         if (lastElement == null) {
             throw new ChameleonProgrammerException("Inline code blocks are not allowed as the first element in a document!");
         }
