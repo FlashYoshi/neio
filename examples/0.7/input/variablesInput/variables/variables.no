@@ -2,8 +2,11 @@
 
 ``
 	String ug = "University of Ghent";
-    return new Chapter("Test", 1);
+    return new FibEnumerate();
 ``
+- First
+- Second
+- Third
 
 /*
 When I was studying at the {ug} I had to endure a lot of hard courses. But the professors at the {ug} were
