@@ -1,5 +1,6 @@
 package be.ugent.neio.translate;
 
+import be.kuleuven.cs.distrinet.jnome.core.expression.invocation.ConstructorInvocation;
 import be.kuleuven.cs.distrinet.jnome.core.expression.invocation.JavaMethodInvocation;
 import be.ugent.neio.industry.NeioExpressionFactory;
 import be.ugent.neio.industry.NeioFactory;
@@ -23,6 +24,7 @@ import org.aikodi.chameleon.support.member.simplename.method.NormalMethod;
 import org.aikodi.chameleon.support.member.simplename.method.RegularMethodInvocation;
 import org.aikodi.chameleon.support.statement.ReturnStatement;
 import org.aikodi.chameleon.support.variable.LocalVariableDeclarator;
+import org.aikodi.chameleon.util.Util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +40,7 @@ public class Java8Generator {
     public static final String ROOT = VAR_NAME + "0";
     private Neio neio;
     private int id;
+    private String lastElement = null;
 
     private NeioExpressionFactory eFactory() {
         return (NeioExpressionFactory) neio.plugin(ExpressionFactory.class);
@@ -68,7 +71,7 @@ public class Java8Generator {
         // The defined variables
         Stack<Variable> variables = new Stack<>();
         // Use a string as we constantly have to create new NameExpressions
-        String lastElement = null;
+        lastElement = null;
 
         Block block = new Block();
         oldBlock.replaceWith(block);
@@ -81,7 +84,7 @@ public class Java8Generator {
                 processScopedBlock(lastElement, blockStatement, variables);
                 if (statement.hasMetadata(Neio.INLINE_CODE)) {
                     if (statement.hasDescendant(ReturnStatement.class)) {
-                        List<Statement> statements = createDeclarationAndBlock(blockStatement);
+                        List<Statement> statements = createDeclarationAndBlock(blockStatement, variables);
                         block.removeStatement(statement);
                         block.addStatements(statements);
                     } else {
@@ -149,20 +152,52 @@ public class Java8Generator {
         return block;
     }
 
-    private List<Statement> createDeclarationAndBlock(Block block) {
+    private List<Statement> createDeclarationAndBlock(Block block, Stack<Variable> variables) {
         ArrayList<Statement> statements = new ArrayList<>();
         ReturnStatement returnStat = block.nearestDescendants(ReturnStatement.class).get(0);
         Expression e = returnStat.getExpression();
-        if (!(e instanceof NameExpression)) {
-            System.err.println("You can only return named entities in an inline code block, unknown expression: " + e.toString());
+        String prev = lastElement;
+        if (!(e instanceof NameExpression) && (!(e instanceof MethodInvocation))) {
+            System.err.println("You can only return named entities or Content in an inline code block, unknown expression: " + e.toString());
+            return statements;
         } else {
             try {
-                statements.add(oFactory().createLocalVariable(e.getType().name(), ((NameExpression) e).name(), null));
+                if (e instanceof NameExpression) {
+                    statements.add(oFactory().createLocalVariable(e.getType().name(), ((NameExpression) e).name(), null));
+                } else {
+                    lastElement = getVarName();
+                    Type type = e.getType();
+                    boolean content = false;
+                    for (Type t : type.getSelfAndAllSuperTypesView()) {
+                        if (t.name().equals(Util.getLastPart(BASE_CLASS))) {
+                            content = true;
+                            break;
+                        }
+                    }
+                    if (!content) {
+                        System.err.println("You can only return named entities or Content in an inline code block, unknown expression: " + e.toString());
+                        return statements;
+                    }
+
+                    LocalVariableDeclarator lvd = oFactory().createLocalVariable(type.name(), lastElement, oFactory().createNullLiteral());
+                    statements.add(lvd);
+                    variables.push(lvd.variableDeclarations().get(0).variable());
+                    Expression ref = eFactory().createNameExpression(lastElement);
+                    block.addStatement(oFactory().createStatement(eFactory().createAssignmentExpression(ref, e)));
+                }
             } catch (LookupException e1) {
-                System.err.println(((NameExpression) e).name() + " has not been declared yet!");
+                System.err.println(e + " has not been declared yet!");
+                lastElement = prev;
                 return statements;
             }
+            block.removeStatement(returnStat);
             statements.add(block);
+            if (e instanceof ConstructorInvocation) {
+                List<Expression> arguments = new ArrayList<>();
+                arguments.add(eFactory().createNameExpression(lastElement));
+                Expression expr = eFactory().createMethodInvocation("addContent", eFactory().createNameExpression(prev), arguments);
+                statements.add(oFactory().createStatement(expr));
+            }
         }
 
         return statements;

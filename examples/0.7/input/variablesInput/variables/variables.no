@@ -1,7 +1,8 @@
 [Document]
 
 ``
-	String ug = "University of Ghent"
+	String ug = "University of Ghent";
+    return new Chapter("Test", 1);
 ``
 
 /*

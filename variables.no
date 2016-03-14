@@ -23,33 +23,34 @@ a = math.sqrt(a, 2);
 Address them the same way you address labels, using { } this construction allows for + - * and / Maybe ternary operator?
 Parse label body to int if possible
 
-Allow for the return keyword in a `` `` block to allow for bringing out only that one named entity.
-Bringing out a non named entity would be useless as it has to be connected to something, which is done by calling this.addContent();
+Allow for the return keyword in a `` `` block to allow for bringing out only that one named entity, or a Content object.
+Bringing out a non named entity would be useless, unless it's a content.
+In case addContent wasn't called on the object it will be called after the block
 
 // We don't want the other vars as they are commonly used and would probably nameclash
 ``
 	int width = 15;
 	int i = 20;
-	Table table = new Table(width, i);
-	this.addContent(table);
-	return table;
+	return new Table(width, i);
 ``
 
-Table table;
+``
+    Table table = nearestAncestor(Document.class).addContent(new Table());
+``
+
+Table $var16;
 {
 	int width = 15;
 	int i = 20;
-	Table table = new Table(width, i);
-	this.addContent(table);
-	return table;
+	$var16 = new Table(width, i);
 }
+$var15.addContent($var16);
 
 // We might want to use these vars as they are not commonly used
 ``
 	int mytablewidth = 15;
 	int mytablelength = 20;
-	Table table = new Table(mytablewidth, mytablelength);
-	this.addContent(table);
+	Table table = addContent(new Table(mytablewidth, mytablelength));
 ``
 
 {
