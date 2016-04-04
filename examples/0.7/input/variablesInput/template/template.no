@@ -1,6 +1,7 @@
 [Document]
 
-``
+// RETURNS NOTHING
+{
 	String address = "Sint-pietersnieuwstraat 7";
 	String city = "Ghent";
 	String name = "Titouan Vervack";
@@ -12,14 +13,15 @@
 	closings.add("See you later!");
 	closings.add("Kind regards,");
 	closings.add("With the kindest of salutations,");
-``
+}
 
-/*
+// RETURNS A STRING, THE COMPILER CALLS A METHOD TO ADD IT TO THE REST OF THE TEXT
 Dear {addressee},
 
 Thank you for helping me out with {help}.
 I was able to do great at the {helpSubject} thanks to you.
 
-\random(closings)
+// RETURNS A STRING, THE COMPILER CALLS A METHOD TO ADD IT TO THE REST OF THE TEXT
+{random(closings)}
 {name}
-*/
+
