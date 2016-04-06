@@ -47,6 +47,10 @@ Paragraph newline(String parText) {
     return p;
 }
 
+Image image(String imageName) {
+    return image("", imageName);
+}
+
 Image image(String caption, String imageName) {
 	Image neioImage = new Image(caption, imageName);
 	addContent(neioImage);
