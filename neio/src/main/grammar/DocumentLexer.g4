@@ -4,9 +4,8 @@ HEADER : LS_BRACE CHAR+ RS_BRACE;
 COMMENT : '//' ~[\r\n]* NL+ -> channel(HIDDEN);
 MULTILINE_COMMENT : '/*' .*? '*/' NL+ -> channel(HIDDEN);
 
-INLINE_CODE : DB_QUOTE .+? DB_QUOTE;
-CODE : B_QUOTE .+? B_QUOTE;
-TAG : LC_BRACE .+? RC_BRACE;
+SCOPED_CODE : DLCB -> pushMode(INCODE);
+CODE : LCB -> pushMode(INCODE);
 
 ESCAPE : B_SLASH .;
 CC : B_SLASH CHAR CHAR+;
@@ -22,10 +21,16 @@ LS_BRACE : '[';
 RS_BRACE : ']';
 L_BRACE : '(';
 R_BRACE : ')';
-LC_BRACE : '{';
-RC_BRACE : '}';
+DLCB : '{{';
+LCB : '{';
+DRCB : '}}';
+RCB : '}';
+Q : '"';
+TQ : '\'\'\'';
+SQ : '\'';
 fragment B_QUOTE : '`';
 fragment DB_QUOTE : '``';
+fragment TB_QUOTE : '```';
 fragment B_SLASH : '\\';
 
 fragment HASH : '#';
@@ -35,5 +40,15 @@ BANG : '!';
 MethodName : HASH | DASH | STAR;
 
 WORD : VALID_CHAR+;
+
+mode INCODE;
+SCONTENT : CONTENT* DRCB -> mode(DEFAULT_MODE);
+CCONTENT : CONTENT* RCB -> mode(DEFAULT_MODE);
+CONTENT : (LCB ANY RCB) | ANY;
+ANY : ~["}']+ | STRING;
+STRING : Q (~["]+ | B_SLASH Q) Q
+       | SQ (~[']+ | B_SLASH SQ) SQ
+       | TEXTMODE;
+TEXTMODE : TQ (.*? | B_SLASH SQ B_SLASH SQ B_SLASH SQ) TQ;
 
 UNKNOWN : . ;

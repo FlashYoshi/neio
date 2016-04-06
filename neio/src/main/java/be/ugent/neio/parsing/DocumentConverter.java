@@ -87,12 +87,12 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
     }
 
     public Block visitContent(ContentContext ctx) {
-        if (ctx.CODE() != null || ctx.INLINE_CODE() != null) {
+        if (ctx.code() != null || ctx.scode() != null) {
             Block codeBlock;
-            if (ctx.CODE() != null) {
-                codeBlock = visitCode(ctx.CODE().getText(), 1);
+            if (ctx.scode() != null) {
+                codeBlock = visitCode(ctx.scode().getText(), 1);
             } else {
-                codeBlock = visitCode(ctx.INLINE_CODE().getText(), 2);
+                codeBlock = visitCode(ctx.code().getText(), 2);
                 codeBlock.setMetadata(new TagImpl(), Neio.INLINE_CODE);
             }
             if (codeBlock.nbStatements() != 0) {
@@ -115,8 +115,8 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
                 previousExpression = visitPostFixCall(ctx.postfixCall());
             } else if (ctx.text() != null) {
                 previousExpression = visitText(ctx.text());
-            } else if (ctx.TAG() != null) {
-                previousExpression = visitTag(ctx.TAG());
+//            } else if (ctx.TAG() != null) {
+//                previousExpression = visitTag(ctx.TAG());
             } else if (ctx.customCommand() != null) {
                 // Stop the previous statement
                 if (previousExpression != null) {

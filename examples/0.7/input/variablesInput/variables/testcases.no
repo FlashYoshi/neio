@@ -31,3 +31,15 @@ We can however have normal expressions like {(i++) + 15} be printed out.
 Or we can have multiple expressions follow each other {i + 15} {calculateCoolThings(j)}
 
 It's also possible to just define a label right here {String label: "label"} and it will be added inline to the content.
+
+{
+    if (i > 0) {
+        System.out.println("{Bigger than 0.");
+    } else {
+        if (i == 0) {
+            System.out.println("Equal to 0}}");
+        } else {
+            System.out.println("Less than 0{}");
+        }
+    }
+}

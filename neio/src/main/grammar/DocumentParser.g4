@@ -12,9 +12,8 @@ content : ( prefixCall
           | postfixCall
           | text
           | customCommand
-          | TAG
-          | INLINE_CODE
-          | CODE)
+          | scode
+          | code)
           mnl?;
 
 prefixCall : MethodName+ sentence
@@ -27,3 +26,6 @@ postfixCall : STUB;
 sentence : WORD+ NL;
 customCommand : CC L_BRACE (WORD | UNKNOWN)* R_BRACE;
 mnl : NL+;
+
+scode : SCOPED_CODE SCONTENT;
+code : CODE CCONTENT;
