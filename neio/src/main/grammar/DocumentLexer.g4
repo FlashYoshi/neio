@@ -16,8 +16,6 @@ NL : '\r'? '\n';
 fragment CHAR : [a-zA-Z0-9];
 fragment VALID_CHAR : [a-zA-Z0-9.,!?"'];
 
-STUB : 'stub';
-
 LS_BRACE : '[';
 RS_BRACE : ']';
 L_BRACE : '(';

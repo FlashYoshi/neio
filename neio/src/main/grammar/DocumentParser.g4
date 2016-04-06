@@ -8,21 +8,20 @@ document : HEADER mnl
 
 body : content*;
 content : ( prefixCall
-          | postfixCall
+          | imageCall
           | text
           | customCommand
           | scode
           | lonecode)
           mnl?;
 
-prefixCall : MethodName+ sentence
-           | BANG (LS_BRACE WORD+ RS_BRACE)? L_BRACE WORD R_BRACE;
+prefixCall : MethodName+ sentence;
+imageCall : BANG (LS_BRACE caption=txt RS_BRACE)? L_BRACE name=WORD R_BRACE;
 
 text : sentence+;
 
-postfixCall : STUB;
-
-sentence : (code | WORD)+ NL;
+sentence : txt NL;
+txt : (code | WORD)+;
 customCommand : CC L_BRACE (WORD | UNKNOWN)* R_BRACE;
 mnl : NL+;
 

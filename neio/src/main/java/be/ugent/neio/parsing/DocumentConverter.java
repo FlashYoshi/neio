@@ -5,6 +5,7 @@ import be.ugent.neio.industry.NeioExpressionFactory;
 import be.ugent.neio.industry.NeioFactory;
 import be.ugent.neio.language.Neio;
 import be.ugent.neio.model.document.TextDocument;
+import com.google.common.base.Strings;
 import org.aikodi.chameleon.core.document.Document;
 import org.aikodi.chameleon.core.tag.TagImpl;
 import org.aikodi.chameleon.exception.ChameleonProgrammerException;
@@ -14,7 +15,10 @@ import org.aikodi.chameleon.oo.expression.MethodInvocation;
 import org.aikodi.chameleon.oo.plugin.ObjectOrientedFactory;
 import org.aikodi.chameleon.oo.statement.Block;
 import org.aikodi.chameleon.support.statement.StatementExpression;
-import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.Lexer;
+import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.neio.antlr.ClassLexer;
@@ -111,12 +115,10 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
             }
             if (ctx.prefixCall() != null) {
                 previousExpression = visitPrefixCall(ctx.prefixCall());
-            } else if (ctx.postfixCall() != null) {
-                previousExpression = visitPostFixCall(ctx.postfixCall());
+            } else if (ctx.imageCall() != null) {
+                previousExpression = visitImageCall(ctx.imageCall());
             } else if (ctx.text() != null) {
                 previousExpression = visitText(ctx.text());
-//            } else if (ctx.TAG() != null) {
-//                previousExpression = visitTag(ctx.TAG());
             } else if (ctx.customCommand() != null) {
                 // Stop the previous statement
                 if (previousExpression != null) {
@@ -135,61 +137,41 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         return null;
     }
 
-    private Expression visitTag(TerminalNode node) {
-        String tag = node.getText();
-        tag = tag.substring(1, tag.length() - 1);
-
-        ClassParser.ExpressionContext context = getParser(tag).expression();
-        Expression e = null;
-        ClassConverter converter = new ClassConverter(document, view);
-        if (context instanceof ClassParser.IdentifierExpressionContext) {
-            ClassParser.IdentifierExpressionContext c = (ClassParser.IdentifierExpressionContext) context;
-            e = converter.visitIdentifierExpression(c);
-        } else if (context instanceof ClassParser.LowPriorityNumbericalExpressionContext) {
-            ClassParser.LowPriorityNumbericalExpressionContext c = (ClassParser.LowPriorityNumbericalExpressionContext) context;
-            e = converter.visitLowPriorityNumbericalExpression(c);
-        } else if (context instanceof ClassParser.HighPriorityNumbericalExpressionContext) {
-            ClassParser.HighPriorityNumbericalExpressionContext c = (ClassParser.HighPriorityNumbericalExpressionContext) context;
-            e = converter.visitHighPriorityNumbericalExpression(c);
-        } else {
-            System.err.println("Unknown type of label encountered: " + tag);
-        }
-
-        return e;
-    }
-
     @Override
     public Expression visitPrefixCall(PrefixCallContext ctx) {
         // Find the method name and print it
         String methodName = "";
         List<Expression> arguments = new ArrayList<>();
-        if (ctx.MethodName() != null && !ctx.MethodName().isEmpty()) {
-            for (TerminalNode h : ctx.MethodName()) {
-                methodName += h;
-            }
-
-            // Find the arguments
-            String argument = visitSentence(ctx.sentence());
-            arguments.add(ooFactory().createStringLiteral(argument));
-        } else {
-            methodName = IMAGE;
-            String caption = "";
-            for (int i = 0; i < ctx.WORD().size() - 1; i++) {
-                caption += ctx.WORD().get(i).getText() + " ";
-            }
-            arguments.add(ooFactory().createStringLiteral(caption));
-            arguments.add(ooFactory().createStringLiteral(ctx.WORD().get(ctx.WORD().size() - 1).getText()));
+        for (TerminalNode h : ctx.MethodName()) {
+            methodName += h;
         }
+
+        // Find the arguments
+        String argument = visitSentence(ctx.sentence());
+        arguments.add(ooFactory().createStringLiteral(argument));
 
         return expressionFactory().createNeioMethodInvocation(methodName, previousExpression, arguments);
     }
 
-    private Expression visitPostFixCall(PostfixCallContext ctx) {
-        return null;
+    @Override
+    public Expression visitImageCall(ImageCallContext ctx) {
+        List<Expression> arguments = new ArrayList<>();
+        if (ctx.caption != null && !ctx.caption.WORD().isEmpty()) {
+            String caption = "";
+            List<TerminalNode> captionWords = ctx.caption.WORD();
+            caption += captionWords.get(0).getText();
+            for (int i = 1; i < captionWords.size(); i++) {
+                caption += " " + captionWords.get(i).getText();
+            }
+            arguments.add(ooFactory().createStringLiteral(caption));
+        }
+        arguments.add(ooFactory().createStringLiteral(ctx.name.getText()));
+
+        return expressionFactory().createNeioMethodInvocation(IMAGE, previousExpression, arguments);
     }
 
     public String visitSentence(SentenceContext ctx) {
-        List<TerminalNode> nodes = ctx.WORD();
+        List<TerminalNode> nodes = ctx.txt().WORD();
         String result = "";
         for (int j = 0; j < nodes.size(); j++) {
             TerminalNode tn = nodes.get(j);
