@@ -11,11 +11,31 @@ Content() {
     content = new ArrayList<Content>();
 }
 
+Content addContent(Integer index, Content c) {
+    content.add(index, c);
+    c.setParent(this);
+    return c;
+}
+
 Content addContent(Content c) {
-	content.add(c);
-	c.setParent(this);
-	
-	return c;
+    return addContent(content.size(), c);
+}
+
+Content addContentBefore(Content c, Content before) {
+    return addContent(content.indexOf(c), c);
+}
+
+Content addContentAfter(Content c, Content after) {
+    return addContent(content.indexOf(after) + 1, c);
+}
+
+Content appendContent(Content c) {
+    Content parent = parent();
+    if (parent == null) {
+        return addContent(c);
+    } else {
+        return parent.addContentAfter(c, this);
+    }
 }
 
 void setParent(Content c) {
