@@ -4,7 +4,8 @@ HEADER : LS_BRACE CHAR+ RS_BRACE;
 COMMENT : '//' ~[\r\n]* NL+ -> channel(HIDDEN);
 MULTILINE_COMMENT : '/*' .*? '*/' NL+ -> channel(HIDDEN);
 
-SCOPED_CODE : DLCB -> pushMode(INCODE);
+SCOPED_CODE : {getCharPositionInLine() == 0}? DLCB -> pushMode(INCODE);
+LONE_CODE : {getCharPositionInLine() == 0}? LCB -> pushMode(LONECODE);
 CODE : LCB -> pushMode(INCODE);
 
 ESCAPE : B_SLASH .;
@@ -41,8 +42,11 @@ MethodName : HASH | DASH | STAR;
 
 WORD : VALID_CHAR+;
 
+mode LONECODE;
+LCONTENT : CONTENT* RCB {_input.LA(1) == '\r' || _input.LA(1) == '\n'}? -> mode(DEFAULT_MODE);
+
 mode INCODE;
-SCONTENT : CONTENT* DRCB -> mode(DEFAULT_MODE);
+SCONTENT : CONTENT* DRCB {_input.LA(1) == '\r' || _input.LA(1) == '\n'}? -> mode(DEFAULT_MODE);
 CCONTENT : CONTENT* RCB -> mode(DEFAULT_MODE);
 CONTENT : (LCB ANY RCB) | ANY;
 ANY : ~["}']+ | STRING;

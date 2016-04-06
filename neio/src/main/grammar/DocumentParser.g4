@@ -7,13 +7,12 @@ document : HEADER mnl
            EOF;
 
 body : content*;
-
 content : ( prefixCall
           | postfixCall
           | text
           | customCommand
           | scode
-          | code)
+          | lonecode)
           mnl?;
 
 prefixCall : MethodName+ sentence
@@ -23,9 +22,10 @@ text : sentence+;
 
 postfixCall : STUB;
 
-sentence : WORD+ NL;
+sentence : (code | WORD)+ NL;
 customCommand : CC L_BRACE (WORD | UNKNOWN)* R_BRACE;
 mnl : NL+;
 
 scode : SCOPED_CODE SCONTENT;
+lonecode : LONE_CODE LCONTENT;
 code : CODE CCONTENT;

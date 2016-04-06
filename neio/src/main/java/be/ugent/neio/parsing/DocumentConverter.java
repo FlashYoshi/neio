@@ -87,12 +87,12 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
     }
 
     public Block visitContent(ContentContext ctx) {
-        if (ctx.code() != null || ctx.scode() != null) {
+        if (ctx.lonecode() != null || ctx.scode() != null) {
             Block codeBlock;
             if (ctx.scode() != null) {
                 codeBlock = visitCode(ctx.scode().getText(), "{{".length());
             } else {
-                codeBlock = visitCode(ctx.code().getText(), "{".length());
+                codeBlock = visitCode(ctx.lonecode().getText(), "{".length());
                 codeBlock.setMetadata(new TagImpl(), Neio.INLINE_CODE);
             }
             if (codeBlock.nbStatements() != 0) {
