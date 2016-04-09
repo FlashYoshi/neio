@@ -8,6 +8,7 @@ import be.ugent.neio.expression.NeioMethodInvocation;
 import be.ugent.neio.expression.NeioNameExpression;
 import org.aikodi.chameleon.core.reference.CrossReferenceTarget;
 import org.aikodi.chameleon.oo.expression.Expression;
+import org.aikodi.chameleon.oo.expression.NameExpression;
 import org.aikodi.chameleon.oo.expression.ParExpression;
 import org.aikodi.chameleon.oo.type.TypeReference;
 import org.aikodi.chameleon.support.expression.ClassCastExpression;
@@ -31,6 +32,14 @@ public class NeioExpressionFactory extends JavaExpressionFactory {
         return ci;
     }
 
+    public JavaMethodInvocation createMethodInvocation(boolean contextType, String methodName, CrossReferenceTarget prefix, List<Expression> arguments) {
+        if (contextType) {
+            return createNeioMethodInvocation(methodName, prefix, arguments);
+        } else {
+            return createMethodInvocation(methodName, prefix, arguments);
+        }
+    }
+
     public JavaMethodInvocation createMethodInvocation(String methodName, CrossReferenceTarget prefix, List<Expression> arguments) {
         JavaMethodInvocation mi = new JavaMethodInvocation(methodName, prefix);
         if (arguments != null) {
@@ -51,6 +60,15 @@ public class NeioExpressionFactory extends JavaExpressionFactory {
 
     public ParExpression createParExpression(Expression expression) {
         return new ParExpression(expression);
+    }
+
+
+    public NameExpression createNameExpression(boolean contextTypes, String name) {
+        if (contextTypes) {
+            return createNeioNameExpression(name);
+        } else {
+            return createNameExpression(name);
+        }
     }
 
     public NeioNameExpression createNeioNameExpression(String name) {

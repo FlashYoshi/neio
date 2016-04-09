@@ -14,6 +14,7 @@ import org.aikodi.chameleon.oo.expression.Expression;
 import org.aikodi.chameleon.oo.expression.ExpressionFactory;
 import org.aikodi.chameleon.oo.expression.MethodInvocation;
 import org.aikodi.chameleon.oo.expression.NameExpression;
+import org.aikodi.chameleon.oo.method.Method;
 import org.aikodi.chameleon.oo.plugin.ObjectOrientedFactory;
 import org.aikodi.chameleon.oo.statement.Block;
 import org.aikodi.chameleon.oo.statement.Statement;
@@ -37,7 +38,7 @@ import static be.ugent.neio.util.Constants.*;
 public class Java8Generator {
 
     private static final String VAR_NAME = "$var";
-    public static final String ROOT = VAR_NAME + "0";
+    private static final String ROOT = VAR_NAME + "0";
     private Neio neio;
     private int id;
     private String lastElement = null;
@@ -84,13 +85,10 @@ public class Java8Generator {
                 processScopedBlock(lastElement, blockStatement, variables);
                 if (statement.hasMetadata(Neio.INLINE_CODE)) {
                     if (statement.hasDescendant(ReturnStatement.class)) {
-                        List<Statement> statements = createDeclarationAndBlock(blockStatement, variables);
-                        block.removeStatement(statement);
-                        block.addStatements(statements);
-                    } else {
-                        block.removeStatement(statement);
-                        block.addStatements((blockStatement.statements()));
+                        blockStatement = fixReturnStatement(blockStatement, variables);
                     }
+                    block.removeStatement(statement);
+                    block.addStatements((blockStatement.statements()));
                 }
                 continue;
 
@@ -138,7 +136,7 @@ public class Java8Generator {
                     // Create a new variable name
                     varName = getVarName();
                 }
-                LocalVariableDeclarator lvd = oFactory().createLocalVariable(returnType.getFullyQualifiedName(), varName, clone);
+                LocalVariableDeclarator lvd = oFactory().createLocalVariable(returnType.name(), varName, clone);
 
                 variables.push(lvd.variableDeclarations().get(0).variable());
                 lastElement = variables.peek().name();
@@ -152,21 +150,29 @@ public class Java8Generator {
         return block;
     }
 
-    private List<Statement> createDeclarationAndBlock(Block block, Stack<Variable> variables) {
-        ArrayList<Statement> statements = new ArrayList<>();
+    /**
+     * Checks if the return statement in an inline code block returns content.
+     * It also assigns a variable to it and makes sure the compiler uses this new element when building the document.
+     *
+     * @param block The block of inline code
+     * @param variables The previously defined variables
+     * @return The block with a variable declaration instead of a returnstatement
+     */
+    private Block fixReturnStatement(Block block, Stack<Variable> variables) {
         ReturnStatement returnStat = block.nearestDescendants(ReturnStatement.class).get(0);
         Expression e = returnStat.getExpression();
         String prev = lastElement;
         if (!(e instanceof NameExpression) && (!(e instanceof MethodInvocation))) {
-            System.err.println("You can only return named entities or Content in an inline code block, unknown expression: " + e.toString());
-            return statements;
+            System.err.println("You can only return Content in an inline code block, unknown expression: " + e.toString());
+            return block;
         } else {
             try {
                 if (e instanceof NameExpression) {
-                    statements.add(oFactory().createLocalVariable(e.getType().name(), ((NameExpression) e).name(), null));
+                    lastElement = ((NameExpression) e).name();
                 } else {
-                    lastElement = getVarName();
-                    Type type = e.getType();
+                    // Check if we return Content
+                    NormalMethod method = (NormalMethod) ((MethodInvocation)e).getElement();
+                    Type type = method.returnType();
                     boolean content = false;
                     for (Type t : type.getSelfAndAllSuperTypesView()) {
                         if (t.name().equals(Util.getLastPart(BASE_CLASS))) {
@@ -175,32 +181,30 @@ public class Java8Generator {
                         }
                     }
                     if (!content) {
-                        System.err.println("You can only return named entities or Content in an inline code block, unknown expression: " + e.toString());
-                        return statements;
+                        System.err.println("You can only return Content in an inline code block, unknown expression: " + e.toString());
+                        return block;
                     }
 
-                    LocalVariableDeclarator lvd = oFactory().createLocalVariable(type.name(), lastElement, oFactory().createNullLiteral());
-                    statements.add(lvd);
+                    LocalVariableDeclarator lvd = oFactory().createLocalVariable(type.getFullyQualifiedName(), getVarName(), (Expression) e.clone());
                     variables.push(lvd.variableDeclarations().get(0).variable());
-                    Expression ref = eFactory().createNameExpression(lastElement);
-                    block.addStatement(oFactory().createStatement(eFactory().createAssignmentExpression(ref, e)));
+                    lastElement = variables.peek().name();
+                    block.addStatement(lvd);
                 }
             } catch (LookupException e1) {
                 System.err.println(e + " has not been declared yet!");
                 lastElement = prev;
-                return statements;
+                return block;
             }
             block.removeStatement(returnStat);
-            statements.add(block);
             if (e instanceof ConstructorInvocation) {
                 List<Expression> arguments = new ArrayList<>();
                 arguments.add(eFactory().createNameExpression(lastElement));
                 Expression expr = eFactory().createMethodInvocation("addContent", eFactory().createNameExpression(prev), arguments);
-                statements.add(oFactory().createStatement(expr));
+                block.addStatement(oFactory().createStatement(expr));
             }
         }
 
-        return statements;
+        return block;
     }
 
     private void processScopedBlock(String lastElement, Block block, Stack<Variable> variables) throws LookupException {

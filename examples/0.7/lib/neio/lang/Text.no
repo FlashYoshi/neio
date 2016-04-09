@@ -12,7 +12,7 @@ String toString() {
     return text;
 }
 
-public int compareTo(String o) {
+int compareTo(String o) {
     return text.compareTo(o);
 }
 

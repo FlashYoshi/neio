@@ -18,15 +18,15 @@ Content addContent(Integer index, Content c) {
 }
 
 Content addContent(Content c) {
-    return addContent(content.size(), c);
+    return addContent(contentSize(), c);
 }
 
 Content addContentBefore(Content c, Content before) {
-    return addContent(content.indexOf(c), c);
+    return addContent(content().indexOf(c), c);
 }
 
 Content addContentAfter(Content c, Content after) {
-    return addContent(content.indexOf(after) + 1, c);
+    return addContent(content().indexOf(after) + 1, c);
 }
 
 Content appendContent(Content c) {

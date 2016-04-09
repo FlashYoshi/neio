@@ -5,16 +5,16 @@ COMMENT : '//' ~[\r\n]* NL+ -> channel(HIDDEN);
 MULTILINE_COMMENT : '/*' .*? '*/' NL+ -> channel(HIDDEN);
 
 SCOPED_CODE : {getCharPositionInLine() == 0}? DLCB -> pushMode(INCODE);
-LONE_CODE : {getCharPositionInLine() == 0}? LCB -> pushMode(LONECODE);
+LONE_CODE : {getCharPositionInLine() == 0}? LCB CONTENT* RCB {_input.LA(1) == '\r' || _input.LA(1) == '\n'}?;
 CODE : LCB -> pushMode(INCODE);
 
+fragment CHAR : [a-zA-Z0-9];
 ESCAPE : B_SLASH .;
 CC : B_SLASH CHAR CHAR+;
 
-WS : [\t ] -> channel(HIDDEN);
+S : ' ';
+WS : [\t] -> channel(HIDDEN);
 NL : '\r'? '\n';
-fragment CHAR : [a-zA-Z0-9];
-fragment VALID_CHAR : [a-zA-Z0-9.,!?"'];
 
 LS_BRACE : '[';
 RS_BRACE : ']';
@@ -38,10 +38,9 @@ fragment STAR : '*';
 BANG : '!';
 MethodName : HASH | DASH | STAR;
 
-WORD : VALID_CHAR+;
+fragment VALID_CHAR : ~[#-+*_\[\]{} \r\n];//[a-zA-Z0-9.,!?"'];
 
-mode LONECODE;
-LCONTENT : CONTENT* RCB {_input.LA(1) == '\r' || _input.LA(1) == '\n'}? -> mode(DEFAULT_MODE);
+WORD : VALID_CHAR+;
 
 mode INCODE;
 SCONTENT : CONTENT* DRCB {_input.LA(1) == '\r' || _input.LA(1) == '\n'}? -> mode(DEFAULT_MODE);

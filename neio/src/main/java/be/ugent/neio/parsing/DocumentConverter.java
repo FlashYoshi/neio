@@ -170,6 +170,7 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         return expressionFactory().createNeioMethodInvocation(IMAGE, previousExpression, arguments);
     }
 
+    @Override
     public String visitSentence(SentenceContext ctx) {
         List<TerminalNode> nodes = ctx.txt().WORD();
         String result = "";
@@ -254,7 +255,9 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         // Add the curly braces required for the parsing of a block
         code = "{" + code + "}";
 
-        return new ClassConverter(document, view).visitBlock(getParser(code).block());
+        ClassConverter converter = new ClassConverter(document, view);
+        converter.enableContextTypes();
+        return converter.visitBlock(getParser(code).block());
     }
 
     private ClassParser getParser(String s) {

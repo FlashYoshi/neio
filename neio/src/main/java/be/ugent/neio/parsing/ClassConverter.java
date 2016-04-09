@@ -58,11 +58,13 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     private final Neio neio;
     // Can not use keyword
     private boolean interphase;
+    private boolean contextType;
 
     public ClassConverter(Document document, JavaView view) {
         this.document = document;
         this.neio = view.language(Neio.class);
         interphase = false;
+        contextType = false;
     }
 
     protected NeioFactory ooFactory() {
@@ -357,7 +359,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     @Override
     public NameExpression visitIdentifierExpression(@NotNull IdentifierExpressionContext ctx) {
-        return eFactory().createNameExpression(ctx.Identifier().getText());
+        return eFactory().createNameExpression(contextType, ctx.Identifier().getText());
     }
 
     @Override
@@ -367,7 +369,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     @Override
     public MethodInvocation visitSelfCallExpression(@NotNull SelfCallExpressionContext ctx) {
-        return eFactory().createMethodInvocation(ctx.name.getText(), null, (List<Expression>) visit(ctx.arguments()));
+        return eFactory().createMethodInvocation(contextType, ctx.name.getText(), null, (List<Expression>) visit(ctx.arguments()));
     }
 
     @Override
@@ -376,7 +378,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         Expression result;
         if (ctx.args != null) {
             List<Expression> arguments = ((List<Expression>) visit(ctx.args));
-            result = eFactory().createMethodInvocation(ctx.name.getText(), target, arguments);
+            result = eFactory().createMethodInvocation(contextType, ctx.name.getText(), target, arguments);
         } else {
             result = new NameExpression(ctx.name.getText(), target);
         }
@@ -696,5 +698,9 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         }
 
         return result;
+    }
+
+    public void enableContextTypes() {
+        contextType = true;
     }
 }
