@@ -10,7 +10,6 @@ body : content*;
 content : ( prefixCall
           | imageCall
           | text
-          | customCommand
           | scode
           | lonecode)
           mnl?;
@@ -22,7 +21,6 @@ text : sentence+;
 
 sentence : txt NL;
 txt : (S* (code | WORD) S*)+;
-customCommand : CC L_BRACE (WORD | UNKNOWN)* R_BRACE;
 mnl : NL+;
 
 scode : SCOPED_CODE SCONTENT;
