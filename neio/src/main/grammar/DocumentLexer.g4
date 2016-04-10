@@ -4,7 +4,7 @@ HEADER : {getCharPositionInLine() == 0}? LS_BRACE CHAR+ RS_BRACE;
 COMMENT : '//' ~[\r\n]* NL+ -> channel(HIDDEN);
 MULTILINE_COMMENT : '/*' .*? '*/' NL+ -> channel(HIDDEN);
 
-SCOPED_CODE : {getCharPositionInLine() == 0}? DLCB -> pushMode(INCODE);
+SCOPED_CODE : {getCharPositionInLine() == 0}? DLCB CONTENT* DRCB {_input.LA(1) == '\r' || _input.LA(1) == '\n'}?;
 LONE_CODE : {getCharPositionInLine() == 0}? LCB CONTENT* RCB {_input.LA(1) == '\r' || _input.LA(1) == '\n'}?;
 CODE : LCB -> pushMode(INCODE);
 
@@ -42,7 +42,6 @@ fragment VALID_CHAR : ~[#-+*_\[\]{} \r\n] | SQ | HASH | DASH | STAR | BANG;
 WORD : VALID_CHAR+;
 
 mode INCODE;
-SCONTENT : CONTENT* DRCB {_input.LA(1) == '\r' || _input.LA(1) == '\n'}? -> mode(DEFAULT_MODE);
 CCONTENT : CONTENT* RCB -> mode(DEFAULT_MODE);
 CONTENT : (LCB CONTENT* RCB) | ANY;
 ANY : ~["{}']+ | STRING;

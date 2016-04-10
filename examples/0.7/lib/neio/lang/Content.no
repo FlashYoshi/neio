@@ -29,15 +29,6 @@ Content addContentAfter(Content c, Content after) {
     return addContent(content().indexOf(after) + 1, c);
 }
 
-Content appendContent(Content c) {
-    Content parent = parent();
-    if (parent == null) {
-        return addContent(c);
-    } else {
-        return parent.addContentAfter(c, this);
-    }
-}
-
 void setParent(Content c) {
 	parent = c;
 }

@@ -9,7 +9,7 @@ This is the first paragraph of our simple document.
 
 ## Chapter 1.1
 But for this to be a real document we do of course need more than one chapter and more than one indentation level, so... voila!
-{ return #("Chapter 17.1", 2).newline("Nice paragraph!"); }
+{ return #("Chapter 17.1", 2).newline("Nice paragraph!") }
 
 // There should be a space after the methodcall
 ### Chapter 1.1.1
@@ -17,7 +17,7 @@ Well LaTeX has one more level of indentation, so we should make use of it!
 
 // This chapter is only here to prove that it doesn't disturb the next block or code
 // nor the block starting at Chapter 2
-{{ Chapter test = new Chapter("Test",1); }}
+{{ Chapter test = new Chapter("Test", 1) }}
 
 {
     Chapter chap = new Chapter("Chapter 18.1", 2);

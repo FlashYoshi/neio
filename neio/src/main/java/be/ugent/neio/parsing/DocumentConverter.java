@@ -5,16 +5,17 @@ import be.ugent.neio.industry.NeioExpressionFactory;
 import be.ugent.neio.industry.NeioFactory;
 import be.ugent.neio.language.Neio;
 import be.ugent.neio.model.document.TextDocument;
-import com.google.common.base.Strings;
 import org.aikodi.chameleon.core.document.Document;
+import org.aikodi.chameleon.core.lookup.LookupException;
 import org.aikodi.chameleon.core.tag.TagImpl;
 import org.aikodi.chameleon.exception.ChameleonProgrammerException;
 import org.aikodi.chameleon.oo.expression.Expression;
 import org.aikodi.chameleon.oo.expression.ExpressionFactory;
-import org.aikodi.chameleon.oo.expression.MethodInvocation;
 import org.aikodi.chameleon.oo.plugin.ObjectOrientedFactory;
 import org.aikodi.chameleon.oo.statement.Block;
-import org.aikodi.chameleon.support.statement.StatementExpression;
+import org.aikodi.chameleon.oo.statement.Statement;
+import org.aikodi.chameleon.oo.type.RegularType;
+import org.aikodi.chameleon.oo.type.Type;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Lexer;
@@ -34,7 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import static be.ugent.neio.util.Constants.IMAGE;
+import static be.ugent.neio.util.Constants.*;
 
 /**
  * @author Titouan Vervack
@@ -46,6 +47,17 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
     private final JavaView view;
     private Expression previousExpression = null;
     private Block block = null;
+
+    private static final Type[] TYPES = new Type[]{
+            new RegularType(FLOAT),
+            new RegularType(DOUBLE),
+            new RegularType(SHORT),
+            new RegularType(INTEGER),
+            new RegularType(LONG),
+            new RegularType(CHARACTER),
+            new RegularType(STRING)
+    };
+
 
     public DocumentConverter(Document document, JavaView view) {
         this.document = (TextDocument) document;
@@ -137,8 +149,8 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         }
 
         // Find the arguments
-        String argument = visitSentence(ctx.sentence());
-        arguments.add(ooFactory().createStringLiteral(argument));
+        Expression argument = visitTxt(ctx.txt());
+        arguments.add(argument);
 
         return expressionFactory().createNeioMethodInvocation(methodName, previousExpression, arguments);
     }
@@ -146,14 +158,8 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
     @Override
     public Expression visitImageCall(ImageCallContext ctx) {
         List<Expression> arguments = new ArrayList<>();
-        if (ctx.caption != null && !ctx.caption.WORD().isEmpty()) {
-            String caption = "";
-            List<TerminalNode> captionWords = ctx.caption.WORD();
-            caption += captionWords.get(0).getText();
-            for (int i = 1; i < captionWords.size(); i++) {
-                caption += " " + captionWords.get(i).getText();
-            }
-            arguments.add(ooFactory().createStringLiteral(caption));
+        if (ctx.caption != null && !ctx.caption.isEmpty()) {
+            arguments.add(visitTxt(ctx.txt()));
         }
         arguments.add(ooFactory().createStringLiteral(ctx.name.getText()));
 
@@ -161,46 +167,145 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
     }
 
     @Override
-    public String visitSentence(SentenceContext ctx) {
-        List<TerminalNode> nodes = ctx.txt().WORD();
-        String result = "";
-        for (int j = 0; j < nodes.size(); j++) {
-            TerminalNode tn = nodes.get(j);
-            result += tn;
+    public Expression visitSentence(SentenceContext ctx) {
+        Expression txt = visitTxt(ctx.txt());
+        return appendText(txt, createText("\n"));
+    }
 
-            // Do not add a space to the end of a sentence
-            if (j != nodes.size() - 1) {
-                result += " ";
+    @Override
+    public Expression visitTxt(@NotNull TxtContext ctx) {
+        Expression result = null;
+
+        // This is just plain text
+        if (ctx.inlinecode() == null || ctx.inlinecode().isEmpty()) {
+            result = createText(ctx.getText());
+        }
+        // There's a mix of code and text
+        // Only code is not possible as that would be LONE_CODE
+        else {
+            String currText = "";
+            // The intermediate result
+            Expression intermediate = null;
+            for (int i = 0; i < ctx.getChildCount(); i++) {
+                Object o = visit(ctx.getChild(i));
+                if (o instanceof String) {
+                    currText += o;
+                } else {
+                    Expression e = (Expression) o;
+                    // The text starts out with inlinecode
+                    if (currText.isEmpty() && intermediate == null) {
+                        intermediate = e;
+                    }
+                    // This is the first inlinecode, there is text in front of it
+                    else if (intermediate == null) {
+                        intermediate = createText(currText);
+                        appendText(intermediate, e);
+                        currText = "";
+                    }
+                    // Text after some inlinecode
+                    else if (!currText.isEmpty()) {
+                        Expression append = createText(currText);
+                        appendText(intermediate, append);
+                        currText = "";
+                    }
+                    // There is inlinecode in the middle or at the end of the txt
+                    else {
+                        intermediate = appendText(intermediate, e);
+                    }
+                }
             }
         }
 
         return result;
     }
 
-    @Override
-    public Expression visitText(TextContext ctx) {
-        String paragraph = "";
-        List<SentenceContext> sentences = ctx.sentence();
-        for (int i = 0; i < sentences.size(); i++) {
-            SentenceContext s = sentences.get(i);
-            paragraph += visitSentence(s);
+    private Expression appendText(Expression e1, Expression e2) {
+        List<Expression> arguments = new ArrayList<>();
+        arguments.add(e2);
 
-            // Do not add a newline to the end of the paragraph
-            if (i != sentences.size() - 1) {
-                paragraph += "\\n";
+        return expressionFactory().createMethodInvocation(APPEND_TEXT, e1, arguments);
+    }
+
+    @Override
+    public Expression visitInlinecode(@NotNull InlinecodeContext ctx) {
+        Block block = visitCode(ctx.getText(), "{".length());
+        if (block.nbStatements() != 1) {
+            throw new ChameleonProgrammerException("Inline code can only have 1 statement");
+        }
+
+        Type base = new RegularType(TEXT);
+        Statement s = block.statement(0);
+        Expression e = s.nearestDescendants(Expression.class).get(0);
+        try {
+            Type type = e.getType();
+            if (stringable(type)) {
+                return createText(e);
+            } else if (type.subtypeOf(base)) {
+                return e;
+            } else {
+                System.err.println("Inline code can only return a String or Text");
+            }
+        } catch (LookupException e1) {
+            System.err.println("Syntax error in inlinecode");
+        }
+
+        return null;
+    }
+
+    private Expression createText(String s) {
+        List<Expression> strArguments = new ArrayList<>();
+        strArguments.add(ooFactory().createStringLiteral(s));
+
+        return createText(strArguments);
+    }
+
+    private Expression createText(Expression e) {
+        List<Expression> strArguments = new ArrayList<>();
+        strArguments.add(e);
+
+        return createText(strArguments);
+    }
+
+    private Expression createText(List<Expression> strArguments) {
+        // Create a String out of the expression
+        Expression str = expressionFactory().createConstructorInvocation(STRING, null, strArguments);
+        List<Expression> arguments = new ArrayList<>();
+        arguments.add(str);
+
+        // Create the most basic type of content, a piece of text
+        return expressionFactory().createConstructorInvocation(TEXT, null, arguments);
+    }
+
+    private boolean stringable(Type type) throws LookupException {
+        for (Type t : TYPES) {
+            if (type.subtypeOf(t)) {
+                return true;
             }
         }
 
+        return false;
+    }
+
+    @Override
+    public Expression visitText(TextContext ctx) {
+        List<SentenceContext> sentences = ctx.sentence();
+        Expression paragraph = visitSentence(sentences.get(0));
+
+        for (int i = 1; i < sentences.size(); i++) {
+            SentenceContext s = sentences.get(i);
+            appendText(paragraph, visitSentence(s));
+        }
+
         // This is always the newline method
-        String methodName = "newline";
+        String methodName = NEWLINE;
 
         List<Expression> arguments = new ArrayList<>();
-        arguments.add(ooFactory().createStringLiteral(paragraph));
+        arguments.add(paragraph);
 
         return expressionFactory().createNeioMethodInvocation(methodName, previousExpression, arguments);
     }
 
-    public Block visitCode(String code, int sepLen) {
+    private Block visitCode(String code, int sepLen) {
         // Remove the separator
         code = code.substring(sepLen, code.length() - sepLen);
         // Add a semicolon if needed
