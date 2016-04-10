@@ -15,13 +15,12 @@
 	closings.add("With the kindest of salutations,");
 }
 
-// RETURNS A STRING, THE COMPILER CALLS A METHOD TO ADD IT TO THE REST OF THE TEXT
+// Calls append content on the Text("Dear")
 Dear {addressee},
 
 Thank you for helping me out with {help}.
 I was able to do great at the {helpSubject} thanks to you.
 
-// RETURNS A STRING, THE COMPILER CALLS A METHOD TO ADD IT TO THE REST OF THE TEXT
-{random(closings)}
-{name}
+// Have to explicitily create the content, the compiler cannot determine what to do otherwise
+{ return new Paragraph(random(closings)).appendContent(name) }
 
