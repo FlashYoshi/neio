@@ -9,7 +9,6 @@ protected Text text;
 protected Integer level;
 protected Enumerate enumerate;
 
-
 EnumerateItem(String text, Integer level) {
 	this.text = new Text(text);
 	this.level = level;
@@ -19,6 +18,10 @@ EnumerateItem(String text, Enumerate enumerate, Integer level) {
 	this.text = new Text(text);
 	this.enumerate = enumerate;
 	this.level = level;
+}
+
+String text() {
+    return text;
 }
 
 nested EnumerateItem -(String text, Integer level) {

@@ -49,6 +49,10 @@ Image image(String caption, String imageName) {
 	return neioImage;
 }
 
+List<String> packages() {
+    return packages;
+}
+
 String toTex() {
 	String tex = "\\documentclass{article}\n";
 	for (int i = 0; i < packages.size(); i = i + 1) {

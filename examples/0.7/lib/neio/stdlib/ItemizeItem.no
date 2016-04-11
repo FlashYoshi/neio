@@ -20,6 +20,10 @@ ItemizeItem(String text, Itemize itemize, Integer level) {
 	this.level = level;
 }
 
+String text() {
+    return text;
+}
+
 nested ItemizeItem *(String text, Integer level) {
 	ItemizeItem item = null;
 	if (level > this.level) {

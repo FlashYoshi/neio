@@ -7,11 +7,19 @@ class Image extends Content;
 
 String caption;
 String name;
-String PNG = ".png";
+public static final String PNG = ".png";
 
 Image(String caption, String name) {
 	this.caption = caption;
 	this.name = name;
+}
+
+String name() {
+    return name;
+}
+
+String caption() {
+    return caption;
 }
 
 String toTex() {

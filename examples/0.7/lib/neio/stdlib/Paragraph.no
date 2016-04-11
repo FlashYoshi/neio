@@ -11,6 +11,14 @@ Paragraph(String parText) {
 	text = new Text(parText);
 }
 
+Paragraph(Text text) {
+    this.text = text;
+}
+
+Text text() {
+    return text();
+}
+
 String toTex() {
 	return "\\par " + text.toTex();
 }
