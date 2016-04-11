@@ -8,6 +8,7 @@ NEWLINE : '\r'? '\n' -> skip;
 
 ////////////START KEYWORDS////////////
 NAMESPACE : 'namespace';
+ABSTRACT : 'abstract';
 CLASS : 'class';
 INTERFACE : 'interface';
 EXTENDS : 'extends';

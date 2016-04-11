@@ -2,7 +2,7 @@ namespace neio.lang;
 
 import java.util.*;
 
-class Content implements Texable;
+abstract class Content implements Texable;
 
 private List<Content> content;
 private Content parent;

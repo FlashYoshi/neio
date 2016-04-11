@@ -13,7 +13,7 @@ namespaceReference : Identifier (DOT Identifier)*;
 
 importDeclaration : IMPORT type (DOT STAR)? SCOLON;
 
-classDef : header Identifier inheritance* SCOLON;
+classDef : ABSTRACT? header Identifier inheritance* SCOLON;
 header : CLASS | INTERFACE;
 inheritance : ( EXTENDS type
               | IMPLEMENTS type);
@@ -29,7 +29,8 @@ fieldAssignmentExpression : var=fieldDecl EQUALS val=expression;
 method : methodExpression block;
 methodExpression : modifier* methodHeader L_BRACE parameters? R_BRACE;
 methodHeader : (SMALLER typeParameterList BIGGER)? (type | VOID)? name=(Identifier | MethodIdentifier | STAR | MINUS);
-modifier : PRIVATE
+modifier : ABSTRACT
+         | PRIVATE
          | PROTECTED
          | PUBLIC
          | FINAL

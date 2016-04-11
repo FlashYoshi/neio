@@ -133,6 +133,9 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         Type type = ooFactory().createRegularType(ctx.Identifier().getText());
         // Every class is allowed to be public for now
         type.addModifier(new Public());
+        if (ctx.ABSTRACT() != null) {
+            type.addModifier(new Abstract());
+        }
 
         if (ctx.header().INTERFACE() != null) {
             type.addModifier(new Interface());
@@ -533,7 +536,9 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     @Override
     public Modifier visitModifier(@NotNull ModifierContext ctx) {
-        if (ctx.PRIVATE() != null) {
+        if (ctx.ABSTRACT() != null) {
+            return new Abstract();
+        } else if (ctx.PRIVATE() != null) {
             return new Private();
         } else if (ctx.PROTECTED() != null) {
             return new Protected();
