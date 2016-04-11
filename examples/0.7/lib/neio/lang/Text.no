@@ -1,41 +1,67 @@
 namespace neio.lang;
 
-class Text extends Content implements Comparable<String>;
+class Text extends String;
 
-String text;
+Text text;
+String realText;
 // The object to which this Text has been appended
 Text appendee;
 
-Text(String text) {
-    this.text = text;
+public Text() {
     appendee = null;
+    realText = "";
 }
 
-String toString() {
+Text(Text text) {
+    this.text = text;
+    this();
+}
+
+Text text() {
     return text;
+}
+
+String realText() {
+    return realText();
 }
 
 Text appendText(Text c) {
     c.setAppended(this);
+    return c;
 }
 
 void setAppended(Text appendee) {
     this.appendee = appendee;
 }
 
+Text appendee() {
+    return appendee;
+}
+
 Boolean isAppended() {
     return appendee != null;
 }
 
-int compareTo(String o) {
-    return text.compareTo(o);
+String appendeeToTex() {
+    String result = "";
+    if (appendee != null) {
+        result = appendee.toTex();
+    }
+    
+    return result;
+}
+
+String thisToTex() {
+    String me = "";
+    if (text == null) {
+        me = realText;
+    } else {
+        me = text.toTex();
+    }
+    
+    return me;
 }
 
 String toTex() {
-    String result = "";
-    if (appendee != null) {
-        result = result + appendee.toTex();
-    }
-    
-	return result + text;
+	return appendeeToTex() + thisToTex();
 }

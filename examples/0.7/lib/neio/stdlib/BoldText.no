@@ -1,0 +1,9 @@
+namespace neio.stdlib;
+
+import neio.lang.Text;
+
+class BoldText extends Text;
+
+String thisToTex() {
+    return "\\textbf{" + super.thisToTex() + "}";
+}
