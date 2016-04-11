@@ -8,6 +8,7 @@ import be.ugent.neio.language.Neio;
 import be.ugent.neio.model.document.TextDocument;
 import org.aikodi.chameleon.core.element.Element;
 import org.aikodi.chameleon.core.lookup.LookupException;
+import org.aikodi.chameleon.core.tag.TagImpl;
 import org.aikodi.chameleon.core.variable.Variable;
 import org.aikodi.chameleon.exception.ChameleonProgrammerException;
 import org.aikodi.chameleon.oo.expression.Expression;
@@ -75,9 +76,19 @@ public class Java8Generator {
 
         Block block = new Block();
         oldBlock.replaceWith(block);
+        Block loneCode = oFactory().createBlock();
+        loneCode.setMetadata(new TagImpl(), Neio.LONE_CODE);
         for (Statement statement : oldBlock.statements()) {
+            Statement oldStatement = null;
             // Is this a Block?
             // If so, it is an inline code block
+            if (statement.hasMetadata(Neio.LONE_CODE)) {
+                loneCode.addStatement(statement);
+                continue;
+            } else if (loneCode.nbStatements() > 0){
+                oldStatement = statement;
+                statement = loneCode;
+            }
             if (getNearestElement(statement, Statement.class) != null) {
                 block.addStatement(statement);
                 Block blockStatement = (Block) statement;
@@ -88,9 +99,11 @@ public class Java8Generator {
                     }
                     block.removeStatement(statement);
                     block.addStatements((blockStatement.statements()));
+                    loneCode.clear();
+                    statement = oldStatement;
+                } else {
+                    continue;
                 }
-                continue;
-
             }
             // Add the statement to the new block so that it can do lookups using the new block
             block.addStatement(statement);

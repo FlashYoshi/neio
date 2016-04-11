@@ -13,7 +13,7 @@
 
 // LABEL
 # This chapter should be labeled for later reference
-{Chapter chap = this}
+//{Chapter chap = this}
 // REF
 When I was studying at the {ug} I had to endure a lot of hard courses. But the professors at the {ug} were
 always very helpful and open for questions.
@@ -30,21 +30,21 @@ For some course I had to work {x} hours and for another one {y}, that's a total 
 {int i = 0}
 ![Image1](treeimg)
 // (arithmethic) VAR DECL
-{i++}
-This was an image showing there are more trees in my yard than in my neighbours'.
+{i = i + 1}
+This was an image showing there are more trees in my yard than in my neighbour's.
 
 ![Image2](flowerimg)
-{i++}
+{i = i + 1}
 I also appear to have more flowers.
 
 ![Image3](animalimg)
-{i--}
+{i = i - 1}
 But he has more animals coming over.
 
 ![Image4](furnitureimg)
-{i++}
+{i = i + 1}
 But I have the nicest furniture!
-
+/*
 {
     this = #("Test", 1);
     setFontsize(15);
@@ -69,3 +69,4 @@ But I have the nicest furniture!
         }
     }
 }
+*/
