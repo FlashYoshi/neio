@@ -364,7 +364,7 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
 
         for (int i = 1; i < sentences.size(); i++) {
             SentenceContext s = sentences.get(i);
-            appendText(paragraph, visitSentence(s));
+            paragraph = appendText(paragraph, visitSentence(s));
         }
 
         // This is always the newline method
