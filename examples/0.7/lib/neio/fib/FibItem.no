@@ -6,11 +6,11 @@ import neio.lang.Content;
 
 class FibItem extends EnumerateItem;
 
-FibItem(String text, Integer level) {
+FibItem(Text text, Integer level) {
 	super(text, level);
 }
 
-FibItem(String text, Enumerate fib, Integer level) {
+FibItem(Text text, Enumerate fib, Integer level) {
 	super(text, fib, level);
 }
 

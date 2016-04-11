@@ -27,7 +27,7 @@ String toTex() {
 	if (name.endsWith(PNG)) {
 		result.append("}\n");
 	} else {
-		result.append(PNG).append"}\n");
+		result.append(PNG).append("}\n");
 	}
     if (caption != null) {
 		result.append("\\caption{").append("}\n");
