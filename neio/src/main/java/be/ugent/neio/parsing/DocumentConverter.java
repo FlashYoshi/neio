@@ -260,7 +260,11 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
                     }
                 }
             }
-            result = intermediate;
+            if (!currText.isEmpty()) {
+                result = appendText(intermediate, createText(currText));
+            } else {
+                result = intermediate;
+            }
         }
 
         return result;

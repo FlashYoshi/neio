@@ -123,8 +123,8 @@ String text(Text t) {
 }
 
 private String getPre(Text t) {
-    if (t.appendee() != null)  {
-        return translate(t.appendee());
+    if (t.isAppended())  {
+        return translate(t.appendedTo());
     } else {
         return "";
     }

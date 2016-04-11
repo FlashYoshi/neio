@@ -6,7 +6,7 @@
 	String city = "Ghent";
 	String name = "Titouan Vervack";
 	String addressee = "Thomas Vanhaskel";
-	String help = "math class";
+	String help = "my math class";
 	String helpSubject = "helpSubject";
 
 	List<String> closings = new ArrayList<String>();
