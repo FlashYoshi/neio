@@ -4,15 +4,15 @@ import neio.lang.Content;
 
 class Chapter extends Content;
 
-String title;
+Text title;
 Integer level;
 
-Chapter(String title, Integer level) {
+Chapter(Text title, Integer level) {
     this.title = title;
     this.level = level;
 }
 
-nested Chapter #(String title, Integer level) {
+nested Chapter #(Text title, Integer level) {
 	if (level <= this.level) {
 		return nearestAncestor(Chapter.class).#(title, level);
 	}
@@ -22,7 +22,7 @@ nested Chapter #(String title, Integer level) {
     return chapter;
 }
 
-Itemize *(String text) {
+Itemize *(Text text) {
 	Itemize itemize = new Itemize();
 	ItemizeItem item = new ItemizeItem(text, itemize, 1);
 	itemize.*(item);
@@ -31,7 +31,7 @@ Itemize *(String text) {
     return itemize;
 }
 
-Enumerate -(String text) {
+Enumerate -(Text text) {
 	Enumerate enumerate = new Enumerate();
 	EnumerateItem item = new EnumerateItem(text, enumerate, 1);
 	enumerate.-(item);
@@ -40,7 +40,7 @@ Enumerate -(String text) {
     return enumerate;
 }
 
-Paragraph newline(String parText) {
+Paragraph newline(Text parText) {
     Paragraph p = new Paragraph(parText);
     addContent(p);
 	
@@ -51,7 +51,7 @@ Image image(String imageName) {
     return image("", imageName);
 }
 
-Image image(String caption, String imageName) {
+Image image(Text caption, String imageName) {
 	Image neioImage = new Image(caption, imageName);
 	addContent(neioImage);
 	
@@ -59,10 +59,10 @@ Image image(String caption, String imageName) {
 }
 
 String toTex() {
-	return "\\" + getSubs() + "section*{" + title + "}" + super.toTex();
+	return "\\" + getSubs() + "section*{" + title.toTex() + "}" + super.toTex();
 }
 
-String title() {
+Text title() {
     return title;
 }
 

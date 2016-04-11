@@ -9,22 +9,21 @@ protected Text text;
 protected Integer level;
 protected Enumerate enumerate;
 
-EnumerateItem(String text, Integer level) {
-	this.text = new Text(text);
+EnumerateItem(Text text, Integer level) {
+	this.text = text;
 	this.level = level;
 }
 
-EnumerateItem(String text, Enumerate enumerate, Integer level) {
-	this.text = new Text(text);
+EnumerateItem(Text text, Enumerate enumerate, Integer level) {
 	this.enumerate = enumerate;
-	this.level = level;
+	this(text, level);
 }
 
-String text() {
+Text text() {
     return text;
 }
 
-nested EnumerateItem -(String text, Integer level) {
+nested EnumerateItem -(Text text, Integer level) {
 	EnumerateItem item = null;
 	if (level > this.level) {
 		Enumerate list = new Enumerate();
@@ -44,16 +43,16 @@ public String toTex() {
 }
 
 String toTex(String option) {
-	String item = "\\item";
+	StringBuilder item = new StringBuilder("\\item");
 	if ((option != null) && (option.length() > 0)) {
-		item = item + "[" + option + "]";
+		item.append("[").append(option).append("]");
 	} else {
-		item = item + " ";
+		item.append(" ");
 	}
-	String result = item + text.toTex();
+	item.append(text.toTex());
 	if (contentSize() > 0) {
-		result = result + "\n" + super.toTex();
+		item.append("\n").append(super.toTex());
 	}
 	
-	return result;
+	return item.toString();
 }

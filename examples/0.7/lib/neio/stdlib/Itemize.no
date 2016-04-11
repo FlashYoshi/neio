@@ -15,7 +15,7 @@ ItemizeItem *(ItemizeItem item) {
 	return item;
 }
 
-ItemizeItem *(String text) {
+ItemizeItem *(Text text) {
 	ItemizeItem item = new ItemizeItem(text, 1);
 	addContent(item);
 	

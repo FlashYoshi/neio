@@ -5,11 +5,11 @@ import neio.lang.Content;
 
 class Image extends Content;
 
-String caption;
+Text caption;
 String name;
 public static final String PNG = ".png";
 
-Image(String caption, String name) {
+Image(Text caption, String name) {
 	this.caption = caption;
 	this.name = name;
 }
@@ -18,22 +18,22 @@ String name() {
     return name;
 }
 
-String caption() {
+Text caption() {
     return caption;
 }
 
 String toTex() {
-	String result = "\\begin{figure}[ht]\n\\centering\n\\includegraphics[width=\\linewidth]{" + name;
+	StringBuilder result = new StringBuilder("\\begin{figure}[ht]\n\\centering\n\\includegraphics[width=\\linewidth]{").append(name);
 	if (name.endsWith(PNG)) {
-		result = result + "}\n";
+		result.append("}\n");
 	} else {
-		result = result + PNG + "}\n";
+		result.append(PNG).append"}\n");
 	}
-    if (caption.length() > 0) {
-		result = result + "\\caption{" + caption + "}\n";
+    if (caption != null) {
+		result.append("\\caption{").append("}\n");
 	}
 	
-	result = result + "\\end{figure}\n";
+	result.append("\\end{figure}\n");
 	
-	return result;
+	return result.toString;
 }

@@ -8,10 +8,6 @@ class Enumerate extends Content;
 // This option tells the enumerate how to enumerate
 protected String option = null;
 
-String toTex() {
-	return header() + super.toTex() + finalizer();
-}
-
 protected String header() {
 	String header = "\\begin{enumerate}";
 	if ((option != null) && (option.length() > 0)) {
@@ -38,7 +34,7 @@ EnumerateItem -(EnumerateItem item) {
 	return item;
 }
 
-EnumerateItem -(String text) {
+EnumerateItem -(Text text) {
 	EnumerateItem item = new EnumerateItem(text, this, 1);
 	addContent(item);
 	
@@ -47,4 +43,8 @@ EnumerateItem -(String text) {
 
 Integer getNumber() {
 	return 0;
+}
+
+String toTex() {
+	return header() + super.toTex() + finalizer();
 }

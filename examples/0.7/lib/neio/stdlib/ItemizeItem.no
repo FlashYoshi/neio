@@ -9,22 +9,21 @@ Text text;
 Integer level;
 Itemize itemize;
 
-ItemizeItem(String text, Integer level) {
-	this.text = new Text(text);
+ItemizeItem(Text text, Integer level) {
+	this.text = text;
 	this.level = level;
 }
 
-ItemizeItem(String text, Itemize itemize, Integer level) {
-	this.text = new Text(text);
+ItemizeItem(Text text, Itemize itemize, Integer level) {
 	this.itemize = itemize;
-	this.level = level;
+	this(text, level);
 }
 
 String text() {
     return text;
 }
 
-nested ItemizeItem *(String text, Integer level) {
+nested ItemizeItem *(Text text, Integer level) {
 	ItemizeItem item = null;
 	if (level > this.level) {
 		Itemize list = new Itemize();
