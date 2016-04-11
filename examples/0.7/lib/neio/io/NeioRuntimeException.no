@@ -1,4 +1,4 @@
-namespace neio.stdlib;
+namespace neio.io;
 
 class NeioRuntimeException extends RuntimeException;
 

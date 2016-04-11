@@ -1,6 +1,7 @@
 namespace neio.stdlib;
 
 import neio.lang.Container;
+import neio.lang.Text;
 import java.util.List;
 import java.util.ArrayList;
 

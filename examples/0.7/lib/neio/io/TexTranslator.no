@@ -119,7 +119,7 @@ String boldtext(BoldText t) {
 }
 
 String text(Text t) {
-    return getPre(t) + t.content();
+    return getPre(t) + t.realText();
 }
 
 private String getPre(Text t) {

@@ -1,6 +1,7 @@
 namespace neio.stdlib;
 
 import neio.lang.Content;
+import neio.lang.Text;
 
 class Chapter extends Content;
 
@@ -48,7 +49,7 @@ Paragraph newline(Text parText) {
 }
 
 Image image(String imageName) {
-    return image("", imageName);
+    return image(null, imageName);
 }
 
 Image image(Text caption, String imageName) {
@@ -59,7 +60,7 @@ Image image(Text caption, String imageName) {
 }
 
 String toTex() {
-	return "\\" + getSubs() + "section*{" + title.toTex() + "}" + super.toTex();
+	return "\\" + subs() + "section*{" + title.toTex() + "}" + super.toTex();
 }
 
 Text title() {

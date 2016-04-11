@@ -93,11 +93,11 @@ public class NeioClassTranslator extends IncrementalTranslator<Neio, Java7> {
                 if (newCalls.isEmpty()) {
                     return;
                 }
-                Block b = createAddUsesMethod(klass);
+                //Block b = createAddUsesMethod(klass);
                 // Add the constructors to the 'uses' and switch it out with a call to GET_INSTANCE
                 for (ConstructorInvocation ci : newCalls) {
                     if (ci.getType().subtypeOf(base)) {
-                        addUsesStatement(b, ci);
+                        //addUsesStatement(b, ci);
                         subNewCall(ci);
                     }
                 }

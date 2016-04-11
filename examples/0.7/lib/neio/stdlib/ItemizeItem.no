@@ -15,11 +15,11 @@ ItemizeItem(Text text, Integer level) {
 }
 
 ItemizeItem(Text text, Itemize itemize, Integer level) {
-	this.itemize = itemize;
 	this(text, level);
+	this.itemize = itemize;
 }
 
-String text() {
+Text text() {
     return text;
 }
 

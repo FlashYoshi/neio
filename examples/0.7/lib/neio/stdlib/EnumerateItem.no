@@ -15,8 +15,8 @@ EnumerateItem(Text text, Integer level) {
 }
 
 EnumerateItem(Text text, Enumerate enumerate, Integer level) {
-	this.enumerate = enumerate;
 	this(text, level);
+	this.enumerate = enumerate;
 }
 
 Text text() {

@@ -35,5 +35,5 @@ String toTex() {
 	
 	result.append("\\end{figure}\n");
 	
-	return result.toString;
+	return result.toString();
 }
