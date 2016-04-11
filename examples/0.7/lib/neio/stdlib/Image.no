@@ -30,7 +30,7 @@ String toTex() {
 		result.append(PNG).append("}\n");
 	}
     if (caption != null) {
-		result.append("\\caption{").append(caption.toText()).append("}\n");
+		result.append("\\caption{").append(caption.toTex()).append("}\n");
 	}
 	
 	result.append("\\end{figure}\n");
