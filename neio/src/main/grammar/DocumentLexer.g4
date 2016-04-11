@@ -35,7 +35,7 @@ fragment HASH : '#';
 fragment DASH : '-';
 fragment STAR : '*';
 BANG : '!';
-MethodName : {getCharPositionInLine() == 0}? (HASH | DASH | STAR);
+MethodName : {getCharPositionInLine() == 0}? (HASH | DASH | STAR)+;
 
 fragment VALID_CHAR : ~[#-+*_\[\]{} \r\n] | SQ | HASH | DASH | STAR | BANG;
 

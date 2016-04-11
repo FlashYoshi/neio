@@ -109,7 +109,7 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
                 codeBlock = visitCode(ctx.scode().getText(), "{{".length());
             } else {
                 codeBlock = visitCode(ctx.lonecode().getText(), "{".length());
-                codeBlock.setMetadata(new TagImpl(), Neio.INLINE_CODE);
+                codeBlock.setMetadata(new TagImpl(), Neio.LONE_CODE);
             }
             if (codeBlock.nbStatements() != 0) {
                 // A block of code has been found, round up the expressions found before this block
@@ -142,11 +142,8 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
     @Override
     public Expression visitPrefixCall(PrefixCallContext ctx) {
         // Find the method name and print it
-        String methodName = "";
+        String methodName = ctx.MethodName().getText();
         List<Expression> arguments = new ArrayList<>();
-        for (TerminalNode h : ctx.MethodName()) {
-            methodName += h;
-        }
 
         // Find the arguments
         Expression argument = visitTxt(ctx.txt());
@@ -169,7 +166,7 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
     @Override
     public Expression visitSentence(SentenceContext ctx) {
         Expression txt = visitTxt(ctx.txt());
-        return appendText(txt, createText("\n"));
+        return appendText(txt, createText("\\n"));
     }
 
     @Override

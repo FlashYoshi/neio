@@ -14,7 +14,6 @@ import org.aikodi.chameleon.oo.expression.Expression;
 import org.aikodi.chameleon.oo.expression.ExpressionFactory;
 import org.aikodi.chameleon.oo.expression.MethodInvocation;
 import org.aikodi.chameleon.oo.expression.NameExpression;
-import org.aikodi.chameleon.oo.method.Method;
 import org.aikodi.chameleon.oo.plugin.ObjectOrientedFactory;
 import org.aikodi.chameleon.oo.statement.Block;
 import org.aikodi.chameleon.oo.statement.Statement;
@@ -82,8 +81,8 @@ public class Java8Generator {
             if (getNearestElement(statement, Statement.class) != null) {
                 block.addStatement(statement);
                 Block blockStatement = (Block) statement;
-                processScopedBlock(lastElement, blockStatement, variables);
-                if (statement.hasMetadata(Neio.INLINE_CODE)) {
+                processCodeBlock(lastElement, blockStatement, variables);
+                if (statement.hasMetadata(Neio.LONE_CODE)) {
                     if (statement.hasDescendant(ReturnStatement.class)) {
                         blockStatement = fixReturnStatement(blockStatement, variables);
                     }
@@ -103,6 +102,9 @@ public class Java8Generator {
             while ((inv = getInvocation(methodChain)) != null) {
                 callStack.push(inv);
                 methodChain = inv;
+                if (inv.getTarget() instanceof ThisLiteral) {
+                    break;
+                }
             }
 
             // Turn the methodchain into local variables, one by one
@@ -207,9 +209,9 @@ public class Java8Generator {
         return block;
     }
 
-    private void processScopedBlock(String lastElement, Block block, Stack<Variable> variables) throws LookupException {
+    private void processCodeBlock(String lastElement, Block block, Stack<Variable> variables) throws LookupException {
         if (lastElement == null) {
-            throw new ChameleonProgrammerException("Inline code blocks are not allowed as the first element in a document!");
+            throw new ChameleonProgrammerException("Code blocks are not allowed as the first element in a document!");
         }
 
         // Replace occurences of 'this'

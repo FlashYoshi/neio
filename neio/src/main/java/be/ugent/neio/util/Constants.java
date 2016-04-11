@@ -28,6 +28,6 @@ public class Constants {
 
 
     public static final String ADD_USE = "addUse";
-    public static final String APPEND_TEXT = "apppendText";
+    public static final String APPEND_TEXT = "appendText";
     public static final String GET_INSTANCE = "getInstance";
 }

@@ -10,8 +10,7 @@ This is the first paragraph of our simple document.
 ## Chapter 1.1
 But for this to be a real document we do of course need more than one chapter and more than one indentation level, so... voila!
 
-// It shouldn't matter if we add the space after the #'s or not
-###Chapter 1.1.1
+### Chapter 1.1.1
 Well LaTeX has one more level of indentation, so we should make use of it!
 
 # Chapter 2

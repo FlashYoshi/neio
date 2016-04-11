@@ -88,7 +88,7 @@ String image(Image i) {
 	} else {
 		result.append(Image.PNG).append("}\n");
 	}
-    if (i.caption().length() > 0) {
+    if (i.caption() != null) {
 		result.append("\\caption{").append(translate(i.caption())).append("}\n");
 	}
 	
