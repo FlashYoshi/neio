@@ -77,6 +77,7 @@ expression : literal                    #literalExpression
            | op=E_MARK right=expression                                         #notExpression
            | left=expression op=(INCR | DECR)                                   #postfixCrementExpression
            | op=(INCR | DECR) right = expression                                #prefixCrementExpression
+           | op = (PLUS | MINUS) right= expression                                       #prefixExpression
            | left=expression op=OR right=expression                             #orExpression
            | left=expression op=AND right=expression                            #andExpression
            | left=expression op=HAT right=expression                            #exponentiationExpression

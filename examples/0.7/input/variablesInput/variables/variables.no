@@ -65,7 +65,7 @@ But I have the nicest furniture!
         if (i == 0) {
             '''Your score was average.'''
         } else {
-        '''Your score was {-i} points below average...'''
+        '''Your score was {- i} points below average...'''
         }
     }
 }

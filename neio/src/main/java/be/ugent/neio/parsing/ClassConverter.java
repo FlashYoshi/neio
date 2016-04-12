@@ -448,6 +448,11 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     @Override
+    public Object visitPrefixExpression(@NotNull PrefixExpressionContext ctx) {
+        return eFactory().createPrefixOperatorInvocation(ctx.op.getText(), (Expression) visit(ctx.right));
+    }
+
+    @Override
     public Expression visitAmpersandExpression(@NotNull AmpersandExpressionContext ctx) {
         MethodInvocation result = eFactory().createInfixOperatorInvocation(ctx.op.getText(), (Expression) visit(ctx.left));
         result.addArgument((Expression) visit(ctx.right));
