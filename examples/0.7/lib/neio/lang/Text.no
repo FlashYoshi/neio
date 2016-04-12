@@ -32,7 +32,13 @@ String realText() {
 }
 
 Text appendText(Text t) {
-    t.appendTo(this);
+    Text start = t;
+    
+    while (start.isAppended()) {
+        start = start.appendedTo();
+    }
+    start.appendTo(this);
+    
     return t;
 }
 
