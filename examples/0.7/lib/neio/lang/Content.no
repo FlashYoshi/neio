@@ -11,25 +11,25 @@ Content() {
     content = new ArrayList<Content>();
 }
 
-Content addContent(Integer index, Content c) {
+<T extends Content> T addContent(Integer index, T c) {
     content.add(index, c);
     c.setParent(this);
     return c;
 }
 
-Content addContent(Content c) {
+<T extends Content> T addContent(T c) {
     return addContent(contentSize(), c);
 }
 
-Content addContentBefore(Content c, Content before) {
+<T extends Content> T addContentBefore(T c, Content before) {
     return addContent(content().indexOf(c), c);
 }
 
-Content addContentAfter(Content c, Content after) {
+<T extends Content> T addContentAfter(T c, Content after) {
     return addContent(content().indexOf(after) + 1, c);
 }
 
-Content appendContent(Content c) {
+<T extends Content> T appendContent(T c) {
     if (parent() != null) {
         return parent().appendContent(c);
     } else {

@@ -107,4 +107,5 @@ typeArgumentList : typeArgumentList COMMA type  #typeArguments
 
 typeParameterList : typeParameterList COMMA type  #typeParameters
                   | type                          #typeParameter
+                  | Identifier EXTENDS bound=type #boundedTypeParameter
                   ;

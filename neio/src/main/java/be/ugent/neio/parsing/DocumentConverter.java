@@ -15,6 +15,7 @@ import org.aikodi.chameleon.core.tag.TagImpl;
 import org.aikodi.chameleon.exception.ChameleonProgrammerException;
 import org.aikodi.chameleon.oo.expression.Expression;
 import org.aikodi.chameleon.oo.expression.ExpressionFactory;
+import org.aikodi.chameleon.oo.expression.MethodInvocation;
 import org.aikodi.chameleon.oo.method.Method;
 import org.aikodi.chameleon.oo.plugin.ObjectOrientedFactory;
 import org.aikodi.chameleon.oo.statement.Block;
@@ -22,6 +23,7 @@ import org.aikodi.chameleon.oo.statement.Statement;
 import org.aikodi.chameleon.oo.type.RegularType;
 import org.aikodi.chameleon.oo.type.Type;
 import org.aikodi.chameleon.oo.variable.FormalParameter;
+import org.aikodi.chameleon.support.member.simplename.method.RegularMethodInvocation;
 import org.aikodi.chameleon.support.modifier.Public;
 import org.aikodi.chameleon.support.modifier.Static;
 import org.antlr.v4.runtime.ANTLRInputStream;
@@ -251,6 +253,7 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
                     else if (!currText.isEmpty()) {
                         Expression append = createText(currText);
                         intermediate = appendText(intermediate, append);
+                        intermediate = appendText(intermediate, e);
                         currText = "";
                     }
                     // There is inlinecode in the middle or at the end of the txt
@@ -296,6 +299,10 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
 
         Expression result = null;
         try {
+            if (e instanceof RegularMethodInvocation) {
+                ((MethodInvocation) e).setTarget(ooFactory().createThisLiteral());
+                return createText(e);
+            }
             Type type = e.getType();
             if (stringable(type)) {
                 result = createText(e);
@@ -323,22 +330,20 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
     }
 
     private Expression createText(String s) {
-        List<Expression> strArguments = new ArrayList<>();
-        strArguments.add(ooFactory().createStringLiteral(s));
-
-        return createText(strArguments);
+        return createText(ooFactory().createStringLiteral(s), false);
     }
 
     private Expression createText(Expression e) {
-        List<Expression> strArguments = new ArrayList<>();
-        strArguments.add(e);
-
-        return createText(strArguments);
+        return createText(e, true);
     }
 
-    private Expression createText(List<Expression> strArguments) {
+    private Expression createText(Expression strArgument, boolean createString) {
         // Create a String out of the expression
-        Expression str = expressionFactory().createConstructorInvocation(STRING, null, strArguments);
+        Expression str = strArgument;
+        if (createString) {
+            str = expressionFactory().createInfixOperatorInvocation("+", ooFactory().createStringLiteral(""));
+            ((MethodInvocation) str).addArgument(strArgument);
+        }
         List<Expression> arguments = new ArrayList<>();
         arguments.add(str);
 

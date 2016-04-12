@@ -1,6 +1,7 @@
 package be.ugent.neio.translate;
 
 import be.kuleuven.cs.distrinet.jnome.core.expression.invocation.JavaMethodInvocation;
+import be.ugent.neio.expression.NeioNameExpression;
 import be.ugent.neio.industry.NeioExpressionFactory;
 import be.ugent.neio.industry.NeioFactory;
 import be.ugent.neio.language.Neio;
@@ -79,7 +80,6 @@ public class Java8Generator {
         loneCode.setMetadata(new TagImpl(), Neio.LONE_CODE);
         for (Statement statement : oldBlock.statements()) {
             Statement oldStatement = null;
-            // Is this a Block?
             // If so, it is an inline code block
             if (statement.hasMetadata(Neio.LONE_CODE)) {
                 loneCode.addStatement(statement);
@@ -134,19 +134,24 @@ public class Java8Generator {
                 fixNestedMethod(call);
 
                 // FIXME: instanceof until ThisLiteral stops wrongfully being a literal
-                if (call.getTarget() != null && call.getTarget() instanceof ThisLiteral) {
+                /*if (call.getTarget() != null && call.getTarget() instanceof ThisLiteral) {
                     //THIS found, substitute it by the last element
                     call.getTarget().replaceWith(eFactory().createNeioNameExpression(lastElement));
+                }*/
+
+                for (ThisLiteral t : call.descendants(ThisLiteral.class)) {
+                    //THIS found, substitute it by the last element
+                    NeioNameExpression expr = eFactory().createNeioNameExpression(lastElement);
+                    t.replaceWith(expr);
+                    if (expr.parent() != null) {
+                        String prefix = getPrefix(((RegularMethodInvocation) expr.parent()), variables);
+                        if (prefix != null) {
+                            expr.replaceWith(eFactory().createNeioNameExpression(prefix));
+                        }
+                    }
                 }
 
-                // Get the method to know which type the variable will have to be (= returntype)
-                NormalMethod method = call.getElement();
-                // Type instead of TypeReference as TypeReference does not return a TypeReference with fqn
-                Type returnType = method.returnType();
-
-                // Add a prefix if this is not a constructor
-                Type type = method.nearestAncestor(Type.class);
-                String prefix = method.isTrue(neio.CONSTRUCTOR) ? null : getPrefix(type, variables);
+                String prefix = getPrefix(call, variables);
                 RegularMethodInvocation clone = (RegularMethodInvocation) call.clone();
                 clone.setTarget(prefix == null ? null : eFactory().createNeioNameExpression(prefix));
 
@@ -159,6 +164,11 @@ public class Java8Generator {
                     // Create a new variable name
                     varName = getVarName();
                 }
+
+                NormalMethod method = call.getElement();
+                // Type instead of TypeReference as TypeReference does not return a TypeReference with fqn
+                Type returnType = method.returnType();
+
                 LocalVariableDeclarator lvd = oFactory().createLocalVariable(returnType.name(), varName, clone);
 
                 variables.push(lvd.variableDeclarations().get(0).variable());
@@ -173,6 +183,15 @@ public class Java8Generator {
         return block;
     }
 
+    private String getPrefix(RegularMethodInvocation call, Stack<Variable> variables) throws LookupException {
+        // Get the method to know which type the variable will have to be (= returntype)
+        NormalMethod method = call.getElement();
+
+        // Add a prefix if this is not a constructor
+        Type type = method.nearestAncestor(Type.class);
+        return method.isTrue(neio.CONSTRUCTOR) ? null : getPrefix(type, variables);
+    }
+
     /**
      * Checks if the return statement in an inline code block returns content.
      * It also assigns a variable to it and makes sure the compiler uses this new element when building the document.
@@ -185,6 +204,7 @@ public class Java8Generator {
         for (ReturnStatement returnStat : block.nearestDescendants(ReturnStatement.class)) {
             String prev = lastElement;
             Expression e = returnStat.getExpression();
+            Type type = null;
             if (!(e instanceof NameExpression) && (!(e instanceof MethodInvocation))) {
                 System.err.println("You can only return Content in an inline code block, unknown expression: " + e.toString());
                 return block;
@@ -192,10 +212,11 @@ public class Java8Generator {
                 try {
                     if (e instanceof NameExpression) {
                         lastElement = ((NameExpression) e).name();
+                        // TODO: set type
                     } else {
                         // Check if we return Content
                         NormalMethod method = (NormalMethod) ((MethodInvocation) e).getElement();
-                        Type type = method.returnType();
+                        type = method.returnType();
                         boolean content = false;
                         for (Type t : type.getSelfAndAllSuperTypesView()) {
                             if (t.name().equals(Util.getLastPart(BASE_CLASS))) {
@@ -222,13 +243,18 @@ public class Java8Generator {
                 block.removeStatement(returnStat);
                 List<Expression> arguments = new ArrayList<>();
                 arguments.add(eFactory().createNameExpression(lastElement));
-                JavaMethodInvocation expr = eFactory().createMethodInvocation(APPEND_CONTENT, eFactory().createNeioNameExpression(prev), arguments);
+                JavaMethodInvocation expr = eFactory().createNeioMethodInvocation(APPEND_CONTENT, eFactory().createNeioNameExpression(prev), arguments);
                 block.addStatement(oFactory().createStatement(expr));
                 // Resolve the right target using contexttypes
                 try {
                     Stack<Variable> vars = (Stack<Variable>) variables.clone();
                     vars.pop();
                     setThis(expr, expr.getTarget(), vars);
+                    block.removeStatement(expr.nearestAncestor(Statement.class));
+                    LocalVariableDeclarator lvd = oFactory().createLocalVariable(type.name(), getVarName(), expr);
+                    variables.push(lvd.variableDeclarations().get(0).variable());
+                    lastElement = variables.peek().name();
+                    block.addStatement(lvd);
                 } catch (LookupException e1) {
                     System.err.println("Error while setting this on " + APPEND_CONTENT);
                 }

@@ -28,6 +28,7 @@ import org.aikodi.chameleon.oo.statement.Block;
 import org.aikodi.chameleon.oo.statement.Statement;
 import org.aikodi.chameleon.oo.type.Type;
 import org.aikodi.chameleon.oo.type.TypeReference;
+import org.aikodi.chameleon.oo.type.generics.FormalTypeParameter;
 import org.aikodi.chameleon.oo.type.generics.TypeArgument;
 import org.aikodi.chameleon.oo.type.generics.TypeParameter;
 import org.aikodi.chameleon.oo.type.inheritance.SubtypeRelation;
@@ -617,6 +618,16 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         typeParams.add(ooFactory().createTypeParameter(((BasicJavaTypeReference) visitType(ctx.type())).name()));
 
         return typeParams;
+    }
+
+    @Override
+    public List<FormalTypeParameter> visitBoundedTypeParameter(@NotNull BoundedTypeParameterContext ctx) {
+        List<FormalTypeParameter> list = new ArrayList<>();
+        FormalTypeParameter parameter = ooFactory().createFormalTypeParameter(ctx.Identifier().getText());
+        parameter.addConstraint(ooFactory().createExtendsConstraint(visitType(ctx.bound)));
+        list.add(parameter);
+
+        return list;
     }
 
     @Override
