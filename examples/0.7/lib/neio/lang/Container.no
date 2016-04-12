@@ -1,3 +1,11 @@
 namespace neio.lang;
 
 abstract class Container extends Content;
+
+Content appendContent(Content c) {
+    if (! contains(c)) {
+        return addContent(c);
+     }
+     
+     return this;
+}

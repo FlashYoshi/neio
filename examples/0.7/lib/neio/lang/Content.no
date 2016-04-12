@@ -29,6 +29,18 @@ Content addContentAfter(Content c, Content after) {
     return addContent(content().indexOf(after) + 1, c);
 }
 
+Content appendContent(Content c) {
+    if (parent() != null) {
+        return parent().appendContent(c);
+    } else {
+        return addContent(c);
+    }
+}
+
+Boolean contains(Content c) {
+    return content.contains(c);
+}
+
 void setParent(Content c) {
 	parent = c;
 }

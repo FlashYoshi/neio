@@ -104,6 +104,9 @@ public class NeioSyntax extends Java7Syntax {
     }
 
     private String addCatchAll(Expression expr) {
+        if (expr == null) {
+            return null;
+        }
         // This will deduce if a basic try catch is needed for this statement and create it if need be
         if (expr.nearestAncestor(TryStatement.class) == null && expr instanceof MethodInvocation) {
             Set exceptions = getExceptions((MethodInvocation) expr);

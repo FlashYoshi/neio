@@ -1,9 +1,10 @@
 namespace neio.stdlib;
 
 import neio.lang.Content;
+import neio.lang.Container;
 import neio.lang.Text;
 
-class Chapter extends Content;
+class Chapter extends Container;
 
 Text title;
 Integer level;

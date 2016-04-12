@@ -7,12 +7,8 @@
 	String name = "Titouan Vervack";
 	String addressee = "Thomas Vanhaskel";
 	String help = "my math class";
-	String helpSubject = "helpSubject";
-
-	List<String> closings = new ArrayList<String>();
-	closings.add("See you later!");
-	closings.add("Kind regards,");
-	closings.add("With the kindest of salutations,");
+	String helpSubject = "test";
+	String closings = "Kind regards,";
 }
 
 // Calls append content on the Text("Dear")
@@ -22,5 +18,6 @@ Thank you for helping me out with {help}.
 I was able to do great at the {helpSubject} thanks to you.
 
 // Have to explicitily create the content, the compiler cannot determine what to do otherwise
-{ return new Paragraph(closings.get(0)).appendContent(name) }
+{ return new Paragraph(closings) }
+{ return new Paragraph(name) }
 

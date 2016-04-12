@@ -1,6 +1,5 @@
 package be.ugent.neio.translate;
 
-import be.kuleuven.cs.distrinet.jnome.core.expression.invocation.ConstructorInvocation;
 import be.kuleuven.cs.distrinet.jnome.core.expression.invocation.JavaMethodInvocation;
 import be.ugent.neio.industry.NeioExpressionFactory;
 import be.ugent.neio.industry.NeioFactory;
@@ -84,8 +83,13 @@ public class Java8Generator {
             // If so, it is an inline code block
             if (statement.hasMetadata(Neio.LONE_CODE)) {
                 loneCode.addStatement(statement);
-                continue;
-            } else if (loneCode.nbStatements() > 0){
+                // Can't fix the lonecode in the next statement if this is the last statement
+                if (oldBlock.nbStatements() != 0) {
+                    continue;
+                } else {
+                    statement = loneCode;
+                }
+            } else if (loneCode.nbStatements() > 0) {
                 oldStatement = statement;
                 statement = loneCode;
             }
@@ -100,7 +104,11 @@ public class Java8Generator {
                     block.removeStatement(statement);
                     block.addStatements((blockStatement.statements()));
                     loneCode.clear();
-                    statement = oldStatement;
+                    if (oldStatement != null) {
+                        statement = oldStatement;
+                    } else {
+                        continue;
+                    }
                 } else {
                     continue;
                 }
@@ -169,53 +177,61 @@ public class Java8Generator {
      * Checks if the return statement in an inline code block returns content.
      * It also assigns a variable to it and makes sure the compiler uses this new element when building the document.
      *
-     * @param block The block of inline code
+     * @param block     The block of inline code
      * @param variables The previously defined variables
      * @return The block with a variable declaration instead of a returnstatement
      */
     private Block fixReturnStatement(Block block, Stack<Variable> variables) {
-        ReturnStatement returnStat = block.nearestDescendants(ReturnStatement.class).get(0);
-        Expression e = returnStat.getExpression();
-        String prev = lastElement;
-        if (!(e instanceof NameExpression) && (!(e instanceof MethodInvocation))) {
-            System.err.println("You can only return Content in an inline code block, unknown expression: " + e.toString());
-            return block;
-        } else {
-            try {
-                if (e instanceof NameExpression) {
-                    lastElement = ((NameExpression) e).name();
-                } else {
-                    // Check if we return Content
-                    NormalMethod method = (NormalMethod) ((MethodInvocation)e).getElement();
-                    Type type = method.returnType();
-                    boolean content = false;
-                    for (Type t : type.getSelfAndAllSuperTypesView()) {
-                        if (t.name().equals(Util.getLastPart(BASE_CLASS))) {
-                            content = true;
-                            break;
-                        }
-                    }
-                    if (!content) {
-                        System.err.println("You can only return Content in an inline code block, unknown expression: " + e.toString());
-                        return block;
-                    }
-
-                    LocalVariableDeclarator lvd = oFactory().createLocalVariable(type.getFullyQualifiedName(), getVarName(), (Expression) e.clone());
-                    variables.push(lvd.variableDeclarations().get(0).variable());
-                    lastElement = variables.peek().name();
-                    block.addStatement(lvd);
-                }
-            } catch (LookupException e1) {
-                System.err.println(e + " has not been declared yet!");
-                lastElement = prev;
+        for (ReturnStatement returnStat : block.nearestDescendants(ReturnStatement.class)) {
+            String prev = lastElement;
+            Expression e = returnStat.getExpression();
+            if (!(e instanceof NameExpression) && (!(e instanceof MethodInvocation))) {
+                System.err.println("You can only return Content in an inline code block, unknown expression: " + e.toString());
                 return block;
-            }
-            block.removeStatement(returnStat);
-            if (e instanceof ConstructorInvocation) {
+            } else {
+                try {
+                    if (e instanceof NameExpression) {
+                        lastElement = ((NameExpression) e).name();
+                    } else {
+                        // Check if we return Content
+                        NormalMethod method = (NormalMethod) ((MethodInvocation) e).getElement();
+                        Type type = method.returnType();
+                        boolean content = false;
+                        for (Type t : type.getSelfAndAllSuperTypesView()) {
+                            if (t.name().equals(Util.getLastPart(BASE_CLASS))) {
+                                content = true;
+                                break;
+                            }
+                        }
+                        if (!content) {
+                            System.err.println("You can only return Content in an inline code block, unknown expression: " + e.toString());
+                            return block;
+                        }
+
+                        LocalVariableDeclarator lvd = oFactory().createLocalVariable(type.name(), getVarName(), (Expression) e.clone());
+                        variables.push(lvd.variableDeclarations().get(0).variable());
+                        lastElement = variables.peek().name();
+                        block.addStatement(lvd);
+                    }
+                } catch (LookupException e1) {
+                    System.err.println(e + " has not been declared yet!");
+                    lastElement = prev;
+                    return block;
+                }
+
+                block.removeStatement(returnStat);
                 List<Expression> arguments = new ArrayList<>();
                 arguments.add(eFactory().createNameExpression(lastElement));
-                Expression expr = eFactory().createMethodInvocation("addContent", eFactory().createNameExpression(prev), arguments);
+                JavaMethodInvocation expr = eFactory().createMethodInvocation(APPEND_CONTENT, eFactory().createNeioNameExpression(prev), arguments);
                 block.addStatement(oFactory().createStatement(expr));
+                // Resolve the right target using contexttypes
+                try {
+                    Stack<Variable> vars = (Stack<Variable>) variables.clone();
+                    vars.pop();
+                    setThis(expr, expr.getTarget(), vars);
+                } catch (LookupException e1) {
+                    System.err.println("Error while setting this on " + APPEND_CONTENT);
+                }
             }
         }
 

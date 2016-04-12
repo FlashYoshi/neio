@@ -22,7 +22,6 @@ import org.aikodi.chameleon.oo.statement.Statement;
 import org.aikodi.chameleon.oo.type.RegularType;
 import org.aikodi.chameleon.oo.type.Type;
 import org.aikodi.chameleon.oo.variable.FormalParameter;
-import org.aikodi.chameleon.support.expression.ThisLiteral;
 import org.aikodi.chameleon.support.modifier.Public;
 import org.aikodi.chameleon.support.modifier.Static;
 import org.antlr.v4.runtime.ANTLRInputStream;
@@ -288,10 +287,6 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         Block b = visitCode(ctx.getText(), "{".length(), false);
         if (b.nbStatements() != 1) {
             throw new ChameleonProgrammerException("Inline code can only have 1 statement");
-        }
-
-        if (previousExpression != null && !(previousExpression instanceof ThisLiteral)) {
-            block.addStatement(ooFactory().createStatement(previousExpression));
         }
 
         Type base = new RegularType(TEXT);

@@ -15,8 +15,17 @@ Paragraph(Text text) {
     this.text = text;
 }
 
+Paragraph appendLine(String s) {
+    return appendLine(new Text(s));
+}
+
+Paragraph appendLine(Text t) {
+    text = text.appendText(new Text("\n")).appendText(t);
+    return this;
+}
+
 Text text() {
-    return text();
+    return text;
 }
 
 String toTex() {
