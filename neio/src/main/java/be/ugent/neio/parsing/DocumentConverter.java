@@ -151,7 +151,7 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
             if (ctx.scode() != null) {
                 codeBlock = visitCode(ctx.scode().getText(), "{{".length());
             } else {
-                codeBlock = visitCode(ctx.lonecode().getText(), "{".length());
+                codeBlock = visitCode(ctx.lonecode().getText(), "{".length(), false);
                 codeBlock.setMetadata(new TagImpl(), Neio.LONE_CODE);
             }
             if (codeBlock.nbStatements() != 0) {
