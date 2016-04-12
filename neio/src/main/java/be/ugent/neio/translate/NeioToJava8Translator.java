@@ -52,7 +52,7 @@ public class NeioToJava8Translator extends IncrementalTranslator<Neio, Java7> {
     public List<Document> translate(Document sourceDocument) throws ModelException {
         List<Document> result = new ArrayList<>();
         TextDocument document = (TextDocument) sourceDocument;
-        //prepareDocument(document);
+        prepareDocument(document);
         if (!debug) {
             document = createJavaDocument(document);
         }

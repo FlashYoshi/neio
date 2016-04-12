@@ -57,7 +57,7 @@ But I have the nicest furniture!
     '''
     resetFontsize();
 }
-
+*/
 {
     if(i > 0) {
         '''Your score was {i} points above average!'''
@@ -69,4 +69,4 @@ But I have the nicest furniture!
         }
     }
 }
-*/
+

@@ -7,7 +7,6 @@ import be.ugent.neio.language.Neio;
 import be.ugent.neio.model.document.TextDocument;
 import be.ugent.neio.util.CodeTag;
 import org.aikodi.chameleon.core.document.Document;
-import org.aikodi.chameleon.core.lookup.LookupException;
 import org.aikodi.chameleon.core.namespace.Namespace;
 import org.aikodi.chameleon.core.namespacedeclaration.NamespaceDeclaration;
 import org.aikodi.chameleon.core.tag.TagImpl;
@@ -19,7 +18,6 @@ import org.aikodi.chameleon.oo.method.Method;
 import org.aikodi.chameleon.oo.plugin.ObjectOrientedFactory;
 import org.aikodi.chameleon.oo.statement.Block;
 import org.aikodi.chameleon.oo.statement.Statement;
-import org.aikodi.chameleon.oo.type.RegularType;
 import org.aikodi.chameleon.oo.type.Type;
 import org.aikodi.chameleon.oo.variable.FormalParameter;
 import org.aikodi.chameleon.support.member.simplename.method.RegularMethodInvocation;
@@ -45,7 +43,6 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import static be.ugent.neio.util.Constants.*;
-import static be.ugent.neio.util.Constants.STRING;
 
 /**
  * @author Titouan Vervack
@@ -55,7 +52,6 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
     private final Neio neio;
     private final TextDocument document;
     private final JavaView view;
-    private final Type[] types;
     private Expression previousExpression = null;
     private Block block = null;
     private int lonecodeid;
@@ -66,21 +62,6 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         this.view = view;
         this.neio = view.language(Neio.class);
         this.lonecodeid = 0;
-        this.types = new Type[]{
-                view.primitiveType("float"),
-                view.primitiveType("double"),
-                view.primitiveType("short"),
-                view.primitiveType("int"),
-                view.primitiveType("long"),
-                view.primitiveType("char"),
-                new RegularType(FLOAT),
-                new RegularType(DOUBLE),
-                new RegularType(SHORT),
-                new RegularType(INTEGER),
-                new RegularType(LONG),
-                new RegularType(CHARACTER),
-                new RegularType(STRING)
-        };
     }
 
     protected NeioFactory ooFactory() {
@@ -113,37 +94,12 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
     public Block visitBody(BodyContext ctx) {
         block = ooFactory().createBlock();
         document.setBlock(block);
-        prepareDocument(document);
         ctx.content().forEach(this::visitContent);
 
         if (previousExpression != null) {
             block.addStatement(ooFactory().createStatement(previousExpression));
         }
         return block;
-    }
-
-    private void prepareDocument(TextDocument document) {
-        NeioFactory ooFactory = ooFactory();
-        Type type = ooFactory.createRegularType(document.getName());
-        type.addModifier(new Public());
-        Method method = ooFactory.createMethod("main", "void");
-        method.header().addFormalParameter(new FormalParameter("args", ooFactory.createTypeReference("String[]")));
-        method.addModifier(new Public());
-        method.addModifier(new Static());
-        Block block = document.getBlock();
-        method.setImplementation(ooFactory.createImplementation(block));
-        type.add(method);
-
-        NamespaceDeclaration ns = ooFactory.createNamespaceDeclaration(
-                ooFactory.createNamespaceReference(document.loader().namespace().fullyQualifiedName()));
-        ns.add(type);
-
-        for (Namespace namespace : document.view().namespace().getSubNamespace("neio").descendantNamespaces()) {
-            ns.addImport(ooFactory.createDemandImport(namespace.fullyQualifiedName()));
-        }
-
-        ns.addImport(ooFactory.createDemandImport("java.util"));
-        document.add(ns);
     }
 
     public Block visitContent(ContentContext ctx) {
@@ -294,41 +250,14 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
             throw new ChameleonProgrammerException("Inline code can only have 1 statement");
         }
 
-        Type base = new RegularType(TEXT);
         Statement s = b.statement(0);
         Expression e = s.nearestDescendants(Expression.class).get(0);
-        block.addStatement(s);
 
-        Expression result = null;
-        try {
-            if (e instanceof RegularMethodInvocation) {
-                ((MethodInvocation) e).setTarget(ooFactory().createThisLiteral());
-                return createText(e);
-            }
-            Type type = e.getType();
-            if (stringable(type)) {
-                result = createText(e);
-            } else if (subtype(type, base)) {
-                result = e;
-            } else {
-                System.err.println("Inline code can only return a String or Text");
-            }
-        } catch (LookupException e1) {
-            System.err.println("Syntax error in inlinecode");
+        if (e instanceof RegularMethodInvocation) {
+            ((MethodInvocation) e).setTarget(ooFactory().createThisLiteral());
         }
 
-        block.removeStatement(s);
-        return result;
-    }
-
-    private boolean subtype(Type other, Type base) throws LookupException {
-        for (Type type : other.getSelfAndAllSuperTypesView()) {
-            if (type.getFullyQualifiedName().equals(base.name())) {
-                return true;
-            }
-        }
-
-        return false;
+        return createText(e);
     }
 
     private Expression createText(String s) {
@@ -351,16 +280,6 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
 
         // Create the most basic type of content, a piece of text
         return expressionFactory().createConstructorInvocation(TEXT, null, arguments);
-    }
-
-    private boolean stringable(Type type) throws LookupException {
-        for (Type t : types) {
-            if (subtype(type, t)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     @Override
