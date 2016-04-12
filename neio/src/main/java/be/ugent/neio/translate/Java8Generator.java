@@ -81,66 +81,49 @@ public class Java8Generator {
         Block loneCode = oFactory().createBlock();
         loneCode.setMetadata(new TagImpl(), Neio.LONE_CODE);
         int prevCodeId = -1;
-        Statement nextBlock = null;
-        for (Statement statement : oldBlock.statements()) {
-            Statement oldStatement = null;
-            // If so, it is an inline code block
+
+        List<Statement> statements = new ArrayList<>(oldBlock.statements());
+        for (int i = 0; i < statements.size(); i++) {
+            Statement statement = statements.get(i);
+            // Is this a block of lonecode
             if (statement.hasMetadata(Neio.LONE_CODE)) {
-                int id = ((CodeTag)statement.metadata(Neio.LONE_CODE)).id();
-                if (id == prevCodeId) {
-                    // There is more than 1 instruction in the new block
-                    if (nextBlock != null) {
-                        loneCode.addStatement(nextBlock);
-                        nextBlock = null;
-                    }
-                    loneCode.addStatement(statement);
-                } else {
-                    // More than 2 consecutive online lonecodeblocks
-                    if (nextBlock != null) {
-                        loneCode.addStatement(nextBlock);
-                    }
+                int id = ((CodeTag) statement.metadata(Neio.LONE_CODE)).id();
+                // New codeblock
+                if (loneCode.nbStatements() <= 0) {
                     prevCodeId = id;
-                    nextBlock = statement;
                 }
-                // Can't fix the lonecode in the next statement if this is the last statement
-                if (oldBlock.nbStatements() != 0 && nextBlock == null) {
-                    continue;
-                } else {
-                    statement = loneCode;
-                }
-            }
-            // If there's a loneblock, process it first
-            else if (loneCode.nbStatements() > 0) {
-                oldStatement = statement;
-                statement = loneCode;
-            }
-            // If there's another loneblock, process it first
-            else if (nextBlock != null) {
-                oldStatement = statement;
-                loneCode.addStatement(nextBlock);
-                statement = loneCode;
-                nextBlock = null;
-            }
-            if (getNearestElement(statement, Statement.class) != null) {
-                block.addStatement(statement);
-                Block blockStatement = (Block) statement;
-                processCodeBlock(lastElement, blockStatement, variables);
-                if (statement.hasMetadata(Neio.LONE_CODE)) {
-                    if (statement.hasDescendant(ReturnStatement.class)) {
-                        blockStatement = fixReturnStatement(blockStatement, variables);
-                    }
-                    block.removeStatement(statement);
-                    block.addStatements((blockStatement.statements()));
-                    loneCode.clear();
-                    if (oldStatement != null) {
-                        statement = oldStatement;
-                    } else {
+                // Statement in same block
+                if (id == prevCodeId) {
+                    loneCode.addStatement(statement);
+                    // Accumulate all of the statements of the lonecode
+                    if (i < statements.size() - 1) {
                         continue;
                     }
-                } else {
-                    continue;
+                    // Process the last instruction, aka the last lonecode
+                    else {
+                        statement = loneCode;
+                    }
+                }
+                // New lonecode
+                else {
+                    prevCodeId = id;
+                    statement = loneCode;
+                    // We still have to process the second block
+                    i--;
                 }
             }
+            // Set the counter back by one and process the lonecode
+            else if (loneCode.nbStatements() > 0){
+                i--;
+                statement = loneCode;
+            }
+
+            // Handles a codeblock if there is one
+            statement = fixCodeBlock(block, statement, variables, loneCode);
+            if (statement == null) {
+                continue;
+            }
+
             // Add the statement to the new block so that it can do lookups using the new block
             block.addStatement(statement);
 
@@ -156,59 +139,78 @@ public class Java8Generator {
                 }
             }
 
-            // Turn the methodchain into local variables, one by one
-            while (!callStack.isEmpty()) {
-                RegularMethodInvocation call = callStack.pop();
-                fixNestedMethod(call);
-
-                // FIXME: instanceof until ThisLiteral stops wrongfully being a literal
-                /*if (call.getTarget() != null && call.getTarget() instanceof ThisLiteral) {
-                    //THIS found, substitute it by the last element
-                    call.getTarget().replaceWith(eFactory().createNeioNameExpression(lastElement));
-                }*/
-
-                for (ThisLiteral t : call.descendants(ThisLiteral.class)) {
-                    //THIS found, substitute it by the last element
-                    NeioNameExpression expr = eFactory().createNeioNameExpression(lastElement);
-                    t.replaceWith(expr);
-                    if (expr.parent() != null) {
-                        String prefix = getPrefix(((RegularMethodInvocation) expr.parent()), variables);
-                        if (prefix != null) {
-                            expr.replaceWith(eFactory().createNeioNameExpression(prefix));
-                        }
-                    }
-                }
-
-                String prefix = getPrefix(call, variables);
-                RegularMethodInvocation clone = (RegularMethodInvocation) call.clone();
-                clone.setTarget(prefix == null ? null : eFactory().createNeioNameExpression(prefix));
-
-                String varName;
-                VariableDeclaration var;
-                if ((var = getVarDeclaration(methodChain)) != null) {
-                    // Use the variable name defined in the statement
-                    varName = var.name();
-                } else {
-                    // Create a new variable name
-                    varName = getVarName();
-                }
-
-                NormalMethod method = call.getElement();
-                // Type instead of TypeReference as TypeReference does not return a TypeReference with fqn
-                Type returnType = method.returnType();
-
-                LocalVariableDeclarator lvd = oFactory().createLocalVariable(returnType.name(), varName, clone);
-
-                variables.push(lvd.variableDeclarations().get(0).variable());
-                lastElement = variables.peek().name();
-                block.addStatement(lvd);
-            }
+            breakupMethodChain(callStack, variables, block, methodChain);
 
             // Remove the old statement from the block that will printed to Java
             block.removeStatement(statement);
         }
 
         return block;
+    }
+
+    private void breakupMethodChain(Stack<RegularMethodInvocation> callStack, Stack<Variable> variables, Block block, Element methodChain) throws LookupException {
+        // Turn the methodchain into local variables, one by one
+        while (!callStack.isEmpty()) {
+            RegularMethodInvocation call = callStack.pop();
+            fixNestedMethod(call);
+
+            for (ThisLiteral t : call.descendants(ThisLiteral.class)) {
+                //THIS found, substitute it by the last element
+                NeioNameExpression expr = eFactory().createNeioNameExpression(lastElement);
+                t.replaceWith(expr);
+                if (expr.parent() != null) {
+                    String prefix = getPrefix(((RegularMethodInvocation) expr.parent()), variables);
+                    if (prefix != null) {
+                        expr.replaceWith(eFactory().createNeioNameExpression(prefix));
+                    }
+                }
+            }
+
+            String prefix = getPrefix(call, variables);
+            RegularMethodInvocation clone = (RegularMethodInvocation) call.clone();
+            clone.setTarget(prefix == null ? null : eFactory().createNeioNameExpression(prefix));
+
+            String varName;
+            VariableDeclaration var;
+            if ((var = getVarDeclaration(methodChain)) != null) {
+                // Use the variable name defined in the statement
+                varName = var.name();
+            } else {
+                // Create a new variable name
+                varName = getVarName();
+            }
+
+            NormalMethod method = call.getElement();
+            // Type instead of TypeReference as TypeReference does not return a TypeReference with fqn
+            Type returnType = method.returnType();
+
+            LocalVariableDeclarator lvd = oFactory().createLocalVariable(returnType.name(), varName, clone);
+
+            variables.push(lvd.variableDeclarations().get(0).variable());
+            lastElement = variables.peek().name();
+            block.addStatement(lvd);
+        }
+    }
+
+    private Statement fixCodeBlock(Block block, Statement statement, Stack<Variable> variables, Block loneCode) throws LookupException {
+        if (getNearestElement(statement, Statement.class) != null) {
+            block.addStatement(statement);
+            Block blockStatement = (Block) statement;
+            processCodeBlock(lastElement, blockStatement, variables);
+            if (statement.hasMetadata(Neio.LONE_CODE)) {
+                if (statement.hasDescendant(ReturnStatement.class)) {
+                    blockStatement = fixReturnStatement(blockStatement, variables);
+                }
+                block.removeStatement(statement);
+                block.addStatements((blockStatement.statements()));
+                loneCode.clear();
+            }
+            // No further processing required
+            return null;
+        }
+
+        // Process this statement further as it isn't a block
+        return statement;
     }
 
     private String getPrefix(RegularMethodInvocation call, Stack<Variable> variables) throws LookupException {
