@@ -6,6 +6,7 @@ import be.ugent.neio.industry.NeioExpressionFactory;
 import be.ugent.neio.industry.NeioFactory;
 import be.ugent.neio.language.Neio;
 import be.ugent.neio.model.document.TextDocument;
+import be.ugent.neio.util.CodeTag;
 import org.aikodi.chameleon.core.element.Element;
 import org.aikodi.chameleon.core.lookup.LookupException;
 import org.aikodi.chameleon.core.tag.TagImpl;
@@ -79,20 +80,46 @@ public class Java8Generator {
         oldBlock.replaceWith(block);
         Block loneCode = oFactory().createBlock();
         loneCode.setMetadata(new TagImpl(), Neio.LONE_CODE);
+        int prevCodeId = -1;
+        Statement nextBlock = null;
         for (Statement statement : oldBlock.statements()) {
             Statement oldStatement = null;
             // If so, it is an inline code block
             if (statement.hasMetadata(Neio.LONE_CODE)) {
-                loneCode.addStatement(statement);
+                int id = ((CodeTag)statement.metadata(Neio.LONE_CODE)).id();
+                if (id == prevCodeId) {
+                    // There is more than 1 instruction in the new block
+                    if (nextBlock != null) {
+                        loneCode.addStatement(nextBlock);
+                        nextBlock = null;
+                    }
+                    loneCode.addStatement(statement);
+                } else {
+                    // More than 2 consecutive online lonecodeblocks
+                    if (nextBlock != null) {
+                        loneCode.addStatement(nextBlock);
+                    }
+                    prevCodeId = id;
+                    nextBlock = statement;
+                }
                 // Can't fix the lonecode in the next statement if this is the last statement
-                if (oldBlock.nbStatements() != 0) {
+                if (oldBlock.nbStatements() != 0 && nextBlock == null) {
                     continue;
                 } else {
                     statement = loneCode;
                 }
-            } else if (loneCode.nbStatements() > 0) {
+            }
+            // If there's a loneblock, process it first
+            else if (loneCode.nbStatements() > 0) {
                 oldStatement = statement;
                 statement = loneCode;
+            }
+            // If there's another loneblock, process it first
+            else if (nextBlock != null) {
+                oldStatement = statement;
+                loneCode.addStatement(nextBlock);
+                statement = loneCode;
+                nextBlock = null;
             }
             if (getNearestElement(statement, Statement.class) != null) {
                 block.addStatement(statement);

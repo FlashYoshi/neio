@@ -1,12 +1,11 @@
 package be.ugent.neio.parsing;
 
-import be.kuleuven.cs.distrinet.jnome.input.PrimitiveTypeFactory;
 import be.kuleuven.cs.distrinet.jnome.workspace.JavaView;
 import be.ugent.neio.industry.NeioExpressionFactory;
 import be.ugent.neio.industry.NeioFactory;
 import be.ugent.neio.language.Neio;
 import be.ugent.neio.model.document.TextDocument;
-import be.ugent.neio.model.type.ContextType;
+import be.ugent.neio.util.CodeTag;
 import org.aikodi.chameleon.core.document.Document;
 import org.aikodi.chameleon.core.lookup.LookupException;
 import org.aikodi.chameleon.core.namespace.Namespace;
@@ -46,6 +45,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import static be.ugent.neio.util.Constants.*;
+import static be.ugent.neio.util.Constants.STRING;
 
 /**
  * @author Titouan Vervack
@@ -55,16 +55,17 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
     private final Neio neio;
     private final TextDocument document;
     private final JavaView view;
+    private final Type[] types;
     private Expression previousExpression = null;
     private Block block = null;
-
-    private final Type[] types;
+    private int lonecodeid;
 
 
     public DocumentConverter(Document document, JavaView view) {
         this.document = (TextDocument) document;
         this.view = view;
         this.neio = view.language(Neio.class);
+        this.lonecodeid = 0;
         this.types = new Type[]{
                 view.primitiveType("float"),
                 view.primitiveType("double"),
@@ -161,9 +162,10 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
                 }
                 if (codeBlock.metadata(Neio.LONE_CODE) != null) {
                     for (Statement s : codeBlock.statements()) {
-                        s.setMetadata(new TagImpl(), Neio.LONE_CODE);
+                        s.setMetadata(new CodeTag(lonecodeid), Neio.LONE_CODE);
                         block.addStatement(s);
                     }
+                    lonecodeid++;
                 } else {
                     block.addStatement(codeBlock);
                 }
