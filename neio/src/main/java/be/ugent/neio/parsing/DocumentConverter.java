@@ -389,6 +389,9 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         code = code.substring(sepLen, code.length() - sepLen);
         // Add a semicolon if needed
         int index = code.length();
+        if (Pattern.matches("^[\t\n\r ]*$", code)) {
+            return ooFactory().createBlock();
+        }
         while (Pattern.matches("[\t\n\r ]", code.charAt(--index) + "")) ;
 
         if (code.charAt(index) != ';' && code.charAt(index) != '}') {
