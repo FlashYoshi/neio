@@ -20,6 +20,7 @@ import org.aikodi.chameleon.oo.statement.Block;
 import org.aikodi.chameleon.oo.statement.Statement;
 import org.aikodi.chameleon.oo.type.Type;
 import org.aikodi.chameleon.oo.variable.VariableDeclaration;
+import org.aikodi.chameleon.support.expression.AssignmentExpression;
 import org.aikodi.chameleon.support.expression.ThisLiteral;
 import org.aikodi.chameleon.support.member.simplename.method.NormalMethod;
 import org.aikodi.chameleon.support.member.simplename.method.RegularMethodInvocation;
@@ -268,6 +269,23 @@ public class Java8Generator {
         if (lastElement == null) {
             throw new ChameleonProgrammerException("Code blocks are not allowed as the first element in a document!");
         }
+
+        for (LocalVariableDeclarator lvd : block.descendants(LocalVariableDeclarator.class)) {
+            for (Element replacee : lvd.variableDeclarations().get(0).descendants(ThisLiteral.class)) {
+                NameExpression replacer = eFactory().createNeioNameExpression(lastElement);
+                replacee.replaceWith(replacer);
+            }
+        }
+
+        for (AssignmentExpression as : block.descendants(AssignmentExpression.class)) {
+            List<ThisLiteral> thisLiterals = as.variableExpression().nearestDescendants(ThisLiteral.class);
+
+            // There should only be 1
+            for (ThisLiteral t : thisLiterals) {
+                // TODO: set this
+            }
+        }
+
 
         // Replace occurences of 'this'
         for (Element replacee : block.descendants(ThisLiteral.class)) {
