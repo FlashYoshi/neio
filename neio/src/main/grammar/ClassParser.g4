@@ -44,6 +44,7 @@ statement : expression SCOLON           #expressionStatement
           | variableDeclaration SCOLON  #variableDeclarationStatement
           | assignmentExpression SCOLON #assignmentStatement
           | ifteStatement               #ifStatement
+          | TextMode                    #TextModeStatement
           | WHILE L_BRACE expression R_BRACE (block | SCOLON) #whileLoop
           | FOR L_BRACE init=variableDeclaration SCOLON cond=expression SCOLON update=assignmentExpression R_BRACE block #forLoop
           ;
@@ -59,6 +60,7 @@ literal : StringLiteral     #stringLiteral
         | Double            #doubleLiteral
         | (TRUE | FALSE)    #boolLiteral
         | NULL              #nullLiteral
+        | TextMode          #TextMode
         ;
 
 expression : literal                    #literalExpression
@@ -77,7 +79,7 @@ expression : literal                    #literalExpression
            | op=E_MARK right=expression                                         #notExpression
            | left=expression op=(INCR | DECR)                                   #postfixCrementExpression
            | op=(INCR | DECR) right = expression                                #prefixCrementExpression
-           | op = (PLUS | MINUS) right= expression                                       #prefixExpression
+           | op = (PLUS | MINUS) right= expression                              #prefixExpression
            | left=expression op=OR right=expression                             #orExpression
            | left=expression op=AND right=expression                            #andExpression
            | left=expression op=HAT right=expression                            #exponentiationExpression

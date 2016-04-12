@@ -39,6 +39,7 @@ fragment N_D_QUOTE : ~["] | ~[\\] B_SLASH D_QUOTE;
 StringLiteral : D_QUOTE N_D_QUOTE* D_QUOTE;
 fragment N_QUOTE : ~['] | B_SLASH QUOTE;
 CharLiteral : QUOTE N_QUOTE QUOTE;
+TextMode : TSQ .*? TSQ;
 
 DOT : '.';
 COMMA : ',';
@@ -72,6 +73,7 @@ RC_BRACE : '}';
 LS_BRACE : '[';
 RS_BRACE : ']';
 D_QUOTE : '"';
+TSQ : '\'\'\'';
 QUOTE : '\'';
 SLASH : '/';
 B_SLASH : '\\';

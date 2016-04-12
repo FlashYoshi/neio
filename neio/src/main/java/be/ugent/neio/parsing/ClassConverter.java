@@ -40,12 +40,21 @@ import org.aikodi.chameleon.support.member.simplename.variable.MemberVariableDec
 import org.aikodi.chameleon.support.modifier.*;
 import org.aikodi.chameleon.support.statement.*;
 import org.aikodi.chameleon.support.variable.LocalVariableDeclarator;
+import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.Lexer;
+import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.TerminalNode;
-import org.neio.antlr.ClassParser;
 import org.neio.antlr.ClassParser.*;
 import org.neio.antlr.ClassParserBaseVisitor;
+import org.neio.antlr.DocumentLexer;
+import org.neio.antlr.DocumentParser;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -57,6 +66,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     private final Document document;
     private final Neio neio;
+    private final JavaView view;
     // Can not use keyword
     private boolean interphase;
     private boolean contextType;
@@ -64,6 +74,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     public ClassConverter(Document document, JavaView view) {
         this.document = document;
         this.neio = view.language(Neio.class);
+        this.view = view;
         interphase = false;
         contextType = false;
     }
@@ -704,6 +715,40 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     @Override
     public Literal visitCharLiteral(@NotNull CharLiteralContext ctx) {
         return ooFactory().createCharLiteral(ctx.CharLiteral().getText());
+    }
+
+    @Override
+    public Block visitTextModeStatement(@NotNull TextModeStatementContext ctx) {
+        DocumentConverter converter = new DocumentConverter(document, view);
+        DocumentParser parser = getParser(getText(ctx.getText(), "'''".length()) + '\n');
+
+        return converter.visitBody(parser.body());
+    }
+
+    @Override
+    public Expression visitTextMode(@NotNull TextModeContext ctx) {
+        DocumentConverter converter = new DocumentConverter(document, view);
+        DocumentParser parser = getParser(getText(ctx.getText(), "'''".length()));
+
+        return converter.visitTxt(parser.txt());
+    }
+
+    private String getText(String textMode, int sepLen) {
+        return textMode.substring(sepLen, textMode.length() - sepLen);
+    }
+
+    private DocumentParser getParser(String s) {
+        InputStream stream = new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
+        ANTLRInputStream input = null;
+        try {
+            input = new ANTLRInputStream(stream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Lexer lexer = new DocumentLexer(input);
+        TokenStream tokens = new CommonTokenStream(lexer);
+
+        return new DocumentParser(tokens);
     }
 
     private String visitIdentifiers(List<TerminalNode> identifiers) {
