@@ -27,6 +27,7 @@ ELSE : 'else';
 FOR : 'for';
 WHILE : 'while';
 NESTED : 'nested';
+SURROUND : 'surround';
 FINAL : 'final';
 STATIC : 'static';
 TRUE : 'true';

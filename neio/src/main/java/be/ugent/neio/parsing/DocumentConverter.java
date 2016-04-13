@@ -1,11 +1,13 @@
 package be.ugent.neio.parsing;
 
 import be.kuleuven.cs.distrinet.jnome.workspace.JavaView;
+import be.ugent.neio.expression.NeioMethodInvocation;
 import be.ugent.neio.industry.NeioExpressionFactory;
 import be.ugent.neio.industry.NeioFactory;
 import be.ugent.neio.language.Neio;
 import be.ugent.neio.model.document.TextDocument;
 import be.ugent.neio.util.CodeTag;
+import be.ugent.neio.util.Constants;
 import org.aikodi.chameleon.core.document.Document;
 import org.aikodi.chameleon.core.namespace.Namespace;
 import org.aikodi.chameleon.core.namespacedeclaration.NamespaceDeclaration;
@@ -161,6 +163,29 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
     }
 
     @Override
+    public Expression visitSurroundCall(@NotNull SurroundCallContext ctx) {
+        String name = Constants.SURROUND + ctx.left.getText();
+        Expression result;
+        if (ctx.inlinecode() != null) {
+            result = visitInlinecode(ctx.inlinecode());
+        } else {
+            result = createText((String) visit(ctx.WORD()));
+        }
+
+        if (ctx.txt() != null) {
+            result = appendText(result, visitTxt(ctx.txt()));
+        }
+
+        List<Expression> arguments = new ArrayList<>();
+        arguments.add(result);
+
+        Expression e = expressionFactory().createNeioMethodInvocation(name, previousExpression, arguments);
+        e.setMetadata(new TagImpl(), Constants.SURROUND);
+
+        return e;
+    }
+
+    @Override
     public Expression visitImageCall(ImageCallContext ctx) {
         List<Expression> arguments = new ArrayList<>();
         if (ctx.caption != null && !ctx.caption.isEmpty()) {
@@ -182,7 +207,8 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         Expression result = null;
 
         // This is just plain text
-        if (ctx.inlinecode() == null || ctx.inlinecode().isEmpty()) {
+        if ((ctx.inlinecode() == null || ctx.inlinecode().isEmpty())
+                && (ctx.surroundCall() == null || ctx.surroundCall().isEmpty())) {
             result = createText(ctx.getText());
         }
         // There's a mix of code and text

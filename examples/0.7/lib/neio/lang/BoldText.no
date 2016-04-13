@@ -4,6 +4,14 @@ import neio.lang.Text;
 
 class BoldText extends Text;
 
+BoldText(String realText) {
+    super(realText);
+}
+
+BoldText(Text t) {
+    super(t);
+}
+
 String thisToTex() {
     return "\\textbf{" + super.thisToTex() + "}";
 }

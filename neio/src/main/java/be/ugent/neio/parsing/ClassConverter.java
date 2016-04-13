@@ -12,6 +12,8 @@ import be.ugent.neio.industry.NeioExpressionFactory;
 import be.ugent.neio.industry.NeioFactory;
 import be.ugent.neio.language.Neio;
 import be.ugent.neio.model.modifier.Nested;
+import be.ugent.neio.model.modifier.Surround;
+import be.ugent.neio.util.Constants;
 import org.aikodi.chameleon.core.document.Document;
 import org.aikodi.chameleon.core.lookup.LookupException;
 import org.aikodi.chameleon.core.modifier.Modifier;
@@ -516,6 +518,10 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
             if (modifier.NESTED() != null && !modifier.NESTED().getText().isEmpty() && ctx.modifier().size() == 1) {
                 addPublic = true;
             }
+
+            if (modifier.SURROUND() != null && !modifier.SURROUND().getText().isEmpty()) {
+                methodHeader.setName(Constants.SURROUND + methodHeader.name());
+            }
             method.addModifier(visitModifier(modifier));
         }
 
@@ -563,6 +569,8 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
             return new Public();
         } else if (ctx.NESTED() != null) {
             return new Nested();
+        } else if (ctx.SURROUND() != null) {
+            return new Surround();
         } else if (ctx.FINAL() != null) {
             return new Final();
         } else if (ctx.STATIC() != null) {

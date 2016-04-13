@@ -15,6 +15,7 @@ public class Constants {
     public static final String AUTO_GEN_DIR = "./gen";
     public static final String IMAGE = "image";
     public static final String NEWLINE = "newline";
+    public static final String SURROUND = "$surround";
 
     public static final String FLOAT = "java.lang.Float";
     public static final String DOUBLE = "java.lang.Double";

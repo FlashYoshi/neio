@@ -1,12 +1,14 @@
 package be.ugent.neio.translate;
 
 import be.kuleuven.cs.distrinet.jnome.core.expression.invocation.JavaMethodInvocation;
+import be.ugent.neio.expression.NeioMethodInvocation;
 import be.ugent.neio.expression.NeioNameExpression;
 import be.ugent.neio.industry.NeioExpressionFactory;
 import be.ugent.neio.industry.NeioFactory;
 import be.ugent.neio.language.Neio;
 import be.ugent.neio.model.document.TextDocument;
 import be.ugent.neio.util.CodeTag;
+import be.ugent.neio.util.Constants;
 import org.aikodi.chameleon.core.element.Element;
 import org.aikodi.chameleon.core.lookup.LookupException;
 import org.aikodi.chameleon.core.tag.TagImpl;
@@ -154,6 +156,17 @@ public class Java8Generator {
         while (!callStack.isEmpty()) {
             RegularMethodInvocation call = callStack.pop();
             fixNestedMethod(call);
+
+            // Make certain to call surround methods on the right targets
+            for (NeioMethodInvocation n : call.descendants(NeioMethodInvocation.class)) {
+                if (n.metadata(Constants.SURROUND) != null) {
+                    if (n.getTarget() == null) {
+                        NeioNameExpression expr = eFactory().createNeioNameExpression(lastElement);
+                        n.setTarget(expr);
+                        setThis(n, expr, variables);
+                    }
+                }
+            }
 
             for (ThisLiteral t : call.descendants(ThisLiteral.class)) {
                 //THIS found, substitute it by the last element

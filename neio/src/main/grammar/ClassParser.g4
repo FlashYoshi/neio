@@ -35,7 +35,8 @@ modifier : ABSTRACT
          | PUBLIC
          | FINAL
          | STATIC
-         | NESTED;
+         | NESTED
+         | SURROUND;
 
 block : LC_BRACE statement* RC_BRACE;
 statement : expression SCOLON           #expressionStatement
