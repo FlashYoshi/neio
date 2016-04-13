@@ -61,6 +61,7 @@ But I have the nicest furniture!
     resetFontsize();
     this = test;
 }*/
+// {'''![Image1](img1)'''.leftOf('''![Image2](img2)''')}
 
 This should be added to the Test chapter
 

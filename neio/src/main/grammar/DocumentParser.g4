@@ -14,7 +14,7 @@ content : ( prefixCall
           | lonecode)
           mnl?;
 
-prefixCall : MethodName S txt NL;
+prefixCall : MethodName S txt;
 imageCall : BANG (LS_BRACE caption=txt RS_BRACE)? L_BRACE name=WORD R_BRACE;
 
 text : sentence+;
