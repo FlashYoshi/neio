@@ -1,4 +1,4 @@
-namespace neio.stdlib;
+namespace neio.lang;
 
 import neio.lang.Text;
 

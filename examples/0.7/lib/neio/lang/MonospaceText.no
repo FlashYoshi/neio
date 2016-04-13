@@ -1,0 +1,9 @@
+namespace neio.lang;
+
+import neio.lang.Text;
+
+class MonospaceText extends Text;
+
+String thisToTex() {
+    return "\\texttt{" + super.thisToTex() + "}";
+}

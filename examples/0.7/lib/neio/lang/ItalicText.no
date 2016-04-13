@@ -1,0 +1,9 @@
+namespace neio.lang;
+
+import neio.lang.Text;
+
+class ItalicText extends Text;
+
+String thisToTex() {
+    return "\\textit{" + super.thisToTex() + "}";
+}
