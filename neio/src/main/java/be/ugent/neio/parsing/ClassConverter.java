@@ -384,7 +384,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     @Override
     public MethodInvocation visitSelfCallExpression(@NotNull SelfCallExpressionContext ctx) {
-        return eFactory().createMethodInvocation(contextType, ctx.name.getText(), null, (List<Expression>) visit(ctx.arguments()));
+        return eFactory().createMethodInvocation(contextType, ctx.name.getText(), ooFactory().createThisLiteral(), (List<Expression>) visit(ctx.arguments()));
     }
 
     @Override
@@ -720,9 +720,22 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     @Override
     public Block visitTextModeStatement(@NotNull TextModeStatementContext ctx) {
         DocumentConverter converter = new DocumentConverter(document, view);
-        DocumentParser parser = getParser(getText(ctx.getText(), "'''".length()) + '\n');
+        String text = getText(ctx.getText(), "'''".length());
+        text = trimText(text);
+        text = text.trim() + "\n";
+        DocumentParser parser = getParser(text);
 
         return converter.visitBody(parser.body());
+    }
+
+    private String trimText(String text) {
+        String[] lines = text.split("\r\n | [\n\r]");
+        StringBuilder builder = new StringBuilder();
+        for (String line : lines) {
+            builder.append(line.trim()).append("\n");
+        }
+
+        return builder.toString();
     }
 
     @Override

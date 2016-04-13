@@ -60,10 +60,10 @@ literal : StringLiteral     #stringLiteral
         | Double            #doubleLiteral
         | (TRUE | FALSE)    #boolLiteral
         | NULL              #nullLiteral
-        | TextMode          #TextMode
         ;
 
 expression : literal                    #literalExpression
+           | TextMode                   #TextMode
            | Identifier DOT CLASS       #classLiteral
            | SUPER                      #superExpression
            | SUPER arguments            #superDelegation

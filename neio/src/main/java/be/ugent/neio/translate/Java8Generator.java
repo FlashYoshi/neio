@@ -26,6 +26,7 @@ import org.aikodi.chameleon.support.expression.ThisLiteral;
 import org.aikodi.chameleon.support.member.simplename.method.NormalMethod;
 import org.aikodi.chameleon.support.member.simplename.method.RegularMethodInvocation;
 import org.aikodi.chameleon.support.statement.ReturnStatement;
+import org.aikodi.chameleon.support.variable.LocalVariable;
 import org.aikodi.chameleon.support.variable.LocalVariableDeclarator;
 import org.aikodi.chameleon.util.Util;
 
@@ -113,7 +114,7 @@ public class Java8Generator {
                 }
             }
             // Set the counter back by one and process the lonecode
-            else if (loneCode.nbStatements() > 0){
+            else if (loneCode.nbStatements() > 0) {
                 i--;
                 statement = loneCode;
             }
@@ -183,20 +184,24 @@ public class Java8Generator {
             NormalMethod method = call.getElement();
             // Type instead of TypeReference as TypeReference does not return a TypeReference with fqn
             Type returnType = method.returnType();
-
-            LocalVariableDeclarator lvd = oFactory().createLocalVariable(returnType.name(), varName, clone);
-
-            variables.push(lvd.variableDeclarations().get(0).variable());
-            lastElement = variables.peek().name();
-            block.addStatement(lvd);
+            createAndAddLocalVar(returnType.name(), varName, clone, variables, block);
         }
+    }
+
+    private LocalVariableDeclarator createAndAddLocalVar(String typeName, String varName, Expression e, Stack<Variable> variables, Block block) {
+        LocalVariableDeclarator lvd = oFactory().createLocalVariable(typeName, varName, e);
+        variables.push(lvd.variableDeclarations().get(0).variable());
+        lastElement = variables.peek().name();
+        block.addStatement(lvd);
+
+        return lvd;
     }
 
     private Statement fixCodeBlock(Block block, Statement statement, Stack<Variable> variables, Block loneCode) throws LookupException {
         if (getNearestElement(statement, Statement.class) != null) {
             block.addStatement(statement);
             Block blockStatement = (Block) statement;
-            processCodeBlock(lastElement, blockStatement, variables);
+            processCodeBlock(blockStatement, variables);
             if (statement.hasMetadata(Neio.LONE_CODE)) {
                 if (statement.hasDescendant(ReturnStatement.class)) {
                     blockStatement = fixReturnStatement(blockStatement, variables);
@@ -234,7 +239,7 @@ public class Java8Generator {
         for (ReturnStatement returnStat : block.nearestDescendants(ReturnStatement.class)) {
             String prev = lastElement;
             Expression e = returnStat.getExpression();
-            Type type = null;
+            Type type;
             if (!(e instanceof NameExpression) && (!(e instanceof MethodInvocation))) {
                 System.err.println("You can only return Content in an inline code block, unknown expression: " + e.toString());
                 return block;
@@ -242,7 +247,7 @@ public class Java8Generator {
                 try {
                     if (e instanceof NameExpression) {
                         lastElement = ((NameExpression) e).name();
-                        // TODO: set type
+                        type = e.getType();
                     } else {
                         // Check if we return Content
                         NormalMethod method = (NormalMethod) ((MethodInvocation) e).getElement();
@@ -259,10 +264,7 @@ public class Java8Generator {
                             return block;
                         }
 
-                        LocalVariableDeclarator lvd = oFactory().createLocalVariable(type.name(), getVarName(), (Expression) e.clone());
-                        variables.push(lvd.variableDeclarations().get(0).variable());
-                        lastElement = variables.peek().name();
-                        block.addStatement(lvd);
+                        createAndAddLocalVar(type.name(), getVarName(), (Expression) e.clone(), variables, block);
                     }
                 } catch (LookupException e1) {
                     System.err.println(e + " has not been declared yet!");
@@ -281,10 +283,8 @@ public class Java8Generator {
                     vars.pop();
                     setThis(expr, expr.getTarget(), vars);
                     block.removeStatement(expr.nearestAncestor(Statement.class));
-                    LocalVariableDeclarator lvd = oFactory().createLocalVariable(type.name(), getVarName(), expr);
-                    variables.push(lvd.variableDeclarations().get(0).variable());
-                    lastElement = variables.peek().name();
-                    block.addStatement(lvd);
+
+                    createAndAddLocalVar(type.name(), getVarName(), expr, variables, block);
                 } catch (LookupException e1) {
                     System.err.println("Error while setting this on " + APPEND_CONTENT);
                 }
@@ -294,30 +294,79 @@ public class Java8Generator {
         return block;
     }
 
-    private void processCodeBlock(String lastElement, Block block, Stack<Variable> variables) throws LookupException {
+    private void processCodeBlock(Block block, Stack<Variable> variables) throws LookupException {
         if (lastElement == null) {
             throw new ChameleonProgrammerException("Code blocks are not allowed as the first element in a document!");
         }
+        String newcomer = "";
 
+        // Replace values of variable declarations that are 'this'
         for (LocalVariableDeclarator lvd : block.descendants(LocalVariableDeclarator.class)) {
-            for (Element replacee : lvd.variableDeclarations().get(0).descendants(ThisLiteral.class)) {
-                NameExpression replacer = eFactory().createNeioNameExpression(lastElement);
-                replacee.replaceWith(replacer);
-            }
+            lvd.variableDeclarations().get(0).descendants(ThisLiteral.class).forEach(this::thisToNameExpression);
+            variables.push(lvd.variableDeclarations().get(0).variable());
+            newcomer = variables.peek().name();
         }
 
-        for (AssignmentExpression as : block.descendants(AssignmentExpression.class)) {
-            List<ThisLiteral> thisLiterals = as.variableExpression().nearestDescendants(ThisLiteral.class);
+        for (Statement s : block.statements()) {
+            // Modify lastElement
+            for (AssignmentExpression as : s.descendants(AssignmentExpression.class)) {
+                replaceThis(as.getValue(), variables);
 
-            // There should only be 1
-            for (ThisLiteral t : thisLiterals) {
-                // TODO: set this
+                // There should only be 1, others have been replaced above
+                List<ThisLiteral> thisLiterals = as.nearestDescendants(ThisLiteral.class);
+                for (ThisLiteral t : thisLiterals) {
+                    String varName = getVarName();
+
+                    if (!as.nearestDescendants(RegularMethodInvocation.class).isEmpty()) {
+                        // Create and add a new local variable (also sets lastElement)
+                        Statement lvd = createAndAddLocalVar(as.getValue().getType().name(), varName, as.getValue(), variables, block);
+                        // Remove it from the block, it shouldn't be placed at the end
+                        block.removeStatement(lvd);
+                        // Add it at the right space
+                        s.replaceWith(lvd);
+                    }
+                    // `this = name;`
+                    else {
+                        lastElement = ((NameExpression) as.getValue()).name();
+                        block.removeStatement(s);
+                        // Remove variables that are too new
+                        while (!variables.isEmpty() && !variables.peek().name().equals(lastElement)) {
+                            variables.pop();
+                        }
+                    }
+                }
             }
+
+            // Replace 'this' on self calls
+            for (MethodInvocation e : s.descendants(MethodInvocation.class)) {
+                if (e.getTarget() != null && e.getTarget() instanceof ThisLiteral) {
+                    replaceThis(e, variables);
+                }
+            }
+
+            // Replace all other 'this' (arguments,...)
+            s.descendants(ThisLiteral.class).forEach(this::thisToNameExpression);
         }
 
+        if (!lastElement.equals(newcomer)) {
+            for (Variable var : variables) {
+                if (var.name().equals(newcomer)) {
+                    variables.remove(var);
+                    break;
+                }
+            }
+        }
+    }
 
-        // Replace occurences of 'this'
-        for (Element replacee : block.descendants(ThisLiteral.class)) {
+    private void thisToNameExpression(Expression replacee) {
+        NameExpression replacer = eFactory().createNeioNameExpression(lastElement);
+        replacee.replaceWith(replacer);
+    }
+
+    private void replaceThis(Expression e, Stack<Variable> variables) throws LookupException {
+        // Replace occurences of 'this' by the right variable
+        List<ThisLiteral> descendants = e.descendants(ThisLiteral.class);
+        for (Element replacee : descendants) {
             NameExpression replacer = eFactory().createNeioNameExpression(lastElement);
             replacee.replaceWith(replacer);
 
@@ -327,15 +376,8 @@ public class Java8Generator {
                 setThis(mi, replacer, variables);
             }
         }
-
-        for (JavaMethodInvocation jmi : block.descendants(JavaMethodInvocation.class)) {
-            // This is a method invocation that should be called on 'this'
-            if (jmi.getTarget() == null) {
-                jmi.setTarget(eFactory().createNeioNameExpression(lastElement));
-                setThis(jmi, jmi.getTarget(), variables);
-            }
-        }
     }
+
 
     private void setThis(RegularMethodInvocation mi, Element replacee, Stack<Variable> variables) throws LookupException {
         NormalMethod method = mi.getElement();

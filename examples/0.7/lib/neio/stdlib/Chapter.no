@@ -16,7 +16,12 @@ Chapter(Text title, Integer level) {
 
 nested Chapter #(Text title, Integer level) {
 	if (level <= this.level) {
-		return nearestAncestor(Chapter.class).#(title, level);
+        Chapter c = nearestAncestor(Chapter.class);
+        if (c != null) {
+            return c.hash(title, level);
+        } else {
+            return nearestAncestor(Document.class).hash(title);
+        }
 	}
     Chapter chapter = new Chapter(title, level);
     addContent(chapter);

@@ -44,20 +44,12 @@ But he has more animals coming over.
 ![Image4](furnitureimg)
 {i = i + 1}
 But I have the nicest furniture!
-/*
+
 {
-    this = #("Test", 1);
-    setFontsize(15);
-    '''
-    Now I can just insert some stuff in here:
-    - Enum1
-    - Enum2
-    - Enum3
-    And then continue to code
-    '''
-    resetFontsize();
+    Paragraph test = this;
+    this = #('''Test''', 1);
 }
-*/
+
 {
     if(i > 0) {
         '''Your score was {i} points above average!'''
