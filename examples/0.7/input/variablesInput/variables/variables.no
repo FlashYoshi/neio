@@ -49,6 +49,20 @@ But I have the nicest furniture!
     Paragraph test = this;
     this = #('''Test''', 1);
 }
+/* 
+    setFontsize(15);
+    '''
+    Now I can just insert some stuff in here:
+    - Enum1
+    - Enum2
+    - Enum3
+    And then continue to code
+    '''
+    resetFontsize();
+    this = test;
+}*/
+
+This should be added to the Test chapter
 
 {
     if(i > 0) {
