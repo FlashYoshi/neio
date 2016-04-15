@@ -1,0 +1,23 @@
+[Document]
+
+// RETURNS NOTHING
+{
+	String address = "Sint-pietersnieuwstraat 7";
+	String city = "Ghent";
+	String name = "Titouan Vervack";
+	String addressee = "Thomas Vanhaskel";
+	String help = "my math class";
+	String helpSubject = "test";
+	String closings = "Kind regards,";
+}
+
+// Calls append content on the Text("Dear")
+Dear {addressee},
+
+Thank you for helping me out with {help}.
+I was able to do great at the {helpSubject} thanks to you.
+
+// Have to explicitily create the content, the compiler cannot determine what to do otherwise
+{ new Paragraph(closings) }
+{ new Paragraph(name) }
+
