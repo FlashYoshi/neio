@@ -21,6 +21,7 @@ import org.aikodi.chameleon.core.namespace.NamespaceReference;
 import org.aikodi.chameleon.core.namespacedeclaration.Import;
 import org.aikodi.chameleon.core.namespacedeclaration.NamespaceDeclaration;
 import org.aikodi.chameleon.core.reference.CrossReferenceTarget;
+import org.aikodi.chameleon.core.tag.TagImpl;
 import org.aikodi.chameleon.exception.ChameleonProgrammerException;
 import org.aikodi.chameleon.oo.expression.*;
 import org.aikodi.chameleon.oo.method.Method;
@@ -60,6 +61,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static be.ugent.neio.util.Constants.ASSIGNMENT;
 
 /**
  * @author Titouan Vervack
@@ -258,7 +261,9 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     @Override
     public Statement visitAssignmentStatement(@NotNull AssignmentStatementContext ctx) {
-        return ooFactory().createStatement(visitAssignmentExpression(ctx.assignmentExpression()));
+        Statement statement = ooFactory().createStatement(visitAssignmentExpression(ctx.assignmentExpression()));
+        statement.setMetadata(new TagImpl(), ASSIGNMENT);
+        return statement;
     }
 
     @Override
@@ -278,7 +283,9 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     @Override
     public Statement visitVariableDeclarationStatement(@NotNull VariableDeclarationStatementContext ctx) {
-        return visitVariableDeclaration(ctx.variableDeclaration());
+        LocalVariableDeclarator lvd = visitVariableDeclaration(ctx.variableDeclaration());
+        lvd.setMetadata(new TagImpl(), ASSIGNMENT);
+        return lvd;
     }
 
     @Override
@@ -310,7 +317,9 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     @Override
     public IfThenElseStatement visitIfStatement(@NotNull IfStatementContext ctx) {
-        return visitIfteStatement(ctx.ifteStatement());
+        IfThenElseStatement statement = visitIfteStatement(ctx.ifteStatement());
+        statement.setMetadata(new TagImpl(), ASSIGNMENT);
+        return statement;
     }
 
     @Override

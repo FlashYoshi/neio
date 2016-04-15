@@ -13,9 +13,9 @@ public class Constants {
     public static final String BASE = "../examples/" + VERSION;
     public static final String NEIO_HOME = BASE + "/neio";
     public static final String AUTO_GEN_DIR = "./gen";
-    public static final String IMAGE = "image";
     public static final String NEWLINE = "newline";
     public static final String SURROUND = "$surround";
+    public static final String ASSIGNMENT = "assignment";
 
     public static final String FLOAT = "java.lang.Float";
     public static final String DOUBLE = "java.lang.Double";

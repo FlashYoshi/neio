@@ -8,7 +8,6 @@ document : HEADER mnl
 
 body : content*;
 content : ( prefixCall
-          | imageCall
           | text
           | scode
           | lonecode)
@@ -17,7 +16,6 @@ content : ( prefixCall
 prefixCall : MethodName S txt;
 // We don't allow spaces next to the MethodName to not confuse us with prefixCalls
 surroundCall : left=(MethodName|HASH|DASH|STAR|BQ|US)+ (inlinecode | WORD) txt? right=(HASH|DASH|STAR|BQ|US)+ {$left.text.equals($right.text)}?;
-imageCall : BANG (LS_BRACE caption=txt RS_BRACE)? L_BRACE name=WORD R_BRACE;
 
 text : sentence+;
 

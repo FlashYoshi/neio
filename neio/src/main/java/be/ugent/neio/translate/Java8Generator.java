@@ -168,10 +168,11 @@ public class Java8Generator {
                 }
             }
 
+            // Substitute 'this' by the last element
             for (ThisLiteral t : call.descendants(ThisLiteral.class)) {
-                //THIS found, substitute it by the last element
                 NeioNameExpression expr = eFactory().createNeioNameExpression(lastElement);
                 t.replaceWith(expr);
+                // Check if we're a methodcall
                 if (expr.parent() != null) {
                     String prefix = getPrefix(((RegularMethodInvocation) expr.parent()), variables);
                     if (prefix != null) {
@@ -210,13 +211,26 @@ public class Java8Generator {
         return lvd;
     }
 
+    /**
+     * Switches out returnstatements for {@code appendContent} and calls {@code processCodeBlock}
+     *
+     * @param block     The block containing the processed statements
+     * @param statement The statement we assume to be a code block
+     * @param variables The stack of previously defined variables
+     * @param loneCode  The block of loneCode, passed to be able to clear it if needed
+     * @return {@code null} if the block was processed, {@code statement} if {@code statement} was not a Block
+     * @throws LookupException
+     */
     private Statement fixCodeBlock(Block block, Statement statement, Stack<Variable> variables, Block loneCode) throws LookupException {
+        // Is statement a Block?
         if (getNearestElement(statement, Statement.class) != null) {
             block.addStatement(statement);
             Block blockStatement = (Block) statement;
             processCodeBlock(blockStatement, variables);
             if (statement.hasMetadata(Neio.LONE_CODE)) {
                 if (statement.hasDescendant(ReturnStatement.class)) {
+                    blockStatement = fixReturnStatement(blockStatement, variables);
+                } else if (makeReturnable(blockStatement.statement(blockStatement.nbStatements() - 1))) {
                     blockStatement = fixReturnStatement(blockStatement, variables);
                 }
                 block.removeStatement(statement);
@@ -229,6 +243,23 @@ public class Java8Generator {
 
         // Process this statement further as it isn't a block
         return statement;
+    }
+
+    /**
+     * Checks if the last statement in a lone code block is a return statement with missing return keyword
+     *
+     * @param statement The last statement in the block
+     * @return True if a statement was made into a returnstatement
+     */
+    private boolean makeReturnable(Statement statement) {
+        if (statement.metadata(ASSIGNMENT) == null) {
+            Expression e = statement.nearestDescendants(Expression.class).get(0);
+            Statement returnStatement = oFactory().createReturnStatement(e);
+            statement.replaceWith(returnStatement);
+            return true;
+        }
+
+        return false;
     }
 
     private String getPrefix(RegularMethodInvocation call, Stack<Variable> variables) throws LookupException {
@@ -307,6 +338,13 @@ public class Java8Generator {
         return block;
     }
 
+    /**
+     * Replaces occurrences of {@code this} in code blocks
+     *
+     * @param block     The block in which we have to do replacements
+     * @param variables The stack of previous variables
+     * @throws LookupException
+     */
     private void processCodeBlock(Block block, Stack<Variable> variables) throws LookupException {
         if (lastElement == null) {
             throw new ChameleonProgrammerException("Code blocks are not allowed as the first element in a document!");

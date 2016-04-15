@@ -58,7 +58,6 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
     private Block block = null;
     private int lonecodeid;
 
-
     public DocumentConverter(Document document, JavaView view) {
         this.document = (TextDocument) document;
         this.view = view;
@@ -82,7 +81,6 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         document.setBlock(block);
         return document;
     }
-
 
     private Expression visitHeader(DocumentContext ctx) {
         String header = ctx.HEADER().getText();
@@ -137,8 +135,6 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
             }
             if (ctx.prefixCall() != null) {
                 previousExpression = visitPrefixCall(ctx.prefixCall());
-            } else if (ctx.imageCall() != null) {
-                previousExpression = visitImageCall(ctx.imageCall());
             } else if (ctx.text() != null) {
                 previousExpression = visitText(ctx.text());
             } else {
@@ -186,17 +182,6 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
     }
 
     @Override
-    public Expression visitImageCall(ImageCallContext ctx) {
-        List<Expression> arguments = new ArrayList<>();
-        if (ctx.caption != null && !ctx.caption.isEmpty()) {
-            arguments.add(visitTxt(ctx.txt()));
-        }
-        arguments.add(ooFactory().createStringLiteral(ctx.name.getText()));
-
-        return expressionFactory().createNeioMethodInvocation(IMAGE, previousExpression, arguments);
-    }
-
-    @Override
     public Expression visitSentence(SentenceContext ctx) {
         Expression txt = visitTxt(ctx.txt());
         return appendText(txt, createText("\\n"));
@@ -204,7 +189,7 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
 
     @Override
     public Expression visitTxt(@NotNull TxtContext ctx) {
-        Expression result = null;
+        Expression result;
 
         // This is just plain text
         if ((ctx.inlinecode() == null || ctx.inlinecode().isEmpty())
