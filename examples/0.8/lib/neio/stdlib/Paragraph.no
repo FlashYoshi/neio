@@ -7,6 +7,10 @@ class Paragraph extends Content;
 
 Text text;
 
+Paragraph() {
+    text = null;
+}
+
 Paragraph(String parText) {
 	text = new Text(parText);
 }
@@ -24,10 +28,18 @@ Paragraph appendLine(Text t) {
     return this;
 }
 
+Text appendText(Text text) {
+    this.text = text;
+}
+
 Text text() {
     return text;
 }
 
 String toTex() {
-	return "\\par " + text.toTex();
+    if (text != null) {
+        return "\\par " + text.toTex();
+    } else {
+        return "";
+    }
 }

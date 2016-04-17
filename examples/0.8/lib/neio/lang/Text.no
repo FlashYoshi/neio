@@ -74,6 +74,11 @@ String thisToTex() {
     return me;
 }
 
+Text newline() {
+    new Text("\n") t;
+    return appendText(t);
+}
+
 String toTex() {
 	return appendedToToTex() + thisToTex();
 }

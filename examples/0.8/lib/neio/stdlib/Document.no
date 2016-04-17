@@ -55,11 +55,15 @@ Itemize *(Text text) {
     return itemize;
 }
 
-Paragraph newline(Text parText) {
-    Paragraph p = new Paragraph(parText);
+Paragraph newline() {
+    Paragraph p = new Paragraph();
     addContent(p);
 	
     return p;
+}
+
+Paragraph multinewline() {
+    return newline();
 }
 
 Image image(Text caption, String imageName) {
