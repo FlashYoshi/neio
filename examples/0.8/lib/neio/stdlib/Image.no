@@ -10,7 +10,7 @@ String name;
 public static final String PNG = ".png";
 
 Image(String name) {
-    this("", name);
+    this(null, name);
 }
 
 Image(Text caption, String name) {

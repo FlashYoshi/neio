@@ -66,8 +66,12 @@ Paragraph multinewline() {
     return newline();
 }
 
+Image image(String imageName) {
+    return image(null, imageName);
+}
+
 Image image(Text caption, String imageName) {
-	Image neioImage = new Image(caption, imageName);
+	new Image(caption, imageName) neioImage;
 	addContent(neioImage);
 	
 	return neioImage;
