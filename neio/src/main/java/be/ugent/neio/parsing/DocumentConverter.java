@@ -137,7 +137,8 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
             if (ctx.prefixCall() != null) {
                 previousExpression = visitPrefixCall(ctx.prefixCall());
             } else if (ctx.txt() != null) {
-                previousExpression = visitTxt(ctx.txt());
+                Expression txt = visitTxt(ctx.txt());
+                previousExpression = appendText(previousExpression, txt);
             } else if (ctx.nl() != null) {
                 previousExpression = visitNl(ctx.nl());
             } else if (ctx.mnl() != null) {
