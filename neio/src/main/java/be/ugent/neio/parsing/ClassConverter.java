@@ -335,9 +335,12 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         Block ifBlock = visitBlock(ctx.ifBlock);
 
         // If statement
-        if (ctx.elif != null || ifBlock.nbStatements() > 1 || ((Block) elseStatement).nbStatements() > 1
+        if (ctx.elif != null || ifBlock.nbStatements() > 1
                 || ifBlock.nearestDescendants(Statement.class).get(0).metadata(ASSIGNMENT) != null
-                || elseStatement.nearestDescendants(Statement.class).get(0).metadata(ASSIGNMENT) != null) {
+                || (elseStatement != null &&
+                (((Block) elseStatement).nbStatements() > 1
+                        || elseStatement.nearestDescendants(Statement.class).get(0).metadata(ASSIGNMENT) != null))
+                || elseStatement == null) {
             return ooFactory().createIfStatement(condition, ifBlock, elseStatement);
         } // Ternary operator
         else {
