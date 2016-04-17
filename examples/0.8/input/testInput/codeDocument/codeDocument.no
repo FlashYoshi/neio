@@ -20,7 +20,7 @@ Well LaTeX has one more level of indentation, so we should make use of it!
 
 {
     Chapter c = new Chapter('''Chapter 17.1.2''', 3);
-    c.newline('''Nice paragraph!''');
+    c.newline().appendText('''Nice paragraph!''');
     return c;
 }
 # Chapter 2
