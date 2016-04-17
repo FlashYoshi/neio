@@ -55,6 +55,7 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
     private final TextDocument document;
     private final JavaView view;
     private Expression previousExpression = null;
+    private Expression argumentExpression = null;
     private Block block = null;
     private int lonecodeid;
 
@@ -135,8 +136,12 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
             }
             if (ctx.prefixCall() != null) {
                 previousExpression = visitPrefixCall(ctx.prefixCall());
-            } else if (ctx.text() != null) {
-                previousExpression = visitText(ctx.text());
+            } else if (ctx.txt() != null) {
+                previousExpression = visitTxt(ctx.txt());
+            } else if (ctx.nl() != null) {
+                previousExpression = visitNl(ctx.nl());
+            } else if (ctx.mnl() != null) {
+                previousExpression = visitMnl(ctx.mnl());
             } else {
                 throw new ChameleonProgrammerException("Method could not be found!");
             }
@@ -175,21 +180,19 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         List<Expression> arguments = new ArrayList<>();
         arguments.add(result);
 
-        Expression e = expressionFactory().createNeioMethodInvocation(name, previousExpression, arguments);
+        if (argumentExpression == null) {
+            argumentExpression = createText("");
+        }
+        Expression e = expressionFactory().createNeioMethodInvocation(name, argumentExpression, arguments);
         e.setMetadata(new TagImpl(), Constants.SURROUND);
 
         return e;
     }
 
     @Override
-    public Expression visitSentence(SentenceContext ctx) {
-        Expression txt = visitTxt(ctx.txt());
-        return appendText(txt, createText("\\n"));
-    }
-
-    @Override
     public Expression visitTxt(@NotNull TxtContext ctx) {
         Expression result;
+        argumentExpression = null;
 
         // This is just plain text
         if ((ctx.inlinecode() == null || ctx.inlinecode().isEmpty())
@@ -199,43 +202,15 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         // There's a mix of code and text
         // Only code is not possible as that would be LONE_CODE
         else {
-            String currText = "";
-            // The intermediate result
-            Expression intermediate = null;
             for (int i = 0; i < ctx.getChildCount(); i++) {
                 Object o = visit(ctx.getChild(i));
                 if (o instanceof String) {
-                    currText += o;
+                    argumentExpression = appendText(argumentExpression, createText((String) o));
                 } else {
-                    Expression e = (Expression) o;
-                    // The text starts out with inlinecode
-                    if (currText.isEmpty() && intermediate == null) {
-                        intermediate = e;
-                    }
-                    // This is the first inlinecode, there is text in front of it
-                    else if (intermediate == null) {
-                        intermediate = createText(currText);
-                        intermediate = appendText(intermediate, e);
-                        currText = "";
-                    }
-                    // Text after some inlinecode
-                    else if (!currText.isEmpty()) {
-                        Expression append = createText(currText);
-                        intermediate = appendText(intermediate, append);
-                        intermediate = appendText(intermediate, e);
-                        currText = "";
-                    }
-                    // There is inlinecode in the middle or at the end of the txt
-                    else {
-                        intermediate = appendText(intermediate, e);
-                    }
+                    argumentExpression = (Expression) o;
                 }
             }
-            if (!currText.isEmpty()) {
-                result = appendText(intermediate, createText(currText));
-            } else {
-                result = intermediate;
-            }
+            result = argumentExpression;
         }
 
         return result;
@@ -251,7 +226,11 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         List<Expression> arguments = new ArrayList<>();
         arguments.add(e2);
 
-        return expressionFactory().createMethodInvocation(APPEND_TEXT, e1, arguments);
+        if (e1 != null) {
+            return expressionFactory().createNeioMethodInvocation(APPEND_TEXT, e1, arguments);
+        } else {
+            return e2;
+        }
     }
 
     @Override
@@ -268,7 +247,7 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
             ((MethodInvocation) e).setTarget(ooFactory().createThisLiteral());
         }
 
-        return createText(e);
+        return appendText(argumentExpression, createText(e));
     }
 
     private Expression createText(String s) {
@@ -294,22 +273,13 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
     }
 
     @Override
-    public Expression visitText(TextContext ctx) {
-        List<SentenceContext> sentences = ctx.sentence();
-        Expression paragraph = visitSentence(sentences.get(0));
+    public Expression visitNl(NlContext ctx) {
+        return expressionFactory().createNeioMethodInvocation(NEWLINE, previousExpression, new ArrayList<>());
+    }
 
-        for (int i = 1; i < sentences.size(); i++) {
-            SentenceContext s = sentences.get(i);
-            paragraph = appendText(paragraph, visitSentence(s));
-        }
-
-        // This is always the newline method
-        String methodName = NEWLINE;
-
-        List<Expression> arguments = new ArrayList<>();
-        arguments.add(paragraph);
-
-        return expressionFactory().createNeioMethodInvocation(methodName, previousExpression, arguments);
+    @Override
+    public Expression visitMnl(MnlContext ctx) {
+        return expressionFactory().createNeioMethodInvocation(MULTI_NEWLINE, previousExpression, new ArrayList<>());
     }
 
     private Block visitCode(String code, int sepLen) {

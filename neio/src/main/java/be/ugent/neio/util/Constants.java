@@ -19,6 +19,7 @@ public class Constants {
     public static final String DEFAULT_WRITER = "TexFileWriter";
 
     // KNOWN METHODS
+    public static final String MULTI_NEWLINE = "multinewline";
     public static final String NEWLINE = "newline";
     public static final String SURROUND = "$surround";
     public static final String WRITE_METHOD = "write";
