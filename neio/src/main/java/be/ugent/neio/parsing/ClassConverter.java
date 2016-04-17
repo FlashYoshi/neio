@@ -316,15 +316,15 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     @Override
-    public IfThenElseStatement visitIfStatement(@NotNull IfStatementContext ctx) {
-        IfThenElseStatement statement = visitIfteStatement(ctx.ifteStatement());
+    public Statement visitIfStatement(@NotNull IfStatementContext ctx) {
+        Statement statement = visitIfteStatement(ctx.ifteStatement());
         statement.setMetadata(new TagImpl(), ASSIGNMENT);
         return statement;
     }
 
     @Override
-    public IfThenElseStatement visitIfteStatement(@NotNull IfteStatementContext ctx) {
-        Expression expression = (Expression) visit(ctx.ifCondition);
+    public Statement visitIfteStatement(@NotNull IfteStatementContext ctx) {
+        Expression condition = (Expression) visit(ctx.ifCondition);
         Statement elseStatement = null;
         if (ctx.elseBlock != null) {
             elseStatement = visitBlock(ctx.elseBlock);
@@ -332,7 +332,20 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
             elseStatement = visitIfteStatement(ctx.elif);
         }
 
-        return ooFactory().createIfStatement(expression, visitBlock(ctx.ifBlock), elseStatement);
+        Block ifBlock = visitBlock(ctx.ifBlock);
+
+        // If statement
+        if (ctx.elif != null || ifBlock.nbStatements() > 1 || ((Block) elseStatement).nbStatements() > 1
+                || ifBlock.nearestDescendants(Statement.class).get(0).metadata(ASSIGNMENT) != null
+                || elseStatement.nearestDescendants(Statement.class).get(0).metadata(ASSIGNMENT) != null) {
+            return ooFactory().createIfStatement(condition, ifBlock, elseStatement);
+        } // Ternary operator
+        else {
+            Expression conditionalExpression = eFactory().createConditionalExpression(condition,
+                    ifBlock.nearestDescendants(Expression.class).get(0),
+                    elseStatement.nearestDescendants(Expression.class).get(0));
+            return ooFactory().createStatement(conditionalExpression);
+        }
     }
 
     @Override
