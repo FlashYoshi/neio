@@ -127,9 +127,6 @@ public class Java8Generator {
                 continue;
             }
 
-            // Add the statement to the new block so that it can do lookups using the new block
-            block.addStatement(statement);
-
             Stack<RegularMethodInvocation> callStack = new Stack<>();
             // MethodInvocations start from the back so push the invocations on a stack to get the correct order
             RegularMethodInvocation inv;
@@ -142,18 +139,19 @@ public class Java8Generator {
                 }
             }
 
-            breakupMethodChain(callStack, variables, block, methodChain);
-
-            // Remove the old statement from the block that will printed to Java
-            block.removeStatement(statement);
+            breakupMethodChain(callStack, variables, block, methodChain, statement);
         }
 
         return block;
     }
 
-    private void breakupMethodChain(Stack<RegularMethodInvocation> callStack, Stack<Variable> variables, Block block, Element methodChain) throws LookupException {
+    private void breakupMethodChain(Stack<RegularMethodInvocation> callStack, Stack<Variable> variables, Block block, Element methodChain, Statement statement) throws LookupException {
         // Turn the methodchain into local variables, one by one
         while (!callStack.isEmpty()) {
+            // Add the statement to the new block so that it can do lookups using the new block
+            // Do so in the loop to be able to use the newly defined variables (otherwise they are defined after this
+            // statement)
+            block.addStatement(statement);
             RegularMethodInvocation call = callStack.pop();
             fixNestedMethod(call);
 
@@ -199,6 +197,8 @@ public class Java8Generator {
             // Type instead of TypeReference as TypeReference does not return a TypeReference with fqn
             Type returnType = method.returnType();
             createAndAddLocalVar(returnType.name(), varName, clone, variables, block);
+            // Don't forget to remove the old (non broken up) statement
+            block.removeStatement(statement);
         }
     }
 

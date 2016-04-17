@@ -1,8 +1,8 @@
 lexer grammar DocumentLexer;
 
 HEADER : {getCharPositionInLine() == 0}? LS_BRACE CHAR+ RS_BRACE;
-COMMENT : '//' ~[\r\n]* NL+ -> channel(HIDDEN);
-MULTILINE_COMMENT : '/*' .*? '*/' NL+ -> channel(HIDDEN);
+COMMENT : '//' ~[\r\n]* NL -> channel(HIDDEN);
+MULTILINE_COMMENT : '/*' .*? '*/' NL -> channel(HIDDEN);
 
 SCOPED_CODE : {getCharPositionInLine() == 0}? DLCB CONTENT* DRCB {_input.LA(1) == '\r' || _input.LA(1) == '\n'}?;
 LONE_CODE : {getCharPositionInLine() == 0}? LCB CONTENT* RCB {_input.LA(1) == '\r' || _input.LA(1) == '\n'}?;

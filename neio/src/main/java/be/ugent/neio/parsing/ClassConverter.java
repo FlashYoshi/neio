@@ -26,6 +26,7 @@ import org.aikodi.chameleon.exception.ChameleonProgrammerException;
 import org.aikodi.chameleon.oo.expression.*;
 import org.aikodi.chameleon.oo.method.Method;
 import org.aikodi.chameleon.oo.method.MethodHeader;
+import org.aikodi.chameleon.oo.method.RegularMethod;
 import org.aikodi.chameleon.oo.plugin.ObjectOrientedFactory;
 import org.aikodi.chameleon.oo.statement.Block;
 import org.aikodi.chameleon.oo.statement.Statement;
@@ -39,6 +40,7 @@ import org.aikodi.chameleon.oo.variable.FormalParameter;
 import org.aikodi.chameleon.oo.variable.RegularVariable;
 import org.aikodi.chameleon.support.expression.AssignmentExpression;
 import org.aikodi.chameleon.support.expression.ClassCastExpression;
+import org.aikodi.chameleon.support.member.simplename.method.RegularMethodInvocation;
 import org.aikodi.chameleon.support.member.simplename.variable.MemberVariableDeclarator;
 import org.aikodi.chameleon.support.modifier.*;
 import org.aikodi.chameleon.support.statement.*;
@@ -63,6 +65,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static be.ugent.neio.util.Constants.ASSIGNMENT;
+import static be.ugent.neio.util.Constants.IFCALL;
+import static be.ugent.neio.util.Constants.IFCLASS;
 
 /**
  * @author Titouan Vervack
@@ -335,22 +339,25 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         Block ifBlock = visitBlock(ctx.ifBlock);
 
         // If statement
-        if (ctx.elif != null || ifBlock.nbStatements() > 1
+        /*if (ctx.elif != null || ifBlock.nbStatements() > 1
                 || ifBlock.nearestDescendants(Statement.class).get(0).metadata(ASSIGNMENT) != null
                 || (elseStatement != null &&
                 (((Block) elseStatement).nbStatements() > 1
                         || elseStatement.nearestDescendants(Statement.class).get(0).metadata(ASSIGNMENT) != null))
                 || ifBlock.nearestDescendants(ReturnStatement.class).size() > 0
                 || elseStatement == null
-                || elseStatement.nearestDescendants(ReturnStatement.class).size() > 0) {
+                || elseStatement.nearestDescendants(ReturnStatement.class).size() > 0
+                || ifBlock.nearestDescendants(RegularMethodInvocation.class).get(0).name().equals("void")) {*/
             return ooFactory().createIfStatement(condition, ifBlock, elseStatement);
-        } // Ternary operator
+        /*} // Ternary operator
         else {
             Expression conditionalExpression = eFactory().createConditionalExpression(condition,
                     ifBlock.nearestDescendants(Expression.class).get(0),
                     elseStatement.nearestDescendants(Expression.class).get(0));
-            return ooFactory().createStatement(conditionalExpression);
-        }
+            List<Expression> arguments = new ArrayList<>();
+            arguments.add(conditionalExpression);
+            return ooFactory().createStatement(eFactory().createMethodInvocation(IFCALL, eFactory().createNameExpression(IFCLASS), arguments));
+        }*/
     }
 
     @Override

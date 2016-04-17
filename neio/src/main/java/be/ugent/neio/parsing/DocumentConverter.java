@@ -289,6 +289,7 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
 
     private Block visitCode(String code, int sepLen, boolean contextTypes) {
         // Remove the separator
+        code = code.trim();
         code = code.substring(sepLen, code.length() - sepLen);
         // Add a semicolon if needed
         int index = code.length();

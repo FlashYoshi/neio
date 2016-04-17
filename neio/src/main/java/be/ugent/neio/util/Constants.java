@@ -15,10 +15,12 @@ public class Constants {
     // KNOWN CLASSES
     public static final String TEXT = "neio.lang.Text";
     public static final String BASE_CLASS = "neio.lang.Content";
+    public static final String IFCLASS = "neio.lang.If";
     public static final String DEFAULT_BUILDER = "TexToPDFBuilder";
     public static final String DEFAULT_WRITER = "TexFileWriter";
 
     // KNOWN METHODS
+    public static final String IFCALL = "ifcall";
     public static final String MULTI_NEWLINE = "multinewline";
     public static final String NEWLINE = "newline";
     public static final String SURROUND = "$surround";

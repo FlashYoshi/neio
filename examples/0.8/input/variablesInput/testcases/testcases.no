@@ -14,8 +14,8 @@
 }
 
 // We know that only plain text, or refs are allowed
-# {chap}
 // We can label this chapter right here, it's a trick, not really a language feature
+# {chap}
 {Chapter chapterOne = this}
 
 Normally we can just add references like so: {ref1}

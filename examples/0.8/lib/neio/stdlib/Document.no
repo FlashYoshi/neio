@@ -30,18 +30,6 @@ Chapter addChapter(Chapter chapter) {
 	return chapter;
 }
 
-public surround Text *(Text t) {
-    return new BoldText(t);
-}
-
-public surround Text _(Text t) {
-    return new ItalicText(t);
-}
-
-public surround Text `(Text t) {
-    return new MonospaceText(t);
-}
-
 Integer calculateCoolThings(Integer j) {
     return 42;
 }

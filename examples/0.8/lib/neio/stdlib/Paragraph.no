@@ -30,6 +30,7 @@ Paragraph appendLine(Text t) {
 
 Text appendText(Text text) {
     this.text = text;
+    return text;
 }
 
 Text text() {

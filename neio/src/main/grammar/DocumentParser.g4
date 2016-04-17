@@ -22,8 +22,6 @@ txt : (S* (inlinecode | WORD | surroundCall) S*)+;
 nl : NL;
 mnl : NL NL+;
 
-scode : SCOPED_CODE;
-lonecode : LONE_CODE;
+scode : NL SCOPED_CODE NL?;
+lonecode : NL LONE_CODE NL?;
 inlinecode : CODE CCONTENT;
-
-// TEXT, SENTENCE
