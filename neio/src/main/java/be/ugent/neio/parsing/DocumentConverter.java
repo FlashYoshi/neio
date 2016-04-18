@@ -26,6 +26,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.neio.antlr.ClassLexer;
 import org.neio.antlr.ClassParser;
+import org.neio.antlr.DocumentParser;
 import org.neio.antlr.DocumentParser.*;
 import org.neio.antlr.DocumentParserBaseVisitor;
 
@@ -88,7 +89,7 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
     public Block visitBody(BodyContext ctx) {
         block = ooFactory().createBlock();
         document.setBlock(block);
-        ctx.content().forEach(this::visitContent);
+        ctx.realContent().forEach(this::visit);
 
         if (previousExpression != null) {
             block.addStatement(ooFactory().createStatement(previousExpression));
@@ -96,46 +97,87 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         return block;
     }
 
-    public Block visitContent(ContentContext ctx) {
-        if (ctx.multicode() != null) {
-            MulticodeContext m = ctx.multicode();
-            for (ParseTree p : m.children) {
-                if (m.scode().contains(p)) {
-                    processCodeBlock((ScodeContext) p);
-                } else if (m.lonecode().contains(p)) {
-                    processCodeBlock((LonecodeContext) p);
-                }
-            }
-        } else if (ctx.lonecode() != null || ctx.scode() != null) {
-            processCodeBlock(ctx);
-        } else {
-            // If the previous expression was a codeblock and there's more neioscript
-            // add THIS as prefix to connect back to the rest of the document
-            if (previousExpression == null) {
-                previousExpression = ooFactory().createThisLiteral();
-            }
-            if (ctx.prefixCall() != null) {
-                previousExpression = visitPrefixCall(ctx.prefixCall());
-            } else if (ctx.text() != null) {
-                previousExpression = visitText(ctx.text());
-            } else if (ctx.nl() != null) {
-                previousExpression = visitNl(ctx.nl());
-            } else if (ctx.mnl() != null) {
-                previousExpression = visitMnl(ctx.mnl());
-            } else {
-                throw new ChameleonProgrammerException("Method could not be found!");
-            }
+    @Override
+    public Object visitRealContent(@NotNull RealContentContext ctx) {
+        if (ctx.content() != null) {
+            visit(ctx.content());
+        } else if (ctx.nl() != null) {
+            fixPreviousExpression();
+            previousExpression = visitNl(ctx.nl());
+        } else if (ctx.mnl() != null) {
+            fixPreviousExpression();
+            previousExpression = visitMnl(ctx.mnl());
         }
-
         return null;
     }
 
-    private void processCodeBlock(ContentContext ctx) {
-        if (ctx.scode() != null) {
-            processCodeBlock(ctx.scode());
-        } else {
-            processCodeBlock(ctx.lonecode());
+    @Override
+    public Object visitMulticodeC(@NotNull MulticodeCContext ctx) {
+        MulticodeContext m = ctx.multicode();
+        for (ParseTree p : m.children) {
+            if (m.scode().contains(p)) {
+                processCodeBlock((ScodeContext) p);
+            } else if (m.lonecode().contains(p)) {
+                processCodeBlock((LonecodeContext) p);
+            }
         }
+        return null;
+    }
+
+    @Override
+    public Object visitContentCodeC(@NotNull ContentCodeCContext ctx) {
+        visit(ctx.content());
+        if (ctx.lonecode() != null) {
+            processCodeBlock(ctx.lonecode());
+        } else {
+            processCodeBlock(ctx.scode());
+        }
+        return null;
+    }
+
+    @Override
+    public Object visitCodeContentC(@NotNull CodeContentCContext ctx) {
+        if (ctx.lonecode() != null) {
+            processCodeBlock(ctx.lonecode());
+        } else {
+            processCodeBlock(ctx.scode());
+        }
+        visit(ctx.content());
+        return null;
+    }
+
+    @Override
+    public Object visitLonecodeC(@NotNull LonecodeCContext ctx) {
+        processCodeBlock(ctx.lonecode());
+        return null;
+    }
+
+    @Override
+    public Object visitScodeC(@NotNull ScodeCContext ctx) {
+        processCodeBlock(ctx.scode());
+        return null;
+    }
+
+    // If the previous expression was a codeblock and there's more neioscript
+    // add THIS as prefix to connect back to the rest of the document
+    private void fixPreviousExpression() {
+        if (previousExpression == null) {
+            previousExpression = ooFactory().createThisLiteral();
+        }
+    }
+
+    @Override
+    public Object visitPrefixC(@NotNull PrefixCContext ctx) {
+        fixPreviousExpression();
+        previousExpression = visitPrefixCall(ctx.prefixCall());
+        return null;
+    }
+
+    @Override
+    public Object visitTextC(@NotNull TextCContext ctx) {
+        fixPreviousExpression();
+        previousExpression = visitText(ctx.text());
+        return null;
     }
 
     private void processCodeBlock(ScodeContext ctx) {

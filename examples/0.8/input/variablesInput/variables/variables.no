@@ -23,25 +23,23 @@ I really enjoyed going to the {ug} and would encourage everyone to go study ther
     int y = 180;
 }
 For some course I had to work {x} hours and for another one {y}, that's a total of {x + y}
-
 {int i = 0}
 {image('''Image1''', "treeimg")}
 {i = i + 1}
-This was an image showing there are more trees in my yard than in my neighbour's.
 
+This was an image showing there are more trees in my yard than in my neighbour's.
 {image('''Image2''', "flowerimg")}
 {i = i + 1}
-I also appear to have more flowers.
 
+I also appear to have more flowers.
 {image('''Image3''', "animalimg")}
 {i = i - 1}
-But he has more animals coming over.
 
+But he has more animals coming over.
 {image('''Image4''', "furnitureimg")}
 {i = i + 1}
-But I have the nicest furniture!
 
-This should be added to the Test chapter
+But I have the nicest furniture!
 
 {
     if(i > 0) {
