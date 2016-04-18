@@ -1,0 +1,13 @@
+[Document]
+
+{
+    Integer base = 2;
+    Integer arg = 10;
+}
+# Math chapter
+A few example equations:
+
+{{
+    eq().nonu().sqrt('''{base}''', '''{arg}''');
+    eq().pow('''{base}''', '''{arg}''').e().v('''{Math.pow(2, 10)}''');
+}}

@@ -1,0 +1,20 @@
+namespace neio.stdlib.math;
+
+import neio.lang.Content;
+import neio.lang.Text;
+
+class InlineEq extends Text;
+
+Sqrt sqrt(Content arg) {
+    return addContent(new Sqrt(arg));
+}
+
+String thisToTex() {
+    StringBuilder result = new StringBuilder("$");
+    for (int i = 0; i < contentSize(); i = i + 1) {
+        result.append(content(i).toTex());
+    }
+    result.append("$");
+    
+    return result.toString();
+}

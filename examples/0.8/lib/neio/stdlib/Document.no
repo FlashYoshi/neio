@@ -15,6 +15,7 @@ private List<String> packages = new ArrayList<String>();
 Document() {
 	packages.add("a4wide");
 	packages.add("graphicx");
+    packages.add("amsmath");
 }
 
 Chapter #(Text title) {

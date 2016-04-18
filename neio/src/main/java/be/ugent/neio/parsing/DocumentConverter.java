@@ -327,7 +327,13 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         Expression e = s.nearestDescendants(Expression.class).get(0);
 
         if (e instanceof RegularMethodInvocation) {
-            ((MethodInvocation) e).setTarget(ooFactory().createThisLiteral());
+            RegularMethodInvocation expression = (RegularMethodInvocation) e;
+            while(!expression.nearestDescendants(RegularMethodInvocation.class).isEmpty()) {
+                expression = expression.nearestDescendants(RegularMethodInvocation.class).get(0);
+            }
+            if (expression.getTarget() == null) {
+                ((MethodInvocation) e).setTarget(ooFactory().createThisLiteral());
+            }
         }
 
         return appendText(argumentExpression.pop(), createText(e));

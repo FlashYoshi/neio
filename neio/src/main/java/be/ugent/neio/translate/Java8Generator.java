@@ -28,7 +28,6 @@ import org.aikodi.chameleon.support.expression.ThisLiteral;
 import org.aikodi.chameleon.support.member.simplename.method.NormalMethod;
 import org.aikodi.chameleon.support.member.simplename.method.RegularMethodInvocation;
 import org.aikodi.chameleon.support.statement.ReturnStatement;
-import org.aikodi.chameleon.support.variable.LocalVariable;
 import org.aikodi.chameleon.support.variable.LocalVariableDeclarator;
 import org.aikodi.chameleon.util.Util;
 
@@ -371,6 +370,7 @@ public class Java8Generator {
                     if (!as.nearestDescendants(RegularMethodInvocation.class).isEmpty()) {
                         // Create and add a new local variable (also sets lastElement)
                         Statement lvd = createAndAddLocalVar(as.getValue().getType().name(), varName, as.getValue(), variables, block);
+                        lvd.setMetadata(new TagImpl(), ASSIGNMENT);
                         // Remove it from the block, it shouldn't be placed at the end
                         block.removeStatement(lvd);
                         // Add it at the right space
