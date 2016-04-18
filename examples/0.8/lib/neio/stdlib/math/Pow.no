@@ -1,0 +1,17 @@
+namespace neio.stdlib.math;
+
+import neio.lang.Content;
+
+class Pow extends Content;
+
+Content base;
+Content power;
+
+Pow(Content base, Content power) {
+    this.base = base;
+    this.power = power;
+}
+
+String toTex() {
+    return new StringBuilder(base.toTex()).append("^{").append(power.toTex()).append("}").toString();
+}

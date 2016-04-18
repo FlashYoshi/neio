@@ -28,7 +28,6 @@ import org.aikodi.chameleon.support.expression.ThisLiteral;
 import org.aikodi.chameleon.support.member.simplename.method.NormalMethod;
 import org.aikodi.chameleon.support.member.simplename.method.RegularMethodInvocation;
 import org.aikodi.chameleon.support.statement.ReturnStatement;
-import org.aikodi.chameleon.support.variable.LocalVariable;
 import org.aikodi.chameleon.support.variable.LocalVariableDeclarator;
 import org.aikodi.chameleon.util.Util;
 

@@ -1,0 +1,16 @@
+namespace neio.stdlib.math;
+
+import neio.lang.Content;
+import neio.lang.Text;
+
+class Value extends Text;
+
+Text text;
+
+Value(Text text) {
+    this.text = text;
+}
+
+String toTex() {
+    return text.toTex();
+}

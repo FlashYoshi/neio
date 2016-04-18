@@ -1,6 +1,12 @@
 [Document]
 
+{
+    Integer base = 2;
+    Integer arg = 10;
+}
 # Math chapter
-This is the sqrt of 4
 
-{{ eq().sqrt('''4''') }}
+{{
+    eq().nonu().sqrt('''{base}''', '''{arg}''');
+    eq().pow('''{base}''', '''{arg}''').e().v('''{Math.pow(2, 10)}''');
+}}
