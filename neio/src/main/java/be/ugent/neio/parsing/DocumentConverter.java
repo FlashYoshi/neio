@@ -33,6 +33,7 @@ import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.neio.antlr.ClassLexer;
 import org.neio.antlr.ClassParser;
+import org.neio.antlr.DocumentParser;
 import org.neio.antlr.DocumentParser.*;
 import org.neio.antlr.DocumentParserBaseVisitor;
 
@@ -136,9 +137,8 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
             }
             if (ctx.prefixCall() != null) {
                 previousExpression = visitPrefixCall(ctx.prefixCall());
-            } else if (ctx.txt() != null) {
-                Expression txt = visitTxt(ctx.txt());
-                previousExpression = appendText(previousExpression, txt);
+            } else if (ctx.text() != null) {
+                previousExpression = visitText(ctx.text());
             } else if (ctx.nl() != null) {
                 previousExpression = visitNl(ctx.nl());
             } else if (ctx.mnl() != null) {
@@ -188,6 +188,17 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         e.setMetadata(new TagImpl(), Constants.SURROUND);
 
         return e;
+    }
+
+    @Override
+    public Expression visitText(@NotNull TextContext ctx) {
+        Expression txt = visitTxt(ctx.txt());
+        if (ctx.mnl() != null) {
+            previousExpression = visitMnl(ctx.mnl());
+        } else if (ctx.nl() != null) {
+            previousExpression = visitNl(ctx.nl());
+        }
+        return appendText(previousExpression, txt);
     }
 
     @Override

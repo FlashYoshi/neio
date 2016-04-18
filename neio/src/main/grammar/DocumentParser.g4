@@ -8,20 +8,21 @@ document : HEADER
 
 body : content*;
 content : prefixCall
-          | txt
+          | text
           | scode
           | lonecode
           | mnl
           | nl;
 
-prefixCall : MethodName S txt;
+prefixCall : (nl | mnl)? MethodName S txt;
 // We don't allow spaces next to the MethodName to not confuse us with prefixCalls
 surroundCall : left=(MethodName|HASH|DASH|STAR|BQ|US)+ (inlinecode | WORD) txt? right=(HASH|DASH|STAR|BQ|US)+ {$left.text.equals($right.text)}?;
 
+text : (mnl | nl)? txt;
 txt : (S* (inlinecode | WORD | surroundCall) S*)+;
 nl : NL;
 mnl : NL NL+;
 
-scode : NL SCOPED_CODE NL?;
-lonecode : NL LONE_CODE NL?;
+scode : SCOPED_CODE;
+lonecode : LONE_CODE;
 inlinecode : CODE CCONTENT;

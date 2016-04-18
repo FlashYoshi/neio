@@ -54,6 +54,15 @@ Boolean isAppended() {
     return appendedTo != null;
 }
 
+String appendedToToTex() {
+    String result = "";
+    if (appendedTo != null) {
+        result = appendedTo.toTex();
+    }
+    
+    return result;
+}
+
 public surround Text *(Text t) {
     return new BoldText(t);
 }
@@ -64,15 +73,6 @@ public surround Text _(Text t) {
 
 public surround Text `(Text t) {
     return new MonospaceText(t);
-}
-
-String appendedToToTex() {
-    String result = "";
-    if (appendedTo != null) {
-        result = appendedTo.toTex();
-    }
-    
-    return result;
 }
 
 String thisToTex() {

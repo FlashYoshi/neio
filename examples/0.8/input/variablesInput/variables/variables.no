@@ -16,8 +16,7 @@
 {Chapter chap = this}
 
 // REF
-When I was *studying* at the {ug} I had to endure a lot of hard courses. But the professors at the {ug} were
-always very helpful and open for questions.
+When I was *studying* at the {ug} I had to endure a lot of hard courses. But the professors at the {ug} were always very helpful and open for questions.
 
 I really enjoyed going to the {ug} and would encourage everyone to go study there!
 

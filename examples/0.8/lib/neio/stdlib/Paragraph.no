@@ -1,7 +1,6 @@
 namespace neio.stdlib;
 
-import neio.lang.Text;
-import neio.lang.Content;
+import neio.lang.*;
 
 class Paragraph extends Content;
 
@@ -28,9 +27,25 @@ Paragraph appendLine(Text t) {
     return this;
 }
 
-Text appendText(Text text) {
-    this.text = text;
-    return text;
+public surround Text *(Text t) {
+    return new BoldText(t);
+}
+
+public surround Text _(Text t) {
+    return new ItalicText(t);
+}
+
+public surround Text `(Text t) {
+    return new MonospaceText(t);
+}
+
+Paragraph appendText(Text t) {
+    if (text == null) {
+        text = t;
+    } else {
+        text = text.appendText(t);
+    }
+    return this;
 }
 
 Text text() {
