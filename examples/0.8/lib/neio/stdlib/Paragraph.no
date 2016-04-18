@@ -27,18 +27,6 @@ Paragraph appendLine(Text t) {
     return this;
 }
 
-public surround Text *(Text t) {
-    return new BoldText(t);
-}
-
-public surround Text _(Text t) {
-    return new ItalicText(t);
-}
-
-public surround Text `(Text t) {
-    return new MonospaceText(t);
-}
-
 Paragraph appendText(Text t) {
     if (text == null) {
         text = t;

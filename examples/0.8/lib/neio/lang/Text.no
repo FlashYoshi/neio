@@ -64,15 +64,15 @@ String appendedToToTex() {
 }
 
 public surround Text *(Text t) {
-    return new BoldText(t);
+    return appendText(new BoldText(t));
 }
 
 public surround Text _(Text t) {
-    return new ItalicText(t);
+    return appendText(new ItalicText(t));
 }
 
 public surround Text `(Text t) {
-    return new MonospaceText(t);
+    return appendText(new MonospaceText(t));
 }
 
 String thisToTex() {
