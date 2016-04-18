@@ -4,13 +4,25 @@ import neio.lang.Content;
 
 class Eq extends Content;
 
+String texname;
+
 Eq() {
+    texname = "equation";
+}
+
+Sqrt sqrt(Content root, Content arg) {
+    return addContent(new Sqrt(root, arg));
 }
 
 Sqrt sqrt(Content arg) {
-    return addContent(new Sqrt(arg));
+    return sqrt(null, arg);
+}
+
+Eq nonu() {
+    texname = texname + "*";
+    return this;
 }
 
 String toTex() {
-    return "\\begin{equation}" + super.toTex() + "\n\\end{equation}";
+    return "\\begin{" + texname + "}" + super.toTex() + "\n\\end{" + texname + "}";
 }
