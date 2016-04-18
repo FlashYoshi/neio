@@ -764,7 +764,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         DocumentConverter converter = new DocumentConverter(document, view);
         String text = getText(ctx.getText(), "'''".length());
         text = trimText(text);
-        text = text.trim() + "\n";
+        text = text.trim();
         DocumentParser parser = getParser(text);
 
         return converter.visitBody(parser.body());
