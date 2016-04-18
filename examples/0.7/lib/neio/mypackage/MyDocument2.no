@@ -1,0 +1,23 @@
+namespace neio.mypackage;
+
+import neio.stdlib.Document;
+
+class MyDocument extends Document;
+
+private Integer defaultFontSize = 12;
+
+void increaseFontSize() {
+    defaultFontSize = defaultFontSize + 2;
+}
+
+void setFontSize(Integer defaultFontSize) {
+    this.defaultFontSize = defaultFontSize;
+}
+
+String header() {
+    String s = super.header();
+    return s + "This is my document!";
+}
+
+
+
