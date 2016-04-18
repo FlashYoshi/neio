@@ -5,6 +5,7 @@
     Integer arg = 10;
 }
 # Math chapter
+A few example equations:
 
 {{
     eq().nonu().sqrt('''{base}''', '''{arg}''');
