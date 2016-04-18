@@ -36,6 +36,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 import java.util.regex.Pattern;
 
 import static be.ugent.neio.util.Constants.*;
@@ -49,7 +50,7 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
     private final TextDocument document;
     private final JavaView view;
     private Expression previousExpression = null;
-    private Expression argumentExpression = null;
+    private Stack<Expression> argumentExpression = new Stack<>();
     private Block block = null;
     private int lonecodeid;
 
@@ -249,10 +250,11 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         List<Expression> arguments = new ArrayList<>();
         arguments.add(result);
 
-        if (argumentExpression == null) {
-            argumentExpression = createText("");
+        if (argumentExpression.peek() == null) {
+            argumentExpression.pop();
+            argumentExpression.push(createText(""));
         }
-        Expression e = expressionFactory().createNeioMethodInvocation(name, argumentExpression, arguments);
+        Expression e = expressionFactory().createNeioMethodInvocation(name, argumentExpression.pop(), arguments);
         e.setMetadata(new TagImpl(), Constants.SURROUND);
 
         return e;
@@ -272,12 +274,13 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
     @Override
     public Expression visitTxt(@NotNull TxtContext ctx) {
         Expression result;
-        argumentExpression = null;
+        argumentExpression.push(null);
 
         // This is just plain text
         if ((ctx.inlinecode() == null || ctx.inlinecode().isEmpty())
                 && (ctx.surroundCall() == null || ctx.surroundCall().isEmpty())) {
             result = createText(ctx.getText());
+            argumentExpression.pop();
         }
         // There's a mix of code and text
         // Only code is not possible as that would be LONE_CODE
@@ -285,12 +288,12 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
             for (int i = 0; i < ctx.getChildCount(); i++) {
                 Object o = visit(ctx.getChild(i));
                 if (o instanceof String) {
-                    argumentExpression = appendText(argumentExpression, createText((String) o));
+                    argumentExpression.push(appendText(argumentExpression.pop(), createText((String) o)));
                 } else {
-                    argumentExpression = (Expression) o;
+                    argumentExpression.push((Expression) o);
                 }
             }
-            result = argumentExpression;
+            result = argumentExpression.pop();
         }
 
         return result;
@@ -327,7 +330,7 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
             ((MethodInvocation) e).setTarget(ooFactory().createThisLiteral());
         }
 
-        return appendText(argumentExpression, createText(e));
+        return appendText(argumentExpression.pop(), createText(e));
     }
 
     private Expression createText(String s) {
