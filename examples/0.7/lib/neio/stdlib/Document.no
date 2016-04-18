@@ -2,6 +2,9 @@ namespace neio.stdlib;
 
 import neio.lang.Container;
 import neio.lang.Text;
+import neio.lang.BoldText;
+import neio.lang.MonospaceText;
+import neio.lang.ItalicText;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -25,6 +28,18 @@ Chapter addChapter(Chapter chapter) {
 	addContent(chapter);
 	
 	return chapter;
+}
+
+public surround Text *(Text t) {
+    return new BoldText(t);
+}
+
+public surround Text _(Text t) {
+    return new ItalicText(t);
+}
+
+public surround Text `(Text t) {
+    return new MonospaceText(t);
 }
 
 Integer calculateCoolThings(Integer j) {

@@ -1,0 +1,58 @@
+namespace neio.stdlib;
+
+import neio.lang.Text;
+import neio.lang.Content;
+
+class EnumerateItem extends Content;
+
+protected Text text;
+protected Integer level;
+protected Enumerate enumerate;
+
+EnumerateItem(Text text, Integer level) {
+	this.text = text;
+	this.level = level;
+}
+
+EnumerateItem(Text text, Enumerate enumerate, Integer level) {
+	this(text, level);
+	this.enumerate = enumerate;
+}
+
+Text text() {
+    return text;
+}
+
+nested EnumerateItem -(Text text, Integer level) {
+	EnumerateItem item = null;
+	if (level > this.level) {
+		Enumerate list = new Enumerate();
+		item = new EnumerateItem(text, list, level);
+		list.-(item);
+		addContent(list);
+	} else {
+		item = new EnumerateItem(text, enumerate, level);
+		enumerate.-(item);
+	}
+	
+	return item;
+}
+
+public String toTex() {
+    return toTex(null);
+}
+
+String toTex(String option) {
+	StringBuilder item = new StringBuilder("\\item");
+	if ((option != null) && (option.length() > 0)) {
+		item.append("[").append(option).append("]");
+	} else {
+		item.append(" ");
+	}
+	item.append(text.toTex());
+	if (contentSize() > 0) {
+		item.append("\n").append(super.toTex());
+	}
+	
+	return item.toString();
+}

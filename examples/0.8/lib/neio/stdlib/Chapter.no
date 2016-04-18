@@ -1,0 +1,87 @@
+namespace neio.stdlib;
+
+import neio.lang.Content;
+import neio.lang.Container;
+import neio.lang.Text;
+
+class Chapter extends Container;
+
+Text title;
+Integer level;
+
+Chapter(Text title, Integer level) {
+    this.title = title;
+    this.level = level;
+}
+
+nested Chapter #(Text title, Integer level) {
+	if (level <= this.level) {
+        Chapter c = nearestAncestor(Chapter.class);
+        if (c != null) {
+            return c.hash(title, level);
+        } else {
+            return nearestAncestor(Document.class).hash(title);
+        }
+	}
+    Chapter chapter = new Chapter(title, level);
+    addContent(chapter);
+	
+    return chapter;
+}
+
+Itemize *(Text text) {
+	Itemize itemize = new Itemize();
+	ItemizeItem item = new ItemizeItem(text, itemize, 1);
+	itemize.*(item);
+    addContent(itemize);
+
+    return itemize;
+}
+
+Enumerate -(Text text) {
+	Enumerate enumerate = new Enumerate();
+	EnumerateItem item = new EnumerateItem(text, enumerate, 1);
+	enumerate.-(item);
+    addContent(enumerate);
+
+    return enumerate;
+}
+
+Paragraph newline() {
+    Paragraph p = new Paragraph();
+    addContent(p);
+	
+    return p;
+}
+
+Paragraph multinewline() {
+    return newline();
+}
+
+Image image(String imageName) {
+    return image(null, imageName);
+}
+
+Image image(Text caption, String imageName) {
+	new Image(caption, imageName) neioImage;
+	addContent(neioImage);
+	
+	return neioImage;
+}
+
+String toTex() {
+	return "\\" + subs() + "section*{" + title.toTex() + "}" + super.toTex();
+}
+
+Text title() {
+    return title;
+}
+
+String subs() {
+	String subs = "";
+	for (int i = 1; i < level; i = i + 1) {
+		subs = subs + "sub";
+	}
+	
+	return subs;
+}

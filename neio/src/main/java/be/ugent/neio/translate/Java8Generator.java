@@ -1,12 +1,14 @@
 package be.ugent.neio.translate;
 
 import be.kuleuven.cs.distrinet.jnome.core.expression.invocation.JavaMethodInvocation;
+import be.ugent.neio.expression.NeioMethodInvocation;
 import be.ugent.neio.expression.NeioNameExpression;
 import be.ugent.neio.industry.NeioExpressionFactory;
 import be.ugent.neio.industry.NeioFactory;
 import be.ugent.neio.language.Neio;
 import be.ugent.neio.model.document.TextDocument;
 import be.ugent.neio.util.CodeTag;
+import be.ugent.neio.util.Constants;
 import org.aikodi.chameleon.core.element.Element;
 import org.aikodi.chameleon.core.lookup.LookupException;
 import org.aikodi.chameleon.core.tag.TagImpl;
@@ -125,9 +127,6 @@ public class Java8Generator {
                 continue;
             }
 
-            // Add the statement to the new block so that it can do lookups using the new block
-            block.addStatement(statement);
-
             Stack<RegularMethodInvocation> callStack = new Stack<>();
             // MethodInvocations start from the back so push the invocations on a stack to get the correct order
             RegularMethodInvocation inv;
@@ -140,25 +139,38 @@ public class Java8Generator {
                 }
             }
 
-            breakupMethodChain(callStack, variables, block, methodChain);
-
-            // Remove the old statement from the block that will printed to Java
-            block.removeStatement(statement);
+            breakupMethodChain(callStack, variables, block, methodChain, statement);
         }
 
         return block;
     }
 
-    private void breakupMethodChain(Stack<RegularMethodInvocation> callStack, Stack<Variable> variables, Block block, Element methodChain) throws LookupException {
+    private void breakupMethodChain(Stack<RegularMethodInvocation> callStack, Stack<Variable> variables, Block block, Element methodChain, Statement statement) throws LookupException {
         // Turn the methodchain into local variables, one by one
         while (!callStack.isEmpty()) {
+            // Add the statement to the new block so that it can do lookups using the new block
+            // Do so in the loop to be able to use the newly defined variables (otherwise they are defined after this
+            // statement)
+            block.addStatement(statement);
             RegularMethodInvocation call = callStack.pop();
             fixNestedMethod(call);
 
+            // Make certain to call surround methods on the right targets
+            for (NeioMethodInvocation n : call.descendants(NeioMethodInvocation.class)) {
+                if (n.metadata(Constants.SURROUND) != null) {
+                    if (n.getTarget() == null) {
+                        NeioNameExpression expr = eFactory().createNeioNameExpression(lastElement);
+                        n.setTarget(expr);
+                        setThis(n, expr, variables);
+                    }
+                }
+            }
+
+            // Substitute 'this' by the last element
             for (ThisLiteral t : call.descendants(ThisLiteral.class)) {
-                //THIS found, substitute it by the last element
                 NeioNameExpression expr = eFactory().createNeioNameExpression(lastElement);
                 t.replaceWith(expr);
+                // Check if we're a methodcall
                 if (expr.parent() != null) {
                     String prefix = getPrefix(((RegularMethodInvocation) expr.parent()), variables);
                     if (prefix != null) {
@@ -185,6 +197,8 @@ public class Java8Generator {
             // Type instead of TypeReference as TypeReference does not return a TypeReference with fqn
             Type returnType = method.returnType();
             createAndAddLocalVar(returnType.name(), varName, clone, variables, block);
+            // Don't forget to remove the old (non broken up) statement
+            block.removeStatement(statement);
         }
     }
 
@@ -197,13 +211,26 @@ public class Java8Generator {
         return lvd;
     }
 
+    /**
+     * Switches out returnstatements for {@code appendContent} and calls {@code processCodeBlock}
+     *
+     * @param block     The block containing the processed statements
+     * @param statement The statement we assume to be a code block
+     * @param variables The stack of previously defined variables
+     * @param loneCode  The block of loneCode, passed to be able to clear it if needed
+     * @return {@code null} if the block was processed, {@code statement} if {@code statement} was not a Block
+     * @throws LookupException
+     */
     private Statement fixCodeBlock(Block block, Statement statement, Stack<Variable> variables, Block loneCode) throws LookupException {
+        // Is statement a Block?
         if (getNearestElement(statement, Statement.class) != null) {
             block.addStatement(statement);
             Block blockStatement = (Block) statement;
             processCodeBlock(blockStatement, variables);
             if (statement.hasMetadata(Neio.LONE_CODE)) {
                 if (statement.hasDescendant(ReturnStatement.class)) {
+                    blockStatement = fixReturnStatement(blockStatement, variables);
+                } else if (makeReturnable(blockStatement.statement(blockStatement.nbStatements() - 1))) {
                     blockStatement = fixReturnStatement(blockStatement, variables);
                 }
                 block.removeStatement(statement);
@@ -216,6 +243,23 @@ public class Java8Generator {
 
         // Process this statement further as it isn't a block
         return statement;
+    }
+
+    /**
+     * Checks if the last statement in a lone code block is a return statement with missing return keyword
+     *
+     * @param statement The last statement in the block
+     * @return True if a statement was made into a returnstatement
+     */
+    private boolean makeReturnable(Statement statement) {
+        if (statement.metadata(ASSIGNMENT) == null) {
+            Expression e = statement.nearestDescendants(Expression.class).get(0);
+            Statement returnStatement = oFactory().createReturnStatement(e);
+            statement.replaceWith(returnStatement);
+            return true;
+        }
+
+        return false;
     }
 
     private String getPrefix(RegularMethodInvocation call, Stack<Variable> variables) throws LookupException {
@@ -294,6 +338,13 @@ public class Java8Generator {
         return block;
     }
 
+    /**
+     * Replaces occurrences of {@code this} in code blocks
+     *
+     * @param block     The block in which we have to do replacements
+     * @param variables The stack of previous variables
+     * @throws LookupException
+     */
     private void processCodeBlock(Block block, Stack<Variable> variables) throws LookupException {
         if (lastElement == null) {
             throw new ChameleonProgrammerException("Code blocks are not allowed as the first element in a document!");

@@ -1,0 +1,96 @@
+namespace neio.lang;
+
+class Text extends Content;
+
+Text text;
+String realText;
+// The object to which this Text has been appended
+Text appendedTo;
+
+Text() {
+    appendedTo = null;
+    text = null;
+    realText = "";
+}
+
+Text(String realText) {
+    this();
+    this.realText = realText;
+}
+
+Text(Text text) {
+    this();
+    this.text = text;
+}
+
+Text text() {
+    return text;
+}
+
+String realText() {
+    return realText;
+}
+
+Text appendText(Text t) {
+    Text start = t;
+    
+    while (start.isAppended()) {
+        start = start.appendedTo();
+    }
+    start.appendTo(this);
+    
+    return t;
+}
+
+void appendTo(Text appendedTo) {
+    this.appendedTo = appendedTo;
+}
+
+Text appendedTo() {
+    return appendedTo;
+}
+
+Boolean isAppended() {
+    return appendedTo != null;
+}
+
+String appendedToToTex() {
+    String result = "";
+    if (appendedTo != null) {
+        result = appendedTo.toTex();
+    }
+    
+    return result;
+}
+
+public surround Text *(Text t) {
+    return appendText(new BoldText(t));
+}
+
+public surround Text _(Text t) {
+    return appendText(new ItalicText(t));
+}
+
+public surround Text `(Text t) {
+    return appendText(new MonospaceText(t));
+}
+
+String thisToTex() {
+    String me = "";
+    if (text == null) {
+        me = realText;
+    } else {
+        me = text.toTex();
+    }
+    
+    return me;
+}
+
+Text newline() {
+    new Text("\n") t;
+    return appendText(t);
+}
+
+String toTex() {
+	return appendedToToTex() + thisToTex();
+}

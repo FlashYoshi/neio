@@ -1,0 +1,43 @@
+namespace neio.stdlib;
+
+import neio.lang.Text;
+import neio.lang.Content;
+
+class Image extends Content;
+
+Text caption;
+String name;
+public static final String PNG = ".png";
+
+Image(String name) {
+    this(null, name);
+}
+
+Image(Text caption, String name) {
+	this.caption = caption;
+	this.name = name;
+}
+
+String name() {
+    return name;
+}
+
+Text caption() {
+    return caption;
+}
+
+String toTex() {
+	StringBuilder result = new StringBuilder("\\begin{figure}[ht]\n\\centering\n\\includegraphics[width=\\linewidth]{").append(name);
+	if (name.endsWith(PNG)) {
+		result.append("}\n");
+	} else {
+		result.append(PNG).append("}\n");
+	}
+    if (caption != null) {
+		result.append("\\caption{").append(caption.toTex()).append("}\n");
+	}
+	
+	result.append("\\end{figure}\n");
+	
+	return result.toString();
+}

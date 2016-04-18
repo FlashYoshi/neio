@@ -6,31 +6,27 @@ import be.ugent.neio.industry.NeioFactory;
 import be.ugent.neio.language.Neio;
 import be.ugent.neio.model.document.TextDocument;
 import be.ugent.neio.util.CodeTag;
+import be.ugent.neio.util.Constants;
 import org.aikodi.chameleon.core.document.Document;
-import org.aikodi.chameleon.core.namespace.Namespace;
-import org.aikodi.chameleon.core.namespacedeclaration.NamespaceDeclaration;
 import org.aikodi.chameleon.core.tag.TagImpl;
 import org.aikodi.chameleon.exception.ChameleonProgrammerException;
 import org.aikodi.chameleon.oo.expression.Expression;
 import org.aikodi.chameleon.oo.expression.ExpressionFactory;
 import org.aikodi.chameleon.oo.expression.MethodInvocation;
-import org.aikodi.chameleon.oo.method.Method;
 import org.aikodi.chameleon.oo.plugin.ObjectOrientedFactory;
 import org.aikodi.chameleon.oo.statement.Block;
 import org.aikodi.chameleon.oo.statement.Statement;
-import org.aikodi.chameleon.oo.type.Type;
-import org.aikodi.chameleon.oo.variable.FormalParameter;
 import org.aikodi.chameleon.support.member.simplename.method.RegularMethodInvocation;
-import org.aikodi.chameleon.support.modifier.Public;
-import org.aikodi.chameleon.support.modifier.Static;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.misc.NotNull;
+import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.neio.antlr.ClassLexer;
 import org.neio.antlr.ClassParser;
+import org.neio.antlr.DocumentParser;
 import org.neio.antlr.DocumentParser.*;
 import org.neio.antlr.DocumentParserBaseVisitor;
 
@@ -40,6 +36,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 import java.util.regex.Pattern;
 
 import static be.ugent.neio.util.Constants.*;
@@ -53,9 +50,9 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
     private final TextDocument document;
     private final JavaView view;
     private Expression previousExpression = null;
+    private Stack<Expression> argumentExpression = new Stack<>();
     private Block block = null;
     private int lonecodeid;
-
 
     public DocumentConverter(Document document, JavaView view) {
         this.document = (TextDocument) document;
@@ -81,7 +78,6 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         return document;
     }
 
-
     private Expression visitHeader(DocumentContext ctx) {
         String header = ctx.HEADER().getText();
         // Strip the brackets
@@ -94,7 +90,7 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
     public Block visitBody(BodyContext ctx) {
         block = ooFactory().createBlock();
         document.setBlock(block);
-        ctx.content().forEach(this::visitContent);
+        ctx.realContent().forEach(this::visit);
 
         if (previousExpression != null) {
             block.addStatement(ooFactory().createStatement(previousExpression));
@@ -102,49 +98,126 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         return block;
     }
 
-    public Block visitContent(ContentContext ctx) {
-        if (ctx.lonecode() != null || ctx.scode() != null) {
-            Block codeBlock;
-            if (ctx.scode() != null) {
-                codeBlock = visitCode(ctx.scode().getText(), "{{".length());
-            } else {
-                codeBlock = visitCode(ctx.lonecode().getText(), "{".length(), false);
-                codeBlock.setMetadata(new TagImpl(), Neio.LONE_CODE);
-            }
-            if (codeBlock.nbStatements() != 0) {
-                // A block of code has been found, round up the expressions found before this block
-                if (previousExpression != null) {
-                    block.addStatement(ooFactory().createStatement(previousExpression));
-                }
-                if (codeBlock.metadata(Neio.LONE_CODE) != null) {
-                    for (Statement s : codeBlock.statements()) {
-                        s.setMetadata(new CodeTag(lonecodeid), Neio.LONE_CODE);
-                        block.addStatement(s);
-                    }
-                    lonecodeid++;
-                } else {
-                    block.addStatement(codeBlock);
-                }
-                previousExpression = null;
-            }
-        } else {
-            // If the previous expression was a codeblock and there's more neioscript
-            // add THIS as prefix to connect back to the rest of the document
-            if (previousExpression == null) {
-                previousExpression = ooFactory().createThisLiteral();
-            }
-            if (ctx.prefixCall() != null) {
-                previousExpression = visitPrefixCall(ctx.prefixCall());
-            } else if (ctx.imageCall() != null) {
-                previousExpression = visitImageCall(ctx.imageCall());
-            } else if (ctx.text() != null) {
-                previousExpression = visitText(ctx.text());
-            } else {
-                throw new ChameleonProgrammerException("Method could not be found!");
+    @Override
+    public Object visitRealContent(@NotNull RealContentContext ctx) {
+        if (ctx.content() != null) {
+            visit(ctx.content());
+        } else if (ctx.nl() != null) {
+            fixPreviousExpression();
+            previousExpression = visitNl(ctx.nl());
+        } else if (ctx.mnl() != null) {
+            fixPreviousExpression();
+            previousExpression = visitMnl(ctx.mnl());
+        }
+        return null;
+    }
+
+    @Override
+    public Object visitMulticodeC(@NotNull MulticodeCContext ctx) {
+        MulticodeContext m = ctx.multicode();
+        for (ParseTree p : m.children) {
+            if (m.scode().contains(p)) {
+                processCodeBlock((ScodeContext) p);
+            } else if (m.lonecode().contains(p)) {
+                processCodeBlock((LonecodeContext) p);
             }
         }
-
         return null;
+    }
+
+    @Override
+    public Object visitContentCodeC(@NotNull ContentCodeCContext ctx) {
+        visit(ctx.content());
+        if (ctx.lonecode() != null) {
+            processCodeBlock(ctx.lonecode());
+        } else {
+            processCodeBlock(ctx.scode());
+        }
+        return null;
+    }
+
+    @Override
+    public Object visitCodeContentC(@NotNull CodeContentCContext ctx) {
+        if (ctx.lonecode() != null) {
+            processCodeBlock(ctx.lonecode());
+        } else {
+            processCodeBlock(ctx.scode());
+        }
+        visit(ctx.content());
+        return null;
+    }
+
+    @Override
+    public Object visitLonecodeC(@NotNull LonecodeCContext ctx) {
+        processCodeBlock(ctx.lonecode());
+        return null;
+    }
+
+    @Override
+    public Object visitScodeC(@NotNull ScodeCContext ctx) {
+        processCodeBlock(ctx.scode());
+        return null;
+    }
+
+    // If the previous expression was a codeblock and there's more neioscript
+    // add THIS as prefix to connect back to the rest of the document
+    private void fixPreviousExpression() {
+        if (previousExpression == null) {
+            previousExpression = ooFactory().createThisLiteral();
+        }
+    }
+
+    @Override
+    public Object visitPrefixC(@NotNull PrefixCContext ctx) {
+        fixPreviousExpression();
+        previousExpression = visitPrefixCall(ctx.prefixCall());
+        return null;
+    }
+
+    @Override
+    public Object visitTextC(@NotNull TextCContext ctx) {
+        fixPreviousExpression();
+        previousExpression = visitText(ctx.text());
+        return null;
+    }
+
+    private void processCodeBlock(ScodeContext ctx) {
+        assembleCodeBlock(processScode(ctx));
+    }
+
+    private void processCodeBlock(LonecodeContext ctx) {
+        assembleCodeBlock(processLoneCode(ctx));
+    }
+
+    private void assembleCodeBlock(Block codeBlock) {
+        if (codeBlock.nbStatements() != 0) {
+            // A block of code has been found, round up the expressions found before this block
+            if (previousExpression != null) {
+                block.addStatement(ooFactory().createStatement(previousExpression));
+            }
+            if (codeBlock.metadata(Neio.LONE_CODE) != null) {
+                for (Statement s : codeBlock.statements()) {
+                    s.setMetadata(new CodeTag(lonecodeid), Neio.LONE_CODE);
+                    block.addStatement(s);
+                }
+                lonecodeid++;
+            } else {
+                block.addStatement(codeBlock);
+            }
+            previousExpression = null;
+        }
+    }
+
+
+    private Block processLoneCode(LonecodeContext lonecode) {
+        Block codeBlock = visitCode(lonecode.getText(), "{".length(), false);
+        codeBlock.setMetadata(new TagImpl(), Neio.LONE_CODE);
+
+        return codeBlock;
+    }
+
+    private Block processScode(ScodeContext scode) {
+        return visitCode(scode.getText(), "{{".length());
     }
 
     @Override
@@ -161,70 +234,66 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
     }
 
     @Override
-    public Expression visitImageCall(ImageCallContext ctx) {
-        List<Expression> arguments = new ArrayList<>();
-        if (ctx.caption != null && !ctx.caption.isEmpty()) {
-            arguments.add(visitTxt(ctx.txt()));
+    public Expression visitSurroundCall(@NotNull SurroundCallContext ctx) {
+        String name = Constants.SURROUND + ctx.left.getText();
+        Expression result;
+        if (ctx.inlinecode() != null) {
+            result = visitInlinecode(ctx.inlinecode());
+        } else {
+            result = createText((String) visit(ctx.WORD()));
         }
-        arguments.add(ooFactory().createStringLiteral(ctx.name.getText()));
 
-        return expressionFactory().createNeioMethodInvocation(IMAGE, previousExpression, arguments);
+        if (ctx.txt() != null) {
+            result = appendText(result, visitTxt(ctx.txt()));
+        }
+
+        List<Expression> arguments = new ArrayList<>();
+        arguments.add(result);
+
+        if (argumentExpression.peek() == null) {
+            argumentExpression.pop();
+            argumentExpression.push(createText(""));
+        }
+        Expression e = expressionFactory().createNeioMethodInvocation(name, argumentExpression.pop(), arguments);
+        e.setMetadata(new TagImpl(), Constants.SURROUND);
+
+        return e;
     }
 
     @Override
-    public Expression visitSentence(SentenceContext ctx) {
+    public Expression visitText(@NotNull TextContext ctx) {
         Expression txt = visitTxt(ctx.txt());
-        return appendText(txt, createText("\\n"));
+        if (ctx.mnl() != null) {
+            previousExpression = visitMnl(ctx.mnl());
+        } else if (ctx.nl() != null) {
+            previousExpression = visitNl(ctx.nl());
+        }
+        return appendText(previousExpression, txt);
     }
 
     @Override
     public Expression visitTxt(@NotNull TxtContext ctx) {
-        Expression result = null;
+        Expression result;
+        argumentExpression.push(null);
 
         // This is just plain text
-        if (ctx.inlinecode() == null || ctx.inlinecode().isEmpty()) {
+        if ((ctx.inlinecode() == null || ctx.inlinecode().isEmpty())
+                && (ctx.surroundCall() == null || ctx.surroundCall().isEmpty())) {
             result = createText(ctx.getText());
+            argumentExpression.pop();
         }
         // There's a mix of code and text
         // Only code is not possible as that would be LONE_CODE
         else {
-            String currText = "";
-            // The intermediate result
-            Expression intermediate = null;
             for (int i = 0; i < ctx.getChildCount(); i++) {
                 Object o = visit(ctx.getChild(i));
                 if (o instanceof String) {
-                    currText += o;
+                    argumentExpression.push(appendText(argumentExpression.pop(), createText((String) o)));
                 } else {
-                    Expression e = (Expression) o;
-                    // The text starts out with inlinecode
-                    if (currText.isEmpty() && intermediate == null) {
-                        intermediate = e;
-                    }
-                    // This is the first inlinecode, there is text in front of it
-                    else if (intermediate == null) {
-                        intermediate = createText(currText);
-                        intermediate = appendText(intermediate, e);
-                        currText = "";
-                    }
-                    // Text after some inlinecode
-                    else if (!currText.isEmpty()) {
-                        Expression append = createText(currText);
-                        intermediate = appendText(intermediate, append);
-                        intermediate = appendText(intermediate, e);
-                        currText = "";
-                    }
-                    // There is inlinecode in the middle or at the end of the txt
-                    else {
-                        intermediate = appendText(intermediate, e);
-                    }
+                    argumentExpression.push((Expression) o);
                 }
             }
-            if (!currText.isEmpty()) {
-                result = appendText(intermediate, createText(currText));
-            } else {
-                result = intermediate;
-            }
+            result = argumentExpression.pop();
         }
 
         return result;
@@ -240,7 +309,11 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         List<Expression> arguments = new ArrayList<>();
         arguments.add(e2);
 
-        return expressionFactory().createMethodInvocation(APPEND_TEXT, e1, arguments);
+        if (e1 != null) {
+            return expressionFactory().createNeioMethodInvocation(APPEND_TEXT, e1, arguments);
+        } else {
+            return e2;
+        }
     }
 
     @Override
@@ -257,7 +330,7 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
             ((MethodInvocation) e).setTarget(ooFactory().createThisLiteral());
         }
 
-        return createText(e);
+        return appendText(argumentExpression.pop(), createText(e));
     }
 
     private Expression createText(String s) {
@@ -283,22 +356,13 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
     }
 
     @Override
-    public Expression visitText(TextContext ctx) {
-        List<SentenceContext> sentences = ctx.sentence();
-        Expression paragraph = visitSentence(sentences.get(0));
+    public Expression visitNl(NlContext ctx) {
+        return expressionFactory().createNeioMethodInvocation(NEWLINE, previousExpression, new ArrayList<>());
+    }
 
-        for (int i = 1; i < sentences.size(); i++) {
-            SentenceContext s = sentences.get(i);
-            paragraph = appendText(paragraph, visitSentence(s));
-        }
-
-        // This is always the newline method
-        String methodName = NEWLINE;
-
-        List<Expression> arguments = new ArrayList<>();
-        arguments.add(paragraph);
-
-        return expressionFactory().createNeioMethodInvocation(methodName, previousExpression, arguments);
+    @Override
+    public Expression visitMnl(MnlContext ctx) {
+        return expressionFactory().createNeioMethodInvocation(MULTI_NEWLINE, previousExpression, new ArrayList<>());
     }
 
     private Block visitCode(String code, int sepLen) {
@@ -307,6 +371,7 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
 
     private Block visitCode(String code, int sepLen, boolean contextTypes) {
         // Remove the separator
+        code = code.trim();
         code = code.substring(sepLen, code.length() - sepLen);
         // Add a semicolon if needed
         int index = code.length();

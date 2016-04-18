@@ -1,8 +1,8 @@
 lexer grammar DocumentLexer;
 
 HEADER : {getCharPositionInLine() == 0}? LS_BRACE CHAR+ RS_BRACE;
-COMMENT : '//' ~[\r\n]* NL+ -> channel(HIDDEN);
-MULTILINE_COMMENT : '/*' .*? '*/' NL+ -> channel(HIDDEN);
+COMMENT : '//' ~[\r\n]* NL -> channel(HIDDEN);
+MULTILINE_COMMENT : '/*' .*? '*/' NL -> channel(HIDDEN);
 
 SCOPED_CODE : {getCharPositionInLine() == 0}? DLCB CONTENT* DRCB {_input.LA(1) == '\r' || _input.LA(1) == '\n'}?;
 LONE_CODE : {getCharPositionInLine() == 0}? LCB CONTENT* RCB {_input.LA(1) == '\r' || _input.LA(1) == '\n'}?;
@@ -30,14 +30,20 @@ fragment B_QUOTE : '`';
 fragment DB_QUOTE : '``';
 fragment TB_QUOTE : '```';
 fragment B_SLASH : '\\';
+fragment UNDERSCORE : '_';
 
-fragment HASH : '#';
-fragment DASH : '-';
-fragment STAR : '*';
+fragment H : '#';
+fragment D : '-';
+fragment ST : '*';
 BANG : '!';
-MethodName : {getCharPositionInLine() == 0}? (HASH | DASH | STAR)+;
+MethodName : {getCharPositionInLine() == 0}? (H | D | ST | B_QUOTE | UNDERSCORE)+;
+HASH : H;
+DASH : D;
+STAR : ST;
+BQ : B_QUOTE;
+US : UNDERSCORE;
 
-fragment VALID_CHAR : ~[#-+*_\[\]{} \r\n] | SQ | HASH | DASH | STAR | BANG;
+fragment VALID_CHAR : ~[#-*_`\[\]{} \r\n] | SQ | BANG;
 
 WORD : VALID_CHAR+;
 

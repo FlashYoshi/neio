@@ -12,6 +12,8 @@ import be.ugent.neio.industry.NeioExpressionFactory;
 import be.ugent.neio.industry.NeioFactory;
 import be.ugent.neio.language.Neio;
 import be.ugent.neio.model.modifier.Nested;
+import be.ugent.neio.model.modifier.Surround;
+import be.ugent.neio.util.Constants;
 import org.aikodi.chameleon.core.document.Document;
 import org.aikodi.chameleon.core.lookup.LookupException;
 import org.aikodi.chameleon.core.modifier.Modifier;
@@ -19,10 +21,12 @@ import org.aikodi.chameleon.core.namespace.NamespaceReference;
 import org.aikodi.chameleon.core.namespacedeclaration.Import;
 import org.aikodi.chameleon.core.namespacedeclaration.NamespaceDeclaration;
 import org.aikodi.chameleon.core.reference.CrossReferenceTarget;
+import org.aikodi.chameleon.core.tag.TagImpl;
 import org.aikodi.chameleon.exception.ChameleonProgrammerException;
 import org.aikodi.chameleon.oo.expression.*;
 import org.aikodi.chameleon.oo.method.Method;
 import org.aikodi.chameleon.oo.method.MethodHeader;
+import org.aikodi.chameleon.oo.method.RegularMethod;
 import org.aikodi.chameleon.oo.plugin.ObjectOrientedFactory;
 import org.aikodi.chameleon.oo.statement.Block;
 import org.aikodi.chameleon.oo.statement.Statement;
@@ -36,6 +40,7 @@ import org.aikodi.chameleon.oo.variable.FormalParameter;
 import org.aikodi.chameleon.oo.variable.RegularVariable;
 import org.aikodi.chameleon.support.expression.AssignmentExpression;
 import org.aikodi.chameleon.support.expression.ClassCastExpression;
+import org.aikodi.chameleon.support.member.simplename.method.RegularMethodInvocation;
 import org.aikodi.chameleon.support.member.simplename.variable.MemberVariableDeclarator;
 import org.aikodi.chameleon.support.modifier.*;
 import org.aikodi.chameleon.support.statement.*;
@@ -58,6 +63,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static be.ugent.neio.util.Constants.ASSIGNMENT;
+import static be.ugent.neio.util.Constants.IFCALL;
+import static be.ugent.neio.util.Constants.IFCLASS;
 
 /**
  * @author Titouan Vervack
@@ -256,7 +265,9 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     @Override
     public Statement visitAssignmentStatement(@NotNull AssignmentStatementContext ctx) {
-        return ooFactory().createStatement(visitAssignmentExpression(ctx.assignmentExpression()));
+        Statement statement = ooFactory().createStatement(visitAssignmentExpression(ctx.assignmentExpression()));
+        statement.setMetadata(new TagImpl(), ASSIGNMENT);
+        return statement;
     }
 
     @Override
@@ -276,7 +287,9 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     @Override
     public Statement visitVariableDeclarationStatement(@NotNull VariableDeclarationStatementContext ctx) {
-        return visitVariableDeclaration(ctx.variableDeclaration());
+        LocalVariableDeclarator lvd = visitVariableDeclaration(ctx.variableDeclaration());
+        lvd.setMetadata(new TagImpl(), ASSIGNMENT);
+        return lvd;
     }
 
     @Override
@@ -307,13 +320,15 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     @Override
-    public IfThenElseStatement visitIfStatement(@NotNull IfStatementContext ctx) {
-        return visitIfteStatement(ctx.ifteStatement());
+    public Statement visitIfStatement(@NotNull IfStatementContext ctx) {
+        Statement statement = visitIfteStatement(ctx.ifteStatement());
+        statement.setMetadata(new TagImpl(), ASSIGNMENT);
+        return statement;
     }
 
     @Override
-    public IfThenElseStatement visitIfteStatement(@NotNull IfteStatementContext ctx) {
-        Expression expression = (Expression) visit(ctx.ifCondition);
+    public Statement visitIfteStatement(@NotNull IfteStatementContext ctx) {
+        Expression condition = (Expression) visit(ctx.ifCondition);
         Statement elseStatement = null;
         if (ctx.elseBlock != null) {
             elseStatement = visitBlock(ctx.elseBlock);
@@ -321,7 +336,28 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
             elseStatement = visitIfteStatement(ctx.elif);
         }
 
-        return ooFactory().createIfStatement(expression, visitBlock(ctx.ifBlock), elseStatement);
+        Block ifBlock = visitBlock(ctx.ifBlock);
+
+        // If statement
+        /*if (ctx.elif != null || ifBlock.nbStatements() > 1
+                || ifBlock.nearestDescendants(Statement.class).get(0).metadata(ASSIGNMENT) != null
+                || (elseStatement != null &&
+                (((Block) elseStatement).nbStatements() > 1
+                        || elseStatement.nearestDescendants(Statement.class).get(0).metadata(ASSIGNMENT) != null))
+                || ifBlock.nearestDescendants(ReturnStatement.class).size() > 0
+                || elseStatement == null
+                || elseStatement.nearestDescendants(ReturnStatement.class).size() > 0
+                || ifBlock.nearestDescendants(RegularMethodInvocation.class).get(0).name().equals("void")) {*/
+            return ooFactory().createIfStatement(condition, ifBlock, elseStatement);
+        /*} // Ternary operator
+        else {
+            Expression conditionalExpression = eFactory().createConditionalExpression(condition,
+                    ifBlock.nearestDescendants(Expression.class).get(0),
+                    elseStatement.nearestDescendants(Expression.class).get(0));
+            List<Expression> arguments = new ArrayList<>();
+            arguments.add(conditionalExpression);
+            return ooFactory().createStatement(eFactory().createMethodInvocation(IFCALL, eFactory().createNameExpression(IFCLASS), arguments));
+        }*/
     }
 
     @Override
@@ -516,6 +552,10 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
             if (modifier.NESTED() != null && !modifier.NESTED().getText().isEmpty() && ctx.modifier().size() == 1) {
                 addPublic = true;
             }
+
+            if (modifier.SURROUND() != null && !modifier.SURROUND().getText().isEmpty()) {
+                methodHeader.setName(Constants.SURROUND + methodHeader.name());
+            }
             method.addModifier(visitModifier(modifier));
         }
 
@@ -563,6 +603,8 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
             return new Public();
         } else if (ctx.NESTED() != null) {
             return new Nested();
+        } else if (ctx.SURROUND() != null) {
+            return new Surround();
         } else if (ctx.FINAL() != null) {
             return new Final();
         } else if (ctx.STATIC() != null) {
@@ -722,7 +764,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         DocumentConverter converter = new DocumentConverter(document, view);
         String text = getText(ctx.getText(), "'''".length());
         text = trimText(text);
-        text = text.trim() + "\n";
+        text = text.trim();
         DocumentParser parser = getParser(text);
 
         return converter.visitBody(parser.body());
