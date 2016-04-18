@@ -13,7 +13,7 @@ namespaceReference : Identifier (DOT Identifier)*;
 
 importDeclaration : IMPORT type (DOT STAR)? SCOLON;
 
-classDef : header Identifier inheritance* SCOLON;
+classDef : ABSTRACT? header Identifier inheritance* SCOLON;
 header : CLASS | INTERFACE;
 inheritance : ( EXTENDS type
               | IMPLEMENTS type);
@@ -29,13 +29,14 @@ fieldAssignmentExpression : var=fieldDecl EQUALS val=expression;
 method : methodExpression block;
 methodExpression : modifier* methodHeader L_BRACE parameters? R_BRACE;
 methodHeader : (SMALLER typeParameterList BIGGER)? (type | VOID)? name=(Identifier | MethodIdentifier | STAR | MINUS);
-modifier : PRIVATE
+modifier : ABSTRACT
+         | PRIVATE
          | PROTECTED
          | PUBLIC
          | FINAL
          | STATIC
-         | SURROUND
-         | NESTED;
+         | NESTED
+         | SURROUND;
 
 block : LC_BRACE statement* RC_BRACE;
 statement : expression SCOLON           #expressionStatement
@@ -44,6 +45,7 @@ statement : expression SCOLON           #expressionStatement
           | variableDeclaration SCOLON  #variableDeclarationStatement
           | assignmentExpression SCOLON #assignmentStatement
           | ifteStatement               #ifStatement
+          | TextMode                    #TextModeStatement
           | WHILE L_BRACE expression R_BRACE (block | SCOLON) #whileLoop
           | FOR L_BRACE init=variableDeclaration SCOLON cond=expression SCOLON update=assignmentExpression R_BRACE block #forLoop
           ;
@@ -62,6 +64,7 @@ literal : StringLiteral     #stringLiteral
         ;
 
 expression : literal                    #literalExpression
+           | TextMode                   #TextMode
            | Identifier DOT CLASS       #classLiteral
            | SUPER                      #superExpression
            | SUPER arguments            #superDelegation
@@ -75,14 +78,17 @@ expression : literal                    #literalExpression
            | expression DOT name=(Identifier | MethodIdentifier | STAR| MINUS) args=arguments #qualifiedCallExpression
            | name=(Identifier | MethodIdentifier | STAR | MINUS) args=arguments #selfCallExpression
            | op=E_MARK right=expression                                         #notExpression
+           | left=expression op=(INCR | DECR)                                   #postfixCrementExpression
+           | op=(INCR | DECR) right = expression                                #prefixCrementExpression
+           | op = (PLUS | MINUS) right= expression                              #prefixExpression
            | left=expression op=OR right=expression                             #orExpression
            | left=expression op=AND right=expression                            #andExpression
            | left=expression op=HAT right=expression                            #exponentiationExpression
            | left=expression op=PIPE right=expression                           #pipeExpression
            | left=expression op=AMPERSAND right=expression                      #ampersandExpression
-           | left=expression op=(PLUS|MINUS) right=expression                   #lowPriorityNumbericalExpression
+           | left=expression op=(PLUS | MINUS) right=expression                 #lowPriorityNumbericalExpression
            | left=expression op=(EQUAL | NOT_EQUAL) right=expression            #equalityExpression
-           | left=expression op=(STAR|SLASH|PERCENT) right=expression           #highPriorityNumbericalExpression
+           | left=expression op=(STAR | SLASH | PERCENT) right=expression       #highPriorityNumbericalExpression
            | left=expression op=(L_SHIFT | RR_SHIFT | R_SHIFT) right=expression #shiftExpression
            | left=expression op=(LEQ | GEQ | BIGGER | SMALLER) right=expression #orderExpression
            ;
@@ -105,4 +111,5 @@ typeArgumentList : typeArgumentList COMMA type  #typeArguments
 
 typeParameterList : typeParameterList COMMA type  #typeParameters
                   | type                          #typeParameter
+                  | Identifier EXTENDS bound=type #boundedTypeParameter
                   ;

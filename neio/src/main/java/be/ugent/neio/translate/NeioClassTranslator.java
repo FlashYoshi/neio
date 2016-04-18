@@ -21,16 +21,12 @@ import org.aikodi.chameleon.oo.type.TypeReference;
 import org.aikodi.chameleon.plugin.build.BuildException;
 import org.aikodi.chameleon.plugin.build.BuildProgressHelper;
 import org.aikodi.chameleon.support.member.simplename.method.NormalMethod;
-import org.aikodi.chameleon.support.modifier.Constructor;
-import org.aikodi.chameleon.support.modifier.Private;
-import org.aikodi.chameleon.support.modifier.Public;
 import org.aikodi.chameleon.support.translate.IncrementalTranslator;
 import org.aikodi.chameleon.workspace.View;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static be.ugent.neio.util.Constants.*;
 
@@ -64,7 +60,7 @@ public class NeioClassTranslator extends IncrementalTranslator<Neio, Java7> {
     public Collection<Document> build(Document source, BuildProgressHelper buildProgressHelper) throws BuildException {
         List<Document> result = new ArrayList<>();
         try {
-            addUses(source);
+            reflectNewcalls(source);
         } catch (LookupException e) {
             System.err.println("Lookup exception when trying to add to uses: " + e.getMessage());
         }
@@ -78,7 +74,7 @@ public class NeioClassTranslator extends IncrementalTranslator<Neio, Java7> {
      *
      * @param source The Document we want to analyse, it has to extend {@code BASE_CLASS}
      */
-    private void addUses(Document source) throws LookupException {
+    private void reflectNewcalls(Document source) throws LookupException {
         TypeReference baseref = ooFactory().createTypeReference(BASE_CLASS);
         List<Type> klasses = source.nearestDescendants(Type.class);
         if (!klasses.isEmpty()) {
@@ -93,68 +89,13 @@ public class NeioClassTranslator extends IncrementalTranslator<Neio, Java7> {
                 if (newCalls.isEmpty()) {
                     return;
                 }
-                Block b = createAddUsesMethod(klass);
+
                 // Add the constructors to the 'uses' and switch it out with a call to GET_INSTANCE
                 for (ConstructorInvocation ci : newCalls) {
                     if (ci.getType().subtypeOf(base)) {
-                        addUsesStatement(b, ci);
                         subNewCall(ci);
                     }
                 }
-            }
-        }
-    }
-
-    private void addUsesStatement(Block b, ConstructorInvocation ci) throws LookupException {
-        String name = ci.name();
-        List<Expression> arguments = new ArrayList<>();
-        arguments.add(ooFactory().createClassLiteral(name));
-
-        MethodInvocation mi = eFactory().createMethodInvocation(ADD_USE, null, arguments);
-        b.addStatement(ooFactory().createStatement(mi));
-    }
-
-    /**
-     * Creates a method in which all calls to {@code ADD_USE} are done
-     *
-     * @param klass The Type (= class) to which we add the method
-     * @return The body of the method which we can fill with statements
-     */
-    private Block createAddUsesMethod(Type klass) {
-        NormalMethod method = ooFactory().createMethod(getMethodName(), "void");
-        method.addModifier(new Private());
-
-        Block block = ooFactory().createBlock();
-        method.setImplementation(ooFactory().createImplementation(block));
-        klass.add(method);
-
-        List<NormalMethod> constructors = klass.nearestDescendants(NormalMethod.class);
-        constructors = constructors.stream().filter(m -> m.isTrue(neio.CONSTRUCTOR)).collect(Collectors.toList());
-        // Add a default constructor
-        if (constructors.isEmpty()) {
-            NormalMethod c = ooFactory().createMethod(klass.name(), klass.name());
-            c.addModifier(new Constructor());
-            c.addModifier(new Public());
-            c.setImplementation(ooFactory().createImplementation(ooFactory().createBlock()));
-            klass.add(c);
-            constructors.add(c);
-        }
-        addMethodcallToConstructors(constructors);
-
-        return block;
-    }
-
-    private void addMethodcallToConstructors(List<NormalMethod> constructors) {
-        for (NormalMethod constructor : constructors) {
-            Block b = constructor.nearestDescendants(Block.class).get(0);
-            Statement stat = ooFactory().createStatement(eFactory().createMethodInvocation(getMethodName(), null, new ArrayList<>()));
-            if (!b.statements().isEmpty() && b.statement(0) instanceof SuperConstructorDelegation) {
-                Statement firstStat = b.statement(0);
-                b.removeStatement(firstStat);
-                b.addInFront(stat);
-                b.addInFront(firstStat);
-            } else {
-                b.addInFront(stat);
             }
         }
     }
@@ -186,9 +127,5 @@ public class NeioClassTranslator extends IncrementalTranslator<Neio, Java7> {
 
         MethodInvocation mi = eFactory().createMethodInvocation(GET_INSTANCE, null, arguments);
         ci.replaceWith(mi);
-    }
-
-    public String getMethodName() {
-        return neio.name() + "$addUses";
     }
 }

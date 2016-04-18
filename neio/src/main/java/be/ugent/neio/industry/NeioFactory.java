@@ -169,6 +169,14 @@ public class NeioFactory extends Java7Factory {
     public FormalParameter createParameter(String name, TypeReference type) {
         return new FormalParameter(name, type);
     }
+    
+    public FormalTypeParameter createFormalTypeParameter(String name) {
+        return new FormalTypeParameter(name);
+    }
+
+    public ExtendsConstraint createExtendsConstraint(TypeReference reference) {
+        return new ExtendsConstraint(reference);
+    }
 
     public ForControl createForControl(ForInit init, Expression condition, StatementExprList update) {
         return new SimpleForControl(init, condition, update);

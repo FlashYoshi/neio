@@ -2,26 +2,33 @@ parser grammar DocumentParser;
 
 options { tokenVocab = DocumentLexer; }
 
-document : HEADER mnl
+document : HEADER
            body
            EOF;
 
-body : content*;
+body : realContent*;
+realContent : content
+            | mnl
+            | nl;
+content : prefixCall                        #prefixC
+          | text                            #textC
+          | multicode                       #multicodeC
+          | content nl (lonecode | scode)   #contentCodeC
+          | (lonecode | scode) nl content   #codeContentC
+          | scode                           #scodeC
+          | lonecode                        #lonecodeC
+          ;
 
-content : ( prefixCall
-          | postfixCall
-          | text
-          | customCommand
-          | CODE)
-          mnl?;
+prefixCall : MethodName S txt;
+// We don't allow spaces next to the MethodName to not confuse us with prefixCalls
+surroundCall : left=(MethodName|HASH|DASH|STAR|BQ|US)+ (inlinecode | WORD) txt? right=(HASH|DASH|STAR|BQ|US)+ {$left.text.equals($right.text)}?;
 
-prefixCall : MethodName+ sentence
-           | BANG (LS_BRACE WORD+ RS_BRACE)? L_BRACE WORD R_BRACE;
+text : (mnl | nl)? txt;
+txt : (S* (inlinecode | WORD | surroundCall) S*)+;
+nl : NL;
+mnl : NL NL+;
 
-text : sentence+;
-
-postfixCall : STUB;
-
-sentence : WORD+ NL;
-customCommand : CC L_BRACE (WORD | UNKNOWN)* R_BRACE;
-mnl : NL+;
+scode : SCOPED_CODE;
+lonecode : LONE_CODE;
+multicode : (scode | lonecode) (NL (scode | lonecode))+;
+inlinecode : CODE CCONTENT;

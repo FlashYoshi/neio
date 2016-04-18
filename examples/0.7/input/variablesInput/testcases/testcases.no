@@ -1,0 +1,43 @@
+[Document]
+
+// {{ scoped RETURNS NOTHING, OWN LINE
+// { ref (Is between/before/after text/prefix method, is not an assignment) RETURNS SOMETHING WE CAN STRINGIFY INLINE
+// { type name: S/D/L}
+// { cc (content creation: is on it's own line, nothing before or after the braces, has an expression with returntype Content as last line) RETURNS CONTENT, OWN LINE
+// { variable decl (same as before but the last line does not return Content) RETURNS NOTHING, OWN LINE
+{
+    String chap = "Chapter 1";
+    String ref1 = "reference1";
+    String full = "This is a full paragraph.";
+    Integer i = 0;
+    Integer j = 18;
+}
+
+// We know that only plain text, or refs are allowed
+# {chap}
+// We can label this chapter right here, it's a trick, not really a language feature
+{Chapter chapterOne = this}
+
+Normally we can just add references like so: {ref1}
+
+If you do really want to use a variable on a line of itself, you have to do so explicitely:
+{return new Paragraph(full)}
+
+Assignments are never printed out, and as _i++_ is actually `i = i + 1`, increments and decrements are not printed out either
+// Does nothing
+{i = i + 1}
+
+We can however have normal expressions like {(i + 1) + 15} be printed out.
+Or we can have multiple expressions follow each other {i + 15} {calculateCoolThings(j)}
+
+{
+    if (i > 0) {
+        System.out.println("{Bigger than 0.");
+    } else {
+        if (i == 0) {
+            System.out.println("Equal to 0}}");
+        } else {
+            System.out.println("Less than 0{}");
+        }
+    }
+}

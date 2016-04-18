@@ -15,6 +15,7 @@ import static be.ugent.neio.util.Constants.VERSION;
  */
 public class Neio extends Java7 {
     public static final String NAME = "Neio";
+    public static final String LONE_CODE = "loneCode";
     public final ChameleonProperty SURROUND;
     public final ChameleonProperty NESTED;
 

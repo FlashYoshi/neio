@@ -1,0 +1,61 @@
+Variables in latex are mostly used for:
+
+* Defining names
+* Filling in templates
+* Creating counters
+* Control sequences: e.g. check if a value has been set or something similar in an if expression
+* Doing some quick calculations saving work when some numbers change: e.g. we have [x] bananas and [y] apples that makes [x+y] pieces of fruit
+* [Solved by functions] Layout info in some way: e.g. print a vector from these arguments, write some formula with these arguments
+
+[Solved by customcommands] Being able to save some things in a list for further reference would be nice. For example adding all green images into a list
+then later referring to them by using this list.
+
+
+Add variables using `` ``
+``
+int a = 15;
+String test = "15 is vijftien";
+int b = 20;
+b++;
+a = math.sqrt(a, 2);
+``
+
+Address them the same way you address labels, using { } this construction allows for + - * and / Maybe ternary operator?
+Parse label body to int if possible
+
+Allow for the return keyword in a `` `` block to allow for bringing out only that one named entity, or a Content object.
+Bringing out a non named entity would be useless, unless it's a content.
+In case addContent wasn't called on the object it will be called after the block
+
+// We don't want the other vars as they are commonly used and would probably nameclash
+``
+	int width = 15;
+	int i = 20;
+	return new Table(width, i);
+``
+
+``
+    Table table = nearestAncestor(Document.class).addContent(new Table());
+``
+
+Table $var16;
+{
+	int width = 15;
+	int i = 20;
+	$var16 = new Table(width, i);
+}
+$var15.addContent($var16);
+
+// We might want to use these vars as they are not commonly used
+``
+	int mytablewidth = 15;
+	int mytablelength = 20;
+	Table table = addContent(new Table(mytablewidth, mytablelength));
+``
+
+{
+	int mytablewidth = 15;
+	int mytablelength = 20;
+	Table table = new Table(mytablewidth, mytablelength);
+	this.addContent(table);
+}
