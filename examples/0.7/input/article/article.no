@@ -1,27 +1,24 @@
 [Article]
-```
-header("S.Vermassen and T. Vervack. The performance of queueing networks with blocking (2014)");
-title("The performance of queueing networks with blocking: a survey paper");
-authors("Stefaan Vermassen", "Titouan Vervack");
-emails("Stefaan.Vermassen@UGent.be", "Titouan Vervack@UGent.be");
-```
+\header("The performance of queueing networks with blocking (2014)")
+\title("The performance of queueing networks with blocking: a survey paper")
+\authors("Stefaan Vermassen", "Stefaan.Vermassen@UGent.be", "Titouan Vervack", "Titouan Vervack@UGent.be")
 
 // Abstract: assume only one paragraph
-```addAbstract(new Abstract());```
+\addAbstract(new Abstract())
 This review presents a comprehensive survey on queueing modeling issues and the related performance evaluation and optimization of queueing networks with blocking.
 To provide a systematic review of current relevant research, a classification scheme is proposed with regard to the key parameters in the network (single- or multiserver configurations, topology, and so on) and the related performance evaluation and optimization approaches.
 Secondly,  it presents ideas for future research by identifying gaps in the current literature.\\
 *Keywords:* Queueing networks, Blocking, Performance evaluation and optimization, Generalized expansion method
 
 // Add 12mm vspace
-```addVSpace(12);```
+\addVSpace(12)
 
 //----------------------------------------------------------------------------------------
 //	ARTICLE CONTENTS
 //----------------------------------------------------------------------------------------
 
 // Start a new chapter, we can customize it so that the first letter in this chapter is a lettrine in the neio class files
-# *Introduction*
+# Introduction
 The evaluation and design of general service, finite waiting room, multi-server queueing networks with blocking is a complex optimization problem.
 Queueing modelling and optimization for the performance assessment of complex manufacturing systems and production lines have been and continue to be the focus of several studies over the past decades.\\
 The aim of this survey paper is twofold. First, it provides an overview of modelling, performance evaluation, and optimization approaches from some queueing-theoretical point-of-view. Second, it presents ideas for future research by identifying gaps in the current literature. 
@@ -31,7 +28,7 @@ It also introduces some general issues that occur when designing and evaluating 
 Finally, concluding remarks and future research directions are given in the last section.
 
 
- # *Queueing networks with blocking*
+# Queueing networks with blocking
 
 A queueing network is a network consisting of several interconnected queues.
 It is a collection of service centers, which represent system resources, and customers, which represent users, jobs or transactions.
@@ -49,13 +46,13 @@ Restricted queueing networks on the other hand have a finite capacity in each no
 If the buffer of the next node is full, blocking occurs. When there are no buffers before the servers, the network is denoted in literature as a zero-buffer queueing network. If more than one server is provided in the network nodes, this is called a multi-server queueing network.
 A further classification can be done based on the network topology, the blocking mechanism, and so on. These issues will be further explained throughout the next sessions.
 
-# *Model types and evaluation methods*
+# Model types and evaluation methods
 A large amount of papers on the general topic of queueing systems with blocking have been published over the past decades and providing an exhaustive overview would be impossible within the limits of this survey.
 In the next subsection, we provide a brief historic overview that summarizes the main steps that have been taken in the modelling and evaluation of such systems.
 In the remaining subsections, we then focus on several of the key issues that arise in the study of these systems.
 
 {relevantwork}
-## *Historical overview*
+## Historical overview
 By 1967, queueing systems with a number of service facilities in series had received quite a bit of attention in the literature. However, only relatively few of these studies had imposed the restriction that only finite queues were allowed. 
 One of the first studies about queueing networks with finite buffers was presented by Hillier and Boling [extrahillier].
 This paper considers a blocking queuing system consisting of __N__ service channels in series where each channel  (except for the first one) has a finite queue and where the input process is such that the first queue is never empty. \\
@@ -79,7 +76,7 @@ In 2013, the problem of allocating servers to maximize the throughput for queues
 In 2014, Cruz and Van Woensel published a review paper about finite queueing modelling and optimization using an advanced queueing network analyser: the generalized expansion method (GEM) [article9].
 Different model approaches are described and optimized with regard to the key parameters in the network. Also in 2014, Smith presented a two-moment approach for calculating the state probability distribution of the performance measures of the queues in these systems [article14].
 
-## *Single- or multi-server configurations*
+## Single- or multi-server configurations
 Queueing networks can have a single- or multi-server configuration in a node. Multiple servers usually result in a better performance up to a certain point but they also have a substantial financial cost.
 Since the performance gain degrades with an increasing amount of servers while the cost increases linearly, one of the research topics is finding the optimal configuration for the number of servers versus the performance of the network.
 Only a few studies are done on single-server configurations.  In 2010, Cruz __et al.__ presented an original methodology to solve a buffer allocation and throughput trade-off problem in single-server general queueing networks [article11].
@@ -87,7 +84,7 @@ Another study that focuses on single-server queueing networks is presented in 20
 The research in this paper is done on single-server queueing networks with exponentially distributed interarrival times and generally distributed service times, configured in an arbitrary acyclic, series-parallel topology.
 There's a lot more research on multi-server configurations because the optimal price/performance issue is very important when dealing with such configurations. 
 
-## *Open or closed queueing networks*
+## Open or closed queueing networks
 Queueing networks can be open or closed.  An open network allows jobs from the outside world, and such jobs eventually leave the system after a long enough period of time. For these kinds of networks the number of jobs in the network varies in time.
 People entering and leaving a queue in a shop or any webservice that accepts and answers to requests are real-life examples of this.\\
 A closed queueing network does not allow any external arrivals and is not able to send customers out of the system.
@@ -96,7 +93,7 @@ This implies that the amount of jobs in the system is constant. In 1984, Whitt i
 Later in 2013, Smith published a study where the problem of optimal workload allocation in closed queueing network models with multi-server exponential infinite-capacity workstations and finite-capacity state-dependent queueing models is examined.\\
 Mixed queueing networks are systems that are open with respect to some customers and are closed with respect to other customers, which is the topic of the study by Balsamo __et al.__ [mixed].
 
-## *Topology*
+## Topology
 Queueing networks can also be distinguished based on their topology.
 One topological possibility is a split-merge system: one flow splits into two or more flows or multiple flows merge into a single flow. Another possibility is tandem lines.
 This is a finite chain of queues where each customer must visit each queue in a fixed order. In a split/merge or tandem topology, no feedback loops are allowed. Allowing these loops creates a difficulty to handle dependency in the network.
@@ -104,7 +101,7 @@ Jain and Smith have analysed series, merge, and splitting topologies in 1994 [ar
 The following components are examined in the paper: (i) queues in series; (ii) queues in parallel; (iii) queues with merging (or assembly) topologies; and, finally, (iv) queues with splitting (or burst) topologies.
 The study presented by Smith and Cruz in 2004 [article13] explains why feedback loops, such as those found in a semiconductor manufacturing process for example, are difficult to handle.
 
-## *Blocking mechanisms*
+## Blocking mechanisms
 As explained before, blocking occurs when a customer has finished its service and no free space in the buffer or servers is available at the next node. 
 To decide when and where to block, there are a three blocking algorithms we can consider: Blocking After Service (BAS), Blocking Before Service (BBS) and Repetitive Service (RS).
 BAS means that jobs block in the current node after service has been provided if the buffer of the next node is full. When using BBS, jobs block in the current node before service has been provided if the buffer of the next node is full.
@@ -140,7 +137,7 @@ Once these three stages are completed, an expanded network is obtained which can
 figGem.setWidth(0.4*this.getTextwidth())
 ```
 
-## *Network Performance Optimization*
+## Network Performance Optimization
 ### Multi-Objective Optimization
 One commonly used technique is using Multi-Objective Optimization (MOO), which is addressed by Andriansyah __et al.__ in [own].
 They were the first to use the MOO method, combined with a genetic search algorithm, to evaluate this type of queueing networks.
@@ -148,7 +145,7 @@ The article tries to optimize two conflicting objectives, minimizing the total n
 More servers would increase the throughput, but the cost related to the increase must also be taken into account. The aim of the MOO in this case would be to find the best trade-off between the amount of servers and the throughput.
 In the next step, a genetic algorithm is used to optimize the MOO function, which is explained in the next section.
 
-### *Optimization methodologies*
+### Optimization methodologies
 There exist many optimization methods. In this survey paper, two methodologies are described which have proven to be successful, namely, Powell’s algorithm [powel] and a genetic algorithm approach. Of course, small problems can always be enumerated.
 Powell's algorithm can be used for example to find the optimal amount of servers in the system. This conjugate direction method is an algorithm used to find a local minimum of a function.
 The minimisation of this function is done by executing a bi-directional search along each of the search vectors. A linear combination of these vectors then results in a new search vector which is added to the list.
@@ -157,20 +154,20 @@ Genetic Algorithms (GA) are optimization algorithms to perform an approximate gl
 Each of these operators may be implemented in several different ways, each one of them characterizing a specific instance of the GA. Additionally, convergence of the GA is guaranteed by assigning a fitness to each population member.
 This approach is successfully been used for both single-objective applications, by Lin [single1] and Calvete __et al.__ [single2], and for multiple-objective-applications, by Carrano __et al.__ [multi1] and Cruz __et al.__ [article11].
 
-# *Conclusions and future research*
+# Conclusions and future research
 The many papers that were mentioned in this survey show that queueing networks with blocking are a challenging research topic. The paper by Andriansyah __et al.__ [own] contains the state-of-the-art on how to evaluate these kinds of networks.
 To assess the quality of the GEM as an approximate performance evaluation tool, several experiments are conducted. Andriansyah __et al.__ conducted experiments using different topologies to both evaluate and optimize the performance of a zero-buffer queueing network [own].
 Afterwards, simulation experiments were set up for the selected cases and the results were compared. The analytical results in [own] seemed very reasonable and acceptable, although they were not always as accurate as desired.
 For instance, under extreme high utilization rates, that is, heavy traffic and quite a few servers. Nonetheless in the literature, the GEM has proven to be a valuable approach.
 
-## *Future research suggestions*
+## Future research suggestions
 In most papers, the throughput is considered as the main performance measure. It would be interesting to evaluate other measures such as cycle time and work-in-process. Another topic for future research is the study of networks with cycles, as many important industrial systems have loops.
 
 //----------------------------------------------------------------------------------------
 //	REFERENCE LIST
 //---------------------------------------------------------------------------------------
 
-```addBibliography();```
+\addBibliography
 +[extrahillier]  F. Hillier and R. Boling. Finite queues in series with exponential or Erlang service times: a numerical approach. __Operations Research__, vol. 15, no. 2, pp. 286-303, 1967.
 
 +[article2] D. Hildebrand. On the capacity of tandem server, finite queue, service systems. __Operations Research__, vol. 16, no. 1, pp. 72-82, 1968.

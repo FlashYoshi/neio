@@ -10,8 +10,10 @@ This is the first paragraph of our simple document.
 ## Chapter 1.1
 But for this to be a real document we do of course need more than one chapter and more than one indentation level, so... voila!
 
-\use(FibEnumerate.class, Enumerate.class)
-\use(FibItem.class, EnumerateItem.class)
+{
+    use(FibEnumerate.class, Enumerate.class);
+    use(FibItem.class, EnumerateItem.class);
+}
 - Item 1
 - Item 2
 - Item 3

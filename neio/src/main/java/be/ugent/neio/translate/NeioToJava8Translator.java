@@ -85,6 +85,8 @@ public class NeioToJava8Translator extends IncrementalTranslator<Neio, Java7> {
         for (Namespace namespace : document.view().namespace().getSubNamespace("neio").descendantNamespaces()) {
             ns.addImport(ooFactory.createDemandImport(namespace.fullyQualifiedName()));
         }
+
+        ns.addImport(ooFactory.createDemandImport("java.util"));
         document.add(ns);
     }
 }

@@ -22,7 +22,7 @@ public class NeioNameExpression extends JavaNameExpression {
     }
 
     @Override
-    protected Type actualType() throws LookupException {
+    protected ContextType actualType() throws LookupException {
         Type returnType = super.actualType();
         Type contextType = (((LocalVariable)getElement()).getInitialization()).getType();
         ContextType ctx = new ContextType(returnType, contextType);

@@ -12,6 +12,8 @@ import be.ugent.neio.industry.NeioExpressionFactory;
 import be.ugent.neio.industry.NeioFactory;
 import be.ugent.neio.language.Neio;
 import be.ugent.neio.model.modifier.Nested;
+import be.ugent.neio.model.modifier.Surround;
+import be.ugent.neio.util.Constants;
 import org.aikodi.chameleon.core.document.Document;
 import org.aikodi.chameleon.core.lookup.LookupException;
 import org.aikodi.chameleon.core.modifier.Modifier;
@@ -19,6 +21,7 @@ import org.aikodi.chameleon.core.namespace.NamespaceReference;
 import org.aikodi.chameleon.core.namespacedeclaration.Import;
 import org.aikodi.chameleon.core.namespacedeclaration.NamespaceDeclaration;
 import org.aikodi.chameleon.core.reference.CrossReferenceTarget;
+import org.aikodi.chameleon.core.tag.TagImpl;
 import org.aikodi.chameleon.exception.ChameleonProgrammerException;
 import org.aikodi.chameleon.oo.expression.*;
 import org.aikodi.chameleon.oo.method.Method;
@@ -28,6 +31,7 @@ import org.aikodi.chameleon.oo.statement.Block;
 import org.aikodi.chameleon.oo.statement.Statement;
 import org.aikodi.chameleon.oo.type.Type;
 import org.aikodi.chameleon.oo.type.TypeReference;
+import org.aikodi.chameleon.oo.type.generics.FormalTypeParameter;
 import org.aikodi.chameleon.oo.type.generics.TypeArgument;
 import org.aikodi.chameleon.oo.type.generics.TypeParameter;
 import org.aikodi.chameleon.oo.type.inheritance.SubtypeRelation;
@@ -37,16 +41,31 @@ import org.aikodi.chameleon.support.expression.AssignmentExpression;
 import org.aikodi.chameleon.support.expression.ClassCastExpression;
 import org.aikodi.chameleon.support.member.simplename.variable.MemberVariableDeclarator;
 import org.aikodi.chameleon.support.modifier.*;
-import org.aikodi.chameleon.support.statement.*;
+import org.aikodi.chameleon.support.statement.ForControl;
+import org.aikodi.chameleon.support.statement.ForStatement;
+import org.aikodi.chameleon.support.statement.StatementExprList;
+import org.aikodi.chameleon.support.statement.WhileStatement;
 import org.aikodi.chameleon.support.variable.LocalVariableDeclarator;
+import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.Lexer;
+import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.neio.antlr.ClassParser.*;
 import org.neio.antlr.ClassParserBaseVisitor;
+import org.neio.antlr.DocumentLexer;
+import org.neio.antlr.DocumentParser;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static be.ugent.neio.util.Constants.ASSIGNMENT;
 
 /**
  * @author Titouan Vervack
@@ -55,13 +74,17 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     private final Document document;
     private final Neio neio;
+    private final JavaView view;
     // Can not use keyword
     private boolean interphase;
+    private boolean contextType;
 
     public ClassConverter(Document document, JavaView view) {
         this.document = document;
         this.neio = view.language(Neio.class);
+        this.view = view;
         interphase = false;
+        contextType = false;
     }
 
     protected NeioFactory ooFactory() {
@@ -130,6 +153,9 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         Type type = ooFactory().createRegularType(ctx.Identifier().getText());
         // Every class is allowed to be public for now
         type.addModifier(new Public());
+        if (ctx.ABSTRACT() != null) {
+            type.addModifier(new Abstract());
+        }
 
         if (ctx.header().INTERFACE() != null) {
             type.addModifier(new Interface());
@@ -238,7 +264,9 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     @Override
     public Statement visitAssignmentStatement(@NotNull AssignmentStatementContext ctx) {
-        return ooFactory().createStatement(visitAssignmentExpression(ctx.assignmentExpression()));
+        Statement statement = ooFactory().createStatement(visitAssignmentExpression(ctx.assignmentExpression()));
+        statement.setMetadata(new TagImpl(), ASSIGNMENT);
+        return statement;
     }
 
     @Override
@@ -258,7 +286,9 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     @Override
     public Statement visitVariableDeclarationStatement(@NotNull VariableDeclarationStatementContext ctx) {
-        return visitVariableDeclaration(ctx.variableDeclaration());
+        LocalVariableDeclarator lvd = visitVariableDeclaration(ctx.variableDeclaration());
+        lvd.setMetadata(new TagImpl(), ASSIGNMENT);
+        return lvd;
     }
 
     @Override
@@ -289,13 +319,15 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     @Override
-    public IfThenElseStatement visitIfStatement(@NotNull IfStatementContext ctx) {
-        return visitIfteStatement(ctx.ifteStatement());
+    public Statement visitIfStatement(@NotNull IfStatementContext ctx) {
+        Statement statement = visitIfteStatement(ctx.ifteStatement());
+        statement.setMetadata(new TagImpl(), ASSIGNMENT);
+        return statement;
     }
 
     @Override
-    public IfThenElseStatement visitIfteStatement(@NotNull IfteStatementContext ctx) {
-        Expression expression = (Expression) visit(ctx.ifCondition);
+    public Statement visitIfteStatement(@NotNull IfteStatementContext ctx) {
+        Expression condition = (Expression) visit(ctx.ifCondition);
         Statement elseStatement = null;
         if (ctx.elseBlock != null) {
             elseStatement = visitBlock(ctx.elseBlock);
@@ -303,7 +335,28 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
             elseStatement = visitIfteStatement(ctx.elif);
         }
 
-        return ooFactory().createIfStatement(expression, visitBlock(ctx.ifBlock), elseStatement);
+        Block ifBlock = visitBlock(ctx.ifBlock);
+
+        // If statement
+        /*if (ctx.elif != null || ifBlock.nbStatements() > 1
+                || ifBlock.nearestDescendants(Statement.class).get(0).metadata(ASSIGNMENT) != null
+                || (elseStatement != null &&
+                (((Block) elseStatement).nbStatements() > 1
+                        || elseStatement.nearestDescendants(Statement.class).get(0).metadata(ASSIGNMENT) != null))
+                || ifBlock.nearestDescendants(ReturnStatement.class).size() > 0
+                || elseStatement == null
+                || elseStatement.nearestDescendants(ReturnStatement.class).size() > 0
+                || ifBlock.nearestDescendants(RegularMethodInvocation.class).get(0).name().equals("void")) {*/
+        return ooFactory().createIfStatement(condition, ifBlock, elseStatement);
+        /*} // Ternary operator
+        else {
+            Expression conditionalExpression = eFactory().createConditionalExpression(condition,
+                    ifBlock.nearestDescendants(Expression.class).get(0),
+                    elseStatement.nearestDescendants(Expression.class).get(0));
+            List<Expression> arguments = new ArrayList<>();
+            arguments.add(conditionalExpression);
+            return ooFactory().createStatement(eFactory().createMethodInvocation(IFCALL, eFactory().createNameExpression(IFCLASS), arguments));
+        }*/
     }
 
     @Override
@@ -356,7 +409,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     @Override
     public NameExpression visitIdentifierExpression(@NotNull IdentifierExpressionContext ctx) {
-        return eFactory().createNameExpression(ctx.Identifier().getText());
+        return eFactory().createNameExpression(contextType, ctx.Identifier().getText());
     }
 
     @Override
@@ -366,7 +419,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     @Override
     public MethodInvocation visitSelfCallExpression(@NotNull SelfCallExpressionContext ctx) {
-        return eFactory().createMethodInvocation(ctx.name.getText(), null, (List<Expression>) visit(ctx.arguments()));
+        return eFactory().createMethodInvocation(contextType, ctx.name.getText(), ooFactory().createThisLiteral(), (List<Expression>) visit(ctx.arguments()));
     }
 
     @Override
@@ -375,7 +428,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         Expression result;
         if (ctx.args != null) {
             List<Expression> arguments = ((List<Expression>) visit(ctx.args));
-            result = eFactory().createMethodInvocation(ctx.name.getText(), target, arguments);
+            result = eFactory().createMethodInvocation(contextType, ctx.name.getText(), target, arguments);
         } else {
             result = new NameExpression(ctx.name.getText(), target);
         }
@@ -426,7 +479,22 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     @Override
-    public Object visitNotExpression(@NotNull NotExpressionContext ctx) {
+    public Expression visitNotExpression(@NotNull NotExpressionContext ctx) {
+        return eFactory().createPrefixOperatorInvocation(ctx.op.getText(), (Expression) visit(ctx.right));
+    }
+
+    @Override
+    public Expression visitPostfixCrementExpression(@NotNull PostfixCrementExpressionContext ctx) {
+        return eFactory().createPostfixOperatorInvocation(ctx.op.getText(), (Expression) visit(ctx.left));
+    }
+
+    @Override
+    public Expression visitPrefixCrementExpression(@NotNull PrefixCrementExpressionContext ctx) {
+        return eFactory().createPrefixOperatorInvocation(ctx.op.getText(), (Expression) visit(ctx.right));
+    }
+
+    @Override
+    public Object visitPrefixExpression(@NotNull PrefixExpressionContext ctx) {
         return eFactory().createPrefixOperatorInvocation(ctx.op.getText(), (Expression) visit(ctx.right));
     }
 
@@ -483,6 +551,10 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
             if (modifier.NESTED() != null && !modifier.NESTED().getText().isEmpty() && ctx.modifier().size() == 1) {
                 addPublic = true;
             }
+
+            if (modifier.SURROUND() != null && !modifier.SURROUND().getText().isEmpty()) {
+                methodHeader.setName(Constants.SURROUND + methodHeader.name());
+            }
             method.addModifier(visitModifier(modifier));
         }
 
@@ -520,7 +592,9 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     @Override
     public Modifier visitModifier(@NotNull ModifierContext ctx) {
-        if (ctx.PRIVATE() != null) {
+        if (ctx.ABSTRACT() != null) {
+            return new Abstract();
+        } else if (ctx.PRIVATE() != null) {
             return new Private();
         } else if (ctx.PROTECTED() != null) {
             return new Protected();
@@ -528,6 +602,8 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
             return new Public();
         } else if (ctx.NESTED() != null) {
             return new Nested();
+        } else if (ctx.SURROUND() != null) {
+            return new Surround();
         } else if (ctx.FINAL() != null) {
             return new Final();
         } else if (ctx.STATIC() != null) {
@@ -602,6 +678,16 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     @Override
+    public List<FormalTypeParameter> visitBoundedTypeParameter(@NotNull BoundedTypeParameterContext ctx) {
+        List<FormalTypeParameter> list = new ArrayList<>();
+        FormalTypeParameter parameter = ooFactory().createFormalTypeParameter(ctx.Identifier().getText());
+        parameter.addConstraint(ooFactory().createExtendsConstraint(visitType(ctx.bound)));
+        list.add(parameter);
+
+        return list;
+    }
+
+    @Override
     public List<TypeArgument> visitTypeArguments(@NotNull TypeArgumentsContext ctx) {
         List<TypeArgument> typeArguments = new ArrayList<>();
 
@@ -672,6 +758,53 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         return ooFactory().createCharLiteral(ctx.CharLiteral().getText());
     }
 
+    @Override
+    public Block visitTextModeStatement(@NotNull TextModeStatementContext ctx) {
+        DocumentConverter converter = new DocumentConverter(document, view);
+        String text = getText(ctx.getText(), "'''".length());
+        text = trimText(text);
+        text = text.trim();
+        DocumentParser parser = getParser(text);
+
+        return converter.visitBody(parser.body());
+    }
+
+    private String trimText(String text) {
+        String[] lines = text.split("\r\n | [\n\r]");
+        StringBuilder builder = new StringBuilder();
+        for (String line : lines) {
+            builder.append(line.trim()).append("\n");
+        }
+
+        return builder.toString();
+    }
+
+    @Override
+    public Expression visitTextMode(@NotNull TextModeContext ctx) {
+        DocumentConverter converter = new DocumentConverter(document, view);
+        DocumentParser parser = getParser(getText(ctx.getText(), "'''".length()));
+
+        return converter.visitTxt(parser.txt());
+    }
+
+    private String getText(String textMode, int sepLen) {
+        return textMode.substring(sepLen, textMode.length() - sepLen);
+    }
+
+    private DocumentParser getParser(String s) {
+        InputStream stream = new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
+        ANTLRInputStream input = null;
+        try {
+            input = new ANTLRInputStream(stream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Lexer lexer = new DocumentLexer(input);
+        TokenStream tokens = new CommonTokenStream(lexer);
+
+        return new DocumentParser(tokens);
+    }
+
     private String visitIdentifiers(List<TerminalNode> identifiers) {
         String result = "";
         if (identifiers != null && identifiers.size() > 0) {
@@ -685,5 +818,9 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         }
 
         return result;
+    }
+
+    public void enableContextTypes() {
+        contextType = true;
     }
 }

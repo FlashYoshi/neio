@@ -1,0 +1,31 @@
+// As always, we start out by mentioning that this is a document
+[Document]
+
+/* These multi-line comments
+    Should also work
+*/
+# Chapter 1
+This is the first paragraph of our simple document.
+
+## Chapter 1.1
+But for this to be a real document we do of course need more than one chapter and more than one indentation level, so... voila!
+
+// There should be a space after the methodcall
+### Chapter 1.1.1
+Well LaTeX has one more level of indentation, so we should make use of it!
+
+// This chapter is only here to prove that it doesn't disturb the next block or code
+// nor the block starting at Chapter 2
+{{ Chapter test = new Chapter('''Test''', 1) }}
+
+{
+    Chapter c = new Chapter('''Chapter 17.1.2''', 3);
+    c.newline().appendText('''Nice paragraph!''');
+    return c;
+}
+# Chapter 2
+Lastly a chapter ending with two paragraphs should do the trick
+
+This is the end of this very exciting document, but let's first try to make this paragraph a little longer. Only 80 characters per line when we have these giant screens is a bit outdated isn't it?
+Let's also add some more newlines to see how we deal with those.
+

@@ -5,6 +5,7 @@ import be.kuleuven.cs.distrinet.jnome.core.expression.invocation.JavaInfixOperat
 import be.kuleuven.cs.distrinet.jnome.core.type.BasicJavaTypeReference;
 import be.kuleuven.cs.distrinet.jnome.output.Java7Syntax;
 import be.ugent.neio.model.modifier.Nested;
+import be.ugent.neio.model.modifier.Surround;
 import org.aikodi.chameleon.core.element.Element;
 import org.aikodi.chameleon.core.lookup.LookupException;
 import org.aikodi.chameleon.core.modifier.Modifier;
@@ -21,6 +22,7 @@ import org.aikodi.chameleon.support.member.simplename.method.RegularMethodInvoca
 import org.aikodi.chameleon.support.statement.*;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * @author Titouan Vervack
@@ -35,6 +37,8 @@ public class NeioSyntax extends Java7Syntax {
         map.put("*", "star");
         map.put("=", "equalSign");
         map.put("-", "dash");
+        map.put("_", "underscore");
+        map.put("`", "backquote");
         ALIASES = Collections.unmodifiableMap(map);
     }
 
@@ -57,7 +61,7 @@ public class NeioSyntax extends Java7Syntax {
 
     @Override
     protected String toCodeModifier(Modifier element) {
-        if (element instanceof Nested) {
+        if (element instanceof Nested || element instanceof Surround) {
             return "";
         } else {
             return super.toCodeModifier(element);
@@ -104,6 +108,9 @@ public class NeioSyntax extends Java7Syntax {
     }
 
     private String addCatchAll(Expression expr) {
+        if (expr == null) {
+            return null;
+        }
         // This will deduce if a basic try catch is needed for this statement and create it if need be
         if (expr.nearestAncestor(TryStatement.class) == null && expr instanceof MethodInvocation) {
             Set exceptions = getExceptions((MethodInvocation) expr);
@@ -172,10 +179,13 @@ public class NeioSyntax extends Java7Syntax {
 
     // Creates a valid method name as Neio allows for symbols in its methodnames
     private String createValidMethodname(String methodname) {
-        if (ALIASES.get(methodname) != null) {
-            return ALIASES.get(methodname);
-        } else {
-            return methodname;
+        String result = methodname;
+        for (String s : ALIASES.keySet()) {
+            if (result.contains(s)) {
+                result = result.replaceAll(Pattern.quote(s), ALIASES.get(s));
+            }
         }
+
+        return result;
     }
 }

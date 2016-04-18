@@ -1,0 +1,33 @@
+namespace neio.stdlib;
+
+import java.util.Arrays;
+
+class Person;
+
+String firstname;
+String name;
+String email;
+
+Person(String firstname, String name, String email) {
+	this.firstname = firstname;
+	this.name = name;
+	this.email = email;
+}
+
+Person(String fullname, String email) {
+	this.firstname = Arrays.asList(fullname.split(" ")).get(0);
+	this.name = Arrays.asList(fullname.split(" ")).get(1);
+	this.email = email;
+}
+
+String getName() {
+	return firstname + " " + name;
+}
+
+String getShortName() {
+	return firstname.charAt(0) + ". " + name;
+}
+
+String getEmail() {
+	return email;
+}

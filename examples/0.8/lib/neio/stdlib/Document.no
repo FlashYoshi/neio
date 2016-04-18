@@ -1,0 +1,85 @@
+namespace neio.stdlib;
+
+import neio.lang.Container;
+import neio.lang.Text;
+import neio.lang.BoldText;
+import neio.lang.MonospaceText;
+import neio.lang.ItalicText;
+import java.util.List;
+import java.util.ArrayList;
+
+class Document extends Container;
+
+private List<String> packages = new ArrayList<String>();
+
+Document() {
+	packages.add("a4wide");
+	packages.add("graphicx");
+}
+
+Chapter #(Text title) {
+    Chapter chapter = new Chapter(title, 1);
+    addContent(chapter);
+
+    return chapter;
+}
+
+Chapter addChapter(Chapter chapter) {
+	addContent(chapter);
+	
+	return chapter;
+}
+
+Integer calculateCoolThings(Integer j) {
+    return 42;
+}
+
+Itemize *(Text text) {
+	Itemize itemize = new Itemize();
+	ItemizeItem item = new ItemizeItem(text, itemize, 1);
+	itemize.*(item);
+    addContent(itemize);
+
+    return itemize;
+}
+
+Paragraph newline() {
+    Paragraph p = new Paragraph();
+    addContent(p);
+	
+    return p;
+}
+
+Paragraph multinewline() {
+    return newline();
+}
+
+Image image(String imageName) {
+    return image(null, imageName);
+}
+
+Image image(Text caption, String imageName) {
+	new Image(caption, imageName) neioImage;
+	addContent(neioImage);
+	
+	return neioImage;
+}
+
+List<String> packages() {
+    return packages;
+}
+
+String toTex() {
+	StringBuilder tex = new StringBuilder("\\documentclass{article}\n");
+	for (int i = 0; i < packages.size(); i = i + 1) {
+		tex.append("\\usepackage{").append(packages.get(i)).append("}\n");
+	}
+	
+	tex.append("\\setlength{\\parindent}{0em}\n")
+         .append("\\setlength{\\parskip}{1em}\n")
+         .append("\\begin{document}\n")
+		 .append(super.toTex())
+		 .append("\n\\end{document}\n");
+
+	return tex.toString();
+}

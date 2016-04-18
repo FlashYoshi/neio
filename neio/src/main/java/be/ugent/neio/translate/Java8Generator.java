@@ -1,12 +1,17 @@
 package be.ugent.neio.translate;
 
 import be.kuleuven.cs.distrinet.jnome.core.expression.invocation.JavaMethodInvocation;
+import be.ugent.neio.expression.NeioMethodInvocation;
+import be.ugent.neio.expression.NeioNameExpression;
 import be.ugent.neio.industry.NeioExpressionFactory;
 import be.ugent.neio.industry.NeioFactory;
 import be.ugent.neio.language.Neio;
 import be.ugent.neio.model.document.TextDocument;
+import be.ugent.neio.util.CodeTag;
+import be.ugent.neio.util.Constants;
 import org.aikodi.chameleon.core.element.Element;
 import org.aikodi.chameleon.core.lookup.LookupException;
+import org.aikodi.chameleon.core.tag.TagImpl;
 import org.aikodi.chameleon.core.variable.Variable;
 import org.aikodi.chameleon.exception.ChameleonProgrammerException;
 import org.aikodi.chameleon.oo.expression.Expression;
@@ -18,10 +23,14 @@ import org.aikodi.chameleon.oo.statement.Block;
 import org.aikodi.chameleon.oo.statement.Statement;
 import org.aikodi.chameleon.oo.type.Type;
 import org.aikodi.chameleon.oo.variable.VariableDeclaration;
+import org.aikodi.chameleon.support.expression.AssignmentExpression;
 import org.aikodi.chameleon.support.expression.ThisLiteral;
 import org.aikodi.chameleon.support.member.simplename.method.NormalMethod;
 import org.aikodi.chameleon.support.member.simplename.method.RegularMethodInvocation;
+import org.aikodi.chameleon.support.statement.ReturnStatement;
+import org.aikodi.chameleon.support.variable.LocalVariable;
 import org.aikodi.chameleon.support.variable.LocalVariableDeclarator;
+import org.aikodi.chameleon.util.Util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,9 +43,10 @@ import static be.ugent.neio.util.Constants.*;
 public class Java8Generator {
 
     private static final String VAR_NAME = "$var";
-    public static final String ROOT = VAR_NAME + "0";
+    private static final String ROOT = VAR_NAME + "0";
     private Neio neio;
     private int id;
+    private String lastElement = null;
 
     private NeioExpressionFactory eFactory() {
         return (NeioExpressionFactory) neio.plugin(ExpressionFactory.class);
@@ -67,21 +77,55 @@ public class Java8Generator {
         // The defined variables
         Stack<Variable> variables = new Stack<>();
         // Use a string as we constantly have to create new NameExpressions
-        String lastElement = null;
+        lastElement = null;
 
         Block block = new Block();
         oldBlock.replaceWith(block);
-        for (Statement statement : oldBlock.statements()) {
-            // Is this a Block?
-            // If so, it is an inline code block
-            if (getNearestElement(statement, Statement.class) != null) {
-                block.addStatement(statement);
-                processInlineBlock(lastElement, (Block) statement, variables);
-                continue;
+        Block loneCode = oFactory().createBlock();
+        loneCode.setMetadata(new TagImpl(), Neio.LONE_CODE);
+        int prevCodeId = -1;
 
+        List<Statement> statements = new ArrayList<>(oldBlock.statements());
+        for (int i = 0; i < statements.size(); i++) {
+            Statement statement = statements.get(i);
+            // Is this a block of lonecode
+            if (statement.hasMetadata(Neio.LONE_CODE)) {
+                int id = ((CodeTag) statement.metadata(Neio.LONE_CODE)).id();
+                // New codeblock
+                if (loneCode.nbStatements() <= 0) {
+                    prevCodeId = id;
+                }
+                // Statement in same block
+                if (id == prevCodeId) {
+                    loneCode.addStatement(statement);
+                    // Accumulate all of the statements of the lonecode
+                    if (i < statements.size() - 1) {
+                        continue;
+                    }
+                    // Process the last instruction, aka the last lonecode
+                    else {
+                        statement = loneCode;
+                    }
+                }
+                // New lonecode
+                else {
+                    prevCodeId = id;
+                    statement = loneCode;
+                    // We still have to process the second block
+                    i--;
+                }
             }
-            // Add the statement to the new block so that it can do lookups using the new block
-            block.addStatement(statement);
+            // Set the counter back by one and process the lonecode
+            else if (loneCode.nbStatements() > 0) {
+                i--;
+                statement = loneCode;
+            }
+
+            // Handles a codeblock if there is one
+            statement = fixCodeBlock(block, statement, variables, loneCode);
+            if (statement == null) {
+                continue;
+            }
 
             Stack<RegularMethodInvocation> callStack = new Stack<>();
             // MethodInvocations start from the back so push the invocations on a stack to get the correct order
@@ -90,60 +134,290 @@ public class Java8Generator {
             while ((inv = getInvocation(methodChain)) != null) {
                 callStack.push(inv);
                 methodChain = inv;
+                if (inv.getTarget() instanceof ThisLiteral) {
+                    break;
+                }
             }
 
-            // Turn the methodchain into local variables, one by one
-            while (!callStack.isEmpty()) {
-                RegularMethodInvocation call = callStack.pop();
-                fixNestedMethod(call);
-
-                // FIXME: instanceof until ThisLiteral stops wrongfully being a literal
-                if (call.getTarget() != null && call.getTarget() instanceof ThisLiteral) {
-                    //THIS found, substitute it by the last element
-                    call.getTarget().replaceWith(eFactory().createNeioNameExpression(lastElement));
-                }
-
-                // Get the method to know which type the variable will have to be (= returntype)
-                NormalMethod method = call.getElement();
-                // Type instead of TypeReference as TypeReference does not return a TypeReference with fqn
-                Type returnType = method.returnType();
-
-                // Add a prefix if this is not a constructor
-                Type type = method.nearestAncestor(Type.class);
-                String prefix = method.isTrue(neio.CONSTRUCTOR) ? null : getPrefix(type, variables);
-                RegularMethodInvocation clone = (RegularMethodInvocation) call.clone();
-                clone.setTarget(prefix == null ? null : eFactory().createNeioNameExpression(prefix));
-
-                String varName;
-                VariableDeclaration var;
-                if ((var = getVarDeclaration(methodChain)) != null) {
-                    // Use the variable name defined in the statement
-                    varName = var.name();
-                } else {
-                    // Create a new variable name
-                    varName = getVarName();
-                }
-                LocalVariableDeclarator lvd = oFactory().createLocalVariable(returnType.getFullyQualifiedName(), varName, clone);
-
-                variables.push(lvd.variableDeclarations().get(0).variable());
-                lastElement = variables.peek().name();
-                block.addStatement(lvd);
-            }
-
-            // Remove the old statement from the block that will printed to Java
-            block.removeStatement(statement);
+            breakupMethodChain(callStack, variables, block, methodChain, statement);
         }
 
         return block;
     }
 
-    private void processInlineBlock(String lastElement, Block block, Stack<Variable> variables) throws LookupException {
-        if (lastElement == null) {
-            throw new ChameleonProgrammerException("Inline code blocks are not allowed as the first element in a document!");
+    private void breakupMethodChain(Stack<RegularMethodInvocation> callStack, Stack<Variable> variables, Block block, Element methodChain, Statement statement) throws LookupException {
+        // Turn the methodchain into local variables, one by one
+        while (!callStack.isEmpty()) {
+            // Add the statement to the new block so that it can do lookups using the new block
+            // Do so in the loop to be able to use the newly defined variables (otherwise they are defined after this
+            // statement)
+            block.addStatement(statement);
+            RegularMethodInvocation call = callStack.pop();
+            fixNestedMethod(call);
+
+            // Make certain to call surround methods on the right targets
+            for (NeioMethodInvocation n : call.descendants(NeioMethodInvocation.class)) {
+                if (n.metadata(Constants.SURROUND) != null) {
+                    if (n.getTarget() == null) {
+                        NeioNameExpression expr = eFactory().createNeioNameExpression(lastElement);
+                        n.setTarget(expr);
+                        setThis(n, expr, variables);
+                    }
+                }
+            }
+
+            // Substitute 'this' by the last element
+            for (ThisLiteral t : call.descendants(ThisLiteral.class)) {
+                NeioNameExpression expr = eFactory().createNeioNameExpression(lastElement);
+                t.replaceWith(expr);
+                // Check if we're a methodcall
+                if (expr.parent() != null) {
+                    String prefix = getPrefix(((RegularMethodInvocation) expr.parent()), variables);
+                    if (prefix != null) {
+                        expr.replaceWith(eFactory().createNeioNameExpression(prefix));
+                    }
+                }
+            }
+
+            String prefix = getPrefix(call, variables);
+            RegularMethodInvocation clone = (RegularMethodInvocation) call.clone();
+            clone.setTarget(prefix == null ? null : eFactory().createNeioNameExpression(prefix));
+
+            String varName;
+            VariableDeclaration var;
+            if ((var = getVarDeclaration(methodChain)) != null) {
+                // Use the variable name defined in the statement
+                varName = var.name();
+            } else {
+                // Create a new variable name
+                varName = getVarName();
+            }
+
+            NormalMethod method = call.getElement();
+            // Type instead of TypeReference as TypeReference does not return a TypeReference with fqn
+            Type returnType = method.returnType();
+            createAndAddLocalVar(returnType.name(), varName, clone, variables, block);
+            // Don't forget to remove the old (non broken up) statement
+            block.removeStatement(statement);
+        }
+    }
+
+    private LocalVariableDeclarator createAndAddLocalVar(String typeName, String varName, Expression e, Stack<Variable> variables, Block block) {
+        LocalVariableDeclarator lvd = oFactory().createLocalVariable(typeName, varName, e);
+        variables.push(lvd.variableDeclarations().get(0).variable());
+        lastElement = variables.peek().name();
+        block.addStatement(lvd);
+
+        return lvd;
+    }
+
+    /**
+     * Switches out returnstatements for {@code appendContent} and calls {@code processCodeBlock}
+     *
+     * @param block     The block containing the processed statements
+     * @param statement The statement we assume to be a code block
+     * @param variables The stack of previously defined variables
+     * @param loneCode  The block of loneCode, passed to be able to clear it if needed
+     * @return {@code null} if the block was processed, {@code statement} if {@code statement} was not a Block
+     * @throws LookupException
+     */
+    private Statement fixCodeBlock(Block block, Statement statement, Stack<Variable> variables, Block loneCode) throws LookupException {
+        // Is statement a Block?
+        if (getNearestElement(statement, Statement.class) != null) {
+            block.addStatement(statement);
+            Block blockStatement = (Block) statement;
+            processCodeBlock(blockStatement, variables);
+            if (statement.hasMetadata(Neio.LONE_CODE)) {
+                if (statement.hasDescendant(ReturnStatement.class)) {
+                    blockStatement = fixReturnStatement(blockStatement, variables);
+                } else if (makeReturnable(blockStatement.statement(blockStatement.nbStatements() - 1))) {
+                    blockStatement = fixReturnStatement(blockStatement, variables);
+                }
+                block.removeStatement(statement);
+                block.addStatements((blockStatement.statements()));
+                loneCode.clear();
+            }
+            // No further processing required
+            return null;
         }
 
-        // Replace occurences of 'this'
-        for (Element replacee : block.descendants(ThisLiteral.class)) {
+        // Process this statement further as it isn't a block
+        return statement;
+    }
+
+    /**
+     * Checks if the last statement in a lone code block is a return statement with missing return keyword
+     *
+     * @param statement The last statement in the block
+     * @return True if a statement was made into a returnstatement
+     */
+    private boolean makeReturnable(Statement statement) {
+        if (statement.metadata(ASSIGNMENT) == null) {
+            Expression e = statement.nearestDescendants(Expression.class).get(0);
+            Statement returnStatement = oFactory().createReturnStatement(e);
+            statement.replaceWith(returnStatement);
+            return true;
+        }
+
+        return false;
+    }
+
+    private String getPrefix(RegularMethodInvocation call, Stack<Variable> variables) throws LookupException {
+        // Get the method to know which type the variable will have to be (= returntype)
+        NormalMethod method = call.getElement();
+
+        // Add a prefix if this is not a constructor
+        Type type = method.nearestAncestor(Type.class);
+        return method.isTrue(neio.CONSTRUCTOR) ? null : getPrefix(type, variables);
+    }
+
+    /**
+     * Checks if the return statement in an inline code block returns content.
+     * It also assigns a variable to it and makes sure the compiler uses this new element when building the document.
+     *
+     * @param block     The block of inline code
+     * @param variables The previously defined variables
+     * @return The block with a variable declaration instead of a returnstatement
+     */
+    private Block fixReturnStatement(Block block, Stack<Variable> variables) {
+        for (ReturnStatement returnStat : block.nearestDescendants(ReturnStatement.class)) {
+            String prev = lastElement;
+            Expression e = returnStat.getExpression();
+            Type type;
+            if (!(e instanceof NameExpression) && (!(e instanceof MethodInvocation))) {
+                System.err.println("You can only return Content in an inline code block, unknown expression: " + e.toString());
+                return block;
+            } else {
+                try {
+                    if (e instanceof NameExpression) {
+                        lastElement = ((NameExpression) e).name();
+                        type = e.getType();
+                    } else {
+                        // Check if we return Content
+                        NormalMethod method = (NormalMethod) ((MethodInvocation) e).getElement();
+                        type = method.returnType();
+                        boolean content = false;
+                        for (Type t : type.getSelfAndAllSuperTypesView()) {
+                            if (t.name().equals(Util.getLastPart(BASE_CLASS))) {
+                                content = true;
+                                break;
+                            }
+                        }
+                        if (!content) {
+                            System.err.println("You can only return Content in an inline code block, unknown expression: " + e.toString());
+                            return block;
+                        }
+
+                        createAndAddLocalVar(type.name(), getVarName(), (Expression) e.clone(), variables, block);
+                    }
+                } catch (LookupException e1) {
+                    System.err.println(e + " has not been declared yet!");
+                    lastElement = prev;
+                    return block;
+                }
+
+                block.removeStatement(returnStat);
+                List<Expression> arguments = new ArrayList<>();
+                arguments.add(eFactory().createNameExpression(lastElement));
+                JavaMethodInvocation expr = eFactory().createNeioMethodInvocation(APPEND_CONTENT, eFactory().createNeioNameExpression(prev), arguments);
+                block.addStatement(oFactory().createStatement(expr));
+                // Resolve the right target using contexttypes
+                try {
+                    Stack<Variable> vars = (Stack<Variable>) variables.clone();
+                    vars.pop();
+                    setThis(expr, expr.getTarget(), vars);
+                    block.removeStatement(expr.nearestAncestor(Statement.class));
+
+                    createAndAddLocalVar(type.name(), getVarName(), expr, variables, block);
+                } catch (LookupException e1) {
+                    System.err.println("Error while setting this on " + APPEND_CONTENT);
+                }
+            }
+        }
+
+        return block;
+    }
+
+    /**
+     * Replaces occurrences of {@code this} in code blocks
+     *
+     * @param block     The block in which we have to do replacements
+     * @param variables The stack of previous variables
+     * @throws LookupException
+     */
+    private void processCodeBlock(Block block, Stack<Variable> variables) throws LookupException {
+        if (lastElement == null) {
+            throw new ChameleonProgrammerException("Code blocks are not allowed as the first element in a document!");
+        }
+        String newcomer = "";
+
+        // Replace values of variable declarations that are 'this'
+        for (LocalVariableDeclarator lvd : block.descendants(LocalVariableDeclarator.class)) {
+            lvd.variableDeclarations().get(0).descendants(ThisLiteral.class).forEach(this::thisToNameExpression);
+            variables.push(lvd.variableDeclarations().get(0).variable());
+            newcomer = variables.peek().name();
+        }
+
+        for (Statement s : block.statements()) {
+            // Modify lastElement
+            for (AssignmentExpression as : s.descendants(AssignmentExpression.class)) {
+                replaceThis(as.getValue(), variables);
+
+                // There should only be 1, others have been replaced above
+                List<ThisLiteral> thisLiterals = as.nearestDescendants(ThisLiteral.class);
+                for (ThisLiteral t : thisLiterals) {
+                    String varName = getVarName();
+
+                    if (!as.nearestDescendants(RegularMethodInvocation.class).isEmpty()) {
+                        // Create and add a new local variable (also sets lastElement)
+                        Statement lvd = createAndAddLocalVar(as.getValue().getType().name(), varName, as.getValue(), variables, block);
+                        // Remove it from the block, it shouldn't be placed at the end
+                        block.removeStatement(lvd);
+                        // Add it at the right space
+                        s.replaceWith(lvd);
+                    }
+                    // `this = name;`
+                    else {
+                        lastElement = ((NameExpression) as.getValue()).name();
+                        block.removeStatement(s);
+                        // Remove variables that are too new
+                        while (!variables.isEmpty() && !variables.peek().name().equals(lastElement)) {
+                            variables.pop();
+                        }
+                    }
+                }
+            }
+
+            // Replace 'this' on self calls
+            for (MethodInvocation e : s.descendants(MethodInvocation.class)) {
+                if (e.getTarget() != null && e.getTarget() instanceof ThisLiteral) {
+                    replaceThis(e, variables);
+                }
+            }
+
+            // Replace all other 'this' (arguments,...)
+            s.descendants(ThisLiteral.class).forEach(this::thisToNameExpression);
+        }
+
+        if (!lastElement.equals(newcomer)) {
+            for (Variable var : variables) {
+                if (var.name().equals(newcomer)) {
+                    variables.remove(var);
+                    break;
+                }
+            }
+        }
+    }
+
+    private void thisToNameExpression(Expression replacee) {
+        NameExpression replacer = eFactory().createNeioNameExpression(lastElement);
+        replacee.replaceWith(replacer);
+    }
+
+    private void replaceThis(Expression e, Stack<Variable> variables) throws LookupException {
+        // Replace occurences of 'this' by the right variable
+        List<ThisLiteral> descendants = e.descendants(ThisLiteral.class);
+        for (Element replacee : descendants) {
             NameExpression replacer = eFactory().createNeioNameExpression(lastElement);
             replacee.replaceWith(replacer);
 
@@ -153,15 +427,8 @@ public class Java8Generator {
                 setThis(mi, replacer, variables);
             }
         }
-
-        for (JavaMethodInvocation jmi : block.descendants(JavaMethodInvocation.class)) {
-            // This is a method invocation that should be called on 'this'
-            if (jmi.getTarget() == null) {
-                jmi.setTarget(eFactory().createNeioNameExpression(lastElement));
-                setThis(jmi, jmi.getTarget(), variables);
-            }
-        }
     }
+
 
     private void setThis(RegularMethodInvocation mi, Element replacee, Stack<Variable> variables) throws LookupException {
         NormalMethod method = mi.getElement();
