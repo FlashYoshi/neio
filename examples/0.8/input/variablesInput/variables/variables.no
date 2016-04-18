@@ -11,12 +11,10 @@
 - Second
 - Third
 
-// LABEL
 # This chapter should be labeled for later reference
 {Chapter chap = this}
-// REF
-When I was *studying* at the {ug} I had to endure a lot of hard courses. But the professors at the {ug} were
-always very helpful and open for questions.
+
+When I was *studying* at the {ug} I had to endure a lot of hard courses. But the professors at the {ug} were always very helpful and open for questions.
 
 I really enjoyed going to the {ug} and would encourage everyone to go study there!
 
@@ -25,44 +23,23 @@ I really enjoyed going to the {ug} and would encourage everyone to go study ther
     int y = 180;
 }
 For some course I had to work {x} hours and for another one {y}, that's a total of {x + y}
-
-// VAR DECL
 {int i = 0}
 {image('''Image1''', "treeimg")}
-// (arithmethic) VAR DECL
 {i = i + 1}
-This was an image showing there are more trees in my yard than in my neighbour's.
 
+This was an image showing there are more trees in my yard than in my neighbour's.
 {image('''Image2''', "flowerimg")}
 {i = i + 1}
-I also appear to have more flowers.
 
+I also appear to have more flowers.
 {image('''Image3''', "animalimg")}
 {i = i - 1}
-But he has more animals coming over.
 
+But he has more animals coming over.
 {image('''Image4''', "furnitureimg")}
 {i = i + 1}
+
 But I have the nicest furniture!
-
-{
-    Paragraph test = this;
-    //this = #('''Test''', 1);
-}
-/* 
-    setFontsize(15);
-    '''
-    Now I can just insert some stuff in here:
-    - Enum1
-    - Enum2
-    - Enum3
-    And then continue to code
-    '''
-    resetFontsize();
-    this = test;
-}*/
-
-This should be added to the Test chapter
 
 {
     if(i > 0) {

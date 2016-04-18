@@ -9,6 +9,10 @@ Text caption;
 String name;
 public static final String PNG = ".png";
 
+Image(String name) {
+    this(null, name);
+}
+
 Image(Text caption, String name) {
 	this.caption = caption;
 	this.name = name;

@@ -30,18 +30,6 @@ Chapter addChapter(Chapter chapter) {
 	return chapter;
 }
 
-public surround Text *(Text t) {
-    return new BoldText(t);
-}
-
-public surround Text _(Text t) {
-    return new ItalicText(t);
-}
-
-public surround Text `(Text t) {
-    return new MonospaceText(t);
-}
-
 Integer calculateCoolThings(Integer j) {
     return 42;
 }
@@ -55,15 +43,23 @@ Itemize *(Text text) {
     return itemize;
 }
 
-Paragraph newline(Text parText) {
-    Paragraph p = new Paragraph(parText);
+Paragraph newline() {
+    Paragraph p = new Paragraph();
     addContent(p);
 	
     return p;
 }
 
+Paragraph multinewline() {
+    return newline();
+}
+
+Image image(String imageName) {
+    return image(null, imageName);
+}
+
 Image image(Text caption, String imageName) {
-	Image neioImage = new Image(caption, imageName);
+	new Image(caption, imageName) neioImage;
 	addContent(neioImage);
 	
 	return neioImage;

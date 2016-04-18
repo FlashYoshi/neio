@@ -63,6 +63,18 @@ String appendedToToTex() {
     return result;
 }
 
+public surround Text *(Text t) {
+    return appendText(new BoldText(t));
+}
+
+public surround Text _(Text t) {
+    return appendText(new ItalicText(t));
+}
+
+public surround Text `(Text t) {
+    return appendText(new MonospaceText(t));
+}
+
 String thisToTex() {
     String me = "";
     if (text == null) {
@@ -72,6 +84,11 @@ String thisToTex() {
     }
     
     return me;
+}
+
+Text newline() {
+    new Text("\n") t;
+    return appendText(t);
 }
 
 String toTex() {

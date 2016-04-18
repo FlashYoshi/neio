@@ -1,11 +1,14 @@
 namespace neio.stdlib;
 
-import neio.lang.Text;
-import neio.lang.Content;
+import neio.lang.*;
 
 class Paragraph extends Content;
 
 Text text;
+
+Paragraph() {
+    text = null;
+}
 
 Paragraph(String parText) {
 	text = new Text(parText);
@@ -24,10 +27,23 @@ Paragraph appendLine(Text t) {
     return this;
 }
 
+Paragraph appendText(Text t) {
+    if (text == null) {
+        text = t;
+    } else {
+        text = text.appendText(t);
+    }
+    return this;
+}
+
 Text text() {
     return text;
 }
 
 String toTex() {
-	return "\\par " + text.toTex();
+    if (text != null) {
+        return "\\par " + text.toTex();
+    } else {
+        return "";
+    }
 }
