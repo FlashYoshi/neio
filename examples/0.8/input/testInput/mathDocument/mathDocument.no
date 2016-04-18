@@ -1,0 +1,6 @@
+[Document]
+
+# Math chapter
+This is the sqrt of 4
+
+{{ eq().sqrt('''4''') }}

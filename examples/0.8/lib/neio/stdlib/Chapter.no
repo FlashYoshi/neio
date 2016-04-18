@@ -3,6 +3,7 @@ namespace neio.stdlib;
 import neio.lang.Content;
 import neio.lang.Container;
 import neio.lang.Text;
+import neio.stdlib.math.*;
 
 class Chapter extends Container;
 
@@ -67,6 +68,11 @@ Image image(Text caption, String imageName) {
 	addContent(neioImage);
 	
 	return neioImage;
+}
+
+Eq eq() {
+    Eq eq = new Eq();
+    return addContent(eq);
 }
 
 String toTex() {

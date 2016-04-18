@@ -1,0 +1,16 @@
+namespace neio.stdlib.math;
+
+import neio.lang.Content;
+
+class Eq extends Content;
+
+Eq() {
+}
+
+Sqrt sqrt(Content arg) {
+    return addContent(new Sqrt(arg));
+}
+
+String toTex() {
+    return "\\begin{equation}" + super.toTex() + "\n\\end{equation}";
+}
