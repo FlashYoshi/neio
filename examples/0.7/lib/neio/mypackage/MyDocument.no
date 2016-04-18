@@ -1,0 +1,13 @@
+namespace neio.mypackage;
+
+import neio.stdlib.Document;
+
+class MyDocument extends Document;
+
+String header() {
+    String s = super.header();
+    return s + "This is my document!";
+}
+
+
+

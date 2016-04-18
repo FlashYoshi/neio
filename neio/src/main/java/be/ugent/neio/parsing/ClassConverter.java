@@ -26,7 +26,6 @@ import org.aikodi.chameleon.exception.ChameleonProgrammerException;
 import org.aikodi.chameleon.oo.expression.*;
 import org.aikodi.chameleon.oo.method.Method;
 import org.aikodi.chameleon.oo.method.MethodHeader;
-import org.aikodi.chameleon.oo.method.RegularMethod;
 import org.aikodi.chameleon.oo.plugin.ObjectOrientedFactory;
 import org.aikodi.chameleon.oo.statement.Block;
 import org.aikodi.chameleon.oo.statement.Statement;
@@ -40,10 +39,12 @@ import org.aikodi.chameleon.oo.variable.FormalParameter;
 import org.aikodi.chameleon.oo.variable.RegularVariable;
 import org.aikodi.chameleon.support.expression.AssignmentExpression;
 import org.aikodi.chameleon.support.expression.ClassCastExpression;
-import org.aikodi.chameleon.support.member.simplename.method.RegularMethodInvocation;
 import org.aikodi.chameleon.support.member.simplename.variable.MemberVariableDeclarator;
 import org.aikodi.chameleon.support.modifier.*;
-import org.aikodi.chameleon.support.statement.*;
+import org.aikodi.chameleon.support.statement.ForControl;
+import org.aikodi.chameleon.support.statement.ForStatement;
+import org.aikodi.chameleon.support.statement.StatementExprList;
+import org.aikodi.chameleon.support.statement.WhileStatement;
 import org.aikodi.chameleon.support.variable.LocalVariableDeclarator;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -65,8 +66,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static be.ugent.neio.util.Constants.ASSIGNMENT;
-import static be.ugent.neio.util.Constants.IFCALL;
-import static be.ugent.neio.util.Constants.IFCLASS;
 
 /**
  * @author Titouan Vervack
@@ -348,7 +347,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
                 || elseStatement == null
                 || elseStatement.nearestDescendants(ReturnStatement.class).size() > 0
                 || ifBlock.nearestDescendants(RegularMethodInvocation.class).get(0).name().equals("void")) {*/
-            return ooFactory().createIfStatement(condition, ifBlock, elseStatement);
+        return ooFactory().createIfStatement(condition, ifBlock, elseStatement);
         /*} // Ternary operator
         else {
             Expression conditionalExpression = eFactory().createConditionalExpression(condition,

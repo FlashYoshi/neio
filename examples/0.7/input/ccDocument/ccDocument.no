@@ -1,0 +1,11 @@
+[MyDocument]
+
+\increaseFontSize
+# Chapter 1
+This is the first paragraph of our simple Document.
+
+\setFontSize(12)
+## Chapter 1.1
+This is a chapter of the next indentation level.
+
+

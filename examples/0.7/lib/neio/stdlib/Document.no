@@ -10,11 +10,13 @@ import java.util.ArrayList;
 
 class Document extends Container;
 
-private List<String> packages = new ArrayList<String>();
+protected List<String> packages = new ArrayList<String>();
+protected String documentClass;
 
 Document() {
 	packages.add("a4wide");
 	packages.add("graphicx");
+	documentClass = "article";
 }
 
 Chapter #(Text title) {

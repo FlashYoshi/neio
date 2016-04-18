@@ -1,0 +1,89 @@
+namespace neio.stdlib;
+
+import neio.lang.Container;
+import java.util.List;
+import java.util.ArrayList;
+
+class Article extends Document;
+
+List<Person> authors = new ArrayList<Person>();
+String title;
+String header;
+
+Article() {
+	documentClass = "twoside";
+	packages.add("a4wide");
+	packages.add("fontspec");
+	packages.add("multicol");
+	packages.add("booktabs");
+	packages.add("float");
+	packages.add("hyperref");
+	packages.add("lettrine");
+	packages.add("paralist");
+	packages.add("abstract");
+	packages.add("titlesec");
+	packages.add("fancyhdr");
+}
+
+String documentHeader() {
+	String result = "\\setromanfont[BoldFont={GenBasB.ttf},ItalicFont={GenBasI.ttf},BoldItalicFont={GenBasBI.ttf}]{GenBasR.ttf}" +
+						  "\\renewcommand\\refname{\\textbf{References}}" + 
+						  "\\linespread{1.00}" +
+						  "\\renewcommand{\\abstractnamefont}{\\normalfont\\bfseries}" +
+						  "\\renewcommand{\\abstracttextfont}{\\normalfont\\small\\itshape}" + 
+						  "\\renewcommand\\thesection{\\arabic{\\textbf{section}}}" +
+						  "\\renewcommand\\thesubsection{\\textbf{\\arabic{section}.\\arabic{subsection}}}" +
+						  "\\titleformat{\\section}[block]{\\large\\centering}{\textbf{\\thesection.}}{1em}{}" +
+						  "\\titleformat{\\subsection}[block]{}{\\textbf{\\thesubsection}}{1em}{}" +
+						  "\\pagestyle{fancy}" +
+						  "\\fancyhead{}" +
+						  "\fancyfoot{}" +
+						  "\\fancyhead[C]{\\textit{" + getShortenedNames() + ". The performance of queueing networks with blocking (2014).}}" +
+						  "\\fancyfoot[RO,LE]{\\thepage}" +
+						  "\\title{\\vspace{-15mm}\\fontsize{24pt}{10pt}\\selectfont\\textbf{" + getTitle() + "}}" +
+						  "\\author{\\large\\textsc{" + getNames() + "}\\\\[2mm]\\normalsize Ghent University\\\\";
+	for (int i = 0; i < authors.size(); i = i + 1) {
+		result = result + getEmail(authors.get(i));
+	}
+
+	return result + "\\vspace{-5mm}}\\date{}";
+}
+
+void authors(String name1, String email1, String name2, String email2) {
+	authors.add(new Person(name1, email1));
+	authors.add(new Person(name2, email2));
+}
+
+void header(String header) {
+	this.header = header;
+}
+
+void title(String title) {
+	this.title = title;
+}
+
+String getShortenedNames() {
+	String result = authors.get(0).getShortName();
+	for (int i = 1; i < authors.size(); i = i + 1) {
+		result = result + authors.get(i).getShortName();
+	}
+	
+	return result;
+}
+
+String getEmail(Person person) {
+	return "\\normalsize \\href{mailto:" + person.getEmail() + "}{" + person.getEmail() + "}\\\\";
+}
+
+String getTitle() {
+	return title;
+}
+
+String getNames() {
+	String result = authors.get(0).getName();
+	for (int i = 1; i < authors.size(); i = i + 1) {
+		result = result + authors.get(i).getName();
+	}
+	
+	return result;
+}
