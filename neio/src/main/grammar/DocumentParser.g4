@@ -9,6 +9,7 @@ document : HEADER
 body : content*;
 content : prefixCall
           | text
+          | multicode
           | scode
           | lonecode
           | mnl
@@ -25,4 +26,5 @@ mnl : NL NL+;
 
 scode : SCOPED_CODE;
 lonecode : LONE_CODE;
+multicode : (scode | lonecode) (NL (scode | lonecode))+;
 inlinecode : CODE CCONTENT;

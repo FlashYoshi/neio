@@ -1,7 +1,6 @@
 package be.ugent.neio.parsing;
 
 import be.kuleuven.cs.distrinet.jnome.workspace.JavaView;
-import be.ugent.neio.expression.NeioMethodInvocation;
 import be.ugent.neio.industry.NeioExpressionFactory;
 import be.ugent.neio.industry.NeioFactory;
 import be.ugent.neio.language.Neio;
@@ -9,31 +8,24 @@ import be.ugent.neio.model.document.TextDocument;
 import be.ugent.neio.util.CodeTag;
 import be.ugent.neio.util.Constants;
 import org.aikodi.chameleon.core.document.Document;
-import org.aikodi.chameleon.core.namespace.Namespace;
-import org.aikodi.chameleon.core.namespacedeclaration.NamespaceDeclaration;
 import org.aikodi.chameleon.core.tag.TagImpl;
 import org.aikodi.chameleon.exception.ChameleonProgrammerException;
 import org.aikodi.chameleon.oo.expression.Expression;
 import org.aikodi.chameleon.oo.expression.ExpressionFactory;
 import org.aikodi.chameleon.oo.expression.MethodInvocation;
-import org.aikodi.chameleon.oo.method.Method;
 import org.aikodi.chameleon.oo.plugin.ObjectOrientedFactory;
 import org.aikodi.chameleon.oo.statement.Block;
 import org.aikodi.chameleon.oo.statement.Statement;
-import org.aikodi.chameleon.oo.type.Type;
-import org.aikodi.chameleon.oo.variable.FormalParameter;
 import org.aikodi.chameleon.support.member.simplename.method.RegularMethodInvocation;
-import org.aikodi.chameleon.support.modifier.Public;
-import org.aikodi.chameleon.support.modifier.Static;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.misc.NotNull;
+import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.neio.antlr.ClassLexer;
 import org.neio.antlr.ClassParser;
-import org.neio.antlr.DocumentParser;
 import org.neio.antlr.DocumentParser.*;
 import org.neio.antlr.DocumentParserBaseVisitor;
 
@@ -105,30 +97,17 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
     }
 
     public Block visitContent(ContentContext ctx) {
-        if (ctx.lonecode() != null || ctx.scode() != null) {
-            Block codeBlock;
-            if (ctx.scode() != null) {
-                codeBlock = visitCode(ctx.scode().getText(), "{{".length());
-            } else {
-                codeBlock = visitCode(ctx.lonecode().getText(), "{".length(), false);
-                codeBlock.setMetadata(new TagImpl(), Neio.LONE_CODE);
-            }
-            if (codeBlock.nbStatements() != 0) {
-                // A block of code has been found, round up the expressions found before this block
-                if (previousExpression != null) {
-                    block.addStatement(ooFactory().createStatement(previousExpression));
+        if (ctx.multicode() != null) {
+            MulticodeContext m = ctx.multicode();
+            for (ParseTree p : m.children) {
+                if (m.scode().contains(p)) {
+                    processCodeBlock((ScodeContext) p);
+                } else if (m.lonecode().contains(p)) {
+                    processCodeBlock((LonecodeContext) p);
                 }
-                if (codeBlock.metadata(Neio.LONE_CODE) != null) {
-                    for (Statement s : codeBlock.statements()) {
-                        s.setMetadata(new CodeTag(lonecodeid), Neio.LONE_CODE);
-                        block.addStatement(s);
-                    }
-                    lonecodeid++;
-                } else {
-                    block.addStatement(codeBlock);
-                }
-                previousExpression = null;
             }
+        } else if (ctx.lonecode() != null || ctx.scode() != null) {
+            processCodeBlock(ctx);
         } else {
             // If the previous expression was a codeblock and there's more neioscript
             // add THIS as prefix to connect back to the rest of the document
@@ -149,6 +128,53 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         }
 
         return null;
+    }
+
+    private void processCodeBlock(ContentContext ctx) {
+        if (ctx.scode() != null) {
+            processCodeBlock(ctx.scode());
+        } else {
+            processCodeBlock(ctx.lonecode());
+        }
+    }
+
+    private void processCodeBlock(ScodeContext ctx) {
+        assembleCodeBlock(processScode(ctx));
+    }
+
+    private void processCodeBlock(LonecodeContext ctx) {
+        assembleCodeBlock(processLoneCode(ctx));
+    }
+
+    private void assembleCodeBlock(Block codeBlock) {
+        if (codeBlock.nbStatements() != 0) {
+            // A block of code has been found, round up the expressions found before this block
+            if (previousExpression != null) {
+                block.addStatement(ooFactory().createStatement(previousExpression));
+            }
+            if (codeBlock.metadata(Neio.LONE_CODE) != null) {
+                for (Statement s : codeBlock.statements()) {
+                    s.setMetadata(new CodeTag(lonecodeid), Neio.LONE_CODE);
+                    block.addStatement(s);
+                }
+                lonecodeid++;
+            } else {
+                block.addStatement(codeBlock);
+            }
+            previousExpression = null;
+        }
+    }
+
+
+    private Block processLoneCode(LonecodeContext lonecode) {
+        Block codeBlock = visitCode(lonecode.getText(), "{".length(), false);
+        codeBlock.setMetadata(new TagImpl(), Neio.LONE_CODE);
+
+        return codeBlock;
+    }
+
+    private Block processScode(ScodeContext scode) {
+        return visitCode(scode.getText(), "{{".length());
     }
 
     @Override
