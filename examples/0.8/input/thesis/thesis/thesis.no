@@ -11,23 +11,37 @@ This introduction will provide the context from which the necissity of this thes
 
 # Neio
 ## Goals
+## Document types
+### Neio script files
+### Neio class files
+
 ## Language features
 ### Context types
 ### Nested methods
 ### Surround methods
 ### Code blocks
+#### Scoped code
+#### Nonscoped code
+#### Inline code
+
 ## Considerations
 ### Static typing
 ### Security
+
 ## Reuse of current possiblities
 ### Binding to LaTeX
+
 
 # Implementation
 ## Used libraries and frameworks
 ### ANTLR4
 ### Chameleon
+
 ## Translation to Java
+### Limitations
 ### Reasons for choosing Java
+
+## Compile flow
 
 # Supported document types and libraries
 This chapter will go into some more details about what document types can be handled by Neio, and how to specifically build these kind of documents.
@@ -39,6 +53,7 @@ We will also discuss which libraries have been recreated in Neio to allow for a 
 ### Book
 ### Article
 ### Slides
+
 ## Libraries
 ### TikZ
 ### Beamer
