@@ -78,6 +78,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     // Can not use keyword
     private boolean interphase;
     private boolean contextType;
+    private boolean isStringMain;
 
     public ClassConverter(Document document, JavaView view) {
         this.document = document;
@@ -85,6 +86,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         this.view = view;
         interphase = false;
         contextType = false;
+        isStringMain = true;
     }
 
     protected NeioFactory ooFactory() {
@@ -361,7 +363,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     @Override
     public Expression visitLiteralExpression(@NotNull LiteralExpressionContext ctx) {
-        return (Literal) visit(ctx.literal());
+        return (Expression) visit(ctx.literal());
     }
 
     @Override
@@ -729,8 +731,43 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     @Override
-    public Literal visitStringLiteral(@NotNull StringLiteralContext ctx) {
-        return ooFactory().createStringLiteral(ctx.getText());
+    public Expression visitStringLiteral(@NotNull StringLiteralContext ctx) {
+        if (isStringMain) {
+            return visitString(ctx.getText());
+        } else {
+            return visitTextMode(getText(ctx.getText(), "\"".length()), false).nearestDescendants(Expression.class).get(0);
+        }
+    }
+
+    private Expression visitString(String content) {
+        return ooFactory().createStringLiteral(content);
+    }
+
+    private Block visitTextMode(String text, boolean append) {
+        DocumentConverter converter = new DocumentConverter(document, view);
+        text = trimText(text);
+        text = text.trim();
+        DocumentParser parser = getParser(text);
+        converter.setAppend(append);
+
+        return converter.visitBody(parser.body());
+    }
+
+    @Override
+    public Statement visitTextModeStatement(@NotNull TextModeStatementContext ctx) {
+        return visitTextMode(getText(ctx.getText(), "\"".length()), true);
+    }
+
+    @Override
+    public Expression visitTextMode(@NotNull TextModeContext ctx) {
+        if (isStringMain) {
+            DocumentConverter converter = new DocumentConverter(document, view);
+            DocumentParser parser = getParser(getText(ctx.getText(), "'''".length()));
+
+            return converter.visitTxt(parser.txt());
+        } else {
+            return visitString(getText(ctx.getText(), "'''".length()));
+        }
     }
 
     @Override
@@ -758,17 +795,6 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         return ooFactory().createCharLiteral(ctx.CharLiteral().getText());
     }
 
-    @Override
-    public Block visitTextModeStatement(@NotNull TextModeStatementContext ctx) {
-        DocumentConverter converter = new DocumentConverter(document, view);
-        String text = getText(ctx.getText(), "'''".length());
-        text = trimText(text);
-        text = text.trim();
-        DocumentParser parser = getParser(text);
-
-        return converter.visitBody(parser.body());
-    }
-
     private String trimText(String text) {
         String[] lines = text.split("\r\n | [\n\r]");
         StringBuilder builder = new StringBuilder();
@@ -777,14 +803,6 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         }
 
         return builder.toString();
-    }
-
-    @Override
-    public Expression visitTextMode(@NotNull TextModeContext ctx) {
-        DocumentConverter converter = new DocumentConverter(document, view);
-        DocumentParser parser = getParser(getText(ctx.getText(), "'''".length()));
-
-        return converter.visitTxt(parser.txt());
     }
 
     private String getText(String textMode, int sepLen) {
@@ -822,5 +840,9 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     public void enableContextTypes() {
         contextType = true;
+    }
+
+    public void flipStringText() {
+        isStringMain = false;
     }
 }
