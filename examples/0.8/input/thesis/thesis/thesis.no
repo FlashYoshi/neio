@@ -81,6 +81,7 @@ To allow for extensive customisability a script file is seen as a chain of metho
 // TODO: add example
 
 ## Neio script files
+
 ## Neio class files
 
 ## Language features
@@ -97,8 +98,13 @@ If it does than we stop searching, if not we recursively check the context type.
 // TODO: include figures
 
 ### Nested methods
+Documents often have recursive elements such as sections or enumerations, as in Neio, everything is a method every one of these levels would have to be defined as a separate method.
+This is of course very cumbersome and we would like to only define it once. This is why nested methods were invented.
+A method can be annotated with a `nested` modifier which means that this method implicitly takes an extra argument, an `Integer` that reflects the depth of this recursive method.
 
 ### Surround methods
+A method could also be annotated with a `surround` modifier. This means that the method name surrounds a piece of text, this can be used to for example create bold text by surrounding it with stars.
+
 ### Code blocks
 #### Scoped code
 #### Non scoped code
