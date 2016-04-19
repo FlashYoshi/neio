@@ -40,7 +40,7 @@ String translate(Object o) {
 }
 
 String chapter(Chapter c) {
-	return "\\" + c.subs() + "section*{" + translate(c.title()) + "}" + def(c);
+	return "\\" + c.subs(1) + "section*{" + translate(c.title()) + "}" + def(c);
 }
 
 String document(Document d) {

@@ -15,6 +15,7 @@
 Dear {addressee},
 
 Thank you for helping me out with {help}.
+
 I was able to do great at the {helpSubject} thanks to you.
 
 // Have to explicitily create the content, the compiler cannot determine what to do otherwise

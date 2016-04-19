@@ -1,0 +1,14 @@
+namespace neio.stdlib;
+
+import neio.lang.Content;
+
+class Toc extends Content;
+
+String toTex() {
+    StringBuilder result = new StringBuilder("\\pagestyle{fancy}\n");
+    
+    result.append("\\frontmatter")
+    .append("\\tableofcontents");
+    
+    return result.toString();
+}
