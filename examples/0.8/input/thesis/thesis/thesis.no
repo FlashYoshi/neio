@@ -3,7 +3,7 @@
 # Introduction
 In this thesis we will be introducing a new markup language that tries to improve upon a few others, namely LaTeX and Markdown.
 Before we get into the details of this new language it is necessary to introduce some of the currently most used markup languages and word processors.
-This introduction will provide the context from which the necissity of this thesis was sparked.
+This introduction will provide the context from which the necessity of this thesis was sparked.
 
 ## LaTeX
 ## Markdown
@@ -21,14 +21,14 @@ This introduction will provide the context from which the necissity of this thes
 ### Surround methods
 ### Code blocks
 #### Scoped code
-#### Nonscoped code
+#### Non scoped code
 #### Inline code
 
 ## Considerations
 ### Static typing
 ### Security
 
-## Reuse of current possiblities
+## Reuse of current possibilities
 ### Binding to LaTeX
 
 
@@ -37,17 +37,18 @@ This introduction will provide the context from which the necissity of this thes
 ### ANTLR4
 ### Chameleon
 
+## Compile flow
+
 ## Translation to Java
+### Reflection
 ### Limitations
 ### Reasons for choosing Java
-
-## Compile flow
 
 # Supported document types and libraries
 This chapter will go into some more details about what document types can be handled by Neio, and how to specifically build these kind of documents.
 We will also discuss which libraries have been recreated in Neio to allow for a wide use of the language.
 
-## Documenttypes
+## Document types
 ### Report
 ### Letter
 ### Book
@@ -63,5 +64,5 @@ We will also discuss which libraries have been recreated in Neio to allow for a 
 ## Static typing of the language
 ## Tool improvement
 ### Syntax highlighting
-### Autocompletion
+### Auto completion
 
