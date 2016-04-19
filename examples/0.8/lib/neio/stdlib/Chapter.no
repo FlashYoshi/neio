@@ -3,11 +3,12 @@ namespace neio.stdlib;
 import neio.lang.Content;
 import neio.lang.Container;
 import neio.lang.Text;
+import neio.stdlib.math.*;
 
 class Chapter extends Container;
 
-Text title;
-Integer level;
+protected Text title;
+protected Integer level;
 
 Chapter(Text title, Integer level) {
     this.title = title;
@@ -69,17 +70,26 @@ Image image(Text caption, String imageName) {
 	return neioImage;
 }
 
-String toTex() {
-	return "\\" + subs() + "section*{" + title.toTex() + "}" + super.toTex();
+Eq eq() {
+    Eq eq = new Eq();
+    return addContent(eq);
 }
 
 Text title() {
     return title;
 }
 
-String subs() {
+String toTex() {
+	return toTex(level) + super.toTex();
+}
+
+String toTex(Integer lvl) {
+    return "\\" + subs(lvl) + "section*{" + title.toTex() + "}";
+}
+
+String subs(Integer lvl) {
 	String subs = "";
-	for (int i = 1; i < level; i = i + 1) {
+	for (int i = 1; i < lvl; i = i + 1) {
 		subs = subs + "sub";
 	}
 	

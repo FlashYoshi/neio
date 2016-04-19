@@ -57,6 +57,10 @@ List<Content> content() {
 	return content;
 }
 
+Content content(Integer i) {
+    return content.get(i);
+}
+
 List<Content> ancestors() {
 	List<Content> list = new ArrayList<Content>();
 	Content p = parent();

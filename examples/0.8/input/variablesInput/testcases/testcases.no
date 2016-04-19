@@ -6,9 +6,9 @@
 // { cc (content creation: is on it's own line, nothing before or after the braces, has an expression with returntype Content as last line) RETURNS CONTENT, OWN LINE
 // { variable decl (same as before but the last line does not return Content) RETURNS NOTHING, OWN LINE
 {
-    String chap = "Chapter 1";
-    String ref1 = "reference1";
-    String full = "This is a full paragraph.";
+    String chap = '''Chapter 1''';
+    String ref1 = '''reference1''';
+    String full = '''This is a full paragraph.''';
     Integer i = 0;
     Integer j = 18;
 }
@@ -32,12 +32,12 @@ Or we can have multiple expressions follow each other {i + 15} {calculateCoolThi
 
 {
     if (i > 0) {
-        System.out.println("{Bigger than 0.");
+        System.out.println('''{Bigger than 0.''');
     } else {
         if (i == 0) {
-            System.out.println("Equal to 0}}");
+            System.out.println('''Equal to 0}}''');
         } else {
-            System.out.println("Less than 0{}");
+            System.out.println('''Less than 0{}''');
         }
     }
 }

@@ -1,0 +1,45 @@
+namespace neio.stdlib.math;
+
+import neio.lang.Content;
+import neio.lang.Text;
+
+class Eq extends Content;
+
+String texname;
+
+Eq() {
+    texname = "equation";
+}
+
+Eq sqrt(Content root, Content arg) {
+    addContent(new Sqrt(root, arg));
+    return this;
+}
+
+Eq sqrt(Content arg) {
+    return sqrt(null, arg);
+}
+
+Eq pow(Content base, Content pow) {
+    addContent(new Pow(base, pow));
+    return this;
+}
+
+Eq nonu() {
+    texname = texname + "*";
+    return this;
+}
+
+Eq e() {
+    addContent(new Equals());
+    return this;
+}
+
+Eq v(Text t) {
+    addContent(new Value(t));
+    return this;
+}
+
+String toTex() {
+    return "\\begin{" + texname + "}" + super.toTex() + "\n\\end{" + texname + "}";
+}

@@ -3,7 +3,7 @@
 // RETURNS A CONTENT THAT IS ADDED AND WILL BE USED IN THE BUILDING OF THE DOCUMENT
 // CC
 {
-	String ug = "University of Ghent";
+	String ug = '''University of Ghent''';
     // return is optional, can make the return clearer in some cases
     return new FibEnumerate();
 }
@@ -24,31 +24,31 @@ I really enjoyed going to the {ug} and would encourage everyone to go study ther
 }
 For some course I had to work {x} hours and for another one {y}, that's a total of {x + y}
 {int i = 0}
-{image('''Image1''', "treeimg")}
+{image("Image1", '''treeimg''')}
 {i = i + 1}
 
 This was an image showing there are more trees in my yard than in my neighbour's.
-{image('''Image2''', "flowerimg")}
+{image("Image2", '''flowerimg''')}
 {i = i + 1}
 
 I also appear to have more flowers.
-{image('''Image3''', "animalimg")}
+{image("Image3", '''animalimg''')}
 {i = i - 1}
 
 But he has more animals coming over.
-{image('''Image4''', "furnitureimg")}
+{image("Image4", '''furnitureimg''')}
 {i = i + 1}
 
 But I have the nicest furniture!
 
 {
     if(i > 0) {
-        '''Your score was {i} points above average!'''
+        "Your score was {i} points above average!"
     } else {
         if (i == 0) {
-            '''Your score was average.'''
+            "Your score was average."
         } else {
-        '''Your score was {- i} points below average...'''
+            "Your score was {- i} points below average..."
         }
     }
 }

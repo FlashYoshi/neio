@@ -2,5 +2,5 @@
 
 # Chapter 1
 This is the first paragraph of our simple document. Next we demonstrate some images.
-{return image("image1")}
-{return image('''This is image2''', "image2")}
+{return image('''image1''')}
+{return image("This is image2", '''image2''')}
