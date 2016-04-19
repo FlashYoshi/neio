@@ -36,6 +36,11 @@ Paragraph appendText(Text t) {
     return this;
 }
 
+Paragraph newline() {
+    appendText(new Text("\n"));
+    return this;
+}
+
 Text text() {
     return text;
 }
