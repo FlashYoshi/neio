@@ -13,7 +13,7 @@ String toTex(Integer lvl) {
     if (lvl == 1) {
         return "\\chapter{" + title.toTex() + "}";
     } 
-    return "\\" + subs(lvl) + "section*{" + title.toTex() + "}";
+    return "\\" + subs(lvl) + "section{" + title.toTex() + "}";
 }
 
 String subs(Integer lvl) {
