@@ -7,8 +7,8 @@ import neio.stdlib.math.*;
 
 class Chapter extends Container;
 
-Text title;
-Integer level;
+protected Text title;
+protected Integer level;
 
 Chapter(Text title, Integer level) {
     this.title = title;
@@ -75,17 +75,21 @@ Eq eq() {
     return addContent(eq);
 }
 
-String toTex() {
-	return "\\" + subs() + "section*{" + title.toTex() + "}" + super.toTex();
-}
-
 Text title() {
     return title;
 }
 
-String subs() {
+String toTex() {
+	return toTex(level) + super.toTex();
+}
+
+String toTex(Integer lvl) {
+    return "\\" + subs(lvl) + "section*{" + title.toTex() + "}";
+}
+
+String subs(Integer lvl) {
 	String subs = "";
-	for (int i = 1; i < level; i = i + 1) {
+	for (int i = 1; i < lvl; i = i + 1) {
 		subs = subs + "sub";
 	}
 	

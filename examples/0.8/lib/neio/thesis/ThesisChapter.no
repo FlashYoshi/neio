@@ -1,0 +1,26 @@
+namespace neio.thesis;
+
+import neio.lang.Text;
+import neio.stdlib.Chapter;
+
+class ThesisChapter extends Chapter;
+
+ThesisChapter(Text title, Integer level) {
+    super(title, level);
+}
+
+String toTex(Integer lvl) {
+    if (lvl == 1) {
+        return "\\chapter{" + title.toTex() + "}";
+    } 
+    return "\\" + subs(lvl) + "section*{" + title.toTex() + "}";
+}
+
+String subs(Integer lvl) {
+	String subs = "";
+	for (int i = 2; i < lvl; i = i + 1) {
+		subs = subs + "sub";
+	}
+	
+	return subs;
+}
