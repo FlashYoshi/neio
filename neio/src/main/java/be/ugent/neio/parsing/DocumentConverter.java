@@ -26,7 +26,6 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.neio.antlr.ClassLexer;
 import org.neio.antlr.ClassParser;
-import org.neio.antlr.DocumentParser;
 import org.neio.antlr.DocumentParser.*;
 import org.neio.antlr.DocumentParserBaseVisitor;
 
@@ -53,12 +52,14 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
     private Stack<Expression> argumentExpression = new Stack<>();
     private Block block = null;
     private int lonecodeid;
+    private boolean append;
 
     public DocumentConverter(Document document, JavaView view) {
         this.document = (TextDocument) document;
         this.view = view;
         this.neio = view.language(Neio.class);
         this.lonecodeid = 0;
+        this.append = true;
     }
 
     protected NeioFactory ooFactory() {
@@ -268,7 +269,11 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         } else if (ctx.nl() != null) {
             previousExpression = visitNl(ctx.nl());
         }
-        return appendText(previousExpression, txt);
+        if (append) {
+            return appendText(previousExpression, txt);
+        } else {
+            return txt;
+        }
     }
 
     @Override
@@ -328,7 +333,7 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
 
         if (e instanceof RegularMethodInvocation) {
             RegularMethodInvocation expression = (RegularMethodInvocation) e;
-            while(!expression.nearestDescendants(RegularMethodInvocation.class).isEmpty()) {
+            while (!expression.nearestDescendants(RegularMethodInvocation.class).isEmpty()) {
                 expression = expression.nearestDescendants(RegularMethodInvocation.class).get(0);
             }
             if (expression.getTarget() == null) {
@@ -405,6 +410,7 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         if (contextTypes) {
             converter.enableContextTypes();
         }
+        converter.flipStringText();
         return converter.visitBlock(getParser(code).block());
     }
 
@@ -420,5 +426,9 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         TokenStream tokens = new CommonTokenStream(lexer);
 
         return new ClassParser(tokens);
+    }
+
+    public void setAppend(boolean append) {
+        this.append = append;
     }
 }

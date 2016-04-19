@@ -16,11 +16,11 @@ Well LaTeX has one more level of indentation, so we should make use of it!
 
 // This chapter is only here to prove that it doesn't disturb the next block or code
 // nor the block starting at Chapter 2
-{{ Chapter test = new Chapter('''Test''', 1) }}
+{{ Chapter test = new Chapter("Test", 1) }}
 
 {
-    Chapter c = new Chapter('''Chapter 17.1.2''', 3);
-    c.newline().appendText('''Nice paragraph!''');
+    Chapter c = new Chapter("Chapter 17.1.2", 3);
+    c.newline().appendText("Nice paragraph!");
     return c;
 }
 # Chapter 2
