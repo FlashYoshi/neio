@@ -80,8 +80,8 @@ These documents resemble Java classes and allow to customise anything that can b
 To allow for extensive customisability a script file is seen as a chain of method calls. Everything you see in the document is a method call.
 // TODO: add example
 
-### Neio script files
-### Neio class files
+## Neio script files
+## Neio class files
 
 ## Language features
 ### Context types
