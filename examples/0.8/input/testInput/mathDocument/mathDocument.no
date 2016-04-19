@@ -8,6 +8,6 @@
 A few example equations:
 
 {{
-    eq().nonu().sqrt('''{base}''', '''{arg}''');
-    eq().pow('''{base}''', '''{arg}''').e().v('''{Math.pow(2, 10)}''');
+    eq().nonu().sqrt("{base}", "{arg}");
+    eq().pow("{base}", "{arg}").e().v("{Math.pow(2, 10)}");
 }}
