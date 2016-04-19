@@ -7,12 +7,15 @@ class TexToPDFBuilder implements Builder;
 
 void build(String name) {
 	if (name != null) {
-		String command = "pdflatex " + name;
+		String command = "latexmk -pdf -dvi- " + name;
 		
 		Runtime.getRuntime().exec(command).waitFor();
 		
 		String texlessName = name.substring(0, name.length() - 4);
 		name = texlessName + ".pdf";
 		System.out.println("Wrote " + name);
+        
+        command = "latexmk -c " + name;
+		Runtime.getRuntime().exec(command).waitFor();
 	}
 }
