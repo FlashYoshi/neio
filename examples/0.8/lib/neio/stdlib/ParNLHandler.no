@@ -1,0 +1,20 @@
+namespace neio.stdlib;
+
+import neio.lang.Content;
+import neio.lang.NLHandler;
+import neio.lang.Text;
+
+class ParNLHandler extends NLHandler;
+
+ParNLHandler(Content origin) {
+    super(origin);
+}
+
+NLHandler newline() {
+    // origin should always have a parent
+    return origin().parent().newline();
+}
+
+Paragraph text(Text text) {
+    return ((Paragraph) origin()).appendLine(text);
+}

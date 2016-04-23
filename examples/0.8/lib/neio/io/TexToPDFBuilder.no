@@ -7,7 +7,7 @@ class TexToPDFBuilder implements Builder;
 
 void build(String name) {
 	if (name != null) {
-		String command = "latexmk -pdf -dvi- " + name;
+		String command = "latexmk -pdf -dvi- -lualatex " + name;
 		
 		Runtime.getRuntime().exec(command).waitFor();
 		
@@ -17,5 +17,6 @@ void build(String name) {
         
         command = "latexmk -c " + name;
 		Runtime.getRuntime().exec(command).waitFor();
+        System.out.println("Cleaned files for " + texlessName);
 	}
 }

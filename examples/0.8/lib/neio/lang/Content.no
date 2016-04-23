@@ -49,6 +49,18 @@ Content parent() {
 	return parent;
 }
 
+Content text(Text text) {
+    if (parent() != null) {
+        return parent().text(text);
+    }
+    
+    return null;
+}
+
+NLHandler newline() {
+    return new NLHandler(this);
+}
+
 Integer contentSize() {
 	return content.size();
 }

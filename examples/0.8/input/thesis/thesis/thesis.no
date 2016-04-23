@@ -117,6 +117,21 @@ A method could also be annotated with a `surround` modifier. This means that the
 ## Reuse of current possibilities
 ### Binding to {lat}
 
+# Supported document types and libraries
+This chapter will go into some more details about what document types can be handled by Neio, and how to specifically build these kind of documents.
+We will also discuss which libraries have been recreated in Neio to allow for a wide use of the language.
+
+## Document types
+### Report
+### Letter
+### Book
+### Article
+### Slides
+
+## Libraries
+### TikZ
+### Beamer
+### {lat} math and amsmath
 
 # Implementation
 ## Used libraries and frameworks
@@ -133,22 +148,6 @@ A method could also be annotated with a `surround` modifier. This means that the
 ### Reasons for choosing Java
 
 ## Outputting
-
-# Supported document types and libraries
-This chapter will go into some more details about what document types can be handled by Neio, and how to specifically build these kind of documents.
-We will also discuss which libraries have been recreated in Neio to allow for a wide use of the language.
-
-## Document types
-### Report
-### Letter
-### Book
-### Article
-### Slides
-
-## Libraries
-### TikZ
-### Beamer
-### {lat} math and amsmath
 
 # Future work
 ## Static typing of the language

@@ -21,12 +21,11 @@ public class Constants {
 
     // KNOWN METHODS
     public static final String IFCALL = "ifcall";
-    public static final String MULTI_NEWLINE = "multinewline";
     public static final String NEWLINE = "newline";
+    public static final String TEXT_CALL = "text";
     public static final String SURROUND = "$surround";
     public static final String WRITE_METHOD = "write";
     public static final String BUILD_METHOD = "build";
-    public static final String APPEND_TEXT = "appendText";
     public static final String APPEND_CONTENT = "appendContent";
     public static final String GET_INSTANCE = "getInstance";
 }

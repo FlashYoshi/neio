@@ -1,11 +1,10 @@
 namespace neio.stdlib;
 
 import neio.lang.Content;
-import neio.lang.Container;
 import neio.lang.Text;
 import neio.stdlib.math.*;
 
-class Chapter extends Container;
+class Chapter extends TextContainer;
 
 protected Text title;
 protected Integer level;
@@ -46,17 +45,6 @@ Enumerate -(Text text) {
     addContent(enumerate);
 
     return enumerate;
-}
-
-Paragraph newline() {
-    Paragraph p = new Paragraph();
-    addContent(p);
-	
-    return p;
-}
-
-Paragraph multinewline() {
-    return newline();
 }
 
 Image image(String imageName) {

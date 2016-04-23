@@ -111,11 +111,11 @@ String itemizeitem(ItemizeItem i) {
 }
 
 String paragraph(Paragraph p) {
-	return "\\par " + translate(p.text());
+	return "\\par " + translate(p.getText());
 }
 
 String boldtext(BoldText t) {
-    return getPre(t) + "\\textbf{" + t.text() + "}";
+    return getPre(t) + "\\textbf{" + t.getText() + "}";
 }
 
 String text(Text t) {
