@@ -36,12 +36,15 @@ Paragraph appendText(Text t) {
     return this;
 }
 
-Paragraph newline() {
-    appendText(new Text("\n"));
-    return this;
+ParNLHandler newline() {
+    return new ParNLHandler(this) handler;
 }
 
-Text text() {
+Paragraph text(Text t) {
+    return appendText(t);
+}
+
+Text getText() {
     return text;
 }
 
