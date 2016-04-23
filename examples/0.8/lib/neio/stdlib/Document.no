@@ -1,8 +1,8 @@
 namespace neio.stdlib;
 
-import neio.lang.Container;
 import neio.lang.Text;
-class Document extends Container;
+
+class Document extends TextContainer;
 
 private Packages packages;
 
@@ -37,17 +37,6 @@ Itemize *(Text text) {
     addContent(itemize);
 
     return itemize;
-}
-
-Paragraph newline() {
-    Paragraph p = new Paragraph();
-    addContent(p);
-	
-    return p;
-}
-
-Paragraph multinewline() {
-    return newline();
 }
 
 Image image(String imageName) {

@@ -39,20 +39,20 @@ modifier : ABSTRACT
          | SURROUND;
 
 block : LC_BRACE statement* RC_BRACE;
-statement : expression SCOLON           #expressionStatement
-          | RETURN expression? SCOLON   #returnStatement
-          | neioNewCall SCOLON          #newStatement
+statement : RETURN expression? SCOLON   #returnStatement
           | variableDeclaration SCOLON  #variableDeclarationStatement
           | assignmentExpression SCOLON #assignmentStatement
           | ifteStatement               #ifStatement
           | StringLiteral               #TextModeStatement
           | WHILE L_BRACE expression R_BRACE (block | SCOLON) #whileLoop
           | FOR L_BRACE init=variableDeclaration SCOLON cond=expression SCOLON update=assignmentExpression R_BRACE block #forLoop
+          | expression SCOLON           #expressionStatement
           ;
 
 ifteStatement : IF L_BRACE ifCondition=expression R_BRACE ifBlock=block (ELSE (elseBlock=block | elif=ifteStatement))?;
 
-variableDeclaration : type Identifier (EQUALS expression);
+variableDeclaration : neioNewCall
+                    | type Identifier (EQUALS expression);
 assignmentExpression : var=expression EQUALS val=expression;
 
 literal : StringLiteral     #stringLiteral
@@ -72,6 +72,7 @@ expression : literal                    #literalExpression
            | THIS arguments             #thisDelegation
            | Identifier                 #identifierExpression
 		   | constructorCall	        #newExpression
+		   | neioNewCall                #neioNewExpression
            | expression DOT Identifier  #chainExpression
            | L_BRACE expression R_BRACE #parExpression
            | L_BRACE type R_BRACE expression #castExpression

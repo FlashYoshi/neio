@@ -1,0 +1,17 @@
+namespace neio.lang;
+
+class NLHandler;
+
+Content origin;
+
+NLHandler(Content origin) {
+    this.origin = origin;
+}
+
+NLHandler newline() {
+    return this;
+}
+
+Content origin() {
+    return origin;
+}

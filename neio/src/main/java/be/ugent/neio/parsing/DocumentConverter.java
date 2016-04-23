@@ -22,10 +22,10 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.misc.NotNull;
-import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.neio.antlr.ClassLexer;
 import org.neio.antlr.ClassParser;
+import org.neio.antlr.DocumentParser;
 import org.neio.antlr.DocumentParser.*;
 import org.neio.antlr.DocumentParserBaseVisitor;
 
@@ -91,61 +91,12 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
     public Block visitBody(BodyContext ctx) {
         block = ooFactory().createBlock();
         document.setBlock(block);
-        ctx.realContent().forEach(this::visit);
+        ctx.content().forEach(this::visit);
 
         if (previousExpression != null) {
             block.addStatement(ooFactory().createStatement(previousExpression));
         }
         return block;
-    }
-
-    @Override
-    public Object visitRealContent(@NotNull RealContentContext ctx) {
-        if (ctx.content() != null) {
-            visit(ctx.content());
-        } else if (ctx.nl() != null) {
-            fixPreviousExpression();
-            previousExpression = visitNl(ctx.nl());
-        } else if (ctx.mnl() != null) {
-            fixPreviousExpression();
-            previousExpression = visitMnl(ctx.mnl());
-        }
-        return null;
-    }
-
-    @Override
-    public Object visitMulticodeC(@NotNull MulticodeCContext ctx) {
-        MulticodeContext m = ctx.multicode();
-        for (ParseTree p : m.children) {
-            if (m.scode().contains(p)) {
-                processCodeBlock((ScodeContext) p);
-            } else if (m.lonecode().contains(p)) {
-                processCodeBlock((LonecodeContext) p);
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public Object visitContentCodeC(@NotNull ContentCodeCContext ctx) {
-        visit(ctx.content());
-        if (ctx.lonecode() != null) {
-            processCodeBlock(ctx.lonecode());
-        } else {
-            processCodeBlock(ctx.scode());
-        }
-        return null;
-    }
-
-    @Override
-    public Object visitCodeContentC(@NotNull CodeContentCContext ctx) {
-        if (ctx.lonecode() != null) {
-            processCodeBlock(ctx.lonecode());
-        } else {
-            processCodeBlock(ctx.scode());
-        }
-        visit(ctx.content());
-        return null;
     }
 
     @Override
@@ -179,6 +130,13 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
     public Object visitTextC(@NotNull TextCContext ctx) {
         fixPreviousExpression();
         previousExpression = visitText(ctx.text());
+        return null;
+    }
+
+    @Override
+    public Object visitNlC(@NotNull NlCContext ctx) {
+        fixPreviousExpression();
+        previousExpression = visitNl(ctx.nl());
         return null;
     }
 
@@ -264,11 +222,6 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
     @Override
     public Expression visitText(@NotNull TextContext ctx) {
         Expression txt = visitTxt(ctx.txt());
-        if (ctx.mnl() != null) {
-            previousExpression = visitMnl(ctx.mnl());
-        } else if (ctx.nl() != null) {
-            previousExpression = visitNl(ctx.nl());
-        }
         if (append) {
             return appendText(previousExpression, txt);
         } else {
@@ -309,13 +262,13 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         return node.getText();
     }
 
-    // e1.APPEND_TEXT(e2)
+    // e1.TEXT(e2)
     private Expression appendText(Expression e1, Expression e2) {
         List<Expression> arguments = new ArrayList<>();
         arguments.add(e2);
 
         if (e1 != null) {
-            return expressionFactory().createNeioMethodInvocation(APPEND_TEXT, e1, arguments);
+            return expressionFactory().createNeioMethodInvocation(TEXT_CALL, e1, arguments);
         } else {
             return e2;
         }
@@ -369,11 +322,6 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
     @Override
     public Expression visitNl(NlContext ctx) {
         return expressionFactory().createNeioMethodInvocation(NEWLINE, previousExpression, new ArrayList<>());
-    }
-
-    @Override
-    public Expression visitMnl(MnlContext ctx) {
-        return expressionFactory().createNeioMethodInvocation(MULTI_NEWLINE, previousExpression, new ArrayList<>());
     }
 
     private Block visitCode(String code, int sepLen) {

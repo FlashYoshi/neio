@@ -1,0 +1,12 @@
+namespace neio.stdlib;
+
+import neio.lang.Container;
+import neio.lang.Text;
+
+class TextContainer extends Container;
+
+Paragraph text(Text text) {
+    new Paragraph(text) par;
+    addContent(par);
+    return par;
+}

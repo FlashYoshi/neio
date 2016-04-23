@@ -23,7 +23,11 @@ Text(Text text) {
     this.text = text;
 }
 
-Text text() {
+Text text(Text t) {
+    return appendText(t);
+}
+
+Text getText() {
     return text;
 }
 
@@ -84,11 +88,6 @@ String thisToTex() {
     }
     
     return me;
-}
-
-Text newline() {
-    new Text("\n") t;
-    return appendText(t);
 }
 
 String toTex() {

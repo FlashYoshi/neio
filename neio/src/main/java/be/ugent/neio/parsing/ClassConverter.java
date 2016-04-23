@@ -52,6 +52,7 @@ import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.TerminalNode;
+import org.neio.antlr.ClassParser;
 import org.neio.antlr.ClassParser.*;
 import org.neio.antlr.ClassParserBaseVisitor;
 import org.neio.antlr.DocumentLexer;
@@ -215,7 +216,12 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     @Override
     public LocalVariableDeclarator visitVariableDeclaration(@NotNull VariableDeclarationContext ctx) {
-        return ooFactory().createLocalVariable(visitType(ctx.type()), ctx.Identifier().getText(), (Expression) visit(ctx.expression()));
+        if (ctx.neioNewCall() != null) {
+            ConstructorInvocation ci = visitNeioNewCall(ctx.neioNewCall());
+            return ooFactory().createLocalVariable(ci.name(), ctx.neioNewCall().Identifier().getText(), ci);
+        } else {
+            return ooFactory().createLocalVariable(visitType(ctx.type()), ctx.Identifier().getText(), (Expression) visit(ctx.expression()));
+        }
     }
 
     @Override
@@ -372,7 +378,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     @Override
-    public Statement visitNewStatement(@NotNull NewStatementContext ctx) {
+    public Object visitNeioNewExpression(@NotNull NeioNewExpressionContext ctx) {
         return visitNeioNewCall(ctx.neioNewCall());
     }
 
@@ -534,9 +540,8 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     @Override
-    public LocalVariableDeclarator visitNeioNewCall(@NotNull NeioNewCallContext ctx) {
-        Expression e = eFactory().createConstructorInvocation(visitType(ctx.type()).toString(), null, (List<Expression>) visit(ctx.arguments()));
-        return ooFactory().createLocalVariable(visitType(ctx.type()).toString(), ctx.Identifier().getText(), e);
+    public ConstructorInvocation visitNeioNewCall(@NotNull NeioNewCallContext ctx) {
+        return eFactory().createConstructorInvocation(visitType(ctx.type()).toString(), null, (List<Expression>) visit(ctx.arguments()));
     }
 
     @Override

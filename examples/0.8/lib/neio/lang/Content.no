@@ -49,6 +49,10 @@ Content parent() {
 	return parent;
 }
 
+NLHandler newline() {
+    return new NLHandler(this);
+}
+
 Integer contentSize() {
 	return content.size();
 }
