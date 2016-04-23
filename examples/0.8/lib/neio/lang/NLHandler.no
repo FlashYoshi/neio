@@ -15,3 +15,7 @@ NLHandler newline() {
 Content origin() {
     return origin;
 }
+
+Content text(Text text) {
+    return origin().text(text);
+}

@@ -17,6 +17,6 @@ void build(String name) {
         
         command = "latexmk -c " + name;
 		Runtime.getRuntime().exec(command).waitFor();
-        System.out.println("Cleaned files for " + name);
+        System.out.println("Cleaned files for " + texlessName);
 	}
 }
