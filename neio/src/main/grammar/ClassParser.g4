@@ -28,7 +28,7 @@ fieldAssignmentExpression : var=fieldDecl EQUALS val=expression;
 
 method : methodExpression block;
 methodExpression : modifier* methodHeader L_BRACE parameters? R_BRACE;
-methodHeader : (SMALLER typeParameterList BIGGER)? (type | VOID)? name=(Identifier | MethodIdentifier | STAR | MINUS);
+methodHeader : (SMALLER typeParameterList BIGGER)? (type | VOID)? name=(Identifier | MethodIdentifier | STAR | MINUS | PIPE);
 modifier : ABSTRACT
          | PRIVATE
          | PROTECTED

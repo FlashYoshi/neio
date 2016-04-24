@@ -1,6 +1,7 @@
 package be.ugent.neio.parsing;
 
 import be.kuleuven.cs.distrinet.jnome.workspace.JavaView;
+import be.ugent.neio.expression.NeioMethodInvocation;
 import be.ugent.neio.industry.NeioExpressionFactory;
 import be.ugent.neio.industry.NeioFactory;
 import be.ugent.neio.language.Neio;
@@ -182,16 +183,42 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
     }
 
     @Override
-    public Expression visitPrefixCall(PrefixCallContext ctx) {
+    public NeioMethodInvocation visitPrefixCall(PrefixCallContext ctx) {
         // Find the method name and print it
         String methodName = ctx.MethodName().getText();
         List<Expression> arguments = new ArrayList<>();
 
         // Find the arguments
-        Expression argument = visitTxt(ctx.txt());
-        arguments.add(argument);
+        if (ctx.txt() != null) {
+            Expression argument = visitTxt(ctx.txt());
+            arguments.add(argument);
+        }
 
-        return expressionFactory().createNeioMethodInvocation(methodName, previousExpression, arguments);
+        previousExpression = expressionFactory().createNeioMethodInvocation(methodName, previousExpression, arguments);
+        if (ctx.cPrefixCall() != null) {
+            return visitCPrefixCall(ctx.cPrefixCall());
+        } else {
+            return (NeioMethodInvocation) previousExpression;
+        }
+    }
+
+    @Override
+    public NeioMethodInvocation visitCPrefixCall(CPrefixCallContext ctx) {
+        String methodName = ctx.preMethodName().getText();
+        List<Expression> arguments = new ArrayList<>();
+
+        // Find the arguments
+        if (ctx.txt() != null) {
+            Expression argument = visitTxt(ctx.txt());
+            arguments.add(argument);
+        }
+
+        previousExpression = expressionFactory().createNeioMethodInvocation(methodName, previousExpression, arguments);
+        if (ctx.cPrefixCall() != null) {
+            return visitCPrefixCall(ctx.cPrefixCall());
+        } else {
+            return (NeioMethodInvocation) previousExpression;
+        }
     }
 
     @Override

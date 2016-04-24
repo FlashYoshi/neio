@@ -35,6 +35,14 @@ Itemize *(Text text) {
     return itemize;
 }
 
+TableRow |(Text text) {
+    new TableRow(text) row;
+    new Table(row) table;
+    addContent(table);
+    
+    return row;
+}
+
 Image image(String imageName) {
     return image(null, imageName);
 }

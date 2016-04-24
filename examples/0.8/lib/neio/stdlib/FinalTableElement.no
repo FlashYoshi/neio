@@ -1,0 +1,20 @@
+namespace neio.stdlib;
+
+import java.util.List;
+import java.util.ArrayList;
+
+import neio.lang.Content;
+
+class FinalTableElement extends TableElement;
+
+FinalTableElement() {
+    header = "|";
+}
+
+String header() {
+    return header;
+}
+
+String toTex() {
+    return "\\\\";
+}

@@ -40,6 +40,7 @@ public class NeioSyntax extends Java7Syntax {
         map.put("_", "underscore");
         map.put("`", "backquote");
         map.put("$", "dollar");
+        map.put("|", "pipe");
         ALIASES = Collections.unmodifiableMap(map);
     }
 
