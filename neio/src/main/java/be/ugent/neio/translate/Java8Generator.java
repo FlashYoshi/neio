@@ -28,7 +28,6 @@ import org.aikodi.chameleon.support.member.simplename.method.RegularMethodInvoca
 import org.aikodi.chameleon.support.member.simplename.operator.infix.InfixOperatorInvocation;
 import org.aikodi.chameleon.support.statement.ReturnStatement;
 import org.aikodi.chameleon.support.variable.LocalVariableDeclarator;
-import org.aikodi.chameleon.util.Util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -213,13 +212,13 @@ public class Java8Generator {
             for (ThisLiteral t : call.descendants(ThisLiteral.class)) {
                 NeioNameExpression expr = eFactory().createNeioNameExpression(lastElement);
                 t.replaceWith(expr);
-                // Check if we're a methodcall
-                /*if (expr.parent() != null) {
+                // Check if we're a parameter, if so fix 'this'
+                if (isParameter(expr)) {
                     String prefix = getPrefix(((RegularMethodInvocation) expr.parent()), variables);
                     if (prefix != null) {
                         expr.replaceWith(eFactory().createNeioNameExpression(prefix));
                     }
-                }*/
+                }
             }
 
             fixStringConcats(call);
@@ -245,6 +244,18 @@ public class Java8Generator {
             // Don't forget to remove the old (non broken up) statement
             block.removeStatement(statement);
         }
+    }
+
+    private boolean isParameter(Expression expr) {
+        for (MethodInvocation mi : expr.ancestors(MethodInvocation.class)) {
+            for (Object e : mi.getActualParameters()) {
+                if (((Expression) e).descendants(expr.getClass()).contains(expr)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     private LocalVariableDeclarator createAndAddLocalVar(String typeName, String varName, Expression e, Stack<Variable> variables, Block block) {
