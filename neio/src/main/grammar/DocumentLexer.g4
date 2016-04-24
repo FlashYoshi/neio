@@ -35,13 +35,15 @@ fragment UNDERSCORE : '_';
 fragment H : '#';
 fragment D : '-';
 fragment ST : '*';
+fragment DOLLAR : '$';
 BANG : '!';
-MethodName : {getCharPositionInLine() == 0}? (H | D | ST | B_QUOTE | UNDERSCORE)+;
+MethodName : {getCharPositionInLine() == 0}? (H | D | ST | DLR | B_QUOTE | UNDERSCORE)+;
 HASH : H;
 DASH : D;
 STAR : ST;
 BQ : B_QUOTE;
 US : UNDERSCORE;
+DLR : DOLLAR;
 
 fragment VALID_CHAR : ~[#-*_`\[\]{} \r\n] | SQ | BANG;
 

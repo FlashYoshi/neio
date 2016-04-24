@@ -5,8 +5,6 @@ import neio.lang.Text;
 
 class TextContainer extends Container;
 
-Paragraph text(Text text) {
-    new Paragraph(text) par;
-    addContent(par);
-    return par;
+ContainerNLHandler newline() {
+    return new ContainerNLHandler(this);
 }

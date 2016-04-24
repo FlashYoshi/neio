@@ -1,0 +1,26 @@
+namespace neio.stdlib;
+
+import neio.lang.Content;
+import neio.lang.Text;
+
+class NLHandler;
+
+Content origin;
+
+NLHandler(Content origin) {
+    this.origin = origin;
+}
+
+Content origin() {
+    return origin;
+}
+
+Paragraph text(Text text) {
+    new Paragraph(text) par;
+    origin().addContent(par);
+    return par;
+}
+
+NLHandler newline() {
+    return this;
+}

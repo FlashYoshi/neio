@@ -63,6 +63,10 @@ Eq eq() {
     return addContent(eq);
 }
 
+InlineEq ieq() {
+    return new InlineEq();
+}
+
 Text title() {
     return title;
 }

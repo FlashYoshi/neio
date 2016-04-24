@@ -28,7 +28,7 @@ Assignments are never printed out, and as _i++_ is actually `i = i + 1`, increme
 {i = i + 1}
 
 We can however have normal expressions like {(i + 1) + 15} be printed out.
-Or we can have multiple expressions follow each other {i + 15} {calculateCoolThings(j)}
+Or we can have multiple expressions follow each other {i + 15} {i + 16}
 
 {
     if (i > 0) {

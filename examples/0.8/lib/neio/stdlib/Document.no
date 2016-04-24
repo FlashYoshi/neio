@@ -26,10 +26,6 @@ Chapter addChapter(Chapter chapter) {
 	return chapter;
 }
 
-Integer calculateCoolThings(Integer j) {
-    return 42;
-}
-
 Itemize *(Text text) {
 	Itemize itemize = new Itemize();
 	ItemizeItem item = new ItemizeItem(text, itemize, 1);
