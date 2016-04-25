@@ -9,8 +9,8 @@ document : HEADER
 body : content*;
 content : prefixCall    #prefixC
           | text        #textC
-          | nl scode    #scodeC
-          | nl lonecode #lonecodeC
+          | scode       #scodeC
+          | lonecode    #lonecodeC
           | nl          #nlC
           ;
 
