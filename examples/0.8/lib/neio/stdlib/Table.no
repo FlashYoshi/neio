@@ -1,0 +1,37 @@
+namespace neio.stdlib;
+
+import java.util.List;
+import java.util.ArrayList;
+
+import neio.lang.Content;
+
+class Table extends Content;
+
+Table() {
+}
+
+Table(TableRow row) {
+    appendHline();
+    addContent(row);
+    row.setBold();
+}
+
+TableRow appendRow(TableRow row) {
+    return addContent(row);
+}
+
+Hline appendHline() {
+    return addContent(new Hline());
+}
+
+String toTex() {
+    // hline and row
+    if (contentSize() > 2) {
+        appendHline();
+    }
+    StringBuilder begin = new StringBuilder("\n\\begin{tabular}");
+    if (contentSize() > 2) {
+        begin.append("{ | ").append(((TableRow) content(1)).header()).append("}");
+    }
+	return begin.toString() + super.toTex() + "\\end{tabular}\n";
+}

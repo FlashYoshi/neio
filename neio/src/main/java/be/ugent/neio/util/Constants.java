@@ -14,6 +14,7 @@ public class Constants {
 
     // KNOWN CLASSES
     public static final String TEXT = "neio.lang.Text";
+    public static final String STRING = "neio.lang.String";
     public static final String BASE_CLASS = "neio.lang.Content";
     public static final String IFCLASS = "neio.lang.If";
     public static final String DEFAULT_BUILDER = "TexToPDFBuilder";

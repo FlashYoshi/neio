@@ -26,10 +26,6 @@ Chapter addChapter(Chapter chapter) {
 	return chapter;
 }
 
-Integer calculateCoolThings(Integer j) {
-    return 42;
-}
-
 Itemize *(Text text) {
 	Itemize itemize = new Itemize();
 	ItemizeItem item = new ItemizeItem(text, itemize, 1);
@@ -37,6 +33,14 @@ Itemize *(Text text) {
     addContent(itemize);
 
     return itemize;
+}
+
+TableRow |(Text text) {
+    new TableRow(text) row;
+    new Table(row) table;
+    addContent(table);
+    
+    return row;
 }
 
 Image image(String imageName) {
@@ -52,6 +56,10 @@ Image image(Text caption, String imageName) {
 
 Packages packages() {
     return packages;
+}
+
+Packages addPackage(String pkg) {
+    return packages.add(pkg);
 }
 
 String header() {

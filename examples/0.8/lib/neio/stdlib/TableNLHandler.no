@@ -1,0 +1,27 @@
+namespace neio.stdlib;
+
+import neio.lang.Content;
+import neio.lang.Text;
+
+class TableNLHandler extends NLHandler;
+
+TableNLHandler(TableRow origin) {
+    super(origin);
+}
+
+ContainerNLHandler newline() {
+    // origin should always have a parent
+    return (TextContainer)(origin().parent().parent()).newline();
+}
+
+nested Hline -(Integer level) {
+    return origin().appendHline();
+}
+
+TableRow origin() {
+    return (TableRow) (super.origin());
+}
+
+TableRow |(Text text) {
+    return origin().appendRow(new TableRow(text));
+}

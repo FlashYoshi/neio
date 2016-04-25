@@ -5,8 +5,12 @@ import neio.lang.Text;
 
 class InlineEq extends Text;
 
-Sqrt sqrt(Content arg) {
-    return addContent(new Sqrt(arg));
+InlineEq() {
+}
+
+InlineEq sqrt(Content root, Content arg) {
+    content().add(new Sqrt(root, arg));
+    return this;
 }
 
 String thisToTex() {

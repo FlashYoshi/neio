@@ -14,22 +14,20 @@ import org.aikodi.chameleon.core.lookup.LookupException;
 import org.aikodi.chameleon.core.tag.TagImpl;
 import org.aikodi.chameleon.core.variable.Variable;
 import org.aikodi.chameleon.exception.ChameleonProgrammerException;
-import org.aikodi.chameleon.oo.expression.Expression;
-import org.aikodi.chameleon.oo.expression.ExpressionFactory;
-import org.aikodi.chameleon.oo.expression.MethodInvocation;
-import org.aikodi.chameleon.oo.expression.NameExpression;
+import org.aikodi.chameleon.oo.expression.*;
 import org.aikodi.chameleon.oo.plugin.ObjectOrientedFactory;
 import org.aikodi.chameleon.oo.statement.Block;
 import org.aikodi.chameleon.oo.statement.Statement;
+import org.aikodi.chameleon.oo.type.RegularType;
 import org.aikodi.chameleon.oo.type.Type;
 import org.aikodi.chameleon.oo.variable.VariableDeclaration;
 import org.aikodi.chameleon.support.expression.AssignmentExpression;
 import org.aikodi.chameleon.support.expression.ThisLiteral;
 import org.aikodi.chameleon.support.member.simplename.method.NormalMethod;
 import org.aikodi.chameleon.support.member.simplename.method.RegularMethodInvocation;
+import org.aikodi.chameleon.support.member.simplename.operator.infix.InfixOperatorInvocation;
 import org.aikodi.chameleon.support.statement.ReturnStatement;
 import org.aikodi.chameleon.support.variable.LocalVariableDeclarator;
-import org.aikodi.chameleon.util.Util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -144,6 +142,51 @@ public class Java8Generator {
         return block;
     }
 
+    /**
+     * Gets rid of String + Text concats incase the String is just the empty String
+     *
+     * @param element The element in which some concats might have to be fixed
+     */
+    private void fixStringConcats(Element element) throws LookupException {
+        for (InfixOperatorInvocation ioi : element.descendants(InfixOperatorInvocation.class)) {
+            // args == right
+            // target == left
+            Type rightType = ioi.getActualParameters().get(0).getType();
+            if (ioi.name().equals("+") &&
+                    subtypeOf(rightType, TEXT) | subtypeOf(rightType, STRING)) {
+                if (ioi.getTarget() instanceof Literal) {
+                    Literal lit = (Literal) ioi.getTarget();
+                    if (lit.text().isEmpty()) {
+                        ioi.replaceWith(ioi.getActualParameters().get(0));
+                    }
+                }
+            }
+        }
+    }
+
+    private boolean subtypeOf(Type sub, String superType) throws LookupException {
+        return subtypeOf(sub, new RegularType(superType));
+    }
+
+    private boolean subtypeOf(Type sub, Type superType) throws LookupException {
+        for (Type t : sub.getSelfAndAllSuperTypesView()) {
+            if (getName(t).equals(getName(superType))) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private String getName(Type type) {
+        String result = type.getFullyQualifiedName();
+        if (result == null) {
+            result = type.name();
+        }
+
+        return result;
+    }
+
     private void breakupMethodChain(Stack<RegularMethodInvocation> callStack, Stack<Variable> variables, Block block, Element methodChain, Statement statement) throws LookupException {
         // Turn the methodchain into local variables, one by one
         while (!callStack.isEmpty()) {
@@ -169,14 +212,16 @@ public class Java8Generator {
             for (ThisLiteral t : call.descendants(ThisLiteral.class)) {
                 NeioNameExpression expr = eFactory().createNeioNameExpression(lastElement);
                 t.replaceWith(expr);
-                // Check if we're a methodcall
-                if (expr.parent() != null) {
+                // Check if we're a parameter, if so fix 'this'
+                if (isParameter(expr)) {
                     String prefix = getPrefix(((RegularMethodInvocation) expr.parent()), variables);
                     if (prefix != null) {
                         expr.replaceWith(eFactory().createNeioNameExpression(prefix));
                     }
                 }
             }
+
+            fixStringConcats(call);
 
             String prefix = getPrefix(call, variables);
             RegularMethodInvocation clone = (RegularMethodInvocation) call.clone();
@@ -199,6 +244,18 @@ public class Java8Generator {
             // Don't forget to remove the old (non broken up) statement
             block.removeStatement(statement);
         }
+    }
+
+    private boolean isParameter(Expression expr) {
+        for (MethodInvocation mi : expr.ancestors(MethodInvocation.class)) {
+            for (Object e : mi.getActualParameters()) {
+                if (((Expression) e).descendants(expr.getClass()).contains(expr)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     private LocalVariableDeclarator createAndAddLocalVar(String typeName, String varName, Expression e, Stack<Variable> variables, Block block) {
@@ -295,14 +352,7 @@ public class Java8Generator {
                         // Check if we return Content
                         NormalMethod method = (NormalMethod) ((MethodInvocation) e).getElement();
                         type = method.returnType();
-                        boolean content = false;
-                        for (Type t : type.getSelfAndAllSuperTypesView()) {
-                            if (t.name().equals(Util.getLastPart(BASE_CLASS))) {
-                                content = true;
-                                break;
-                            }
-                        }
-                        if (!content) {
+                        if (!subtypeOf(type, BASE_CLASS)) {
                             System.err.println("You can only return Content in an inline code block, unknown expression: " + e.toString());
                             return block;
                         }
@@ -409,11 +459,23 @@ public class Java8Generator {
         }
     }
 
+    /**
+     * Replaces a ThisLiteral by the last expression
+     *
+     * @param replacee The thisLiteral to replace
+     */
     private void thisToNameExpression(Expression replacee) {
         NameExpression replacer = eFactory().createNeioNameExpression(lastElement);
         replacee.replaceWith(replacer);
     }
 
+    /**
+     * Switches out ThisLiterals in an expression
+     *
+     * @param e         The expression containing ThisLiterals
+     * @param variables The previous variables
+     * @throws LookupException
+     */
     private void replaceThis(Expression e, Stack<Variable> variables) throws LookupException {
         // Replace occurences of 'this' by the right variable
         List<ThisLiteral> descendants = e.descendants(ThisLiteral.class);
@@ -430,6 +492,14 @@ public class Java8Generator {
     }
 
 
+    /**
+     * Switches out a ThisLiteral with the right variable
+     *
+     * @param mi        The methodinvocation in which the literal occurs
+     * @param replacee  The literal to replace
+     * @param variables The previous variables
+     * @throws LookupException
+     */
     private void setThis(RegularMethodInvocation mi, Element replacee, Stack<Variable> variables) throws LookupException {
         NormalMethod method = mi.getElement();
         Type type = method.nearestAncestor(Type.class);
@@ -551,14 +621,7 @@ public class Java8Generator {
         Stack<Variable> variables = (Stack<Variable>) stack.clone();
         while (!variables.isEmpty()) {
             Variable var = variables.peek();
-            boolean found = false;
-            for (Type t : var.getType().getSelfAndAllSuperTypesView()) {
-                if (t.name().equals(type.name())) {
-                    found = true;
-                    break;
-                }
-            }
-            if (found) {
+            if (subtypeOf(var.getType(), type)) {
                 return var.name();
             } else {
                 variables.pop();

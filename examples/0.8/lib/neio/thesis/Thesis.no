@@ -16,12 +16,13 @@ Thesis() {
     packages = new Packages();
 	packages.add("graphicx")
     .add("fancyhdr")
-    .add("amsmath");
-    
+    .add("amsmath")
+    .add("listings");
+
     List<String> options = new ArrayList<String>();
     options.add("english");
     packages.add(options, "babel");
-    
+
     addClassMapping(Chapter.class, ThesisChapter.class);
     addContent(new Toc());
     addContent(new MainMatter());
@@ -39,7 +40,7 @@ String header() {
 	.append("\\setlength{\\textwidth}{16cm}\n")
 	.append("\\setlength{\\textheight}{23.3cm}\n")
 	.append("\\setlength{\\footskip}{1.5cm}\n")
-    .append(packages.toTex())
+        .append(packages.toTex())
 	.append("\\pagestyle{fancy}\n")
 	.append("\\renewcommand{\\chaptermark}[1]{\\markright{\\MakeUppercase{#1}}}\n")
 	.append("\\renewcommand{\\sectionmark}[1]{\\markright{\\thesection~#1}}\n")
@@ -61,8 +62,21 @@ String header() {
 	.append("}\n")
 	.append("\\renewcommand{\\baselinestretch}{1.5}\n")
 	.append("\\hyphenation{ditmagnooitgesplitstworden dit-woord-splitst-hier}\n")
-    .append("\\setlength{\\parindent}{0em}\n")
-    .append("\\setlength{\\parskip}{1em}\n");
-    
+        .append("\\setlength{\\parindent}{0em}\n")
+        .append("\\setlength{\\parskip}{1em}\n")
+	.append("\\lstset{\n")
+	.append("belowcaptionskip=1\\baselineskip,\n")
+	.append("breaklines=true,\n")
+	.append("frame=l,\n")
+	.append("xleftmargin=\\parindent,\n")
+	.append("showstringspaces=false,\n")
+	.append("basicstyle=\\footnotesize\\ttfamily,\n")
+	.append("keywordstyle=\\bfseries,\n")
+	.append("stringstyle=\\ttfamily,\n")
+	.append("numbers=left,\n")
+	.append("numbersep=7pt,\n")
+	.append("numberstyle=\\tiny\n")
+	.append("}\n");
+
     return header.toString();
 }

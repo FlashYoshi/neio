@@ -13,61 +13,145 @@ This introduction will provide the context from which the necessity of this thes
 
 ## {md}
 One of the most popular markup languages at this time is {md}.
+It is introduced by the designers of the language as follows:
+
+// TODO: ADD CREDITS TO https://daringfireball.net/projects/markdown/
+Markdown is a text-to-HTML conversion tool for web writers.
+Markdown allows you to write using an easy-to-read, easy-to-write plain text format, then convert it to structurally valid XHTML (or HTML).
+
 {md}'s goal is to be easy to write and read as a plain text document.
 Due to this, it attracts a lot of people as it is very easy to create a new simple document.
+It achieves this by introducing a small and simple syntax. // TODO: link to spec
+By using such a simple syntax compile times are for the documents are very short and IDE support is wide.
+Even withouth the help of an IDE, {md} is very readable as it was designed to be.
+Another advantage of this simple syntax is that it almost entirely removes the possibility of syntax errors to occur.
+
 Due to it's simple nature and limited syntax {md} can be easily translated into other formats such as PDF or HTML.
 This further increases the appeal of the language, as it allows to very easily create elegant looking documents in a variety of formats.
-To achieve this simplicity however, a price has to be paid. All of the syntax elements have been hard coded into the language meaning there is no room for customisability.
-The only way to customise {md} is by embedding inline HTML.
-HTML allows to create a strong structured model but it still doesn't allow for very much customisability.
-The lack of customisability in {md} is further enforced due to the fact that it has no programming model.
+As {md} files are just plain text files they are robust to file corruption and easy to recover from said corruption.
+A corrupted byte would show easily and it would likely not destroy the layout of the document as there are so few reserved symbols being used in a document.
+
+Due to the fact that {md} uses plain text, it is cross platform and because it has such a simple syntax, compilers are available for all major operating systems. //TODO: reference
+{md} also natively allows for UTF-8 characters to be used in the text thus not requiring weird escape sequences to insert certain symbols. // TODO: reference
+A last advantage of plain text is that it is wel suite for Version Control Systems (VCS).
+
+To illustrate the simplicity of {md} we'll take a look at an example document:
+{
+    new Lstlisting('''document.md''');
+}
+// TODO: add image of rendered document
+
+To allow for some customisability, {md} allows you to use inline HTML. // TODO: example
+In case {md} does not support what you want to do, HTML is what you use.
 
 ## {lat}
-{lat} in comparison to {md} does provide a, Turing complete, programming model and due to this allows for rich customisability.
-This is one of the reasons why {lat} is often used for long documents such as books and articles.
-// TODO: put into better words
-Next to this customisability, LaTeX's PDF rendering is also very sophisticated. 
+// TODO: show some trees, that show structure
+{lat} provides a, Turing complete, programming model and due to this allows for rich customisability.
+This is one of the reasons why {lat} is often used for long and complex documents such as books and articles.
+
+Like {md} lat uses a plain text format that is quite robust to file corruptions and is well suited for VCS.
+It is however less robust against file corruption as the syntax is a lot more extensive and thus file corruption could lead to your document not compiling anymore a lot easier.
+
+In {lat} the structure and the layout of your document are split by design. {lat} forces you to create a structured document by requiring you to use `sections, paragraphs,...`.
+When using a WYSIWYG word processor for example, usually there is a way to structure your documents, using `styles, headers,...` but it is not forced on the user.
+As a result, in {lat} consistentcy is enforced throughout the entire document without too much effort.
+In a WYSIWG word processor, the user has to make sure his document is consistent.
+Once documents get longer, this gets very hard to manage and to spot.
+
+// TODO: put into better words, reference
+Next to this customisability, {lat}'s PDF rendering is also very sophisticated.
 Another reason why {lat} is widely used due to its good scientific support.
 {lat} offers good support for mathematics as well as other scientific areas, e.g. you can create complex good looking graphs using {lat}.
-Even though {lat} offers customisability through a programming model, it is not perfect.
-The programming model is hard to use and is not easy to read. It also looks a lot more complex than {md}, scaring away a lot of potential users.
-// TODO: Explain a little about macro expansion
-Lastly, the programming model used in {lat} does not use a static type system, which means that we have to compile the document to be able to see that we passed a wrong type at some point in the document.
+Due to its high customisability, {lat} can handle about any kind of document you could think of, from sheet music and graphs, to letters and books.
+It should be noted though that almost all of this functionality is offered through libraries such as TikZ.
+
+{lat} also works together with BibTeX, a reference management software that is very robust and makes certain all of your references are consistent.
+It also allows you to create the references outside of your main document, decreasing the amount of clutter in the document.
+Whilst on the topic of including other files in your document, in {lat} you can split up your document into multiple smaller documents, allowing for easier management.
+A common use of this function is to write every chapter, e.g. in a book, in a seperate document and than all the chapters are imported into the main document.
+This allows to easily remove or switch out different parts of a document.
+
+Another very simple feature that {lat} has, is that is allows you to use vector graphics or PDF as images in your document.
+This is something not possible in WYSIWIG word processors or lighweight markup languages such as {md}.
+
+{lat} is free and open source, which is a huge point of attraction for the open source community.
+As a result of this free and open source model, combined with its popularity and good scientific support, LaTeX has been integrated in many other applications.
+A few examples are:
+* MediaWiki // TODO: https://www.mediawiki.org/wiki/Extension:Math
+* Stack Exchange
+//TODO: add more examples
 
 ## {pan}
 {pan} is a document converter, but in reality it can do much more than just convert a document from one format to another.
 Notably, it allows you to write inline {lat} inside of a {md} document allowing for a much better experience than just using one of them.
-However, {pan} does not really have a programming model, it works with so called filters.
+However, {pan} does not really have a programming model, outside of the {lat} one, it works with so called filters.
 When a document is issued for conversion, {pan} will transform the document into an Abstract Syntax Tree.
 This AST can then be transformed using filters.
 Filters can be written in a multitude of languages such as Haskell, Python, Perl,... and have to be passed as an argument to the conversion command.
-Transforming an AST afterwards is not always as easy as doing so inline, and it also hides what really happens to the document, which could cause confusion.
 // TODO: show an example
 
 ## Word processors
 Modern word processors such as Microsoft Word and Pages are so called WYSIWYG editors.
 As you immediately, without compiling, see what your document will look like it is a very popular tool.
-Even though some customisability is available, no programming model is available real customisability is far to be found.
+
+## Problem statement
+We can see that these solutions all have there strong points but there are also quite a few gripes.
+We will discuss the most common gripes for every solution underneath and afterwards introduce the problem statement.
+
+### {md}
+To achieve this {md}'s simplicity, a hefty price has to be paid. All of the syntax elements have been hard coded into the language meaning there is no room for customisability.
+The only way to customise {md} is by embedding inline HTML.
+HTML allows users to create a solid structured model but it still does not allow for very much customisability.
+While {md} is meant to be easily readable and writable, HTML is not and using is thus decreases readability and cleanliness of your document significantly.
+HTML also does away with the robustness of {md}'s plain text format, as having a tag being corrupted could lead to very big changes in the rendered file and might not even allow for compilation anymore.
+HTML also reintroduces the possibility of syntax errors and thus slowing down the document creation.
+// TODO: example of layout destruction
+
+The lack of customisability in {md} is further enforced due to the fact that it has no programming model.
+// TODO: example
+
+### {lat}
+// TODO: easy syntax errors, not robust to errors, long repl cycles, unreadable error messages, mention LyX, customizing a document can be very hard
+// TODO: requires some time to learn, especially to be able to customize/write packages, no UTF-8 without xe/luatex
+Even though {lat} offers customisability through a programming model, it is not perfect.
+The programming model is hard to use and is not easy to read. It also looks a lot more complex than {md}, scaring away a lot of potential users.
+// TODO: Explain a little about macro expansion
+Lastly, the programming model used in {lat} does not use a static type system, which means that we have to compile the document to be able to see that we passed a wrong type at some point in the document.
+
+### {pan}
+Transforming an AST afterwards is not always as easy as doing so inline, and it also hides what really happens to the document, which could cause confusion.
+
+### Word processors
+// TODO: consider templates
+A first point to note is that the most popular word processors such as Microsoft Word and Pages are not free, but instead cost a significant amount.
+There are free variants, such as LibreOffice and OpenOffice, but the compatibility between these word processors is not perfect.
+The free alternatives usually also have less of a focus on the ui, making them look somewhat less sleek.
+
+Another problem with word processors is that their format often changes over the years.
+This means that your document might not show up the same, or at all, a few years later than when you wrote it.
+
+// TODO: no programming model or smth like VB
+Even though some customisability is available, no programming model is available and real customisability is far to be found.
 Due to their lack of a programming model, word processors do not allow for even the simplest of computations such as `The result is x + y`.
-// TODO: explain why
-It is also quite easy to create inconsistencies using word processors.
+
+// TODO: add a label
+It is also quite easy to create inconsistencies using word processors as noted above.
+Next to creating inconsistencies, as structure is not enforced on you, small changes could have big side effects on the document.
+// TODO: include image?
+E.g. you placed an image exactly like you wanted, you then later on add a newline somewhere higher up, reflowing the text underneath it an shifting the precisely placed image around.
+These changes are not always immediately clear, which further contributes to the creation of inconsistencies in the document.
+
 Lastly, word processors often use a proprietary or complex format for there documents, which is not only bigger than a plain text document, but also a lot more prune to corruption.
 A single bit flip could potentially irreversibly destroy your document.
-The complex document formats are also hard to be used in combination with Version Control Systems.
+These complex document formats are also hard to be used in combination with VCS.
 
-# Neio
-In the previous chapter the state of the art concerning document creation has been discussed and we notice that some improvement is certainly possible.
-All of the document creation tools discussed above have their advantages and disadvantages. In this chapter we will concretise what we want to achieve with our new markup language 
-and how we go about doing so.
+#### Problem statement
+#### Proposed solution
+To counter the problems occuring in the state of the art solutions, we came up with the following goals for the language:
+- Userfriendliness: has to be easy to get started with the language
+- Has to use a modern programming paradigm
+- Has to be highly customisable
 
-The name of the markup language designed and implemented in this thesis is `Neio`, which is read as `Neo`.
-
-## Goals
-// TODO: use a label
-Taking into account the advantages and disadvantages of the solutions presented in Chapter 1, we came up with the following goals:
-- Userfriendly: easy to pick up
-- Use a modern programming paradigm
-- High customisability
 
 The first goal supplies us with a simple language that allows to very easily create simple documents.
 The use of a modern programming paradigm allows us to customise the document and execute easy and complex computations easily.
@@ -79,6 +163,13 @@ These documents resemble Java classes and allow to customise anything that can b
 
 To allow for extensive customisability a script file is seen as a chain of method calls. Everything you see in the document is a method call.
 // TODO: add example
+
+# Design of the Neio markup language
+In the previous chapter the state of the art concerning document creation has been discussed and we notice that some improvement is certainly possible.
+All of the document creation tools discussed above have their advantages and disadvantages. In this chapter we will concretise what we want to achieve with our new markup language 
+and how we go about doing so.
+
+The name of the markup language designed and implemented in this thesis is `Neio`, which is read as `Neo`.
 
 ## Neio script files
 
@@ -146,6 +237,7 @@ We will also discuss which libraries have been recreated in Neio to allow for a 
 ### Reflection
 ### Limitations
 ### Reasons for choosing Java
+### Automatic Text conversion
 
 ## Outputting
 

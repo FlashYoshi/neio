@@ -39,6 +39,8 @@ public class NeioSyntax extends Java7Syntax {
         map.put("-", "dash");
         map.put("_", "underscore");
         map.put("`", "backquote");
+        map.put("$", "dollar");
+        map.put("|", "pipe");
         ALIASES = Collections.unmodifiableMap(map);
     }
 
@@ -179,13 +181,21 @@ public class NeioSyntax extends Java7Syntax {
 
     // Creates a valid method name as Neio allows for symbols in its methodnames
     private String createValidMethodname(String methodname) {
+        String prefix = "";
         String result = methodname;
+        if (methodname.startsWith("$")) {
+            prefix = "$";
+            result = methodname.substring(1);
+        }
         for (String s : ALIASES.keySet()) {
             if (result.contains(s)) {
                 result = result.replaceAll(Pattern.quote(s), ALIASES.get(s));
             }
         }
 
+        if (!prefix.isEmpty()) {
+            result = prefix + result;
+        }
         return result;
     }
 }

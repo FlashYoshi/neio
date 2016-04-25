@@ -1,0 +1,34 @@
+namespace neio.stdlib;
+
+import java.util.List;
+import java.util.ArrayList;
+
+import neio.lang.BoldText;
+import neio.lang.Content;
+import neio.lang.Text;
+
+class TableElement extends Content;
+
+protected String header;
+Text text;
+
+TableElement() {
+    header = "l";
+}
+
+TableElement(Text text) {
+    this();
+    this.text = text;
+}
+
+void setBold() {
+    text = new BoldText(text);
+}
+
+String header() {
+    return header;
+}
+
+String toTex() {
+    return text.toTex();
+}

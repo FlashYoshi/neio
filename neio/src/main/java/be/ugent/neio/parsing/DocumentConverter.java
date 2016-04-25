@@ -1,6 +1,7 @@
 package be.ugent.neio.parsing;
 
 import be.kuleuven.cs.distrinet.jnome.workspace.JavaView;
+import be.ugent.neio.expression.NeioMethodInvocation;
 import be.ugent.neio.industry.NeioExpressionFactory;
 import be.ugent.neio.industry.NeioFactory;
 import be.ugent.neio.language.Neio;
@@ -53,6 +54,7 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
     private Block block = null;
     private int lonecodeid;
     private boolean append;
+    private boolean appendInline;
 
     public DocumentConverter(Document document, JavaView view) {
         this.document = (TextDocument) document;
@@ -60,6 +62,7 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         this.neio = view.language(Neio.class);
         this.lonecodeid = 0;
         this.append = true;
+        this.appendInline = true;
     }
 
     protected NeioFactory ooFactory() {
@@ -180,16 +183,42 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
     }
 
     @Override
-    public Expression visitPrefixCall(PrefixCallContext ctx) {
+    public NeioMethodInvocation visitPrefixCall(PrefixCallContext ctx) {
         // Find the method name and print it
         String methodName = ctx.MethodName().getText();
         List<Expression> arguments = new ArrayList<>();
 
         // Find the arguments
-        Expression argument = visitTxt(ctx.txt());
-        arguments.add(argument);
+        if (ctx.txt() != null) {
+            Expression argument = visitTxt(ctx.txt());
+            arguments.add(argument);
+        }
 
-        return expressionFactory().createNeioMethodInvocation(methodName, previousExpression, arguments);
+        previousExpression = expressionFactory().createNeioMethodInvocation(methodName, previousExpression, arguments);
+        if (ctx.cPrefixCall() != null) {
+            return visitCPrefixCall(ctx.cPrefixCall());
+        } else {
+            return (NeioMethodInvocation) previousExpression;
+        }
+    }
+
+    @Override
+    public NeioMethodInvocation visitCPrefixCall(CPrefixCallContext ctx) {
+        String methodName = ctx.preMethodName().getText();
+        List<Expression> arguments = new ArrayList<>();
+
+        // Find the arguments
+        if (ctx.txt() != null) {
+            Expression argument = visitTxt(ctx.txt());
+            arguments.add(argument);
+        }
+
+        previousExpression = expressionFactory().createNeioMethodInvocation(methodName, previousExpression, arguments);
+        if (ctx.cPrefixCall() != null) {
+            return visitCPrefixCall(ctx.cPrefixCall());
+        } else {
+            return (NeioMethodInvocation) previousExpression;
+        }
     }
 
     @Override
@@ -197,7 +226,10 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         String name = Constants.SURROUND + ctx.left.getText();
         Expression result;
         if (ctx.inlinecode() != null) {
+            boolean temp = appendInline;
+            appendInline = false;
             result = visitInlinecode(ctx.inlinecode());
+            appendInline = temp;
         } else {
             result = createText((String) visit(ctx.WORD()));
         }
@@ -209,10 +241,14 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         List<Expression> arguments = new ArrayList<>();
         arguments.add(result);
 
-        if (argumentExpression.peek() == null) {
+
+        // There is nothing in front of this surround text, make sure there is a Text
+        if (!argumentExpression.isEmpty() && argumentExpression.peek() == null) {
             argumentExpression.pop();
             argumentExpression.push(createText(""));
         }
+
+
         Expression e = expressionFactory().createNeioMethodInvocation(name, argumentExpression.pop(), arguments);
         e.setMetadata(new TagImpl(), Constants.SURROUND);
 
@@ -258,6 +294,11 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
     }
 
     @Override
+    public String visitTextWSpaces(@NotNull TextWSpacesContext ctx) {
+        return ctx.getText();
+    }
+
+    @Override
     public String visitTerminal(TerminalNode node) {
         return node.getText();
     }
@@ -294,7 +335,12 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
             }
         }
 
-        return appendText(argumentExpression.pop(), createText(e));
+        Expression result = createText(e);
+        if (appendInline) {
+            return appendText(argumentExpression.pop(), result);
+        } else {
+            return result;
+        }
     }
 
     private Expression createText(String s) {

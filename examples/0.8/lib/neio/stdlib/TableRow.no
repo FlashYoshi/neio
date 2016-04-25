@@ -1,0 +1,84 @@
+namespace neio.stdlib;
+
+import java.util.List;
+import java.util.ArrayList;
+
+import neio.lang.Content;
+import neio.lang.Text;
+
+class TableRow extends Content;
+
+TableElement fte = null;
+List<TableElement> elements = new ArrayList<TableElement>();
+boolean bold = false;
+
+TableRow() {
+}
+
+TableRow(Text text) {
+    elements.add(new TableElement(text));
+}
+
+void setBold() {
+    bold = true;
+}
+
+TableRow |(Text text) {
+    elements.add(new TableElement(text));
+    return this;
+}
+
+TableRow |() {
+    fte = new FinalTableElement();
+    return this;
+}
+
+Table parent() {
+    return (Table) (super.parent());
+}
+
+TableRow appendRow(TableRow row) {
+    return parent().appendRow(row);
+}
+
+Hline appendHline() {
+    return parent().appendHline();
+}
+
+TableNLHandler newline() {
+    return new TableNLHandler(this);
+}
+
+String header() {
+    StringBuilder header = new StringBuilder();
+    for (int i = 0; i < elements.size(); i = i + 1) {
+        TableElement te = elements.get(i);
+        header.append(" ").append(te.header()).append(" | ");
+    }
+    
+    return header.toString();
+}
+
+String toTex() {
+    if (elements.isEmpty()) {
+        return "";
+    }
+    
+    if (bold) {
+        elements.get(0).setBold();
+    }
+    StringBuilder result = new StringBuilder(elements.get(0).toTex());
+    for (int i = 1; i < elements.size(); i = i + 1) {
+        TableElement element = elements.get(i);
+        if (bold) {
+            element.setBold();
+        }
+        result.append(" & ").append(element.toTex());
+    }
+    
+    if (fte != null) {
+        result.append(fte.toTex());
+    }
+    
+    return result.toString();
+}

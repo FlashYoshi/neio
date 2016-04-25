@@ -35,15 +35,19 @@ fragment UNDERSCORE : '_';
 fragment H : '#';
 fragment D : '-';
 fragment ST : '*';
+fragment DOLLAR : '$';
+fragment PIPE : '|';
 BANG : '!';
-MethodName : {getCharPositionInLine() == 0}? (H | D | ST | B_QUOTE | UNDERSCORE)+;
+MethodName : {getCharPositionInLine() == 0}? (H | D | ST | DLR | B_QUOTE | UNDERSCORE | P)+;
 HASH : H;
 DASH : D;
 STAR : ST;
+P : PIPE;
 BQ : B_QUOTE;
 US : UNDERSCORE;
+DLR : DOLLAR;
 
-fragment VALID_CHAR : ~[#-*_`\[\]{} \r\n] | SQ | BANG;
+fragment VALID_CHAR : ~[#-*_`\[\]{} \r\n] | SQ | BANG | L_BRACE | R_BRACE;
 
 WORD : VALID_CHAR+;
 

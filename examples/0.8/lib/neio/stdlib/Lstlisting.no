@@ -1,0 +1,19 @@
+namespace neio.stdlib;
+
+import neio.lang.Content;
+
+class Lstlisting extends Content;
+
+String path;
+
+Lstlisting(String path) {
+    this.path = path;
+}
+
+String toTex() {
+    StringBuilder result = new StringBuilder("\\lstinputlisting{");
+    result.append(path);
+    result.append("}");
+
+    return result.toString();
+}

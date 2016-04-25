@@ -14,13 +14,20 @@ content : prefixCall    #prefixC
           | nl          #nlC
           ;
 
-prefixCall : MethodName S txt;
+prefixCall : MethodName S+ txt? (S+ cPrefixCall)?;
+cPrefixCall : preMethodName S+ txt? (S+ cPrefixCall)?;
+preMethodName : P;
 // We don't allow spaces next to the MethodName to not confuse us with prefixCalls
-surroundCall : left=(MethodName|HASH|DASH|STAR|BQ|US)+ (inlinecode | WORD) txt? right=(HASH|DASH|STAR|BQ|US)+ {$left.text.equals($right.text)}?;
+surroundCall : left=(MethodName|HASH|DASH|STAR|BQ|US|DLR)+ (inlinecode | WORD) txt? right=(HASH|DASH|STAR|BQ|US|DLR)+ {$left.text.equals($right.text)}?;
 
 text : txt;
-txt : (S* (inlinecode | WORD | surroundCall) S*)+;
+txt : ( textWSpaces
+      | inlinecode
+      | surroundCall)+;
 nl : NL;
+
+textWSpaces : (S* WORD S*)+
+            | S+;
 
 scode : SCOPED_CODE;
 lonecode : LONE_CODE;

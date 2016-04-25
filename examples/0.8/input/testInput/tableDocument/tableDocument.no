@@ -1,0 +1,21 @@
+[Document]
+
+In the table below you can see the results of the 33d 12urenloop:
+
+| Vereniging | Rondes | Seconde/Ronde | Afstand km | Snelheid km/u | 
+---------------------------------------------------------------------------------- 
+| HILOK | 1030 | 42 | 298,70 | 24,89 | 
+| VTK | 1028 | 42 | 298.12 | 24.84 | 
+| VLK | 841 | 51 | 243.89 | 20.32 | 
+| Wetenschappen and VLAK | 819 | 53 | 237,51 | 19.79 | 
+| VGK | 810 | 53 | 234.90 | 19.58 | 
+| Hermes and LILA | 793 | 54 | 229.97 | 19.16 | 
+| HK | 771 | 56 | 223.59 | 18.63 | 
+| VRG | 764 | 57 | 221.56 | 18.46 | 
+| VEK | 757 | 57 | 219.53 | 18.29 | 
+| VPPK | 689 | 63 | 199.81 | 16.65 | 
+| SK | 647 | 67 | 187.63 | 15.64 | 
+| Zeus WPI | 567 | 76 | 164.43 | 13.7 | 
+| VBK | 344 | 126 | 99.76 | 8.31 | 
+
+Congratulations to all of the teams!

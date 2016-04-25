@@ -79,6 +79,10 @@ public surround Text `(Text t) {
     return appendText(new MonospaceText(t));
 }
 
+public surround Text $(Text t) {
+    return appendText(new Text(t));
+}
+
 String thisToTex() {
     String me = "";
     if (text == null) {

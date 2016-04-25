@@ -22,7 +22,7 @@ I really enjoyed going to the {ug} and would encourage everyone to go study ther
     int x = 150;
     int y = 180;
 }
-For some course I had to work {x} hours and for another one {y}, that's a total of {x + y}
+For some course I had to work {x} hours and for another one {y}, that's a total of {x + y}.
 {int i = 0}
 {image("Image1", '''treeimg''')}
 {i = i + 1}
