@@ -21,6 +21,11 @@ To achieve this simplicity however, a price has to be paid. All of the syntax el
 The only way to customise {md} is by embedding inline HTML.
 HTML allows to create a strong structured model but it still doesn't allow for very much customisability.
 The lack of customisability in {md} is further enforced due to the fact that it has no programming model.
+To illustrate the simplicity of {md} we'll take a look at an example document:
+{
+    new Lstlisting('''document.md''');
+}
+
 
 ## {lat}
 {lat} in comparison to {md} does provide a, Turing complete, programming model and due to this allows for rich customisability.
@@ -146,6 +151,7 @@ We will also discuss which libraries have been recreated in Neio to allow for a 
 ### Reflection
 ### Limitations
 ### Reasons for choosing Java
+### Automatic Text conversion
 
 ## Outputting
 
