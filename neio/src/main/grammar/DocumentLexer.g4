@@ -47,7 +47,7 @@ BQ : B_QUOTE;
 US : UNDERSCORE;
 DLR : DOLLAR;
 
-fragment VALID_CHAR : ~[#-*_`\[\]{} \r\n] | SQ | BANG;
+fragment VALID_CHAR : ~[#-*_`\[\]{} \r\n] | SQ | BANG | L_BRACE | R_BRACE;
 
 WORD : VALID_CHAR+;
 
