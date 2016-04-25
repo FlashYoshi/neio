@@ -122,6 +122,7 @@ Lastly, the programming model used in {lat} does not use a static type system, w
 Transforming an AST afterwards is not always as easy as doing so inline, and it also hides what really happens to the document, which could cause confusion.
 
 ### Word processors
+// TODO: consider templates
 A first point to note is that the most popular word processors such as Microsoft Word and Pages are not free, but instead cost a significant amount.
 There are free variants, such as LibreOffice and OpenOffice, but the compatibility between these word processors is not perfect.
 The free alternatives usually also have less of a focus on the ui, making them look somewhat less sleek.
