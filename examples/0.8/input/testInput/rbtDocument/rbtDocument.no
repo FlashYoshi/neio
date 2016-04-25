@@ -1,0 +1,38 @@
+[RBTDocument]
+
+{
+    List<Integer> tree = new ArrayList<Integer>();
+    tree.add(33);
+    tree.add(15);
+    tree.add(10);
+    tree.add(5);
+    tree.add(20);
+    tree.add(18);
+    tree.add(47);
+    tree.add(38);
+    tree.add(36);
+    tree.add(39);
+    String numbers = '''''' + tree.get(0);
+    for (int i = 1; i < tree.size(); i = i + 1) {
+        numbers = numbers + ''', ''' + tree.get(i);
+    }
+    Integer a = 5;
+}
+
+Given the red black tree of {numbers}
+{
+    RedBlackTree rbt = new RedBlackTree();
+    return rbt.insert(tree);
+}
+
+Add 49
+{
+    RedBlackTree rbt2 = new RedBlackTree(rbt).insert(49);
+    return rbt2;
+}
+
+Add 51
+{
+    RedBlackTree rbt3 = new RedBlackTree(rbt2).insert(51);
+    return rbt3;
+}

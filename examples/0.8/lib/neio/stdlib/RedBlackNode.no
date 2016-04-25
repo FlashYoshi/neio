@@ -1,0 +1,72 @@
+namespace neio.stdlib;
+
+import neio.lang.Texable;
+
+class RedBlackNode implements Texable;
+ 
+public Comparable element; // The data in the node
+public RedBlackNode left; // Left child
+public RedBlackNode right; // Right child
+public Integer color; // Color
+boolean root = false;
+
+RedBlackNode(Comparable theElement) {
+    this(theElement, null, null);
+}
+ 
+RedBlackNode(Comparable theElement, RedBlackNode lt, RedBlackNode rt) {
+    element = theElement;
+    left = lt;
+    right = rt;
+    color = RedBlackTree.BLACK;
+}
+
+RedBlackNode cloneSelf() {
+    if (this == RedBlackTree.nullNode) {
+        return RedBlackTree.nullNode;
+    }
+    RedBlackNode rbn = new RedBlackNode(element, left.cloneSelf(), right.cloneSelf());
+    rbn.color = color;
+    return rbn;
+}
+
+void setRoot() {
+    root = true;
+}
+
+/**
+ * Internal method to print a subtree in sorted order.
+ * @param t the node that roots the tree.
+ */
+String toTex() {
+    StringBuilder result = new StringBuilder();
+    if (root) {
+        result.append("\\node [arn_");
+    } else {
+        result.append("child { node [arn_");
+    }
+    
+    if (this == RedBlackTree.nullNode) {
+        result.append("x] {}}\n");
+    } else {
+        if (color == RedBlackTree.BLACK) {
+            result.append("n]");
+        } else {
+            result.append("r]");
+        }
+        
+        result.append(" {").append(element.toString()).append("}\n");
+        if (!((left == RedBlackTree.nullNode) && (right == RedBlackTree.nullNode))) {
+            result.append(left.toTex());
+            result.append(right.toTex());
+        }
+        if (!root) {
+            result.append("\n}\n");
+        } else {
+            result.append(";\n");
+        }
+    }
+    
+    // Remove empty newline
+    return result.toString().replaceAll("(\n)\\1+","$1");
+}
