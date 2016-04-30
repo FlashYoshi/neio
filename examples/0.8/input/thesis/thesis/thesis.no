@@ -37,7 +37,7 @@ A last advantage of plain text is that it is wel suite for Version Control Syste
 
 To illustrate the simplicity of {md} we'll take a look at an example document:
 {
-    new Lstlisting('''document.md''');
+    new LstInputListing('''document.md''');
 }
 // TODO: add image of rendered document
 

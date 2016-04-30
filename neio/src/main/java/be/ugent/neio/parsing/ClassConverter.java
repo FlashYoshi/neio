@@ -743,6 +743,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     private Expression visitString(String content) {
+        content = content.replaceAll("\\r?\\n", "\\\\n");
         return ooFactory().createStringLiteral(content);
     }
 
