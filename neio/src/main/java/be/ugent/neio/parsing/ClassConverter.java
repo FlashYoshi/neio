@@ -647,17 +647,15 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     public JavaTypeReference visitType(@NotNull TypeContext ctx) {
         String name = visitIdentifiers(ctx.Identifier());
         JavaTypeReference type;
-
+        List<TypeArgument> typeArguments = new ArrayList<>();
+        if (ctx.typeArgumentList() != null) {
+            typeArguments = (List<TypeArgument>) visit(ctx.typeArgumentList());
+        }
         // The type is an array
         if (ctx.ARRAY() != null) {
-            type = ooFactory().createArrayTypeReference(name);
+            type = ooFactory().createArrayTypeReference(name, typeArguments);
         } else {
-            type = ooFactory().createTypeReference(name);
-        }
-        if (ctx.typeArgumentList() != null) {
-            List<TypeArgument> typeArguments = (List<TypeArgument>) visit(ctx.typeArgumentList());
-            // TODO: How do we add typeargument to a javatypereference?
-            ((BasicJavaTypeReference) type).addAllArguments(typeArguments);
+            type = ooFactory().createTypeReference(name, typeArguments);
         }
 
         return type;
