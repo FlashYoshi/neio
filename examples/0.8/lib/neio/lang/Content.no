@@ -110,7 +110,6 @@ protected List<Content> descendants(List<Content> input) {
 }
 
 private final Map<Class, Class> _classMapping = new HashMap<Class, Class>();
-private final Set<Class> _uses = new HashSet<Class>();
 
 final Class classMapping(Class klass) {
 	return _classMapping.get(klass);
@@ -118,14 +117,6 @@ final Class classMapping(Class klass) {
 
 public final <T> void addClassMapping(Class<T> oldClass, Class<? extends T> newClass) {
 	_classMapping.put(oldClass, newClass);
-}
-
-public final void addUse(Class klass) {
-	_uses.add(klass);
-}
-
-public final boolean usesClass(Class klass) {
-	return _uses.contains(klass);
 }
 
 public final <T> T getInstance(Class<T> klass, Class[] paramTypes, Object[] params) {
@@ -150,18 +141,6 @@ public final <T> T getInstance(Class<T> klass, Class[] paramTypes, Object[] para
 
 private <T> T instantiate(Class<T> klass, Class[] paramTypes, Object[] params) {
 	return klass.getConstructor(paramTypes).newInstance(params);
-}
-
-public final <T> void use(Class<? extends T> newClass, Class<T> oldClass) {
-	Content current = this;
-	while ((current != null) && (!current.usesClass(oldClass))) {
-		current = current.parent();
-	}
-
-	if (current != null) {
-		current.addClassMapping(oldClass, newClass);
-		current.addUse(newClass);
-	}
 }
 
 String toTex() {
