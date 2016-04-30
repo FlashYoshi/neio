@@ -12,7 +12,7 @@
 - Third
 
 # This chapter should be labeled for later reference
-{Chapter chap = (Chapter) origin()}
+{Chapter chap = (Chapter) parent()}
 
 When I was *studying* at the {ug} I had to endure a lot of hard courses. But the professors at the {ug} were always very helpful and open for questions.
 
