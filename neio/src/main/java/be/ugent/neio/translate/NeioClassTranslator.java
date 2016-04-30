@@ -63,7 +63,7 @@ public class NeioClassTranslator extends IncrementalTranslator<Neio, Java7> {
         try {
             reflectNewcalls(source);
         } catch (LookupException e) {
-            System.err.println("Lookup exception when trying to add to uses: " + e.getMessage());
+            System.err.println("Lookup exception when trying to reflect a new call: " + e.getMessage());
         }
 
         result.add(source);

@@ -7,11 +7,13 @@ import java.util.Map;
 
 abstract class Content implements Texable;
 
+private final Map<Class, Class> _classMapping;
 List<Content> content;
 Content parent;
 
 Content() {
     content = new ArrayList<Content>();
+    _classMapping = new HashMap<Class, Class>();
 }
 
 <T extends Content> T addContent(Integer index, T c) {
@@ -111,8 +113,6 @@ protected List<Content> descendants(List<Content> input) {
 	
 	return list;
 }
-
-private final Map<Class, Class> _classMapping = new HashMap<Class, Class>();
 
 final Class classMapping(Class klass) {
 	return _classMapping.get(klass);

@@ -29,6 +29,7 @@ import org.aikodi.chameleon.oo.method.MethodHeader;
 import org.aikodi.chameleon.oo.plugin.ObjectOrientedFactory;
 import org.aikodi.chameleon.oo.statement.Block;
 import org.aikodi.chameleon.oo.statement.Statement;
+import org.aikodi.chameleon.oo.type.BasicTypeReference;
 import org.aikodi.chameleon.oo.type.Type;
 import org.aikodi.chameleon.oo.type.TypeReference;
 import org.aikodi.chameleon.oo.type.generics.FormalTypeParameter;
@@ -537,12 +538,14 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     @Override
     public ConstructorInvocation visitConstructorCall(@NotNull ConstructorCallContext ctx) {
-        return eFactory().createConstructorInvocation(visitType(ctx.type()).toString(), null, (List<Expression>) visit(ctx.arguments()));
+        BasicJavaTypeReference type = (BasicJavaTypeReference) visitType(ctx.type());
+        return eFactory().createConstructorInvocation(type, null, (List<Expression>) visit(ctx.arguments()));
     }
 
     @Override
     public ConstructorInvocation visitNeioNewCall(@NotNull NeioNewCallContext ctx) {
-        return eFactory().createConstructorInvocation(visitType(ctx.type()).toString(), null, (List<Expression>) visit(ctx.arguments()));
+        BasicJavaTypeReference type = (BasicJavaTypeReference) visitType(ctx.type());
+        return eFactory().createConstructorInvocation(type, null, (List<Expression>) visit(ctx.arguments()));
     }
 
     @Override
