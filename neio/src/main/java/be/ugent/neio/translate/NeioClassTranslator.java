@@ -20,6 +20,7 @@ import org.aikodi.chameleon.oo.type.Type;
 import org.aikodi.chameleon.oo.type.TypeReference;
 import org.aikodi.chameleon.plugin.build.BuildException;
 import org.aikodi.chameleon.plugin.build.BuildProgressHelper;
+import org.aikodi.chameleon.support.expression.EmptyArrayIndex;
 import org.aikodi.chameleon.support.member.simplename.method.NormalMethod;
 import org.aikodi.chameleon.support.translate.IncrementalTranslator;
 import org.aikodi.chameleon.workspace.View;
@@ -70,7 +71,7 @@ public class NeioClassTranslator extends IncrementalTranslator<Neio, Java7> {
     }
 
     /**
-     * Adds which classes are being used in this Document to the {@code ADD_USE} list
+     * Switches out new calls for reflective calls
      *
      * @param source The Document we want to analyse, it has to extend {@code BASE_CLASS}
      */
@@ -101,7 +102,7 @@ public class NeioClassTranslator extends IncrementalTranslator<Neio, Java7> {
     }
 
     /**
-     * Substitutes a new call by a call to {@code GET_INSTANCE} that gets the correct mapping
+     * Does the actual newcall -> reflection substitution
      *
      * @param ci The invocation of the new call that should be substituted, it has to extend {@code BASE_CLASS}
      */
@@ -109,8 +110,10 @@ public class NeioClassTranslator extends IncrementalTranslator<Neio, Java7> {
         List<Expression> parameters = ci.getActualParameters();
         List<Expression> arguments = new ArrayList<>();
 
-        ArrayCreationExpression paramTypes = new ArrayCreationExpression(ooFactory().createTypeReference("Class[]"));
-        ArrayCreationExpression params = new ArrayCreationExpression(ooFactory().createTypeReference("Object[]"));
+        ArrayCreationExpression paramTypes = new ArrayCreationExpression(ooFactory().createTypeReference("Class"));
+        paramTypes.addDimensionInitializer(new EmptyArrayIndex(0));
+        ArrayCreationExpression params = new ArrayCreationExpression(ooFactory().createTypeReference("Object"));
+        params.addDimensionInitializer(new EmptyArrayIndex(0));
         ArrayInitializer initializer = new ArrayInitializer();
         ArrayInitializer paramsInitializer = new ArrayInitializer();
 
