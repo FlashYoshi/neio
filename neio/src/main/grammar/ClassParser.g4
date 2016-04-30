@@ -63,33 +63,33 @@ literal : StringLiteral     #stringLiteral
         | NULL              #nullLiteral
         ;
 
-expression : literal                    #literalExpression
-           | TextMode                   #TextMode
-           | Identifier DOT CLASS       #classLiteral
-           | SUPER                      #superExpression
-           | SUPER arguments            #superDelegation
-           | THIS                       #selfExpression
-           | THIS arguments             #thisDelegation
-           | Identifier                 #identifierExpression
-		   | constructorCall	        #newExpression
-		   | neioNewCall                #neioNewExpression
-           | expression DOT Identifier  #chainExpression
-           | L_BRACE expression R_BRACE #parExpression
-           | L_BRACE type R_BRACE expression #castExpression
+expression : literal                            #literalExpression
+           | TextMode                           #TextMode
+           | L_BRACE type R_BRACE expression    #castExpression
+           | Identifier DOT CLASS               #classLiteral
+           | SUPER                              #superExpression
+           | SUPER arguments                    #superDelegation
+           | THIS                               #selfExpression
+           | THIS arguments                     #thisDelegation
+           | Identifier                         #identifierExpression
+		   | constructorCall	                #newExpression
+		   | neioNewCall                        #neioNewExpression
+           | expression DOT Identifier          #chainExpression
+           | L_BRACE expression R_BRACE         #parExpression
            | expression DOT name=(Identifier | MethodIdentifier | STAR| MINUS) args=arguments #qualifiedCallExpression
            | name=(Identifier | MethodIdentifier | STAR | MINUS) args=arguments #selfCallExpression
            | op=E_MARK right=expression                                         #notExpression
            | left=expression op=(INCR | DECR)                                   #postfixCrementExpression
-           | op=(INCR | DECR) right = expression                                #prefixCrementExpression
-           | op = (PLUS | MINUS) right= expression                              #prefixExpression
+           | op=(INCR | DECR) right=expression                                  #prefixCrementExpression
+           | op=(PLUS | MINUS) right=expression                                 #prefixExpression
            | left=expression op=OR right=expression                             #orExpression
            | left=expression op=AND right=expression                            #andExpression
            | left=expression op=HAT right=expression                            #exponentiationExpression
            | left=expression op=PIPE right=expression                           #pipeExpression
            | left=expression op=AMPERSAND right=expression                      #ampersandExpression
-           | left=expression op=(PLUS | MINUS) right=expression                 #lowPriorityNumbericalExpression
            | left=expression op=(EQUAL | NOT_EQUAL) right=expression            #equalityExpression
            | left=expression op=(STAR | SLASH | PERCENT) right=expression       #highPriorityNumbericalExpression
+           | left=expression op=(PLUS | MINUS) right=expression                 #lowPriorityNumbericalExpression
            | left=expression op=(L_SHIFT | RR_SHIFT | R_SHIFT) right=expression #shiftExpression
            | left=expression op=(LEQ | GEQ | BIGGER | SMALLER) right=expression #orderExpression
            ;
