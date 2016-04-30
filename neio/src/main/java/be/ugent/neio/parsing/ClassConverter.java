@@ -302,7 +302,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     @Override
     public ClassCastExpression visitCastExpression(@NotNull CastExpressionContext ctx) {
-        return eFactory().createClassCastExpression((TypeReference) visit(ctx.type()), (Expression) visit(ctx.expression()));
+        return eFactory().createClassCastExpression(visitType(ctx.type()), (Expression) visit(ctx.expression()));
     }
 
     @Override
@@ -718,8 +718,8 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     public Object visitBoundedTypeArgument(@NotNull BoundedTypeArgumentContext ctx) {
         List<TypeArgument> arguments = new ArrayList<>();
         if (ctx.Q_MARK() != null) {
-            String name = ((BasicJavaTypeReference) visitType(ctx.bound)).name();
-            arguments.add(ooFactory().createExtendsWildcard(name));
+            TypeReference type = visitType(ctx.bound);
+            arguments.add(ooFactory().createExtendsWildcard(type));
         }
 
         return arguments;
@@ -777,7 +777,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     @Override
     public Literal visitBoolLiteral(@NotNull BoolLiteralContext ctx) {
-        return ooFactory().createBooleanLiteral(ctx.TRUE() != null ? ctx.TRUE().getText() : ctx.FALSE().getText());
+        return ooFactory().createBooleanLiteral(ctx.getText());
     }
 
     @Override
@@ -824,18 +824,16 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     private String visitIdentifiers(List<TerminalNode> identifiers) {
-        String result = "";
-        if (identifiers != null && identifiers.size() > 0) {
-            result = identifiers.get(0).getText();
-        } else {
-            return result;
+        if (identifiers == null || identifiers.isEmpty()) {
+            return "";
         }
 
+        StringBuilder result = new StringBuilder(identifiers.get(0).getText());
         for (int i = 1; i < identifiers.size(); i++) {
-            result += "." + identifiers.get(i);
+            result.append(".").append(identifiers.get(i));
         }
 
-        return result;
+        return result.toString();
     }
 
     public void enableContextTypes() {

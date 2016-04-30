@@ -247,7 +247,7 @@ public class NeioFactory extends Java7Factory {
         return new FormalTypeParameter(name);
     }
 
-    public ExtendsWildcard createExtendsWildcard(String type) {
-        return new ExtendsWildcard(createTypeReference(type));
+    public ExtendsWildcard createExtendsWildcard(TypeReference type) {
+        return new ExtendsWildcard(type);
     }
 }
