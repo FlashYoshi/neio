@@ -13,6 +13,8 @@ import org.aikodi.chameleon.exception.ChameleonProgrammerException;
 import org.aikodi.chameleon.oo.expression.*;
 import org.aikodi.chameleon.oo.method.Method;
 import org.aikodi.chameleon.oo.method.exception.ExceptionClause;
+import org.aikodi.chameleon.oo.method.exception.ExceptionDeclaration;
+import org.aikodi.chameleon.oo.method.exception.TypeExceptionDeclaration;
 import org.aikodi.chameleon.oo.statement.Block;
 import org.aikodi.chameleon.oo.statement.Statement;
 import org.aikodi.chameleon.oo.type.BasicTypeReference;
@@ -110,13 +112,12 @@ public class NeioSyntax extends Java7Syntax {
     }
 
     private String addCatchAll(Expression expr) {
-        if (expr == null) {
+        if (expr == null || !(expr instanceof RegularMethodInvocation)) {
             return null;
         }
         // This will deduce if a basic try catch is needed for this statement and create it if need be
-        if (expr.nearestAncestor(TryStatement.class) == null && expr instanceof MethodInvocation) {
-            Set exceptions = getExceptions((MethodInvocation) expr);
-            if (exceptions != null && !exceptions.isEmpty()) {
+        if (expr.nearestAncestor(TryStatement.class) == null) {
+            if (throwsException((RegularMethodInvocation) expr)) {
                 Statement stat = (Statement) expr.parent();
                 Block parent = (Block) stat.parent();
 
@@ -153,18 +154,22 @@ public class NeioSyntax extends Java7Syntax {
         return null;
     }
 
-    private Set getExceptions(MethodInvocation mi) {
-        Set exceptions = null;
+    private boolean throwsException(RegularMethodInvocation mi) {
         try {
             List<ExceptionClause> list = mi.getElement().children(ExceptionClause.class);
             if (list != null && !list.isEmpty()) {
-                exceptions = list.get(0).getExceptionTypes(mi);
+                for (ExceptionClause ex : list) {
+                    List<ExceptionDeclaration> decl = ex.exceptionDeclarations();
+                    if (decl != null && !decl.isEmpty()) {
+                        return true;
+                    }
+                }
             }
         } catch (LookupException e) {
             System.err.println("Lookup exception when trying to find throws: " + e.getMessage());
         }
 
-        return exceptions;
+        return false;
     }
 
     @Override
