@@ -177,6 +177,17 @@ public class NeioFactory extends Java7Factory {
         return new SimpleNameMethodHeader(name, createTypeReference(type));
     }
 
+    public SimpleNameMethodHeader createMethodHeader(String name, TypeReference type) {
+        return new SimpleNameMethodHeader(name, type);
+    }
+
+    public SimpleNameMethodHeader createMethodHeader(String name, TypeReference type, List<TypeParameter> typeArguments) {
+        SimpleNameMethodHeader header = createMethodHeader(name, type);
+        header.addAllTypeParameters(typeArguments);
+
+        return header;
+    }
+
     public SimpleNameMethodHeader createMethodHeader(String name, String type, List<TypeParameter> typeArguments) {
         SimpleNameMethodHeader header = createMethodHeader(name, type);
         header.addAllTypeParameters(typeArguments);

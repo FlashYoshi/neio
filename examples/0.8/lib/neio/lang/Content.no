@@ -7,8 +7,8 @@ import java.util.Map;
 
 abstract class Content implements Texable;
 
-private List<Content> content;
-private Content parent;
+List<Content> content;
+Content parent;
 
 Content() {
     content = new ArrayList<Content>();

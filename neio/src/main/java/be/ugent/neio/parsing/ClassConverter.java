@@ -206,6 +206,8 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         for (ModifierContext modifier : ctx.modifier()) {
             declarator.addModifier(visitModifier(modifier));
         }
+
+
         if (ctx.modifier().isEmpty() && !isInterface()) {
             declarator.addModifier(new Private());
         }
@@ -582,18 +584,14 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
             typeParameters = (List<TypeParameter>) visit(ctx.typeParameterList());
         }
 
-        String returnType;
         if (ctx.type() != null) {
-            returnType = ctx.type().getText();
-        }
-        // Method is a constructor
-        else if (ctx.VOID() != null) {
-            returnType = ctx.VOID().getText();
+            return ooFactory().createMethodHeader(ctx.name.getText(), visitType(ctx.type()), typeParameters);
+        } else if (ctx.VOID() != null) {
+            return ooFactory().createMethodHeader(ctx.name.getText(), ctx.VOID().getText(), typeParameters);
         } else {
-            returnType = ctx.name.getText();
+            // Method is a constructor
+            return ooFactory().createMethodHeader(ctx.name.getText(), ctx.name.getText(), typeParameters);
         }
-
-        return ooFactory().createMethodHeader(ctx.name.getText(), returnType, typeParameters);
     }
 
     @Override
