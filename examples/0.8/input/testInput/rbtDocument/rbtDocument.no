@@ -21,18 +21,18 @@
 
 Given the red black tree of {numbers}
 {
-    RedBlackTree rbt = new RedBlackTree();
-    return rbt.insert(tree);
+    RedBlackTree rbt = new RedBlackTree().insert(tree);
+    return rbt;
 }
 
 Add 49
 {
-    RedBlackTree rbt2 = new RedBlackTree(rbt).insert(49);
+    RedBlackTree rbt2 = rbt.insert(49);
     return rbt2;
 }
 
 Add 51
 {
-    RedBlackTree rbt3 = new RedBlackTree(rbt2).insert(51);
+    RedBlackTree rbt3 = rbt2.insert(51);
     return rbt3;
 }
