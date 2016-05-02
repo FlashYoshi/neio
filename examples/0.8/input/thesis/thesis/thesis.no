@@ -218,6 +218,17 @@ As means of an introduction we will have a look at the Document class that was u
     new LstInputListing('''../../examples/0.8/lib/neio/stdlib/Document.no''');
 }
 
+Except for some variations on the syntax, such as using `namespace` instead of `package`, and the lack of access level modifiers, this is valid Java code.
+The access level modifiers are automatically set to `private` for members and `public` for methods.
+Again, I stand corrected, this would be valid Java code if not for the *\\#* method.
+In Neio class files you are allowed to use symbols as a method name.
+This is a feature that is necessary to allow a Neio document to be represented as a chain of method calls as otherwise you would have to actually write out a document as series of method calls.
+This includes adding unnecessary symbols such as brackets to pass parameters, quotes to indicate strings and so on.
+All the symbols you can use for method names can be found in . // TODO: reference whitelist
+
+To keep the language simple and to maximize reusability (as well as making the parsing somewhat easier) some functionality from the Java language was dropped.
+It is for example not possible to create anonymous classes as this goes against the concept of reusability.
+
 ## Language features
 ### Context types
 As said before, everything is a method call, but to be able to just chain any method to any other method, regular methods do not suffice.
