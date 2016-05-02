@@ -1,4 +1,4 @@
-namespace neio.stdlib;
+namespace neio.stdlib.music;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -8,6 +8,7 @@ import java.util.List;
 
 import neio.io.LilyToPDFBuilder;
 import neio.lang.Content;
+import neio.stdlib.Image;
 
 class Score extends Content;
 
@@ -36,22 +37,30 @@ Score() {
 Score(Score s) {
     this();
     for (int i = 0; i < s.notes().size(); i = i + 1) {
-        Note note = s.notes().get(i);
-        add(note.noteNr(), note.octaveNr());
+        Note n = s.notes().get(i);
+        notes.add(new Note(n.noteNr(), n.octaveNr(), this));
     }
+}
+
+Score(Score s, Note note) {
+    this(s);
+    notes.add(note);
 }
 
 Score shift(Integer shift) {
-    for (int i = 0; i < notes.size(); i = i + 1) {
-        Note note = notes.get(i);
+    Score s = new Score(this);
+    List<Note> n = s.notes();
+    for (int i = 0; i < n.size(); i = i + 1) {
+        Note note = n.get(i);
         note.shift(shift);
     }
-    return this;
+    return s;
 }
 
 Score reverse() {
-    Collections.reverse(notes);
-    return this;
+    Score s = new Score(this);
+    Collections.reverse(s.notes());
+    return s;
 }
 
 Note get(Integer i) {
@@ -67,9 +76,7 @@ Score add(Integer note) {
 }
 
 Score add(Integer note, Integer octave) {
-    notes.add(new Note(note, octave, this));
-
-    return this;
+    return new Score(this, new Note(note, octave, this));
 }
 
 String print() {
@@ -79,7 +86,7 @@ String print() {
 
     StringBuilder sb = new StringBuilder(get(0).toString());
     for (int i = 1; i < notes.size(); i = i + 1) {
-        sb.append(", " + notes.get(i).toString());
+        sb.append(", ").append(notes.get(i).toString());
     }
 
     return sb.toString();

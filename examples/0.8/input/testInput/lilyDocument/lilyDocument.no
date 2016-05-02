@@ -15,13 +15,13 @@ The third note in this score was a *{s.get(2)}* and the tenth a *{s.get(9)}*.
 }
 Now an easier example, it is read as {ss.print()}.
 {
-    Score sss = new Score(ss).shift(1);
+    Score sss = ss.shift(1);
     return ss;
 }
 
 Now we shift everything by one and read {sss.print()}.
 {
-    Score s4 = new Score(ss).reverse();
+    Score s4 = ss.reverse();
     return sss;
 }
 
