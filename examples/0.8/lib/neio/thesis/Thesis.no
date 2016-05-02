@@ -17,6 +17,7 @@ Thesis() {
 	packages.add("graphicx")
     .add("fancyhdr")
     .add("amsmath")
+    .add("float")
     .add("listings");
 
     List<String> options = new ArrayList<String>();
