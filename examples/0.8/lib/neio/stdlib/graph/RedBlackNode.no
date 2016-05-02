@@ -1,4 +1,4 @@
-namespace neio.stdlib;
+namespace neio.stdlib.graph;
 
 import neio.lang.Texable;
 
