@@ -11,26 +11,26 @@ import neio.lang.Content;
 
 class Score extends Content;
 
-public static final Integer A = 0;
-public static final Integer B = 1;
-public static final Integer C = 2;
-public static final Integer D = 3;
-public static final Integer E = 4;
-public static final Integer F = 5;
-public static final Integer G = 6;
+public static final Integer C = 0;
+public static final Integer D = 1;
+public static final Integer E = 2;
+public static final Integer F = 3;
+public static final Integer G = 4;
+public static final Integer A = 5;
+public static final Integer B = 6;
 public static final List<String> NOTES = new ArrayList<String>();
 
 List<Note> notes;
 
 Score() {
     notes = new ArrayList<Note>();
-    NOTES.add("a");
-    NOTES.add("b");
     NOTES.add("c");
     NOTES.add("d");
     NOTES.add("e");
     NOTES.add("f");
     NOTES.add("g");
+    NOTES.add("a");
+    NOTES.add("b");
 }
 
 Score(Score s) {
