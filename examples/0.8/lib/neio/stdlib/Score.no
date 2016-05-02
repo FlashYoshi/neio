@@ -168,8 +168,7 @@ String toTex() {
     String name = sdf.format(cal.getTime());
     builder.build(name);
 
-    Image img = new Image(name + ".pdf");
-
+    Image img = new Image(name + ".pdf").scale(100);
     return img.toTex();
 }
 

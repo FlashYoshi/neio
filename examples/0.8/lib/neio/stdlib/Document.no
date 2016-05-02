@@ -10,7 +10,8 @@ Document() {
     packages = new Packages();
 	packages.add("a4wide")
 	.add("graphicx")
-    .add("amsmath");
+    .add("amsmath")
+    .add("float");
 }
 
 Chapter #(Text title) {
@@ -31,7 +32,7 @@ Packages addPackage(String pkg) {
 String header() {
 	StringBuilder tex = new StringBuilder("\\documentclass{article}\n");
 	for (int i = 0; i < packages.size(); i = i + 1) {
-		tex.append(packages.get(i).toTex());
+		tex.append(packages.get(i).toTex()).append("\n");
 	}
 	
 	tex.append("\\setlength{\\parindent}{0em}\n")
