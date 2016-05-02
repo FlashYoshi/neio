@@ -12,7 +12,7 @@ LilyToPDFBuilder(String content) {
 
 void build(String name) {
     Process p = null;
-    String command = "lilypond --pdf -o " + name + " -";
+    String command = "lilypond -dbackend=eps -daux-files=#f -o " + name + " -";
     p = Runtime.getRuntime().exec(command);
     OutputStream stdin = p.getOutputStream();
     InputStream stdout = p.getInputStream();

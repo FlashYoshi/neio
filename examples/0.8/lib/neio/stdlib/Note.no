@@ -7,38 +7,28 @@ import neio.lang.Content;
 
 class Note extends Content;
 
-public static final Integer A = 0;
-public static final Integer B = 1;
-public static final Integer C = 2;
-public static final Integer D = 3;
-public static final Integer E = 4;
-public static final Integer F = 5;
-public static final Integer G = 6;
-public static final List<String> NOTES = new ArrayList<String>();
-
 Integer octave;
 Integer note;
+Score score;
 
-Note(Integer note) {
+Note(Integer note, Score score) {
     this.note = note;
     this.octave = 0;
-    NOTES.add("a");
-    NOTES.add("b");
-    NOTES.add("c");
-    NOTES.add("d");
-    NOTES.add("e");
-    NOTES.add("f");
-    NOTES.add("g");
+}
+
+Note(Integer note, Integer octave, Score score) {
+    this(note, score);
+    this.octave = octave;
 }
 
 Note shift(Integer s) {
     Integer current = ((octave * 7) + note);
     // Positive shift
-    if ((s + note) > G) {
+    if ((s + note) > Score.G) {
         octave = (octave + ((int) (Math.floor((current + s) / 7)) - (int) (Math.floor(current / 7))));
     }
     // Negative shift
-    else if ((s + note) < A) {
+    else if ((s + note) < Score.A) {
         octave = octave + ((int) (Math.floor(current / 7)) - (int) (Math.floor((current + s) / 7)));
     }
     note = (note + 1) % 7;
@@ -51,11 +41,19 @@ String toLilypond() {
 }
 
 String note() {
-    return NOTES.get(note);
+    return score.NOTES.get(note);
+}
+
+Integer noteNr() {
+    return note;
 }
 
 String toString() {
 	return note();
+}
+
+void setOctave(Integer octave) {
+    this.octave = octave;
 }
 
 String octave() {
@@ -74,3 +72,8 @@ String octave(Integer current) {
         return "," + octave(current + 1);
     }
 }
+
+Integer octaveNr() {
+    return octave;
+}
+

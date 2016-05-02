@@ -2,8 +2,28 @@
 
 This is an example of how we can create a music score:
 {
-    Score s = new Score().e().a().b().c().c();
+    Score s = new Score().a().b().c(1).d(1).e(1).f(1)
+        .g(1).f(1).e(1).d(1).c(1).b().a()
+        .g().f().e().d().c().b(- 1).a(- 1);
     return s;
 }
 
-The third note in this score was a {s.get(2)} and the fifth a {s.get(4)}.
+The third note in this score was a *{s.get(2)}* and the tenth a *{s.get(9)}*.
+
+{
+    Score ss = new Score().b().a().g().f().e().d().c();
+}
+Now an easier example, it is read as {ss.print()}.
+{
+    Score sss = new Score(ss).shift(1);
+    return ss;
+}
+
+Now we shift everything by one and read {sss.print()}.
+{
+    Score s4 = new Score(ss).reverse();
+    return sss;
+}
+
+And lastly we reverse the score and read it as {s4.print()}:
+{ return s4 }
