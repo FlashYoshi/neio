@@ -6,17 +6,16 @@ namespace neio.io;
 class TexToPDFBuilder implements Builder;
 
 void build(String name) {
-	if (name != null) {
-		String command = "latexmk -pdf -dvi- -lualatex " + name;
-		
-		Runtime.getRuntime().exec(command).waitFor();
-		
-		String texlessName = name.substring(0, name.length() - 4);
-		name = texlessName + ".pdf";
-		System.out.println("Wrote " + name);
-        
+    if (name != null) {
+        String command = "latexmk -pdf -dvi- -lualatex " + name;
+        Runtime.getRuntime().exec(command).waitFor();
+
+        String texlessName = name.substring(0, name.length() - 4);
+        name = texlessName + ".pdf";
+        System.out.println("Wrote " + name);
+
         command = "latexmk -c " + name;
-		Runtime.getRuntime().exec(command).waitFor();
+        Runtime.getRuntime().exec(command).waitFor();
         System.out.println("Cleaned files for " + texlessName);
-	}
+    }
 }

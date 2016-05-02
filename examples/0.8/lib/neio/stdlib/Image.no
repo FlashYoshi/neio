@@ -28,7 +28,7 @@ Text caption() {
 
 String toTex() {
 	StringBuilder result = new StringBuilder("\\begin{figure}[ht]\n\\centering\n\\includegraphics[width=\\linewidth]{").append(name);
-	if (name.endsWith(PNG)) {
+	if (name.contains(".")) {
 		result.append("}\n");
 	} else {
 		result.append(PNG).append("}\n");

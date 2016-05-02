@@ -1,0 +1,9 @@
+[Document]
+
+This is an example of how we can create a music score:
+{
+    Score s = new Score().e().a().b().c().c();
+    return s;
+}
+
+The third note in this score was a {s.get(2)} and the fifth a {s.get(4)}.

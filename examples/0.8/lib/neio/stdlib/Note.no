@@ -1,0 +1,76 @@
+namespace neio.stdlib;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import neio.lang.Content;
+
+class Note extends Content;
+
+public static final Integer A = 0;
+public static final Integer B = 1;
+public static final Integer C = 2;
+public static final Integer D = 3;
+public static final Integer E = 4;
+public static final Integer F = 5;
+public static final Integer G = 6;
+public static final List<String> NOTES = new ArrayList<String>();
+
+Integer octave;
+Integer note;
+
+Note(Integer note) {
+    this.note = note;
+    this.octave = 0;
+    NOTES.add("a");
+    NOTES.add("b");
+    NOTES.add("c");
+    NOTES.add("d");
+    NOTES.add("e");
+    NOTES.add("f");
+    NOTES.add("g");
+}
+
+Note shift(Integer s) {
+    Integer current = ((octave * 7) + note);
+    // Positive shift
+    if ((s + note) > G) {
+        octave = (octave + ((int) (Math.floor((current + s) / 7)) - (int) (Math.floor(current / 7))));
+    }
+    // Negative shift
+    else if ((s + note) < A) {
+        octave = octave + ((int) (Math.floor(current / 7)) - (int) (Math.floor((current + s) / 7)));
+    }
+    note = (note + 1) % 7;
+
+    return this;
+}
+
+String toLilypond() {
+    return note() + octave() + " ";
+}
+
+String note() {
+    return NOTES.get(note);
+}
+
+String toString() {
+	return note();
+}
+
+String octave() {
+    Integer current = octave;
+    return octave(current);
+}
+
+String octave(Integer current) {
+    if (current == 0) {
+        return "";
+    }
+
+    if (current > 0) {
+        return "'" + octave(current - 1);
+    } else {
+        return "," + octave(current + 1);
+    }
+}
