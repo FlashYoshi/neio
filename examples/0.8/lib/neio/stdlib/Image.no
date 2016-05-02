@@ -7,6 +7,8 @@ class Image extends Content;
 
 Text caption;
 String name;
+// Scale in percent
+Integer scale;
 public static final String PNG = ".png";
 
 Image(String name) {
@@ -16,6 +18,7 @@ Image(String name) {
 Image(Text caption, String name) {
 	this.caption = caption;
 	this.name = name;
+    this.scale = null;
 }
 
 String name() {
@@ -26,9 +29,21 @@ Text caption() {
     return caption;
 }
 
+Image scale(Integer scale) {
+    this.scale = scale;
+    return this;
+}
+
 String toTex() {
-	StringBuilder result = new StringBuilder("\\begin{figure}[ht]\n\\centering\n\\includegraphics[width=\\linewidth]{").append(name);
-	if (name.endsWith(PNG)) {
+	StringBuilder result = new StringBuilder("\\begin{figure}[H]\n\\centering\n\\includegraphics[");
+    if (scale == null) {
+        result.append("width=\\linewidth]{");
+    } else {
+        result.append("scale=").append(new Double(scale) / 100).append("]{");
+    }
+    
+    result.append(name);
+	if (name.contains(".")) {
 		result.append("}\n");
 	} else {
 		result.append(PNG).append("}\n");

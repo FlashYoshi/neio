@@ -5,15 +5,15 @@ import neio.lang.Text;
 
 class ParNLHandler extends NLHandler;
 
-ParNLHandler(Paragraph origin) {
-    super(origin);
+ParNLHandler(Paragraph parent) {
+    super(parent);
 }
 
 ContainerNLHandler newline() {
-    // origin should always have a parent
-    return (TextContainer)(origin().parent()).newline();
+    // parent should always have a parent
+    return (TextContainer)(parent().parent()).newline();
 }
 
 Paragraph text(Text text) {
-    return ((Paragraph) origin()).appendLine(text);
+    return ((Paragraph) parent()).appendLine(text);
 }

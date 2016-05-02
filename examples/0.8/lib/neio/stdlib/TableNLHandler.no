@@ -5,23 +5,23 @@ import neio.lang.Text;
 
 class TableNLHandler extends NLHandler;
 
-TableNLHandler(TableRow origin) {
-    super(origin);
+TableNLHandler(TableRow parent) {
+    super(parent);
 }
 
 ContainerNLHandler newline() {
-    // origin should always have a parent
-    return (TextContainer)(origin().parent().parent()).newline();
+    // parent should always have a parent
+    return (TextContainer)(parent().parent().parent()).newline();
 }
 
 nested Hline -(Integer level) {
-    return origin().appendHline();
+    return parent().appendHline();
 }
 
-TableRow origin() {
-    return (TableRow) (super.origin());
+TableRow parent() {
+    return (TableRow) (super.parent());
 }
 
 TableRow |(Text text) {
-    return origin().appendRow(new TableRow(text));
+    return parent().appendRow(new TableRow(text));
 }

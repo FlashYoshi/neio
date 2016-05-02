@@ -10,18 +10,26 @@ import org.aikodi.chameleon.core.element.Element;
 import org.aikodi.chameleon.core.lookup.LookupException;
 import org.aikodi.chameleon.core.modifier.Modifier;
 import org.aikodi.chameleon.exception.ChameleonProgrammerException;
-import org.aikodi.chameleon.oo.expression.*;
+import org.aikodi.chameleon.oo.expression.Expression;
+import org.aikodi.chameleon.oo.expression.Literal;
+import org.aikodi.chameleon.oo.expression.NameExpression;
+import org.aikodi.chameleon.oo.expression.ParExpression;
 import org.aikodi.chameleon.oo.method.Method;
 import org.aikodi.chameleon.oo.method.exception.ExceptionClause;
+import org.aikodi.chameleon.oo.method.exception.ExceptionDeclaration;
 import org.aikodi.chameleon.oo.statement.Block;
 import org.aikodi.chameleon.oo.statement.Statement;
 import org.aikodi.chameleon.oo.type.BasicTypeReference;
 import org.aikodi.chameleon.oo.variable.FormalParameter;
+import org.aikodi.chameleon.support.expression.AssignmentExpression;
 import org.aikodi.chameleon.support.expression.RegularLiteral;
 import org.aikodi.chameleon.support.member.simplename.method.RegularMethodInvocation;
 import org.aikodi.chameleon.support.statement.*;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
@@ -96,6 +104,13 @@ public class NeioSyntax extends Java7Syntax {
     }
 
     @Override
+    public String toCodeAssignment(AssignmentExpression expr) {
+        String result = addCatchAll(expr.getValue());
+
+        return result != null ? result : super.toCodeAssignment(expr);
+    }
+
+    @Override
     public String toCodeReturn(ReturnStatement stat) {
         String result = addCatchAll(stat.getExpression());
 
@@ -109,15 +124,26 @@ public class NeioSyntax extends Java7Syntax {
         return result != null ? result : super.toCodeStatementExpression(stat);
     }
 
+    @Override
+    public String toCodeRegularMethodInvocation(RegularMethodInvocation inv) {
+        // Print with a name that Java can work with
+        String old = inv.name();
+        inv.setName(createValidMethodname(old));
+
+        String result = super.toCodeRegularMethodInvocation(inv);
+        inv.setName(old);
+
+        return result;
+    }
+
     private String addCatchAll(Expression expr) {
-        if (expr == null) {
+        if (expr == null || !(expr instanceof RegularMethodInvocation)) {
             return null;
         }
         // This will deduce if a basic try catch is needed for this statement and create it if need be
-        if (expr.nearestAncestor(TryStatement.class) == null && expr instanceof MethodInvocation) {
-            Set exceptions = getExceptions((MethodInvocation) expr);
-            if (exceptions != null && !exceptions.isEmpty()) {
-                Statement stat = (Statement) expr.parent();
+        if (expr.nearestAncestor(TryStatement.class) == null) {
+            if (throwsException((RegularMethodInvocation) expr)) {
+                Statement stat = expr.nearestAncestor(Statement.class);
                 Block parent = (Block) stat.parent();
 
                 Block tryBlock = new Block();
@@ -153,30 +179,47 @@ public class NeioSyntax extends Java7Syntax {
         return null;
     }
 
-    private Set getExceptions(MethodInvocation mi) {
-        Set exceptions = null;
+    private  boolean throwsException(RegularMethodInvocation mi) {
+        return throwsException(mi, true);
+    }
+
+    private boolean throwsException(RegularMethodInvocation mi, boolean retry) {
+        List<ExceptionClause> list = null;
         try {
-            List<ExceptionClause> list = mi.getElement().children(ExceptionClause.class);
-            if (list != null && !list.isEmpty()) {
-                exceptions = list.get(0).getExceptionTypes(mi);
-            }
+            list = mi.getElement().children(ExceptionClause.class);
         } catch (LookupException e) {
+            // Retry with a, hopefully, different name
+            if (retry) {
+                String old = mi.name();
+                fixName(mi);
+                boolean result = throwsException(mi, false);
+                mi.setName(old);
+
+                return result;
+            }
             System.err.println("Lookup exception when trying to find throws: " + e.getMessage());
         }
 
-        return exceptions;
+        if (list != null && !list.isEmpty()) {
+            for (ExceptionClause ex : list) {
+                List<ExceptionDeclaration> decl = ex.exceptionDeclarations();
+                if (decl != null && !decl.isEmpty()) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
-    @Override
-    public String toCodeRegularMethodInvocation(RegularMethodInvocation inv) {
-        // Print with a name that Java can work with
-        String old = inv.name();
-        inv.setName(createValidMethodname(old));
-
-        String result = super.toCodeRegularMethodInvocation(inv);
-        inv.setName(old);
-
-        return result;
+    // Makes sure we're using the right name in the method invocation
+    private void fixName(RegularMethodInvocation mi) {
+        for (String key : ALIASES.keySet()) {
+            if (mi.name().equals(ALIASES.get(key))) {
+                mi.setName(key);
+                return;
+            }
+        }
     }
 
     // Creates a valid method name as Neio allows for symbols in its methodnames

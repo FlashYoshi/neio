@@ -1,14 +1,19 @@
 namespace neio.lang;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 abstract class Content implements Texable;
 
-private List<Content> content;
-private Content parent;
+private final Map<Class, Class> _classMapping;
+List<Content> content;
+Content parent;
 
 Content() {
     content = new ArrayList<Content>();
+    _classMapping = new HashMap<Class, Class>();
 }
 
 <T extends Content> T addContent(Integer index, T c) {
@@ -109,23 +114,12 @@ protected List<Content> descendants(List<Content> input) {
 	return list;
 }
 
-private final Map<Class, Class> _classMapping = new HashMap<Class, Class>();
-private final Set<Class> _uses = new HashSet<Class>();
-
 final Class classMapping(Class klass) {
 	return _classMapping.get(klass);
 }
 
 public final <T> void addClassMapping(Class<T> oldClass, Class<? extends T> newClass) {
 	_classMapping.put(oldClass, newClass);
-}
-
-public final void addUse(Class klass) {
-	_uses.add(klass);
-}
-
-public final boolean usesClass(Class klass) {
-	return _uses.contains(klass);
 }
 
 public final <T> T getInstance(Class<T> klass, Class[] paramTypes, Object[] params) {
@@ -150,18 +144,6 @@ public final <T> T getInstance(Class<T> klass, Class[] paramTypes, Object[] para
 
 private <T> T instantiate(Class<T> klass, Class[] paramTypes, Object[] params) {
 	return klass.getConstructor(paramTypes).newInstance(params);
-}
-
-public final <T> void use(Class<? extends T> newClass, Class<T> oldClass) {
-	Content current = this;
-	while ((current != null) && (!current.usesClass(oldClass))) {
-		current = current.parent();
-	}
-
-	if (current != null) {
-		current.addClassMapping(oldClass, newClass);
-		current.addUse(newClass);
-	}
 }
 
 String toTex() {

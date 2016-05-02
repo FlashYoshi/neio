@@ -11,255 +11,169 @@ import neio.lang.Content;
  */
 class RedBlackTree extends Content;
 
-RedBlackNode header;
-public static final RedBlackNode nullNode = new RedBlackNode(null);
- 
-public static final Integer BLACK = 1;    // Black must be 1
-public static final Integer RED   = 0;
- 
-// Used in insert routine and its helpers
-public RedBlackNode current;
-public RedBlackNode parent;
-public RedBlackNode grand;
-public RedBlackNode great;
+RedBlackNode last;
 
-/**
- * Construct the tree.
- */
 RedBlackTree() {
-    nullNode.right = nullNode;
-    nullNode.left = nullNode.right;
-    header = new RedBlackNode(null);
-    header.right = nullNode;
-    header.left = header.right;
+    last = null;
 }
 
-RedBlackTree(RedBlackTree other) {
-    header = other.header.cloneSelf();
-    current = other.current.cloneSelf();
-    parent = other.parent.cloneSelf();
-    grand = other.grand.cloneSelf();
-    great = other.great.cloneSelf();
+RedBlackTree(RedBlackNode root) {
+    this.last = root.cloneSelf();
 }
 
-/**
- * Compare item and t.element, using compareTo, with
- * caveat that if t is header, then item is always larger.
- * This routine is called if is possible that t is header.
- * If it is not possible for t to be header, use compareTo directly.
- */
-private Integer compare(Comparable item, RedBlackNode t) {
-    if (t == header) {
-        return 1;
-    } else {
-        return item.compareTo(t.element);
+RedBlackNode root() {
+    RedBlackNode current = last;
+    while (! current.isRoot()) {
+        current = current.parent();
     }
+    
+    return current;
 }
- 
- RedBlackTree insert(List<Integer> items) {
+
+RedBlackTree insert(List<Integer> items) {
+    RedBlackTree current = this;
     for (int i = 0;  i < items.size(); i = i + 1) {
-        insert(items.get(i));
+        current = current.insert(items.get(i));
     }
+
+    return current;
+}
+
+RedBlackTree insert(Integer value) {
+    if (last == null) {
+        last = new RedBlackNode(RedBlackNode.BLACK, value);
+        return this;
+    }
+    RedBlackTree newTree = new RedBlackTree(root());
+    newTree.insert(value, newTree.root());
     
-    return this;
- }
- 
-/**
- * Insert into the tree.
- * @param item the item to insert.
- * @throws DuplicateItemException if item is already present.
- */
-RedBlackTree insert(Comparable item) {
-    grand = header;
-    parent = grand;
-    current = parent;
-    nullNode.element = item;
-     
-    while(compare(item, current) != 0) {
-        great = grand;
-        grand = parent;
-        parent = current;
-        if (compare(item, current) < 0) {
-            current = current.left;
+    return newTree;
+}
+
+void insert(Integer value, RedBlackNode current) {
+    if (value.equals(current.value())) {
+        return;
+    } 
+    
+    RedBlackNode newNode = new RedBlackNode(RedBlackNode.RED, value);
+    if (value < current.value()) {
+        if (current.hasLeft()) {
+            current = current.left();
+            insert(value, current);
         } else {
-            current = current.right;
+            current.setLeft(newNode);
         }
-         
-        // Check if two red children; fix if so
-        if ((current.left.color == RED) && (current.right.color == RED)) {
-            handleReorient(item);
-        }
-    }
-     
-    // Insertion fails if already present
-    if(current != nullNode) {
-        // TODO: fix this
-        return null;
-    }
-    current = new RedBlackNode(item, nullNode, nullNode);
-     
-    // Attach to parent
-    if(compare(item, parent) < 0) {
-        parent.left = current;
     } else {
-        parent.right = current;
-    }
-    handleReorient(item);
-    
-    return this;
-}
- 
-/**
- * Find the smallest item  the tree.
- * @return the smallest item or null if empty.
- */
-Comparable findMin() {
-    if(isEmpty()) {
-        return null;
-    }
-     
-    RedBlackNode itr = header.right;
-     
-    while(itr.left != nullNode) {
-        itr = itr.left;
-    }
-     
-    return itr.element;
-}
- 
-/**
- * Find the largest item in the tree.
- * @return the largest item or null if empty.
- */
-Comparable findMax() {
-    if(isEmpty()) {
-        return null;
-    }
-     
-    RedBlackNode itr = header.right;
-     
-    while(itr.right != nullNode) {
-        itr = itr.right;
-    }
-     
-    return itr.element;
-}
- 
-/**
- * Find an item in the tree.
- * @param x the item to search for.
- * @return the matching item or null if not found.
- */
-Comparable find(Comparable x) {
-    nullNode.element = x;
-    current = header.right;
-     
-    while (true) {
-        if(x.compareTo(current.element) < 0) {
-            current = current.left;
-        } else if(x.compareTo(current.element) > 0) {
-            current = current.right;
-        } else if(current != nullNode) {
-            return current.element;
+        if (current.hasRight()) {
+            current = current.right();
+            insert(value, current);
         } else {
-            return null;
+            current.setRight(newNode);
         }
     }
+    
+    fixTree(newNode);
 }
- 
-/**
- * Make the tree logically empty.
- */
-void makeEmpty() {
-    header.right = nullNode;
+
+void fixTree(RedBlackNode node) {
+    // fixRedParentUncle can mess this up
+    if (node.isRoot()) {
+        node.setColor(RedBlackNode.BLACK);
+        return;
+    } else if (node.parent().isRed()) {
+        fixRedParentUncle(node);
+    }
 }
- 
-/**
- * Print all items.
- */
+
+void fixRedParentUncle(RedBlackNode node) {
+    RedBlackNode u = node.uncle();
+    
+    if ((u != null) && (u.isRed())) {
+        node.parent().setColor(RedBlackNode.BLACK);
+        u.setColor(RedBlackNode.BLACK);
+        // Exists as uncle exists
+        RedBlackNode gp = node.grandparent();
+        gp.setColor(RedBlackNode.RED);
+        fixTree(gp);
+    } else {
+        fixRPBUR(node);
+    }
+}
+
+// Red parent Black Uncle, node is right child
+void fixRPBUR(RedBlackNode node) {
+    RedBlackNode gp = node.grandparent();
+    RedBlackNode p = node.parent();
+    if ((node == p.right()) && (p == gp.left())) {
+        rotateLeft(p);
+        node = node.left();
+    } else if ((node == p.left()) && (p == gp.right())) {
+        rotateRight(p);
+        node = node.right();
+    }
+    
+    fixRPBUL(node);
+}
+
+// Red parent Black Uncle, node is right child
+void fixRPBUL(RedBlackNode node) {
+    RedBlackNode gp = node.grandparent();
+    node.parent().setColor(RedBlackNode.BLACK);
+    gp.setColor(RedBlackNode.RED);
+    if (node == node.parent().left()) {
+        rotateRight(gp);
+    } else {
+        rotateLeft(gp);
+    }
+}
+
+void rotateLeft(RedBlackNode node) {
+    RedBlackNode p = node.parent();
+    RedBlackNode r = node.right();
+    RedBlackNode l = r.left();
+    
+    if (p != null) {
+        if (p.right() == node) {
+            p.setRight(r);
+        } else {
+            p.setLeft(r);
+        }
+    } else {
+        r.setParent(null);
+    }
+    r.setLeft(node);
+    
+    node.setRight(l);
+}
+
+void rotateRight(RedBlackNode node) {
+    RedBlackNode p = node.parent();
+    RedBlackNode l = node.left();
+    RedBlackNode r = l.right();
+        
+    if (p != null) {
+        if (p.right() == node) {
+            p.setRight(l);
+        } else {
+            p.setLeft(l);
+        }
+    } else {
+        l.setParent(null);
+    }
+    l.setRight(node);
+    
+    node.setLeft(r);
+}
+
 String toTex() {
+    if (last == null) {
+        return "";
+    }
+    
     StringBuilder result = new StringBuilder("\n\\begin{tikzpicture}[->,>=stealth',level/.style={sibling distance = 5cm/#1,");
     result.append("level distance = 1.5cm}]\n");
-    header.right.setRoot();
-    result.append(header.right.toTex());
+    result.append(root().toTex());
     result.append("\\end{tikzpicture}");
     
     return result.toString();
-}
- 
-/**
- * Test if the tree is logically empty.
- * @return true if empty, false otherwise.
- */
-boolean isEmpty() {
-    return header.right == nullNode;
-}
- 
-/**
- * Internal routine that is called during an insertion
- * if a node has two red children. Performs flip and rotations.
- * @param item the item being inserted.
- */
-private void handleReorient(Comparable item) {
-    // Do the color flip
-    current.color = RED;
-    current.left.color = BLACK;
-    current.right.color = BLACK;
-     
-    if(parent.color == RED)   // Have to rotate
-    {
-        grand.color = RED;
-        if((compare(item, grand) < 0) != (compare(item, parent) < 0)) {
-            parent = rotate(item, grand);  // Start dbl rotate
-        }
-        current = rotate(item, great);
-        current.color = BLACK;
-    }
-    header.right.color = BLACK; // Make root black
-}
- 
-/**
- * Internal routine that performs a single or double rotation.
- * Because the result is attached to the parent, there are four cases.
- * Called by handleReorient.
- * @param item the item in handleReorient.
- * @param parent the parent of the root of the rotated subtree.
- * @return the root of the rotated subtree.
- */
-private RedBlackNode rotate(Comparable item, RedBlackNode parent) {
-    if(compare(item, parent) < 0) {
-        if (compare(item, parent.left) < 0) {
-            parent.left = rotateWithLeftChild(parent.left); // LL
-        } else {
-            parent.left = rotateWithRightChild(parent.left) ;  // LR
-        }
-        return parent.left;
-    } else {
-        if (compare(item, parent.right) < 0) {
-            parent.right = rotateWithLeftChild(parent.right); // RL
-        } else {
-            parent.right = rotateWithRightChild(parent.right);  // RR
-        }
-        return parent.right;
-    }
-}
- 
-/**
- * Rotate binary tree node with left child.
- */
-private RedBlackNode rotateWithLeftChild(RedBlackNode k2) {
-    RedBlackNode k1 = k2.left;
-    k2.left = k1.right;
-    k1.right = k2;
-    return k1;
-}
- 
-/**
- * Rotate binary tree node with right child.
- */
-private RedBlackNode rotateWithRightChild(RedBlackNode k1) {
-    RedBlackNode k2 = k1.right;
-    k1.right = k2.left;
-    k2.left = k1;
-    return k2;
 }

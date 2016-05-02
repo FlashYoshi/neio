@@ -2,9 +2,56 @@ namespace neio.stdlib;
 
 import neio.lang.Container;
 import neio.lang.Text;
+import neio.stdlib.math.*;
 
 class TextContainer extends Container;
 
 ContainerNLHandler newline() {
     return new ContainerNLHandler(this);
+}
+
+Itemize *(Text text) {
+	Itemize itemize = new Itemize();
+	ItemizeItem item = new ItemizeItem(text, itemize, 1);
+	itemize.*(item);
+    addContent(itemize);
+
+    return itemize;
+}
+
+Enumerate -(Text text) {
+	Enumerate enumerate = new Enumerate();
+	EnumerateItem item = new EnumerateItem(text, enumerate, 1);
+	enumerate.-(item);
+    addContent(enumerate);
+
+    return enumerate;
+}
+
+Image image(String imageName) {
+    return image(null, imageName);
+}
+
+Image image(Text caption, String imageName) {
+	new Image(caption, imageName) neioImage;
+	addContent(neioImage);
+	
+	return neioImage;
+}
+
+Eq eq() {
+    Eq eq = new Eq();
+    return addContent(eq);
+}
+
+InlineEq ieq() {
+    return new InlineEq();
+}
+
+TableRow |(Text text) {
+    new TableRow(text) row;
+    new Table(row) table;
+    addContent(table);
+    
+    return row;
 }

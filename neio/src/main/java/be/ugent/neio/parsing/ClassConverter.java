@@ -29,6 +29,7 @@ import org.aikodi.chameleon.oo.method.MethodHeader;
 import org.aikodi.chameleon.oo.plugin.ObjectOrientedFactory;
 import org.aikodi.chameleon.oo.statement.Block;
 import org.aikodi.chameleon.oo.statement.Statement;
+import org.aikodi.chameleon.oo.type.BasicTypeReference;
 import org.aikodi.chameleon.oo.type.Type;
 import org.aikodi.chameleon.oo.type.TypeReference;
 import org.aikodi.chameleon.oo.type.generics.FormalTypeParameter;
@@ -206,6 +207,8 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         for (ModifierContext modifier : ctx.modifier()) {
             declarator.addModifier(visitModifier(modifier));
         }
+
+
         if (ctx.modifier().isEmpty() && !isInterface()) {
             declarator.addModifier(new Private());
         }
@@ -300,7 +303,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     @Override
     public ClassCastExpression visitCastExpression(@NotNull CastExpressionContext ctx) {
-        return eFactory().createClassCastExpression((TypeReference) visit(ctx.type()), (Expression) visit(ctx.expression()));
+        return eFactory().createClassCastExpression(visitType(ctx.type()), (Expression) visit(ctx.expression()));
     }
 
     @Override
@@ -535,12 +538,14 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     @Override
     public ConstructorInvocation visitConstructorCall(@NotNull ConstructorCallContext ctx) {
-        return eFactory().createConstructorInvocation(visitType(ctx.type()).toString(), null, (List<Expression>) visit(ctx.arguments()));
+        BasicJavaTypeReference type = (BasicJavaTypeReference) visitType(ctx.type());
+        return eFactory().createConstructorInvocation(type, null, (List<Expression>) visit(ctx.arguments()));
     }
 
     @Override
     public ConstructorInvocation visitNeioNewCall(@NotNull NeioNewCallContext ctx) {
-        return eFactory().createConstructorInvocation(visitType(ctx.type()).toString(), null, (List<Expression>) visit(ctx.arguments()));
+        BasicJavaTypeReference type = (BasicJavaTypeReference) visitType(ctx.type());
+        return eFactory().createConstructorInvocation(type, null, (List<Expression>) visit(ctx.arguments()));
     }
 
     @Override
@@ -582,18 +587,14 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
             typeParameters = (List<TypeParameter>) visit(ctx.typeParameterList());
         }
 
-        String returnType;
         if (ctx.type() != null) {
-            returnType = ctx.type().getText();
-        }
-        // Method is a constructor
-        else if (ctx.VOID() != null) {
-            returnType = ctx.VOID().getText();
+            return ooFactory().createMethodHeader(ctx.name.getText(), visitType(ctx.type()), typeParameters);
+        } else if (ctx.VOID() != null) {
+            return ooFactory().createMethodHeader(ctx.name.getText(), ctx.VOID().getText(), typeParameters);
         } else {
-            returnType = ctx.name.getText();
+            // Method is a constructor
+            return ooFactory().createMethodHeader(ctx.name.getText(), ctx.name.getText(), typeParameters);
         }
-
-        return ooFactory().createMethodHeader(ctx.name.getText(), returnType, typeParameters);
     }
 
     @Override
@@ -647,17 +648,15 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     public JavaTypeReference visitType(@NotNull TypeContext ctx) {
         String name = visitIdentifiers(ctx.Identifier());
         JavaTypeReference type;
-
+        List<TypeArgument> typeArguments = new ArrayList<>();
+        if (ctx.typeArgumentList() != null) {
+            typeArguments = (List<TypeArgument>) visit(ctx.typeArgumentList());
+        }
         // The type is an array
         if (ctx.ARRAY() != null) {
-            type = ooFactory().createArrayTypeReference(name);
+            type = ooFactory().createArrayTypeReference(name, typeArguments);
         } else {
-            type = ooFactory().createTypeReference(name);
-        }
-        if (ctx.typeArgumentList() != null) {
-            List<TypeArgument> typeArguments = (List<TypeArgument>) visit(ctx.typeArgumentList());
-            // TODO: How do we add typeargument to a javatypereference?
-            ((BasicJavaTypeReference) type).addAllArguments(typeArguments);
+            type = ooFactory().createTypeReference(name, typeArguments);
         }
 
         return type;
@@ -722,8 +721,8 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     public Object visitBoundedTypeArgument(@NotNull BoundedTypeArgumentContext ctx) {
         List<TypeArgument> arguments = new ArrayList<>();
         if (ctx.Q_MARK() != null) {
-            String name = ((BasicJavaTypeReference) visitType(ctx.bound)).name();
-            arguments.add(ooFactory().createExtendsWildcard(name));
+            TypeReference type = visitType(ctx.bound);
+            arguments.add(ooFactory().createExtendsWildcard(type));
         }
 
         return arguments;
@@ -744,6 +743,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     private Expression visitString(String content) {
+        content = content.replaceAll("\\r?\\n", "\\\\n");
         return ooFactory().createStringLiteral(content);
     }
 
@@ -781,7 +781,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     @Override
     public Literal visitBoolLiteral(@NotNull BoolLiteralContext ctx) {
-        return ooFactory().createBooleanLiteral(ctx.TRUE() != null ? ctx.TRUE().getText() : ctx.FALSE().getText());
+        return ooFactory().createBooleanLiteral(ctx.getText());
     }
 
     @Override
@@ -828,18 +828,16 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     private String visitIdentifiers(List<TerminalNode> identifiers) {
-        String result = "";
-        if (identifiers != null && identifiers.size() > 0) {
-            result = identifiers.get(0).getText();
-        } else {
-            return result;
+        if (identifiers == null || identifiers.isEmpty()) {
+            return "";
         }
 
+        StringBuilder result = new StringBuilder(identifiers.get(0).getText());
         for (int i = 1; i < identifiers.size(); i++) {
-            result += "." + identifiers.get(i);
+            result.append(".").append(identifiers.get(i));
         }
 
-        return result;
+        return result.toString();
     }
 
     public void enableContextTypes() {

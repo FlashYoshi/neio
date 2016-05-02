@@ -6,10 +6,8 @@ import be.kuleuven.cs.distrinet.jnome.core.expression.invocation.ThisConstructor
 import be.kuleuven.cs.distrinet.jnome.core.method.JavaMethod;
 import be.kuleuven.cs.distrinet.jnome.core.type.ArrayTypeReference;
 import be.kuleuven.cs.distrinet.jnome.core.type.BasicJavaTypeReference;
-import be.kuleuven.cs.distrinet.jnome.core.type.JavaTypeReference;
 import be.kuleuven.cs.distrinet.jnome.core.type.RegularJavaType;
 import be.kuleuven.cs.distrinet.jnome.input.Java7Factory;
-import org.aikodi.chameleon.core.lookup.LookupException;
 import org.aikodi.chameleon.core.namespace.Namespace;
 import org.aikodi.chameleon.core.namespace.NamespaceReference;
 import org.aikodi.chameleon.core.namespacedeclaration.DemandImport;
@@ -21,7 +19,6 @@ import org.aikodi.chameleon.oo.namespacedeclaration.TypeImport;
 import org.aikodi.chameleon.oo.statement.Block;
 import org.aikodi.chameleon.oo.statement.Statement;
 import org.aikodi.chameleon.oo.type.RegularType;
-import org.aikodi.chameleon.oo.type.Type;
 import org.aikodi.chameleon.oo.type.TypeReference;
 import org.aikodi.chameleon.oo.type.generics.*;
 import org.aikodi.chameleon.oo.type.inheritance.SubtypeRelation;
@@ -52,8 +49,26 @@ public class NeioFactory extends Java7Factory {
         return new BasicJavaTypeReference(name);
     }
 
+    public BasicJavaTypeReference createTypeReference(String name, List<TypeArgument> arguments) {
+        if (arguments == null) {
+            return createTypeReference(name);
+        } else {
+            BasicJavaTypeReference typeRef = new BasicJavaTypeReference(name);
+            typeRef.addAllArguments(arguments);
+            return typeRef;
+        }
+    }
+
     public ArrayTypeReference createArrayTypeReference(String name) {
         return new ArrayTypeReference(createTypeReference(name));
+    }
+
+    public ArrayTypeReference createArrayTypeReference(String name, List<TypeArgument> arguments) {
+        if (arguments == null) {
+            return createArrayTypeReference(name);
+        } else {
+            return new ArrayTypeReference(createTypeReference(name, arguments));
+        }
     }
 
     public Import createDemandImport(String fqn) {
@@ -162,6 +177,17 @@ public class NeioFactory extends Java7Factory {
         return new SimpleNameMethodHeader(name, createTypeReference(type));
     }
 
+    public SimpleNameMethodHeader createMethodHeader(String name, TypeReference type) {
+        return new SimpleNameMethodHeader(name, type);
+    }
+
+    public SimpleNameMethodHeader createMethodHeader(String name, TypeReference type, List<TypeParameter> typeArguments) {
+        SimpleNameMethodHeader header = createMethodHeader(name, type);
+        header.addAllTypeParameters(typeArguments);
+
+        return header;
+    }
+
     public SimpleNameMethodHeader createMethodHeader(String name, String type, List<TypeParameter> typeArguments) {
         SimpleNameMethodHeader header = createMethodHeader(name, type);
         header.addAllTypeParameters(typeArguments);
@@ -172,7 +198,7 @@ public class NeioFactory extends Java7Factory {
     public FormalParameter createParameter(String name, TypeReference type) {
         return new FormalParameter(name, type);
     }
-    
+
     public FormalTypeParameter createFormalTypeParameter(String name) {
         return new FormalTypeParameter(name);
     }
@@ -221,7 +247,7 @@ public class NeioFactory extends Java7Factory {
         return new FormalTypeParameter(name);
     }
 
-    public ExtendsWildcard createExtendsWildcard(String type) {
-        return new ExtendsWildcard(createTypeReference(type));
+    public ExtendsWildcard createExtendsWildcard(TypeReference type) {
+        return new ExtendsWildcard(type);
     }
 }

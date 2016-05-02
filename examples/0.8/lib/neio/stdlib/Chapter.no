@@ -2,7 +2,6 @@ namespace neio.stdlib;
 
 import neio.lang.Content;
 import neio.lang.Text;
-import neio.stdlib.math.*;
 
 class Chapter extends TextContainer;
 
@@ -27,44 +26,6 @@ nested Chapter #(Text title, Integer level) {
     addContent(chapter);
 	
     return chapter;
-}
-
-Itemize *(Text text) {
-	Itemize itemize = new Itemize();
-	ItemizeItem item = new ItemizeItem(text, itemize, 1);
-	itemize.*(item);
-    addContent(itemize);
-
-    return itemize;
-}
-
-Enumerate -(Text text) {
-	Enumerate enumerate = new Enumerate();
-	EnumerateItem item = new EnumerateItem(text, enumerate, 1);
-	enumerate.-(item);
-    addContent(enumerate);
-
-    return enumerate;
-}
-
-Image image(String imageName) {
-    return image(null, imageName);
-}
-
-Image image(Text caption, String imageName) {
-	new Image(caption, imageName) neioImage;
-	addContent(neioImage);
-	
-	return neioImage;
-}
-
-Eq eq() {
-    Eq eq = new Eq();
-    return addContent(eq);
-}
-
-InlineEq ieq() {
-    return new InlineEq();
 }
 
 Text title() {

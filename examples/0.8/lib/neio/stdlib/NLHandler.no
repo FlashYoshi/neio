@@ -5,19 +5,19 @@ import neio.lang.Text;
 
 class NLHandler;
 
-Content origin;
+Content parent; 
 
-NLHandler(Content origin) {
-    this.origin = origin;
+NLHandler(Content parent) {
+    this.parent = parent;
 }
 
-Content origin() {
-    return origin;
+Content parent() {
+    return parent;
 }
 
 Paragraph text(Text text) {
     new Paragraph(text) par;
-    origin().addContent(par);
+    parent().addContent(par);
     return par;
 }
 

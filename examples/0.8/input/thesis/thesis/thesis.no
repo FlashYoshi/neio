@@ -11,7 +11,8 @@ In this thesis we will be introducing a new markup language that tries to improv
 Before we get into the details of this new language it is necessary to introduce some of the currently most used markup languages and word processors.
 This introduction will provide the context from which the necessity of this thesis was sparked.
 
-## {md}
+## State of the art
+### {md}
 One of the most popular markup languages at this time is {md}.
 It is introduced by the designers of the language as follows:
 
@@ -23,7 +24,7 @@ Markdown allows you to write using an easy-to-read, easy-to-write plain text for
 Due to this, it attracts a lot of people as it is very easy to create a new simple document.
 It achieves this by introducing a small and simple syntax. // TODO: link to spec
 By using such a simple syntax compile times are for the documents are very short and IDE support is wide.
-Even withouth the help of an IDE, {md} is very readable as it was designed to be.
+Even without the help of an IDE, {md} is very readable as it was designed to be.
 Another advantage of this simple syntax is that it almost entirely removes the possibility of syntax errors to occur.
 
 Due to it's simple nature and limited syntax {md} can be easily translated into other formats such as PDF or HTML.
@@ -33,28 +34,28 @@ A corrupted byte would show easily and it would likely not destroy the layout of
 
 Due to the fact that {md} uses plain text, it is cross platform and because it has such a simple syntax, compilers are available for all major operating systems. //TODO: reference
 {md} also natively allows for UTF-8 characters to be used in the text thus not requiring weird escape sequences to insert certain symbols. // TODO: reference
-A last advantage of plain text is that it is wel suite for Version Control Systems (VCS).
+A last advantage of plain text is that it is well suite for Version Control Systems (VCS).
 
 To illustrate the simplicity of {md} we'll take a look at an example document:
 {
-    new Lstlisting('''document.md''');
+    new LstInputListing('''document.md''');
 }
 // TODO: add image of rendered document
 
 To allow for some customisability, {md} allows you to use inline HTML. // TODO: example
 In case {md} does not support what you want to do, HTML is what you use.
 
-## {lat}
+### {lat}
 // TODO: show some trees, that show structure
 {lat} provides a, Turing complete, programming model and due to this allows for rich customisability.
 This is one of the reasons why {lat} is often used for long and complex documents such as books and articles.
 
 Like {md} lat uses a plain text format that is quite robust to file corruptions and is well suited for VCS.
-It is however less robust against file corruption as the syntax is a lot more extensive and thus file corruption could lead to your document not compiling anymore a lot easier.
+It is however less robust against file corruption as the syntax is a lot more extensive and thus file corruption could lead to your document not compiling any more a lot easier.
 
 In {lat} the structure and the layout of your document are split by design. {lat} forces you to create a structured document by requiring you to use `sections, paragraphs,...`.
 When using a WYSIWYG word processor for example, usually there is a way to structure your documents, using `styles, headers,...` but it is not forced on the user.
-As a result, in {lat} consistentcy is enforced throughout the entire document without too much effort.
+As a result, in {lat} consistency is enforced throughout the entire document without too much effort.
 In a WYSIWG word processor, the user has to make sure his document is consistent.
 Once documents get longer, this gets very hard to manage and to spot.
 
@@ -68,11 +69,11 @@ It should be noted though that almost all of this functionality is offered throu
 {lat} also works together with BibTeX, a reference management software that is very robust and makes certain all of your references are consistent.
 It also allows you to create the references outside of your main document, decreasing the amount of clutter in the document.
 Whilst on the topic of including other files in your document, in {lat} you can split up your document into multiple smaller documents, allowing for easier management.
-A common use of this function is to write every chapter, e.g. in a book, in a seperate document and than all the chapters are imported into the main document.
+A common use of this function is to write every chapter, e.g. in a book, in a separate document and than all the chapters are imported into the main document.
 This allows to easily remove or switch out different parts of a document.
 
 Another very simple feature that {lat} has, is that is allows you to use vector graphics or PDF as images in your document.
-This is something not possible in WYSIWIG word processors or lighweight markup languages such as {md}.
+This is something not possible in WYSIWIG word processors or lightweight markup languages such as {md}.
 
 {lat} is free and open source, which is a huge point of attraction for the open source community.
 As a result of this free and open source model, combined with its popularity and good scientific support, LaTeX has been integrated in many other applications.
@@ -81,7 +82,7 @@ A few examples are:
 * Stack Exchange
 //TODO: add more examples
 
-## {pan}
+### {pan}
 {pan} is a document converter, but in reality it can do much more than just convert a document from one format to another.
 Notably, it allows you to write inline {lat} inside of a {md} document allowing for a much better experience than just using one of them.
 However, {pan} does not really have a programming model, outside of the {lat} one, it works with so called filters.
@@ -90,7 +91,7 @@ This AST can then be transformed using filters.
 Filters can be written in a multitude of languages such as Haskell, Python, Perl,... and have to be passed as an argument to the conversion command.
 // TODO: show an example
 
-## Word processors
+### Word processors
 Modern word processors such as Microsoft Word and Pages are so called WYSIWYG editors.
 As you immediately, without compiling, see what your document will look like it is a very popular tool.
 
@@ -102,7 +103,7 @@ We will discuss the most common gripes for every solution underneath and afterwa
 To achieve this {md}'s simplicity, a hefty price has to be paid. All of the syntax elements have been hard coded into the language meaning there is no room for customisability.
 The only way to customise {md} is by embedding inline HTML.
 HTML allows users to create a solid structured model but it still does not allow for very much customisability.
-While {md} is meant to be easily readable and writable, HTML is not and using is thus decreases readability and cleanliness of your document significantly.
+While {md} is meant to be easily readable and writeable, HTML is not and using is thus decreases readability and cleanliness of your document significantly.
 HTML also does away with the robustness of {md}'s plain text format, as having a tag being corrupted could lead to very big changes in the rendered file and might not even allow for compilation anymore.
 HTML also reintroduces the possibility of syntax errors and thus slowing down the document creation.
 // TODO: example of layout destruction
@@ -125,12 +126,12 @@ Transforming an AST afterwards is not always as easy as doing so inline, and it 
 // TODO: consider templates
 A first point to note is that the most popular word processors such as Microsoft Word and Pages are not free, but instead cost a significant amount.
 There are free variants, such as LibreOffice and OpenOffice, but the compatibility between these word processors is not perfect.
-The free alternatives usually also have less of a focus on the ui, making them look somewhat less sleek.
+The free alternatives usually also have less of a focus on the UI, making them look somewhat less sleek.
 
 Another problem with word processors is that their format often changes over the years.
 This means that your document might not show up the same, or at all, a few years later than when you wrote it.
 
-// TODO: no programming model or smth like VB
+// TODO: no programming model or something like VB
 Even though some customisability is available, no programming model is available and real customisability is far to be found.
 Due to their lack of a programming model, word processors do not allow for even the simplest of computations such as `The result is x + y`.
 
@@ -145,35 +146,88 @@ Lastly, word processors often use a proprietary or complex format for there docu
 A single bit flip could potentially irreversibly destroy your document.
 These complex document formats are also hard to be used in combination with VCS.
 
-#### Problem statement
-#### Proposed solution
-To counter the problems occuring in the state of the art solutions, we came up with the following goals for the language:
-- Userfriendliness: has to be easy to get started with the language
+## Proposed solution: Neio
+To counter the problems occurring in the state of the art solutions, we bring forth a new markup language called `Neio` (read as neo).
+To be able to solve some of the aforementioned problems and still make use of all of their advantages, the following goals were devised for the Neio markup language:
+- User-friendliness: has to be easy to get started with the language
 - Has to use a modern programming paradigm
 - Has to be highly customisable
 
-
 The first goal supplies us with a simple language that allows to very easily create simple documents.
-The use of a modern programming paradigm allows us to customise the document and execute easy and complex computations easily.
-
-Neio makes use of two kinds of documents, the first kind is a Neio script file.
-This file contains plain text, much like a {md} document, but it also allows for inline code to be added to it.
-The second kind of documents are Neio class files.
-These documents resemble Java classes and allow to customise anything that can be created in a Neio script file.
-
-To allow for extensive customisability a script file is seen as a chain of method calls. Everything you see in the document is a method call.
-// TODO: add example
+The use of a modern programming paradigm allows us to customise the document and execute easy and complex computations easily in effect achieving the third goal.
+### Target group
 
 # Design of the Neio markup language
 In the previous chapter the state of the art concerning document creation has been discussed and we notice that some improvement is certainly possible.
-All of the document creation tools discussed above have their advantages and disadvantages. In this chapter we will concretise what we want to achieve with our new markup language 
-and how we go about doing so.
+All of the document creation tools discussed above have their advantages and disadvantages. 
+In this chapter we will present the Neio language and we will explain how our decisions were reached and how they were affected by the state of the art solutions.
 
-The name of the markup language designed and implemented in this thesis is `Neio`, which is read as `Neo`.
+## Neio document
+To illustrate some of the basic concepts we will now present an example. The typical files that a user will write are called Neio documents.
+Neio documents are heavily based on {md} as {md} is so easy to read and write, since this is what most of our consumers will be seeing, this was a very important property.
+Since our consumers will mostly write Neio documents, we are also able to use the widespread knowledge of {md} to increase the size of our audience and allow users to instantly get started with the language.
+The following example is one of the most basic documents you can write using Neio.
+{
+    new LstListing('''
+[Document]
 
-## Neio script files
+# Chapter 1
+This is some text in the first Paragraph.
+    ''');
+}
 
-## Neio class files
+// TODO: show actual output
+Even if you are not familiar with {md} than you probably immediately know what this document represents.
+There is however a very significant difference with {md}. In markdown the syntax is hard-coded into the language, a *\\#* will always represent a chapter for example.
+In Neio, on the other hand, the language has no knowledge whatsoever of what *\\#* means.
+In fact, it does not know what anything in a Neio document means.
+It does not know about these things because everything is a method call, chained together to form an object model that represents the document.
+The reason for doing so is simple, we want to be able to customise our documents!
+For example, when you are creating a slide show you might not want *\\#* to create a new chapter, instead it would be better and clearer if it would just create a new slide.
+
+Knowing this we can now represent the document as a chain of method calls as follows:
+{
+    new LstListing('''
+new Document()
+    .#(\"Chapter 1\")
+    .text(\"This is some text in the first Paragraph\");
+    ''');
+}
+
+Now is also a good time to explain a small syntactical difference with {md}, which you might have already noticed.
+Every Neio document has to begin with a so-called document class. This is a concept borrowed from {lat}, and just as in {lat} it tells us what kind of document the user is trying to build.
+We say that a Neio document  has to start with a document class, but this is not completely correct.
+You are allowed to add single- or multi-line Java style comments before the document, or anywhere else in the document for a matter of fact.
+The following is thus also a valid document.
+{
+    new LstListing('''
+// A single-line comment
+[Document]
+/*
+ * Multi-line comments are also available!
+ */
+    ''');
+}
+
+To further understand this example we need to introduce the second kind of files available in the Neio markup language, Class files.
+
+## Class files
+Class files are very similar to class files in Java. They are the thriving force behind the Neio documents, they define all the object and methods that are used in a Neio document.
+As means of an introduction we will have a look at the Document class that was used as a document class in the previous section.
+{
+    new LstInputListing('''../../examples/0.8/lib/neio/stdlib/Document.no''');
+}
+
+Except for some variations on the syntax, such as using `namespace` instead of `package`, and the lack of access level modifiers, this is valid Java code.
+The access level modifiers are automatically set to `private` for members and `public` for methods.
+Again, I stand corrected, this would be valid Java code if not for the *\\#* method.
+In Neio class files you are allowed to use symbols as a method name.
+This is a feature that is necessary to allow a Neio document to be represented as a chain of method calls as otherwise you would have to actually write out a document as series of method calls.
+This includes adding unnecessary symbols such as brackets to pass parameters, quotes to indicate strings and so on.
+All the symbols you can use for method names can be found in . // TODO: reference whitelist
+
+To keep the language simple and to maximize reusability (as well as making the parsing somewhat easier) some functionality from the Java language was dropped.
+It is for example not possible to create anonymous classes as this goes against the concept of reusability.
 
 ## Language features
 ### Context types
