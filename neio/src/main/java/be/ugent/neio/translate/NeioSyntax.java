@@ -21,6 +21,7 @@ import org.aikodi.chameleon.oo.statement.Block;
 import org.aikodi.chameleon.oo.statement.Statement;
 import org.aikodi.chameleon.oo.type.BasicTypeReference;
 import org.aikodi.chameleon.oo.variable.FormalParameter;
+import org.aikodi.chameleon.support.expression.AssignmentExpression;
 import org.aikodi.chameleon.support.expression.RegularLiteral;
 import org.aikodi.chameleon.support.member.simplename.method.RegularMethodInvocation;
 import org.aikodi.chameleon.support.statement.*;
@@ -103,6 +104,13 @@ public class NeioSyntax extends Java7Syntax {
     }
 
     @Override
+    public String toCodeAssignment(AssignmentExpression expr) {
+        String result = addCatchAll(expr.getValue());
+
+        return result != null ? result : super.toCodeAssignment(expr);
+    }
+
+    @Override
     public String toCodeReturn(ReturnStatement stat) {
         String result = addCatchAll(stat.getExpression());
 
@@ -135,7 +143,7 @@ public class NeioSyntax extends Java7Syntax {
         // This will deduce if a basic try catch is needed for this statement and create it if need be
         if (expr.nearestAncestor(TryStatement.class) == null) {
             if (throwsException((RegularMethodInvocation) expr)) {
-                Statement stat = (Statement) expr.parent();
+                Statement stat = expr.nearestAncestor(Statement.class);
                 Block parent = (Block) stat.parent();
 
                 Block tryBlock = new Block();
