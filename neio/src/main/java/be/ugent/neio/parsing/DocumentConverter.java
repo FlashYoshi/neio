@@ -230,8 +230,10 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
             appendInline = false;
             result = visitInlinecode(ctx.inlinecode());
             appendInline = temp;
-        } else {
+        } else if (ctx.WORD() != null) {
             result = createText((String) visit(ctx.WORD()));
+        } else {
+            result = createText((String) visit(ctx.ESCAPE()));
         }
 
         if (ctx.txt() != null) {

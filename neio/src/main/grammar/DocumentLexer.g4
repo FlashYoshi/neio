@@ -9,7 +9,7 @@ LONE_CODE : {getCharPositionInLine() == 0}? LCB CONTENT* RCB {_input.LA(1) == '\
 CODE : LCB -> pushMode(INCODE);
 
 fragment CHAR : [a-zA-Z0-9];
-ESCAPE : B_SLASH .;
+ESCAPE : B_SLASH B_SLASH .;
 
 S : ' ';
 WS : [\t] -> channel(HIDDEN);
@@ -47,7 +47,7 @@ BQ : B_QUOTE;
 US : UNDERSCORE;
 DLR : DOLLAR;
 
-fragment VALID_CHAR : ~[#-*_`\[\]{} \r\n] | SQ | BANG | L_BRACE | R_BRACE;
+fragment VALID_CHAR : ~[#-*_`\[\]{} \r\n] | SQ | HASH | BANG | L_BRACE | R_BRACE;
 
 WORD : VALID_CHAR+;
 
