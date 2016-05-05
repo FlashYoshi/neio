@@ -26,7 +26,6 @@ import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.neio.antlr.ClassLexer;
 import org.neio.antlr.ClassParser;
-import org.neio.antlr.DocumentParser;
 import org.neio.antlr.DocumentParser.*;
 import org.neio.antlr.DocumentParserBaseVisitor;
 

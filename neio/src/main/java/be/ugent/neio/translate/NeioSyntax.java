@@ -179,7 +179,7 @@ public class NeioSyntax extends Java7Syntax {
         return null;
     }
 
-    private  boolean throwsException(RegularMethodInvocation mi) {
+    private boolean throwsException(RegularMethodInvocation mi) {
         return throwsException(mi, true);
     }
 

@@ -24,7 +24,7 @@ public class NeioNameExpression extends JavaNameExpression {
     @Override
     protected ContextType actualType() throws LookupException {
         Type returnType = super.actualType();
-        Type contextType = (((LocalVariable)getElement()).getInitialization()).getType();
+        Type contextType = (((LocalVariable) getElement()).getInitialization()).getType();
         ContextType ctx = new ContextType(returnType, contextType);
         ctx.setUniParent(parent());
 
