@@ -2,6 +2,7 @@ package be.ugent.neio.builder;
 
 import be.kuleuven.cs.distrinet.jnome.core.language.Java7;
 import be.kuleuven.cs.distrinet.jnome.core.language.Java7LanguageFactory;
+import be.kuleuven.cs.distrinet.jnome.output.JavaDocumentWriterFactory;
 import be.kuleuven.cs.distrinet.jnome.workspace.JavaView;
 import be.ugent.chameleonsupport.build.LanguageBuilder;
 import be.ugent.neio.language.Neio;
@@ -15,7 +16,7 @@ import org.aikodi.chameleon.workspace.View;
 public class NeioClassBuilder extends LanguageBuilder<Neio, Java7> {
 
     public NeioClassBuilder(View view) {
-        super(view);
+        super(view, new JavaDocumentWriterFactory());
     }
 
     @Override

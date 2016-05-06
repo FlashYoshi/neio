@@ -31,7 +31,7 @@ dependencies {
     antlr "org.antlr:antlr4:4.5"
 
     compile project(':chameleon')
-    compile project(':ChameleonSupport')
+    compile project(':chameleonsupport')
     compile project(':jnome')
     compile fileTree(dir: 'build/libs', include: '**/*.jar')
 }

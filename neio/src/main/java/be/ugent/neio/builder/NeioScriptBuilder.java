@@ -3,6 +3,7 @@ package be.ugent.neio.builder;
 import be.kuleuven.cs.distrinet.jnome.core.language.Java7;
 import be.kuleuven.cs.distrinet.jnome.core.language.Java7LanguageFactory;
 import be.kuleuven.cs.distrinet.jnome.output.Java7Syntax;
+import be.kuleuven.cs.distrinet.jnome.output.JavaDocumentWriterFactory;
 import be.kuleuven.cs.distrinet.jnome.workspace.JavaView;
 import be.ugent.chameleonsupport.build.LanguageBuilder;
 import be.ugent.neio.language.Neio;
@@ -22,7 +23,7 @@ import java.util.List;
 public class NeioScriptBuilder extends LanguageBuilder<Neio, Java7> {
 
     public NeioScriptBuilder(View view, boolean debug) {
-        super(view);
+        super(view, new JavaDocumentWriterFactory());
         // Have to set it after the constructor is called as super(view) will call setContainer
         ((NeioToJava8Translator) translator).setDebug(debug);
         if (debug) {

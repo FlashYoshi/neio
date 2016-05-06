@@ -3,7 +3,7 @@ package be.ugent.neio.language;
 import be.kuleuven.cs.distrinet.jnome.input.LazyJavaFileInputSourceFactory;
 import be.kuleuven.cs.distrinet.jnome.workspace.JavaProjectConfiguration;
 import be.kuleuven.cs.distrinet.rejuse.predicate.SafePredicate;
-import be.ugent.chameleonsupport.language.BaseLibraryJavaProjectConfigurator;
+import be.kuleuven.cs.distrinet.jnome.workspace.BaseLibraryJavaProjectConfigurator;
 import org.aikodi.chameleon.core.language.Language;
 import org.aikodi.chameleon.workspace.*;
 

@@ -1,5 +1,5 @@
 include 'chameleon'
-include 'ChameleonSupport'
+include 'chameleonsupport'
 include 'jnome'
 
 rootProject.name = 'neio'
