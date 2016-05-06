@@ -10,7 +10,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 
 /**
  * Copies a given document exactly
@@ -27,10 +26,6 @@ public class CopyDocumentWriter extends DocumentWriter {
      */
     public CopyDocumentWriter(String extension) {
         super(extension);
-    }
-
-    public void copyFile(Path sourceFile, File destFile) throws IOException {
-        Files.copy(sourceFile, new FileOutputStream(destFile));
     }
 
     @Override
