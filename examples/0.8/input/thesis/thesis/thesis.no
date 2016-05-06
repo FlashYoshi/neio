@@ -7,6 +7,7 @@
 }
 
 # Introduction
+{Chapter intro = (Chapter) parent()}
 In this thesis we will be introducing a new markup language that tries to improve upon a few others, namely {lat} and {md}.
 Before we get into the details of this new language it is necessary to introduce some of the currently most used markup languages and word processors.
 This introduction will provide the context from which the necessity of this thesis was sparked.
@@ -158,7 +159,7 @@ The use of a modern programming paradigm allows us to customise the document and
 ### Target group
 
 # Design of the Neio markup language
-In the previous chapter the state of the art concerning document creation has been discussed and we notice that some improvement is certainly possible.
+In the previous chapter, {intro.ref()}, the state of the art concerning document creation has been discussed and we notice that some improvement is certainly possible.
 All of the document creation tools discussed above have their advantages and disadvantages. 
 In this chapter we will present the Neio language and we will explain how our decisions were reached and how they were affected by the state of the art solutions.
 
@@ -284,7 +285,11 @@ We will also discuss which libraries have been recreated in Neio to allow for a 
 ### Chameleon
 
 ## Compile flow
-{image("Illustration of how a Neio document is compiled. Neio class files translate to Java classes, Neio script files to a Java file with a main function. This then gets output to Tex using Neio's standard library", '''CompileFlow''')}
+{
+    Image compileFlow = image("Illustration of how a Neio document is compiled. Neio class files translate to Java classes, Neio script files to a Java file with a main function. This then gets output to Tex using Neio's standard library", '''CompileFlow''');
+    return compileFlow;
+}
+In {compileFlow.ref()} the flow that a source document goes through before reaching a rendered state is depicted.
 
 ## Translation to Java
 ### Fluent Interface

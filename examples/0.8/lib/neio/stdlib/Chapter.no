@@ -1,30 +1,35 @@
 namespace neio.stdlib;
 
 import neio.lang.Content;
+import neio.lang.Referable;
+import neio.lang.Reference;
 import neio.lang.Text;
 
-class Chapter extends TextContainer;
+class Chapter extends TextContainer implements Referable;
 
 protected Text title;
+protected String marker;
 protected Integer level;
+protected String texName;
 
 Chapter(Text title, Integer level) {
     this.title = title;
     this.level = level;
+    this.texName = "section*";
 }
 
 nested Chapter #(Text title, Integer level) {
-	if (level <= this.level) {
+    if (level <= this.level) {
         Chapter c = nearestAncestor(Chapter.class);
         if (c != null) {
             return c.hash(title, level);
         } else {
             return nearestAncestor(Document.class).hash(title);
         }
-	}
+    }
     Chapter chapter = new Chapter(title, level);
     addContent(chapter);
-	
+    
     return chapter;
 }
 
@@ -33,18 +38,32 @@ Text title() {
 }
 
 String toTex() {
-	return toTex(level) + super.toTex();
+    return toTex(level) + super.toTex();
 }
 
 String toTex(Integer lvl) {
-    return "\\" + subs(lvl) + "section*{" + title.toTex() + "}";
+    String result = "\\" + subs(lvl) + texName + "{" + title.toTex() + "}\n";
+    return result + "\\label{" + hashCode() + "}";
 }
 
 String subs(Integer lvl) {
-	String subs = "";
-	for (int i = 1; i < lvl; i = i + 1) {
-		subs = subs + "sub";
-	}
-	
-	return subs;
+    String subs = "";
+    for (int i = 1; i < lvl; i = i + 1) {
+        subs = subs + "sub";
+    }
+    
+    return subs;
+}
+
+Reference ref() {
+    String prefix = "";
+    if (level < 2) {
+        prefix = "Chapter";
+    } else if (level == 2) {
+         prefix = "Section";
+    } else {
+        prefix = "Subsection";
+    }
+    
+    return new Reference(prefix, "" + hashCode());
 }

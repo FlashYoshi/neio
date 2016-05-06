@@ -1,0 +1,20 @@
+namespace neio.lang;
+
+class Reference extends Text;
+
+String prefix;
+String reference;
+
+Reference(String prefix, String reference) {
+    this.prefix = prefix;
+    this.reference = reference;
+}
+
+String thisToTex() {
+    String result = prefix;
+    if (!result.isEmpty()) {
+        result = result + " ";
+    }
+    
+    return result + "\\ref{" + reference + "}";
+}

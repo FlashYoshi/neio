@@ -1,9 +1,11 @@
 namespace neio.stdlib;
 
-import neio.lang.Text;
 import neio.lang.Content;
+import neio.lang.Referable;
+import neio.lang.Reference;
+import neio.lang.Text;
 
-class Image extends Content;
+class Image extends Content implements Referable;
 
 Text caption;
 String name;
@@ -16,8 +18,8 @@ Image(String name) {
 }
 
 Image(Text caption, String name) {
-	this.caption = caption;
-	this.name = name;
+    this.caption = caption;
+    this.name = name;
     this.scale = null;
 }
 
@@ -35,7 +37,7 @@ Image scale(Integer scale) {
 }
 
 String toTex() {
-	StringBuilder result = new StringBuilder("\\begin{figure}[H]\n\\centering\n\\includegraphics[");
+    StringBuilder result = new StringBuilder("\\begin{figure}[H]\n\\centering\n\\includegraphics[");
     if (scale == null) {
         result.append("width=\\linewidth]{");
     } else {
@@ -43,16 +45,21 @@ String toTex() {
     }
     
     result.append(name);
-	if (name.contains(".")) {
-		result.append("}\n");
-	} else {
-		result.append(PNG).append("}\n");
-	}
+    if (name.contains(".")) {
+        result.append("}\n");
+    } else {
+        result.append(PNG).append("}\n");
+    }
     if (caption != null) {
-		result.append("\\caption{").append(caption.toTex()).append("}\n");
-	}
-	
-	result.append("\\end{figure}\n");
-	
-	return result.toString();
+        result.append("\\caption{").append(caption.toTex()).append("}\n");
+    }
+    result.append("\\label{" + hashCode() + "}");
+    
+    result.append("\\end{figure}\n");
+    
+    return result.toString();
+}
+
+Reference ref() {
+    return new Reference("Figure ", "" + hashCode());
 }
