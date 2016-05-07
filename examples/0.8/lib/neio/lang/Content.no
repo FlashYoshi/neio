@@ -5,35 +5,84 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Represents any type of content that can be shown in a document.
+ * This includes a document itself.
+ *
+ * Content can contain other Content objects and as such act as a container.
+ * e.g. a Document could have Chapters which in turn has Paragraphs
+ */
 abstract class Content implements Texable;
 
+// Determines as what class new Content instances will be instantiated
 private final Map<Class, Class> _classMapping;
+// Holds all of the content contained in this content
 List<Content> content;
+// The parent Content of this Content
 Content parent;
 
+/**
+ * Intializes all the necessary members
+ */
 Content() {
     content = new ArrayList<Content>();
     _classMapping = new HashMap<Class, Class>();
 }
 
+/**
+ * Adds Content at position {@code index} and sets this object as
+ * parent of the added Content.
+ *
+ * @param index   The index at which to put the Content
+ * @param c         The Content to add
+ * @return            The added Content
+ */
 <T extends Content> T addContent(Integer index, T c) {
     content.add(index, c);
     c.setParent(this);
     return c;
 }
 
+/**
+ * Adds Content to the end of the list
+ *
+ * @param c The Content to add
+ * @return    The added Content
+ */
 <T extends Content> T addContent(T c) {
     return addContent(contentSize(), c);
 }
 
+/**
+ * Adds Content before a given Content
+ *
+ * @param c         The Content to add
+ * @param before The Content preceding the new Content
+ * @return           The added Content
+ */
 <T extends Content> T addContentBefore(T c, Content before) {
     return addContent(content().indexOf(c), c);
 }
 
+/**
+ * Adds Content after a given Content
+ *
+ * @param c      The Content to add
+ * @param after The Content succeeding the added Content
+ * @return         The added Content
+ */
 <T extends Content> T addContentAfter(T c, Content after) {
     return addContent(content().indexOf(after) + 1, c);
 }
 
+/**
+ * Adds Content to the root or calls {@code appendContent} on an
+ * instance of {@code Content} in the chain that overrides
+ * this method.
+ *
+ * @param c The Content to add
+ * @return    The added Content
+ */
 <T extends Content> T appendContent(T c) {
     if (parent() != null) {
         return parent().appendContent(c);
@@ -42,110 +91,209 @@ Content() {
     }
 }
 
+/**
+ * Checks if a given Content is a child of this Content
+ *
+ * @param c Content to check as being a child of this Content
+ * @return    If {@code c} c is contained in this Content
+ */
 Boolean contains(Content c) {
     return content.contains(c);
 }
 
+/**
+ * Sets the parent of this Content
+ *
+ * @param c The Content to set as parent
+ */
 void setParent(Content c) {
-	parent = c;
+    parent = c;
 }
 
+/**
+ * Return the parent Content
+ *
+ * @return The parent Content
+ */
 Content parent() {
-	return parent;
+    return parent;
 }
 
+/**
+ * Returns the amount of Content objects contained in this Content
+ *
+ * @return Amount of Content object contained in this Content
+ */
 Integer contentSize() {
-	return content.size();
+    return content.size();
 }
 
+/**
+ * Returns the list of Content objects contained in this Content
+ *
+ * @return The list of Content objects contained in this Content
+ */
 List<Content> content() {
-	return content;
+    return content;
 }
 
+/**
+ * Return the Content at position {@code i}
+ *
+ @param i The position of the Content to get
+ @return   The Content at position {@code i}
+ */
 Content content(Integer i) {
     return content.get(i);
 }
 
+/**
+ * Returns a list of all the parent Content objects up to and including
+ * the root Content object.
+ *
+ *@return A list of all the parents up to the root
+ */
 List<Content> ancestors() {
-	List<Content> list = new ArrayList<Content>();
-	Content p = parent();
-	
-	while (p != null) {
-		list.add(p);
-		p = p.parent();
-	}
-	
-	return list;
+    List<Content> list = new ArrayList<Content>();
+    Content p = parent();
+    
+    while (p != null) {
+        list.add(p);
+        p = p.parent();
+    }
+    
+    return list;
 }
 
+/**
+ * Recursively checks for a parent of type {@code c}
+ *
+ * @param c Type of the demanded Content
+ * @return    The first lexical parent of type {@code c}
+ */
 <T> T nearestAncestor(Class<T> c) {
-	Content p = parent();
-	while ((p != null) && (!c.isInstance(p))) {
-		p = p.parent();
-	}
-	
-	return (T) p;
+    Content p = parent();
+    while ((p != null) && (!c.isInstance(p))) {
+        p = p.parent();
+    }
+    
+    return (T) p;
 }
 
+/**
+ * Returns a list of Content objects on the same level as this Content
+ *
+ * @param c The class of the siblings
+ * @return    The list of siblings of {@code c}
+ */
 List<Content> siblings(Class c) {
-	Content p = parent();
-	List<Content> siblings = new ArrayList<Content>();
-	if (p != null) {
-		siblings = p.descendants();
-		siblings.remove(this);
-	}
-	
-	return siblings;
+    Content p = parent();
+    List<Content> siblings = new ArrayList<Content>();
+    if (p != null) {
+        siblings = p.descendants();
+        siblings.remove(this);
+    }
+    
+    return siblings;
 }
 
+/**
+ * Recursively gathers all the children Content of this Content
+ *
+ * @return A list of al the children of this Content
+ */
 List<Content> descendants() {
-	return descendants(content());
+    return descendants(content());
 }
 
+/**
+ * Recursively gathers all the children Content of this Content
+ *
+ * @param input The list of current children
+ * @return         A list of al the children of this Content
+ */
 protected List<Content> descendants(List<Content> input) {
-	List<Content> list = new ArrayList<Content>();
-	
-	for (int i = 0; i < input.size(); i = i + 1) {
-		Content current = input.get(i);
-		list.add(current);
-		list.addAll(descendants(current.content()));
-	}
-	
-	return list;
+    List<Content> list = new ArrayList<Content>();
+    
+    for (int i = 0; i < input.size(); i = i + 1) {
+        Content current = input.get(i);
+        list.add(current);
+        list.addAll(descendants(current.content()));
+    }
+    
+    return list;
 }
 
+/**
+ * Returns the Class as which a Class should be instantiated
+ */
 final Class classMapping(Class klass) {
-	return _classMapping.get(klass);
+    return _classMapping.get(klass);
 }
 
+/**
+ * Overrides default behaviour and instantiates new instances of {@code oldClass} as instances of {@code newClass}
+ *
+ * @param oldClass   The old class object
+ * @param newClass The new class object
+ */
 public final <T> void addClassMapping(Class<T> oldClass, Class<? extends T> newClass) {
-	_classMapping.put(oldClass, newClass);
+    _classMapping.put(oldClass, newClass);
 }
 
+/**
+ * Used instead of a new call. This allows to create more specific objects than originally
+ * specified. e.g. this allows to create SpecialChapter's instead of Chapter's
+ * <p>
+ * It will create an instance of {@code klass} in case the class mapping has not been overridden.
+ * If the mapping was overridden, an instance of the overriding class will be created.
+ *
+ * @param klass            The class to instantiate
+ * @param paramTypes The types of the parameters
+ * @param params        The parameters to instantiate {@code klass}
+ * @return                    The instantiated object
+ */
 public final <T> T getInstance(Class<T> klass, Class[] paramTypes, Object[] params) {
-	// Have I been overridden?
-	Class result = classMapping(klass);
-	Content current = parent();
-	// Has any of the parents been overridden?
-	while ((current != null) && (result == null)) {
-		result = current.classMapping(klass);
-		current = current.parent();
-	}
-	
-	// No parents have been overridden
-	if (result == null) {
-		return instantiate(klass, paramTypes, params);
-	}
-	// A parent was overridden, use that type
-	else {
-		return (T) instantiate(result, paramTypes, params);
-	}
+    // Have I been overridden?
+    Class result = classMapping(klass);
+    Content current = parent();
+    // Has any of the parents been overridden?
+    while ((current != null) && (result == null)) {
+        result = current.classMapping(klass);
+        current = current.parent();
+    }
+    
+    // No parents have been overridden
+    if (result == null) {
+        return instantiate(klass, paramTypes, params);
+    }
+    // A parent was overridden, use that type
+    else {
+        return (T) instantiate(result, paramTypes, params);
+    }
 }
 
+
+/**
+ * Does the actual instantiation of an object using Reflection
+ *
+ * @param klass            The class to instantiate
+ * @param paramTypes The types of the parameters
+ * @param params        The parameters to instantiate {@code klass}
+ * @return                    The instantiated object
+ */
 private <T> T instantiate(Class<T> klass, Class[] paramTypes, Object[] params) {
-	return klass.getConstructor(paramTypes).newInstance(params);
+    return klass.getConstructor(paramTypes).newInstance(params);
 }
 
+
+/**
+ * Returns a String representing this Content and it's children as TeX.
+ * The string is build by recursively calling {@code toTex} on all of children
+ * in this Content.
+ *
+ * @return The TeX string
+ */
 String toTex() {
     StringBuilder tex = new StringBuilder();
     for (int i = 0; i < content.size(); i = i + 1) {
