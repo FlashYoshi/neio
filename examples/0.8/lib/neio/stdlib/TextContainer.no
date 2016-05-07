@@ -11,18 +11,18 @@ ContainerNLHandler newline() {
 }
 
 Itemize *(Text text) {
-	Itemize itemize = new Itemize();
-	ItemizeItem item = new ItemizeItem(text, itemize, 1);
-	itemize.*(item);
-    addContent(itemize);
+    Itemize itemize = new Itemize();
+    ItemizeItem item = new ItemizeItem(text, itemize, 1);
+    itemize.*(item);
 
+    addContent(itemize);
     return itemize;
 }
 
 Enumerate -(Text text) {
-	Enumerate enumerate = new Enumerate();
-	EnumerateItem item = new EnumerateItem(text, enumerate, 1);
-	enumerate.-(item);
+    Enumerate enumerate = new Enumerate();
+    EnumerateItem item = new EnumerateItem(text, enumerate, 1);
+    enumerate.-(item);
     addContent(enumerate);
 
     return enumerate;
@@ -33,10 +33,10 @@ Image image(String imageName) {
 }
 
 Image image(Text caption, String imageName) {
-	new Image(caption, imageName) neioImage;
-	addContent(neioImage);
-	
-	return neioImage;
+    new Image(caption, imageName) neioImage;
+    addContent(neioImage);
+    
+    return neioImage;
 }
 
 Eq eq() {

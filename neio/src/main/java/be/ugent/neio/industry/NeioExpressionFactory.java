@@ -25,7 +25,7 @@ public class NeioExpressionFactory extends JavaExpressionFactory {
         return createConstructorInvocation(type, prefix, new ArrayList<>());
     }
 
-    public Expression createConstructorInvocation(String type, TypeReference prefix) {
+    public ConstructorInvocation createConstructorInvocation(String type, TypeReference prefix) {
         return createConstructorInvocation(new BasicJavaTypeReference(type), prefix, new ArrayList<>());
     }
 
