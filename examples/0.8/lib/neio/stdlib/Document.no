@@ -5,6 +5,7 @@ import neio.lang.Text;
 class Document extends TextContainer;
 
 private Packages packages;
+private Bibtex bibtex;
 
 Document() {
     packages = new Packages();
@@ -12,6 +13,8 @@ Document() {
     .add("graphicx")
     .add("amsmath")
     .add("float");
+    
+    bibtex = null;
 }
 
 Chapter #(Text title) {
@@ -29,6 +32,18 @@ Packages addPackage(String pkg) {
     return packages.add(pkg);
 }
 
+void addBibtex(String name) {
+    this.bibtex = new Bibtex(name);
+}
+
+Citation cite(String key) {
+    if (bibtex != null) {
+        return bibtex.cite(key);
+    } else {
+        return null;
+    }
+}
+
 String header() {
     StringBuilder tex = new StringBuilder("\\documentclass{article}\n");
     for (int i = 0; i < packages.size(); i = i + 1) {
@@ -42,5 +57,13 @@ String header() {
 }
 
 String toTex() {
-    return header() + "\\begin{document}\n" + super.toTex() + "\n\\end{document}\n";
+    StringBuilder result = new StringBuilder(header()).append("\\begin{document}\n")
+    .append(super.toTex());
+    if (bibtex != null) {
+        result.append(bibtex.toTex());
+    }
+    
+    result.append("\n\\end{document}\n");
+    
+    return result.toString();
 }

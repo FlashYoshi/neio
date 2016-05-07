@@ -1,0 +1,22 @@
+namespace neio.stdlib;
+
+import neio.lang.Content;
+
+class Bibtex extends Content;
+
+String name;
+
+Bibtex(String name) {
+    this.name = name;
+}
+
+Citation cite(String cname) {
+    return new Citation(cname);
+}
+
+String toTex() {
+    StringBuilder result = new StringBuilder("\n\\bibliographystyle{plain}\n");
+    result.append("\\bibliography{").append(name).append("}\n");
+    
+    return result.toString();
+}

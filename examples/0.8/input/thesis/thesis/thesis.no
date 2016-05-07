@@ -1,6 +1,7 @@
 [Thesis]
 
 {
+    addBibtex('''references''');
     String lat = '''LaTeX''';
     String md = '''Markdown''';
     String pan = '''Pandoc''';
@@ -14,12 +15,11 @@ This introduction will provide the context from which the necessity of this thes
 
 ## State of the art
 ### {md}
-One of the most popular markup languages at this time is {md}.
+One of the most popular markup languages at this time is {md} {cite('''markdown''')}.
 It is introduced by the designers of the language as follows:
 
-// TODO: ADD CREDITS TO https://daringfireball.net/projects/markdown/
-Markdown is a text-to-HTML conversion tool for web writers.
-Markdown allows you to write using an easy-to-read, easy-to-write plain text format, then convert it to structurally valid XHTML (or HTML).
+`Markdown is a text-to-HTML conversion tool for web writers.`
+`Markdown allows you to write using an easy-to-read, easy-to-write plain text format, then convert it to structurally valid XHTML (or HTML).`
 
 {md}'s goal is to be easy to write and read as a plain text document.
 Due to this, it attracts a lot of people as it is very easy to create a new simple document.
