@@ -25,7 +25,9 @@ public class Main {
     private static final boolean DEBUG = false;
 
     /**
-     * args[1] = input file
+     * args[1] = input path
+     * args[2] = project.xml file
+     * args[3] = output path (optional)
      * <p>
      * Exit code 1: Invalid call to program
      * Exit code 2: Input path can not be read or does not exist
@@ -39,10 +41,15 @@ public class Main {
 
     private void read(String[] args) {
         String inputPath = getInputPath(args);
+        String projectXml = getProjectXml(args);
+        String outputPath = getOutputPath(args);
+        if (outputPath == null) {
+            outputPath = AUTO_GEN_DIR;
+        }
         NeioProjectBuilder projectBuilder = new NeioProjectBuilder();
-        View view = projectBuilder.build("../base_library/project.xml");
+        View view = projectBuilder.build(projectXml);
 
-        File output = new File(AUTO_GEN_DIR);
+        File output = new File(outputPath);
         LanguageBuilder languageBuilder = new NeioClassBuilder(view);
         try {
             languageBuilder.buildAll(output, null);
@@ -55,14 +62,34 @@ public class Main {
     }
 
     private String getInputPath(String[] args) {
-        if (args.length < 1) {
+        checkArgsLength(args, 2);
+        return getArg(args, 0);
+    }
+
+    private String getProjectXml(String[] args) {
+        checkArgsLength(args, 2);
+        return getArg(args, 1);
+    }
+
+    private String getOutputPath(String[] args) {
+        if (args.length < 3) {
+            return null;
+        }
+
+        return getArg(args, 2);
+    }
+
+    private void checkArgsLength(String[] args, int length) {
+        if (args.length < length) {
             printHelp("neio.jar");
             System.exit(1);
         }
+    }
 
-        String path = args[0];
+    private String getArg(String[] args, int position) {
+        String path = args[position];
         File inputFile = new File(path);
-        if (!inputFile.isDirectory() || !inputFile.canRead()) {
+        if (!inputFile.canRead()) {
             System.err.println(path + " isn't a valid folder or it isn't readable.");
             System.exit(2);
         }
@@ -71,7 +98,7 @@ public class Main {
     }
 
     private void printHelp(String programName) {
-        System.out.println("USAGE: java -jar " + programName + " <path-to-outputdir> <path-to-inputfile-directory>");
+        System.out.println("USAGE: java -jar " + programName + " <path-to-inputfile-directory> <path-to-project.xml> (optional)<path-to-outputdir>");
     }
 
     private void translateDocuments(String inputPath, File output, JavaView view) {
