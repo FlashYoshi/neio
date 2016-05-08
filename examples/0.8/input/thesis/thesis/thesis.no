@@ -44,14 +44,15 @@ A last advantage of plain text is that it is well suited for Version Control Sys
 
 To illustrate the simplicity of {md} we'll take a look at an example document:
 {{
-    Image i = image('''document''');
+    Image i = image("The document rendered as HTML by the official markdown conversion tool", '''document''');
     i.rightOf(new LstInputListing('''document.md'''));
 }}
 
 To allow for some customisability, {md} allows you to use inline HTML.
 In case {md} does not support what you want to do, HTML is what you use. An example is shown below.
-{
-    new LstListing('''
+{{
+    Image i = image("The table document rendered as HTML by the official markdown conversion tool", '''htmltable''');
+    i.rightOf(new LstListing('''
 Below you can find an HTML table
 <table border="1">
     <tr>
@@ -63,9 +64,8 @@ Below you can find an HTML table
          </td>
      </tr>
 </table>
-    ''');
-}
-// TODO: show rendered page
+    '''));
+}}
 
 ### {lat}
 // TODO: show some trees, that show structure
