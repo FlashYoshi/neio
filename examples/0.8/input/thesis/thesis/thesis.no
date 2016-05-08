@@ -9,33 +9,38 @@
 
 # Introduction
 {Chapter intro = (Chapter) parent()}
-In this thesis we will be introducing a new markup language that tries to improve upon a few others, namely {lat} and {md}.
+In this thesis we will be introducing a new markup language that tries to improve upon a few others, namely {lat} and {md}, whilst still holding on to their advantages.
 Before we get into the details of this new language it is necessary to introduce some of the currently most used markup languages and word processors.
 This introduction will provide the context from which the necessity of this thesis was sparked.
 
 ## State of the art
 ### {md}
-One of the most popular markup languages at this time is {md} {cite('''markdown''')}.
+One of the most popular markup languages at this point in time is {md} {cite('''markdown''')}.
 It is introduced by the designers of the language as follows:
 
 `Markdown is a text-to-HTML conversion tool for web writers.`
 `Markdown allows you to write using an easy-to-read, easy-to-write plain text format, then convert it to structurally valid XHTML (or HTML).`
 
-{md}'s goal is to be easy to write and read as a plain text document.
-Due to this, it attracts a lot of people as it is very easy to create a new simple document.
-It achieves this by introducing a small and simple syntax. // TODO: link to spec
-By using such a simple syntax compile times are for the documents are very short and IDE support is wide.
+{md}'s goal is to be easy to write and read as a plain text document and as such is actually based on plain text emails.
+Due to this, it attracts a lot of people's attention as it is very easy to create a new simple document, such as a short report.
+It achieves this by introducing a small and simple syntax {cite('''mdsyntax''')}. The syntax they chose also feels very natural.
+For example, to create a title you could underline it with \- or = and to create an enumeration, you can use \*'s instead of bullet points.
+
+By using such a simple syntax compile times for the documents are very short and IDE support is wide.
 Even without the help of an IDE, {md} is very readable as it was designed to be.
 Another advantage of this simple syntax is that it almost entirely removes the possibility of syntax errors to occur.
 
 Due to it's simple nature and limited syntax {md} can be easily translated into other formats such as PDF or HTML.
+A tool to convert {md} to HTML is offered by the designers of the language itself, as stated above.
 This further increases the appeal of the language, as it allows to very easily create elegant looking documents in a variety of formats.
-As {md} files are just plain text files they are robust to file corruption and easy to recover from said corruption.
-A corrupted byte would show easily and it would likely not destroy the layout of the document as there are so few reserved symbols being used in a document.
 
-Due to the fact that {md} uses plain text, it is cross platform and because it has such a simple syntax, compilers are available for all major operating systems. //TODO: reference
-{md} also natively allows for UTF-8 characters to be used in the text thus not requiring weird escape sequences to insert certain symbols. // TODO: reference
-A last advantage of plain text is that it is well suite for Version Control Systems (VCS).
+As {md} files are just plain text files they are robust to file corruption and easy to recover from said corruption.
+A corrupted byte would show easily and it would likely not destroy the layout of the document as there are so few reserved symbols being used in a {md} document.
+
+Due to the fact that {md} uses plain text, it is cross-platform and because it has such a simple syntax, compilers are available for all major operating systems.
+As a matter of fact, the Perl script offered by the {md} designers, is cross-platform.
+{md} also natively allows for UTF-8 characters to be used in the text thus not requiring weird escape sequences to insert certain symbols.
+A last advantage of plain text is that it is well suited for Version Control Systems (VCS) such as Git and Mercury.
 
 To illustrate the simplicity of {md} we'll take a look at an example document:
 {
@@ -43,8 +48,24 @@ To illustrate the simplicity of {md} we'll take a look at an example document:
 }
 // TODO: add image of rendered document
 
-To allow for some customisability, {md} allows you to use inline HTML. // TODO: example
-In case {md} does not support what you want to do, HTML is what you use.
+To allow for some customisability, {md} allows you to use inline HTML.
+In case {md} does not support what you want to do, HTML is what you use. An example is shown below.
+{
+    new LstListing('''
+Below you can find an HTML table
+<table border="1">
+    <tr>
+        <td>
+            Element 1
+        </td>
+        <td>
+            Element 2
+         </td>
+     </tr>
+</table>
+    ''');
+}
+// TODO: show rendered page
 
 ### {lat}
 // TODO: show some trees, that show structure
@@ -179,19 +200,19 @@ This is some text in the first Paragraph.
 
 // TODO: show actual output
 Even if you are not familiar with {md} than you probably immediately know what this document represents.
-There is however a very significant difference with {md}. In markdown the syntax is hard-coded into the language, a *\\#* will always represent a chapter for example.
-In Neio, on the other hand, the language has no knowledge whatsoever of what *\\#* means.
+There is however a very significant difference with {md}. In markdown the syntax is hard-coded into the language, a \\\# will always represent a chapter for example.
+In Neio, on the other hand, the language has no knowledge whatsoever of what \\\# means.
 In fact, it does not know what anything in a Neio document means.
 It does not know about these things because everything is a method call, chained together to form an object model that represents the document.
 The reason for doing so is simple, we want to be able to customise our documents!
-For example, when you are creating a slide show you might not want *\\#* to create a new chapter, instead it would be better and clearer if it would just create a new slide.
+For example, when you are creating a slide show you might not want \\\# to create a new chapter, instead it would be better and clearer if it would just create a new slide.
 
 Knowing this we can now represent the document as a chain of method calls as follows:
 {
     new LstListing('''
 new Document()
-    .#(\"Chapter 1\")
-    .text(\"This is some text in the first Paragraph\");
+    .#("Chapter 1")
+    .text("This is some text in the first Paragraph");
     ''');
 }
 
@@ -221,7 +242,7 @@ As means of an introduction we will have a look at the Document class that was u
 
 Except for some variations on the syntax, such as using `namespace` instead of `package`, and the lack of access level modifiers, this is valid Java code.
 The access level modifiers are automatically set to `private` for members and `public` for methods.
-Again, I stand corrected, this would be valid Java code if not for the *\\#* method.
+Again, I stand corrected, this would be valid Java code if not for the \\\# method.
 In Neio class files you are allowed to use symbols as a method name.
 This is a feature that is necessary to allow a Neio document to be represented as a chain of method calls as otherwise you would have to actually write out a document as series of method calls.
 This includes adding unnecessary symbols such as brackets to pass parameters, quotes to indicate strings and so on.

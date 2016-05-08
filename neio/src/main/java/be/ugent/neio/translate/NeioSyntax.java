@@ -84,6 +84,10 @@ public class NeioSyntax extends Java7Syntax {
         try {
             String literalText = super.toCodeLiteral(literal);
             if (literal.getType().getFullyQualifiedName().equals("java.lang.String") && !literalText.startsWith("\"")) {
+                // Replace escape char to work with java
+                String s = "\\\\([^rftn])";
+                literalText = literalText.replaceAll("([^\\\\])" + s + "|^" + s, "$1$2$3");
+                literalText = literalText.replaceAll("\"", "\\\\\"");
                 return "\"" + literalText + "\"";
             } else {
                 return literalText;
