@@ -53,7 +53,7 @@ String toTex() {
     if (caption != null) {
         result.append("\\caption{").append(caption.toTex()).append("}\n");
     }
-    result.append("\\label{" + hashCode() + "}");
+    result.append("\\label{" + hashCode() + "}\n");
     
     result.append("\\end{figure}\n");
     

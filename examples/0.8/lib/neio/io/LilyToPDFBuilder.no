@@ -16,7 +16,8 @@ void build(String name) {
     Process p = null;
     List<String> command = new ArrayList<String>();
     command.add("lilypond");
-    command.add("-dbackend=eps -daux-files=#f");
+    command.add("-dbackend=eps");
+    command.add("-daux-files=#f");
     command.add("-o");
     command.add(name);
     command.add("-");

@@ -3,6 +3,7 @@
 
 ## Chapter 2
 Markdown is:
+
 * Simple
 * Easily readable
 * Easily writable

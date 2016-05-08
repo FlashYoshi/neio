@@ -27,6 +27,7 @@ Content parent;
 Content() {
     content = new ArrayList<Content>();
     _classMapping = new HashMap<Class, Class>();
+    parent = null;
 }
 
 /**
@@ -38,6 +39,9 @@ Content() {
  * @return            The added Content
  */
 <T extends Content> T addContent(Integer index, T c) {
+    if (content.contains(c)) {
+        return c;
+    }
     content.add(index, c);
     c.setParent(this);
     return c;
@@ -89,6 +93,92 @@ Content() {
     } else {
         return addContent(c);
     }
+}
+
+/**
+ * Removes this object from its parent and adds {@code newC} in its place.
+ * Also sets the parent of this to null;
+ *
+ * @param newC The new object to be added
+ * @return           null if this has no parent, {@code newC} otherwise
+ */
+<T extends Content> T replaceWith(T newC) {
+    if (parent() == null) {
+        return null;
+    }
+    
+    Content parent = parent();
+    Integer index = parent.content().indexOf(this);
+    setParent(null);
+    parent.content().remove(this);
+    return parent.addContent(index, newC);
+}
+
+/**
+ * Sets {@code c} right of this Content and sets the parent of 
+ * {@code c} if we have a parent or sets this parent if {@code c}
+ * has a parent. One of the Contents should have a parent!
+ *
+ * @param c The Content to our right
+ * @return    The Content to our right
+ */
+<T extends Content> T leftOf(T c) {
+    Minipage mp = prepareParent(this, c);
+    Integer siblings = ((Minipage) (mp.content(0))).siblings();
+    Minipage mp2 = new Minipage(siblings);
+    mp2.addContent(c);
+    mp.addContent(mp2);
+    
+    return c;
+}
+
+/**
+ * Sets {@code c} right of this Content and sets the parent of 
+ * {@code c} if we have a parent or sets this parent if {@code c}
+ * has a parent. One of the Contents should have a parent!
+ *
+ * @param c The Content to our left
+ * @return    The Content to our left
+ */
+<T extends Content> T rightOf(T c) {
+    c.leftOf(this);
+    return c;
+}
+
+
+/**
+ * Prepares the parent of {@code left} or {@code right} to have
+ * horizontally aligned children (by using Minipage).
+ *
+ * @param left   The left element whose parent has to be prepared
+ * @param right The right element whose parent has to be prepared
+ * @return         The root Minipage
+ */
+private Minipage prepareParent(Content left, Content right) {
+    Content child = null;
+    if (left.parent() == null) {
+        child = right;
+    } else {
+        child = left;
+    }
+    
+    if (Minipage.class.isInstance(child.parent())) {
+        List<Minipage> descendants = child.parent().directDescendants(Minipage.class);
+        for (int i = 0; i < descendants.size(); i = i + 1) {
+            Minipage m = descendants.get(i);
+            m.incrementSiblings();
+        }
+        return (Minipage) (child.parent().parent());
+    }
+    
+    Minipage rootPage = new Minipage(0);
+    child.replaceWith(rootPage);
+    
+    Minipage mpl = new Minipage(1);
+    mpl.addContent(left);
+    rootPage.addContent(mpl);
+    
+    return rootPage;
 }
 
 /**
@@ -225,6 +315,25 @@ protected List<Content> descendants(List<Content> input) {
 }
 
 /**
+ * Returns all direct descendants (the ones right beneath me) of
+ * class {@code k}
+ *
+ * @param k The class of the descendants we are looking for
+ * @return    A list of direct descendants of class {@code k}
+ */
+<T extends Content> List<T> directDescendants(Class<T> k) {
+    List<T> descendants = new ArrayList<T>();
+    for (int i = 0; i < contentSize(); i = i + 1) {
+        Content c = content(i);
+        if (k.isInstance(c)) {
+            descendants.add((T) c);
+        }
+    }
+    
+    return descendants;
+}
+
+/**
  * Returns the Class as which a Class should be instantiated
  */
 final Class classMapping(Class klass) {
@@ -286,9 +395,8 @@ private <T> T instantiate(Class<T> klass, Class[] paramTypes, Object[] params) {
     return klass.getConstructor(paramTypes).newInstance(params);
 }
 
-
 /**
- * Returns a String representing this Content and it's children as TeX.
+ * Returns a String representing this Content and its children as TeX.
  * The string is build by recursively calling {@code toTex} on all of children
  * in this Content.
  *

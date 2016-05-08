@@ -43,10 +43,10 @@ As a matter of fact, the Perl script offered by the {md} designers, is cross-pla
 A last advantage of plain text is that it is well suited for Version Control Systems (VCS) such as Git and Mercury.
 
 To illustrate the simplicity of {md} we'll take a look at an example document:
-{
-    new LstInputListing('''document.md''');
-}
-// TODO: add image of rendered document
+{{
+    Image i = image('''document''');
+    i.rightOf(new LstInputListing('''document.md'''));
+}}
 
 To allow for some customisability, {md} allows you to use inline HTML.
 In case {md} does not support what you want to do, HTML is what you use. An example is shown below.
@@ -299,6 +299,8 @@ We will also discuss which libraries have been recreated in Neio to allow for a 
 ### TikZ
 ### Beamer
 ### {lat} math and amsmath
+### {lat} tables
+### Lilypond
 
 # Implementation
 ## Used libraries and frameworks
@@ -312,7 +314,8 @@ We will also discuss which libraries have been recreated in Neio to allow for a 
 }
 In {compileFlow.ref()} the flow that a source document goes through before reaching a rendered state is depicted.
 
-## Translation to Java
+## Translation
+### Escaping
 ### Fluent Interface
 ### Reflection
 ### Limitations
@@ -323,6 +326,10 @@ In {compileFlow.ref()} the flow that a source document goes through before reach
 
 # Future work
 ## Static typing of the language
+## Package support
+## Compiler improvement
+### Correct stages
+### Other front- and backends
 ## Tool improvement
 ### Syntax highlighting
 ### Auto completion
