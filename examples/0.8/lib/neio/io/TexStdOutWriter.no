@@ -10,12 +10,12 @@ class TexStdOutWriter implements Writer;
 Content content;
 
 TexStdOutWriter(Content content) {
-	this.content = content;
+    this.content = content;
 }
 
 String write(String name) {
-	System.out.println("% Name: " + name + "\n");
-	System.out.println(content.toTex());
-	
-	return null;
+    System.out.println("% Name: " + name + "\n");
+    System.out.println(content.toTex());
+    
+    return null;
 }

@@ -149,7 +149,7 @@ Score g(Integer octave) {
 }
 
 String toLilypond() {
-	StringBuilder result = new StringBuilder("\\version \"2.18.2\"\\n");
+    StringBuilder result = new StringBuilder("\\version \"2.18.2\"\n");
     result.append("\\paper{\n" +
             "  indent=0\\mm\n" +
             "  line-width=120\\mm\n" +
