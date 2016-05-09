@@ -87,17 +87,16 @@ As a result, in {lat} consistency is enforced throughout the entire document wit
 In a WYSIWG word processor, the user thus has to make sure his document is consistent.
 Once documents get longer, this gets very hard to manage and to spot the inconsistencies.
 
-// TODO: reference
 Next to this customisability, {lat}'s typography is also very sophisticated.
-It has support for kerning and ligatures and uses an advanced line-breaking algorithm, the Knuth-Plass line-breaking algorithm {cite(texlba)}.
+It has support for kerning and ligatures and uses an advanced line-breaking algorithm, the Knuth-Plass line-breaking algorithm {cite('''texlba''')}.
 The algorithm sees a paragraph as a whole instead of using a more naive approach and seeing each line individually.
-Kerning places letters closer together or futher away depending on character combinations.
+Kerning places letters closer together or further away depending on character combinations.
 A ligature is when multiple characters are joined into one glyph e.g fi vs. `fi`.
 
 Another reason why {lat} is widely used due to its good scientific support.
 {lat} and its libraries offer good support for mathematics as well as other scientific areas, e.g. you can create complex good looking graphs using {lat}.
 Due to its high customisability, {lat} can handle about any kind of document you could think of, from sheet music and graphs, to letters and books.
-It should be noted though that almost all of this functionality is offered through libraries such as PGF/TikZ {cite(tikzman)}.
+It should be noted though that almost all of this functionality is offered through libraries such as PGF/TikZ {cite('''tikzman''')}.
 
 {lat} also works together with BibTeX, a reference management software that is very robust and makes certain all of your references are consistent.
 It also allows you to create the references outside of your main document, decreasing the amount of clutter in the document.
@@ -111,46 +110,111 @@ This is something not possible in WYSIWIG word processors or lightweight markup 
 {lat} is free and open source, which is a huge point of attraction for the open source community.
 As a result of this free and open source model, combined with its popularity and good scientific support, LaTeX has been integrated in many other applications.
 A few examples are:
-* MediaWiki // TODO: https://www.mediawiki.org/wiki/Extension:Math
+* MediaWiki {cite('''mwikilat''')}
 * Stack Exchange
+* JMathTex {cite('''jmathtex''')}
 //TODO: add more examples
 
 ### {pan}
-{pan} is a document converter, but in reality it can do much more than just convert a document from one format to another.
+{pan} {cite('''pandoc''')} is a document converter, but in reality it can do much more than just convert a document from one format to another.
 Notably, it allows you to write inline {lat} inside of a {md} document allowing for a much better experience than just using one of them.
 However, {pan} does not really have a programming model, outside of the {lat} one, it works with so called filters.
 When a document is issued for conversion, {pan} will transform the document into an Abstract Syntax Tree.
-This AST can then be transformed using filters.
-Filters can be written in a multitude of languages such as Haskell, Python, Perl,... and have to be passed as an argument to the conversion command.
+This AST can then be transformed using filters, the AST enters a filter, is transformed and is then past on to the next filter.
+Filters can be written in a multitude of languages such as Haskell, Python, Perl,... and the filters to be used are passed as a command line argument to the conversion command.
 // TODO: show an example
 
 ### Word processors
 Modern word processors such as Microsoft Word and Pages are so called WYSIWYG editors.
 As you immediately, without compiling, see what your document will look like it is a very popular tool.
+The fact that you immediately see what you are writing also significantly decreases the complexity of the tool and it does not scare away less technical people the way {lat} does.
+There is also no possibility to use commands as in {lat} or shorthand syntax as in {md}, instead buttons in the GUI offer all of the functionality.
+Structure is not forced onto the user which offers less restrictions allowing the user to do what he wants.
+It is also very easy to change a font type or change the font size of a certain part of the text.
+Another feature that is loved in the WYSIWIG community is that you can easily add an image and drag and drop it around.
 
 ## Problem statement
 We can see that these solutions all have there strong points but there are also quite a few gripes.
 We will discuss the most common gripes for every solution underneath and afterwards introduce the problem statement.
 
 ### {md}
-To achieve this {md}'s simplicity, a hefty price has to be paid. All of the syntax elements have been hard coded into the language meaning there is no room for customisability.
+To achieve {md}'s simplicity, a hefty price has to be paid. All of the syntax elements have been hard coded into the language meaning there is no room for customisability.
 The only way to customise {md} is by embedding inline HTML.
 HTML allows users to create a solid structured model but it still does not allow for very much customisability.
-While {md} is meant to be easily readable and writeable, HTML is not and using is thus decreases readability and cleanliness of your document significantly.
+While {md} is meant to be easily readable and writeable, HTML is not and using it thus decreases readability and cleanliness of your document significantly.
+Once you use HTML in an {md} document, you also require a certain technical proficiency for the source document to be read or edited.
 HTML also does away with the robustness of {md}'s plain text format, as having a tag being corrupted could lead to very big changes in the rendered file and might not even allow for compilation anymore.
-HTML also reintroduces the possibility of syntax errors and thus slowing down the document creation.
+HTML also reintroduces the possibility of syntax errors and thus slows down the document creation.
 // TODO: example of layout destruction
 
 The lack of customisability in {md} is further enforced due to the fact that it has no programming model.
-// TODO: example
+It is one thing that the syntactic shorthands can not be reused, but there is also no other way, next to HTML to create an entirely new entity.
 
 ### {lat}
 // TODO: easy syntax errors, not robust to errors, long repl cycles, unreadable error messages, mention LyX, customizing a document can be very hard
 // TODO: requires some time to learn, especially to be able to customize/write packages, no UTF-8 without xe/luatex
 Even though {lat} offers customisability through a programming model, it is not perfect.
-The programming model is hard to use and is not easy to read. It also looks a lot more complex than {md}, scaring away a lot of potential users.
+The programming model is hard to use and is not easy to read.
+Due to this programming model it also looks a lot more complex than {md}, scaring away a lot of potential users.
+
+Having a cumbersome programming model, {lat} makes it easy to create syntax errors.
+The robustness of a plain text document is also diminished, as your document will probably not even compile once an error occurs in one of the documents.
+Something that is also very common in {lat} is that the shown error messages do not offer correct information and are often unclear.
+See the excerpt below for an example of misleading error messages.
+{{
+LstListing a = appendContent(new LstListing('''
+\documentclass{article}
+\begin{document}
+\begin{equation}
+$a$
+\end{equation}
+\end{document}'''));
+a.leftOf(new LstListing('''
+line 4: Display math should end with $$.<to be read again>a $a
+line 5: You can't use `\\\eqno' in math mode.\\\endequation ->\\\eqno\\\hbox {\\\@eqnnum }$$\\\@ignoretrue \\\end{equation}
+line 6: Missing $ inserted.<inserted text>$ \\\end{equation}
+'''));
+}}
+What it is actually trying to tell you is that you are not allowed to use \\\$ inside of an equation, but that is not clear from the error messages.
+
 // TODO: Explain a little about macro expansion
-Lastly, the programming model used in {lat} does not use a static type system, which means that we have to compile the document to be able to see that we passed a wrong type at some point in the document.
+The programming model used in {lat} does not use a static type system, which means that we have to compile the document to be able to see if we passed a wrong type to a macro at some point in the document.
+It also does not work the way we are used to in imperative and functional languages. It does not have functions that receive parameters and that then call more functions.
+Instead it has macro's and uses macroexpansion. As an example of how this translates into a real world example, a function the implementation of *foreach* in PGF/TikZ is shown below.
+
+// TODO: reference src code
+{
+    new LstListing('''
+\\\def\\\pgffor@foreach{%
+\\\pgffor@atbeginforeach%
+\\\let\\\pgffor@assign@before@code=\\\pgfutil@empty%
+\\\let\\\pgffor@assign@after@code=\\\pgfutil@empty%
+\\\let\\\pgffor@assign@once@code=\\\pgfutil@empty%
+\\\let\\\pgffor@remember@code=\\\pgfutil@empty%
+\\\let\\\pgffor@remember@once@code=\\\pgfutil@empty%
+\\\pgffor@alphabeticsequencefalse%
+\\\pgffor@contextfalse%
+%
+\\\let\\\pgffor@var=\\\pgfutil@empty
+%
+\\\pgffor@vars%
+}
+    ''');
+}
+
+Not only is this nearly unreadable and very complicated for such a common concept in programming, it also uses a ton of other functions defined in PGF/TikZ just to be able to define a foreach loop.
+
+Luckily the application of a function is somewhat easier as shown below. The macro, called `loopfunction`, loops from 1 to a parameter \\\#1 and prints out a section in every iteration.
+// TODO: does this work?
+{
+    new LstListing('''
+\\\def\\\loopfunction#1{%
+  \\\foreach \\\index in {1, ..., #1} {%
+    \\\section*{Section \\\index}%
+  }
+}
+    ''');
+}
 
 ### {pan}
 Transforming an AST afterwards is not always as easy as doing so inline, and it also hides what really happens to the document, which could cause confusion.
