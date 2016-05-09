@@ -42,14 +42,17 @@ As a matter of fact, the Perl script offered by the {md} designers, is cross-pla
 {md} also natively allows for UTF-8 characters to be used in the text thus not requiring weird escape sequences to insert certain symbols.
 A last advantage of plain text is that it is well suited for Version Control Systems (VCS) such as Git and Mercury.
 
-To illustrate the simplicity of {md} we'll take a look at an example document:
+To illustrate the simplicity of {md} an example document is shown below:
 {{
     Image i = image("The document rendered as HTML by the official markdown conversion tool", '''document''');
     i.rightOf(new LstInputListing('''document.md'''));
 }}
 
+
+
 To allow for some customisability, {md} allows you to use inline HTML.
-In case {md} does not support what you want to do, HTML is what you use. An example is shown below.
+In case {md} does not support what you want to do, HTML is what you use.
+Tables are not a part of default {md} (though there are variations that have syntax for them, like Github {md}), so an example of how to create one using HTML is shown below:
 {{
     Image i = image("The table document rendered as HTML by the official markdown conversion tool", '''htmltable''');
     i.rightOf(new LstListing('''
@@ -70,23 +73,31 @@ Below you can find an HTML table
 ### {lat}
 // TODO: show some trees, that show structure
 {lat} provides a, Turing complete, programming model and due to this allows for rich customisability.
-This is one of the reasons why {lat} is often used for long and complex documents such as books and articles.
+It also provides a packaging system that allows for libraries, called packages, to be created using this programming model.
+Over the course of the past 38 years (the initial TeX release was in 1978) a lot of packages have been created for all kinds of different functionality.
+This is one of the reasons why {lat} is often used for long and complex documents such as books, articles, scientific papers and syllabi.
 
 Like {md} lat uses a plain text format that is quite robust to file corruptions and is well suited for VCS.
 It is however less robust against file corruption as the syntax is a lot more extensive and thus file corruption could lead to your document not compiling any more a lot easier.
+It also doesn't use UTF-8 making it harder to type more exotic characters such as *ë*. Later iterations of TeX, such as XeTex and LuaTex do support UTF-8 though.
 
 In {lat} the structure and the layout of your document are split by design. {lat} forces you to create a structured document by requiring you to use `sections, paragraphs,...`.
 When using a WYSIWYG word processor for example, usually there is a way to structure your documents, using `styles, headers,...` but it is not forced on the user.
-As a result, in {lat} consistency is enforced throughout the entire document without too much effort.
-In a WYSIWG word processor, the user has to make sure his document is consistent.
-Once documents get longer, this gets very hard to manage and to spot.
+As a result, in {lat} consistency is enforced throughout the entire document without too much effort, while in aforementioned WYSIWYG word processors this is often forgotten and less convenient to use.
+In a WYSIWG word processor, the user thus has to make sure his document is consistent.
+Once documents get longer, this gets very hard to manage and to spot the inconsistencies.
 
-// TODO: put into better words, reference
-Next to this customisability, {lat}'s PDF rendering is also very sophisticated.
+// TODO: reference
+Next to this customisability, {lat}'s typography is also very sophisticated.
+It has support for kerning and ligatures and uses an advanced line-breaking algorithm, the Knuth-Plass line-breaking algorithm {cite(texlba)}.
+The algorithm sees a paragraph as a whole instead of using a more naive approach and seeing each line individually.
+Kerning places letters closer together or futher away depending on character combinations.
+A ligature is when multiple characters are joined into one glyph e.g fi vs. `fi`.
+
 Another reason why {lat} is widely used due to its good scientific support.
-{lat} offers good support for mathematics as well as other scientific areas, e.g. you can create complex good looking graphs using {lat}.
+{lat} and its libraries offer good support for mathematics as well as other scientific areas, e.g. you can create complex good looking graphs using {lat}.
 Due to its high customisability, {lat} can handle about any kind of document you could think of, from sheet music and graphs, to letters and books.
-It should be noted though that almost all of this functionality is offered through libraries such as TikZ.
+It should be noted though that almost all of this functionality is offered through libraries such as PGF/TikZ {cite(tikzman)}.
 
 {lat} also works together with BibTeX, a reference management software that is very robust and makes certain all of your references are consistent.
 It also allows you to create the references outside of your main document, decreasing the amount of clutter in the document.
