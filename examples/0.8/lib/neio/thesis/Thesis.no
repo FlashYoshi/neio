@@ -77,7 +77,8 @@ String header() {
     .append("stringstyle=\\ttfamily,\n")
     .append("numbers=left,\n")
     .append("numbersep=7pt,\n")
-    .append("numberstyle=\\tiny\n")
+    .append("numberstyle=\\tiny,\n")
+    .append("lineskip={-1.5pt}\n")
     .append("}\n");
 
     return header.toString();
