@@ -253,6 +253,11 @@ To be able to solve some of the aforementioned problems and still make use of al
 The first goal supplies us with a simple language that allows to very easily create simple documents.
 The use of a modern programming paradigm allows us to customise the document and execute easy and complex computations easily in effect achieving the third goal.
 
+To achieve this we chose to use a syntax like {md} to write our documents in as it is the easiest to read and write.
+For the programming paradigm we chose for something much like Java as Java is very well known, and working with macro expansion's or filters is not ideal.
+Lastly, we choose to translate to LaTeX as it has been successively used for decades and has proven by now that it can deliver very clean looking documents.
+Later on more back ends, such as HTML, could be implemented, but that is outside of scope of this thesis.
+
 ### Target group
 Neio targets anyone that is currently using {md} but just wants to be able to customise their document a bit more.
 // TODO: label
