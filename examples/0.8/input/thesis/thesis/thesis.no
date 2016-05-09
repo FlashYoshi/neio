@@ -227,10 +227,13 @@ There are free variants, such as LibreOffice and OpenOffice, but the compatibili
 The free alternatives usually also have less of a focus on the UI, making them look somewhat less sleek.
 
 Another problem with word processors is that their format often changes over the years.
-This means that your document might not show up the same, or at all, a few years later than when you wrote it.
+This means that your document might not show up the same, or at all, a few years after you wrote it.
 
 // TODO: no programming model or something like VB
-Even though some customisability is available, no programming model is available and real customisability is far to be found.
+Even though some customisability is available, no programming model is available and real customisability is far to be found. You are stuck to what the developers of editor defined and implemented.
+There is no way to go beyond what the designers specified. Due to this it is not always possible to do exactly what you want either.
+When you have a few elements in your document and you try to align a new element with it, it will snap to all sorts of guidelines, but chances are you want to place it in between all of the guidelines,
+which is not possible at that moment.
 Due to their lack of a programming model, word processors do not allow for even the simplest of computations such as `The result is x + y`.
 
 It is also quite easy to create inconsistencies using word processors as noted above in {latexGripes.ref()}.
@@ -241,7 +244,10 @@ These changes are not always immediately clear, which further contributes to the
 
 Lastly, word processors often use a proprietary or complex format for there documents, which is not only bigger than a plain text document, but also a lot more prune to corruption.
 A single bit flip could potentially irreversibly destroy your document.
-These complex document formats are also hard to be used in combination with VCS.
+As complex or binary document formats are used, it is hard to use WYSIWIG editors in combination with VCS.
+This makes it inconvenient to track changes made to the document and go back to an earlier version of the document.
+It also makes it harder to work on a document as a team, you might be making changes at the same time as someone else, but you have no way of automatically merging both documents 
+creating a possibility of data to get lost.
 
 ## Proposed solution: Neio
 To counter the problems occurring in the state of the art solutions, we bring forth a new markup language called `Neio` (read as neo).
@@ -416,13 +422,13 @@ We'll call this ContextType `ct1`.
 
 Lets add a chapter to it, when there are two elements, there should be some kind of context.
 {
-    Text ct2Caption = "In the image above we find ourselves at the *X*. We follow the green arrow upwards and find ourselves in Document.
-As `Document` contains the \\\# method, we call \\\# on `Document` and a `Chapter` is added to the `Document` , as represented by the green arrow.";
+    Text ct2Caption = "In the image above we find ourselves at the *X*. We follow the red arrow upwards and find ourselves in Document. As Document contains the \\\# method, we call \\\# on Document and a Chapter is added to the Document , as represented by the green arrow.";
     LstListing context2 = image(ct2Caption, '''ct1''').rightOf(context.append('''\n#Chapter 1'''));
 }
 
-After this call our document looks as follows `new Document().\\\#("Chapter 1")`.
-By adding a second element we created are able to see a ContextType in action.
+By adding this call our document translates to the following`new Document().\\\#("Chapter 1")`.
+The addition of a second element allows us to see a ContextType in action.
+
 To know where to find the \\\# method, we will recursively iterate over our context.
 First we check the actual type of `ct1`, if we could not find the method there, we recursively proceed to check the context of `ct1`.
 As you can see above in the source code of `Document`, there is indeed a method \\\# in there, so there is no need to look any further.
@@ -430,7 +436,7 @@ The current document translates to ContextType `ct2`, which contains the newly c
 
 We continue by adding one more Chapter.
 {
-    LstListing context3 = image('''ct2''').rightOf(context.append('''\n#Chapter 2'''));
+    LstListing context3 = image('''ct2''').rightOf(context2.append('''\n#Chapter 2'''));
 }
 
 Now when we look for the \\\# method in `ct2` we first have to check Chapter, but Chapter does not have this method.
@@ -442,7 +448,7 @@ This is because we have had to skip over `Chapter 1`, which shows us that `ct2` 
 
 Lastly we add a paragraph to the document.
 {
-    LstListing context4 = image('''ct3''').rightOf(context.append('''\nThis is a paragraph.'''));
+    LstListing context4 = image('''ct3''').rightOf(context3.append('''\nThis is a paragraph.'''));
 }
 
 We check the actual type of `ct3` and immediately have a matching method, we thus call the method on `Chapter 2`.
@@ -486,6 +492,9 @@ For this reason, it is possible to add code blocks in a Neio document. The three
 ## Considerations
 ### Static typing
 ### Security
+### Moving content
+When we assign content to a variable, and try to use it later on with small changes, it is possible that the content moves or that both the original as the new content are changed.
+The language does not enforce every placed content to be static and in turn this is the responsibility of the library developer and the user of those libraries.
 
 ## Reuse of current possibilities
 ### Binding to {lat}
@@ -502,6 +511,10 @@ A prime subject of writing a book is this document itself. The entirety of this 
 //TODO add url
 ### Article
 ### Slides
+### BibTeX
+It is important to note that our BibTeX implementation is just a binding to LaTeX and does not really allow for any customisation.
+We chose to do it this way, to illustrate that binding to LaTeX is not very difficult, and because we would have to create an entire parser for BibTeX to be able to create the object structure needed to have full control over BibTeX.
+As the BibTeX format is quite complicated we felt that our time was better spent elsewhere.
 
 ## Libraries
 ### TikZ
@@ -514,6 +527,13 @@ A prime subject of writing a book is this document itself. The entirety of this 
 ## Used libraries and frameworks
 ### ANTLR4
 ### Chameleon
+## Windows limitations
+Executing commands using the Java Process class came with some not immediately visible issues.
+When developing on Linux, executing shell commands from Java worked perfectly fine and gave no problems whatsoever.
+However, on Windows some of the processes would hang, some would always hang, some would hang only once in a while.
+The reason for this is that Windows offers only a limited buffer size for the input and output streams of a process, the program deadlocks if the input is not written or read.
+After closer inspection of the Javadoc {cite('''javaprocess''')} this became apparent but due to the API for the Process class being so simple, it was a surprise nevertheless.
+The fact that we have to worry about different platforms on a cross-platform language as Java is also something that is not too common.
 
 ## Compile flow
 {
