@@ -15,6 +15,7 @@ void build(String name) {
         command.add("latexmk");
         command.add("-pdf");
         command.add("-dvi-");
+        command.add("-bibtex");
         command.add("-lualatex");
         // Make sure the delimiters are correct
         command.add(new File(name).getAbsolutePath());
