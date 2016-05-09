@@ -1,0 +1,15 @@
+namespace neio.stdlib;
+
+import neio.lang.Text;
+
+class Citation extends Text;
+
+String name;
+
+Citation(String name) {
+    this.name = name;
+}
+
+String thisToTex() {
+    return "\\cite{" + name + "}";
+}

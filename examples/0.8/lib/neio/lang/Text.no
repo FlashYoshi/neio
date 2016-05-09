@@ -95,5 +95,5 @@ String thisToTex() {
 }
 
 String toTex() {
-	return appendedToToTex() + thisToTex();
+    return appendedToToTex() + thisToTex();
 }

@@ -1,14 +1,9 @@
-namespace neio.stdlib;
+namespace neio.stdlib.graph;
 
 import java.util.List;
 
 import neio.lang.Content;
 
-/**
- * Implements a red-black tree.
- * Note that all "matching" is based on the compareTo method.
- * @author Mark Allen Weiss
- */
 class RedBlackTree extends Content;
 
 RedBlackNode last;
@@ -26,7 +21,7 @@ RedBlackNode root() {
     while (! current.isRoot()) {
         current = current.parent();
     }
-    
+
     return current;
 }
 
@@ -46,15 +41,15 @@ RedBlackTree insert(Integer value) {
     }
     RedBlackTree newTree = new RedBlackTree(root());
     newTree.insert(value, newTree.root());
-    
+
     return newTree;
 }
 
 void insert(Integer value, RedBlackNode current) {
     if (value.equals(current.value())) {
         return;
-    } 
-    
+    }
+
     RedBlackNode newNode = new RedBlackNode(RedBlackNode.RED, value);
     if (value < current.value()) {
         if (current.hasLeft()) {
@@ -71,7 +66,7 @@ void insert(Integer value, RedBlackNode current) {
             current.setRight(newNode);
         }
     }
-    
+
     fixTree(newNode);
 }
 
@@ -87,7 +82,7 @@ void fixTree(RedBlackNode node) {
 
 void fixRedParentUncle(RedBlackNode node) {
     RedBlackNode u = node.uncle();
-    
+
     if ((u != null) && (u.isRed())) {
         node.parent().setColor(RedBlackNode.BLACK);
         u.setColor(RedBlackNode.BLACK);
@@ -111,7 +106,7 @@ void fixRPBUR(RedBlackNode node) {
         rotateRight(p);
         node = node.right();
     }
-    
+
     fixRPBUL(node);
 }
 
@@ -131,7 +126,7 @@ void rotateLeft(RedBlackNode node) {
     RedBlackNode p = node.parent();
     RedBlackNode r = node.right();
     RedBlackNode l = r.left();
-    
+
     if (p != null) {
         if (p.right() == node) {
             p.setRight(r);
@@ -142,7 +137,7 @@ void rotateLeft(RedBlackNode node) {
         r.setParent(null);
     }
     r.setLeft(node);
-    
+
     node.setRight(l);
 }
 
@@ -150,7 +145,7 @@ void rotateRight(RedBlackNode node) {
     RedBlackNode p = node.parent();
     RedBlackNode l = node.left();
     RedBlackNode r = l.right();
-        
+
     if (p != null) {
         if (p.right() == node) {
             p.setRight(l);
@@ -161,7 +156,7 @@ void rotateRight(RedBlackNode node) {
         l.setParent(null);
     }
     l.setRight(node);
-    
+
     node.setLeft(r);
 }
 
@@ -169,11 +164,11 @@ String toTex() {
     if (last == null) {
         return "";
     }
-    
+
     StringBuilder result = new StringBuilder("\n\\begin{tikzpicture}[->,>=stealth',level/.style={sibling distance = 5cm/#1,");
     result.append("level distance = 1.5cm}]\n");
     result.append(root().toTex());
     result.append("\\end{tikzpicture}");
-    
+
     return result.toString();
 }

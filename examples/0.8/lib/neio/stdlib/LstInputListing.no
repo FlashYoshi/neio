@@ -11,7 +11,10 @@ LstInputListing(String path) {
 }
 
 String toTex() {
-    StringBuilder result = new StringBuilder("\\lstinputlisting{");
+    String name = path.substring(path.lastIndexOf('/') + 1, path.length());
+    StringBuilder result = new StringBuilder("\\lstinputlisting[caption=");
+    result.append(name);
+    result.append("]{");
     result.append(path);
     result.append("}");
 

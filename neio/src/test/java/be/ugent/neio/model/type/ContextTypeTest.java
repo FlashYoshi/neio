@@ -1,5 +1,6 @@
 package be.ugent.neio.model.type;
 
+import be.kuleuven.cs.distrinet.jnome.core.expression.invocation.ConstructorInvocation;
 import be.kuleuven.cs.distrinet.jnome.workspace.JavaView;
 import be.ugent.neio.builder.NeioProjectBuilder;
 import be.ugent.neio.expression.NeioMethodInvocation;
@@ -30,6 +31,7 @@ public class ContextTypeTest {
     private final String doc;
     private final String par;
     private final String cha;
+    private final String tc;
     private final Neio neio;
     private JavaView view;
 
@@ -37,6 +39,7 @@ public class ContextTypeTest {
         doc = "neio.stdlib.Document";
         par = "neio.stdlib.Paragraph";
         cha = "neio.stdlib.Chapter";
+        tc = "neio.stdlib.TextContainer";
         neio = new NeioLanguageFactory().create();
     }
 
@@ -82,7 +85,7 @@ public class ContextTypeTest {
         Method method = createTestMethod();
         Expression ci = eFactory().createConstructorInvocation(doc, null);
         NeioMethodInvocation mi0 = new NeioMethodInvocation("#", ci);
-        mi0.addArgument(ooFactory().createStringLiteral("test1"));
+        mi0.addArgument(createText("test1"));
         addToMethod(method, mi0);
         Method m0 = mi0.getElement();
         assert (m0.name().equals("#"));
@@ -91,7 +94,7 @@ public class ContextTypeTest {
         assert (t0.getFullyQualifiedName().equals(doc));
 
         NeioMethodInvocation mi1 = new NeioMethodInvocation("#", mi0);
-        mi1.addArgument(ooFactory().createStringLiteral("test2"));
+        mi1.addArgument(createText("test2"));
         mi1.addArgument(ooFactory().createIntegerLiteral("2"));
         addToMethod(method, mi1);
         Method m1 = mi1.getElement();
@@ -101,16 +104,15 @@ public class ContextTypeTest {
         assert (t1.getFullyQualifiedName().equals(cha));
 
         NeioMethodInvocation mi2 = new NeioMethodInvocation("newline", mi1);
-        mi2.addArgument(ooFactory().createStringLiteral("This is a newline"));
         addToMethod(method, mi2);
         Method m2 = mi2.getElement();
         assert (m2.name().equals("newline"));
         assert (!m2.isTrue(m2.language(Neio.class).NESTED));
         Type t2 = m2.nearestAncestor(Type.class);
-        assert (t2.getFullyQualifiedName().equals(cha));
+        assert (t2.getFullyQualifiedName().equals(tc));
 
         NeioMethodInvocation mi3 = new NeioMethodInvocation("#", mi2);
-        mi3.addArgument(ooFactory().createStringLiteral("test3"));
+        mi3.addArgument(createText("test3"));
         addToMethod(method, mi3);
         Method m3 = mi3.getElement();
         assert (m3.name().equals("#"));
@@ -131,13 +133,20 @@ public class ContextTypeTest {
         mi0.getElement();
     }
 
+
+    private Expression createText(String s) {
+        ConstructorInvocation ci = eFactory().createConstructorInvocation("neio.lang.Text", null);
+        ci.addArgument(ooFactory().createStringLiteral(s));
+        return ci;
+    }
+
     private void addToMethod(Method method, Expression expression) {
         Block block = method.implementation().getBody();
-        Block newBlock = new Block();
-        block.statements().forEach(newBlock::addStatement);
+        //Block newBlock = new Block();
+        //block.statements().forEach(newBlock::addStatement);
 
-        newBlock.addStatement(ooFactory().createStatement(expression));
-        method.setImplementation(ooFactory().createImplementation(newBlock));
+        block.addStatement(ooFactory().createStatement(expression));
+        //method.setImplementation(ooFactory().createImplementation(newBlock));
     }
 
     private Method createTestMethod() throws InputException, ProjectException {

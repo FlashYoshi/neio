@@ -1,6 +1,7 @@
-namespace neio.stdlib;
+namespace neio.stdlib.graph;
 
 import neio.lang.Text;
+import neio.stdlib.Document;
 
 class RBTDocument extends Document;
 
@@ -20,6 +21,6 @@ String header() {
     .append("arn_x/.style = {treenode, rectangle, draw=black,\n")
     .append("minimum width=0.5em, minimum height=0.5em}% arbre rouge noir, nil\n")
     .append("}\n");
-    
+
     return header.toString();
 }

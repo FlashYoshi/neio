@@ -3,7 +3,6 @@ package be.ugent.neio.translate;
 import be.kuleuven.cs.distrinet.jnome.core.expression.ArrayCreationExpression;
 import be.kuleuven.cs.distrinet.jnome.core.expression.ArrayInitializer;
 import be.kuleuven.cs.distrinet.jnome.core.expression.invocation.ConstructorInvocation;
-import be.kuleuven.cs.distrinet.jnome.core.expression.invocation.SuperConstructorDelegation;
 import be.kuleuven.cs.distrinet.jnome.core.language.Java7;
 import be.ugent.neio.industry.NeioExpressionFactory;
 import be.ugent.neio.industry.NeioFactory;
@@ -14,14 +13,11 @@ import org.aikodi.chameleon.oo.expression.Expression;
 import org.aikodi.chameleon.oo.expression.ExpressionFactory;
 import org.aikodi.chameleon.oo.expression.MethodInvocation;
 import org.aikodi.chameleon.oo.plugin.ObjectOrientedFactory;
-import org.aikodi.chameleon.oo.statement.Block;
-import org.aikodi.chameleon.oo.statement.Statement;
 import org.aikodi.chameleon.oo.type.Type;
 import org.aikodi.chameleon.oo.type.TypeReference;
 import org.aikodi.chameleon.plugin.build.BuildException;
 import org.aikodi.chameleon.plugin.build.BuildProgressHelper;
 import org.aikodi.chameleon.support.expression.EmptyArrayIndex;
-import org.aikodi.chameleon.support.member.simplename.method.NormalMethod;
 import org.aikodi.chameleon.support.translate.IncrementalTranslator;
 import org.aikodi.chameleon.workspace.View;
 
@@ -29,7 +25,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static be.ugent.neio.util.Constants.*;
+import static be.ugent.neio.util.Constants.BASE_CLASS;
+import static be.ugent.neio.util.Constants.GET_INSTANCE;
 
 /**
  * @author Titouan Vervack

@@ -398,14 +398,6 @@ public class Java8Generator {
         if (lastElement == null) {
             throw new ChameleonProgrammerException("Code blocks are not allowed as the first element in a document!");
         }
-        String newcomer = "";
-
-        // Replace values of variable declarations that are 'this'
-        for (LocalVariableDeclarator lvd : block.descendants(LocalVariableDeclarator.class)) {
-            lvd.variableDeclarations().get(0).descendants(ThisLiteral.class).forEach(this::thisToNameExpression);
-            variables.push(lvd.variableDeclarations().get(0).variable());
-            newcomer = variables.peek().name();
-        }
 
         for (Statement s : block.statements()) {
             // Modify lastElement
@@ -447,15 +439,6 @@ public class Java8Generator {
 
             // Replace all other 'this' (arguments,...)
             s.descendants(ThisLiteral.class).forEach(this::thisToNameExpression);
-        }
-
-        if (!lastElement.equals(newcomer)) {
-            for (Variable var : variables) {
-                if (var.name().equals(newcomer)) {
-                    variables.remove(var);
-                    break;
-                }
-            }
         }
     }
 

@@ -1,4 +1,4 @@
-namespace neio.stdlib;
+namespace neio.stdlib.music;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +14,7 @@ Score score;
 Note(Integer note, Score score) {
     this.note = note;
     this.octave = 0;
+    this.score = score;
 }
 
 Note(Integer note, Integer octave, Score score) {
@@ -24,11 +25,11 @@ Note(Integer note, Integer octave, Score score) {
 Note shift(Integer s) {
     Integer current = ((octave * 7) + note);
     // Positive shift
-    if ((s + note) > Score.G) {
+    if ((s + note) > Score.B) {
         octave = (octave + ((int) (Math.floor((current + s) / 7)) - (int) (Math.floor(current / 7))));
     }
     // Negative shift
-    else if ((s + note) < Score.A) {
+    else if ((s + note) < Score.C) {
         octave = octave + ((int) (Math.floor(current / 7)) - (int) (Math.floor((current + s) / 7)));
     }
     note = (note + 1) % 7;

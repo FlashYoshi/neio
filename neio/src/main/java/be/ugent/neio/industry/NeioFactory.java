@@ -134,15 +134,15 @@ public class NeioFactory extends Java7Factory {
     }
 
     public Literal createDoubleLiteral(String value) {
-        return createLiteral(createTypeReference("java.lang.Double"), value);
+        return createLiteral(createTypeReference("double"), value);
     }
 
     public Literal createCharLiteral(String value) {
-        return createLiteral(createTypeReference("java.lang.Character"), value);
+        return createLiteral(createTypeReference("char"), value);
     }
 
     public Literal createBooleanLiteral(String value) {
-        return createLiteral(createTypeReference("java.lang.Boolean"), value);
+        return createLiteral(createTypeReference("boolean"), value);
     }
 
     public Literal createNullLiteral() {

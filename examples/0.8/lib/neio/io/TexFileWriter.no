@@ -5,21 +5,33 @@ import java.util.Arrays;
 import neio.lang.Content;
 
 /**
+ * Recursively converts Content into a TeX string and prints it to a file
+ *
  * @author Titouan Vervack
  */
 class TexFileWriter implements Writer;
 
 Content content;
 
+/**
+ * Initializes the writer with a root content
+ */
 TexFileWriter(Content content) {
-	this.content = content;
+    this.content = content;
 }
 
+
+/**
+ * Creates the TeX string
+ *
+ * @param name The name of the file to print to (without extension)
+ * @return          The path to the created file
+ */
 String write(String name) {
-	String toWrite = "% Name: " + name + "\n" + content.toTex();
-	Path path = Paths.get(name + ".tex");
-	Files.write(path, Arrays.asList(toWrite.split("\n")));
-	System.out.println("Wrote " + path.toAbsolutePath());
-	
-	return path.toAbsolutePath().toString();
+    String toWrite = "% Name: " + name + "\n" + content.toTex();
+    Path path = Paths.get(name + ".tex");
+    Files.write(path, Arrays.asList(toWrite.split("\n")));
+    System.out.println("Wrote " + path.toAbsolutePath());
+    
+    return path.toAbsolutePath().toString();
 }

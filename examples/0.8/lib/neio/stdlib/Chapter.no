@@ -1,50 +1,120 @@
 namespace neio.stdlib;
 
 import neio.lang.Content;
+import neio.lang.Referable;
+import neio.lang.Reference;
 import neio.lang.Text;
 
-class Chapter extends TextContainer;
+/**
+ * Represents a chapter or a section
+ */
+class Chapter extends TextContainer implements Referable;
 
 protected Text title;
+protected String marker;
 protected Integer level;
+protected String texName;
 
+/**
+ * Creates a new Chapter
+ *
+ * @param title  The title of the Chapter
+ * @param level The level of nesting of the Chapter
+ */
 Chapter(Text title, Integer level) {
     this.title = title;
     this.level = level;
+    this.texName = "section*";
 }
 
+/**
+ * Creates a new Chapter and adds it to this or
+ * or to the nearest other TextContainer above this if
+ * the level of the new Chapter and this are is lower or equal
+ * to the level of this.
+ * This is a nested call thus only ##+ will match
+ *
+ * @param title  The title of the new Chapter
+ * @param level The level of nesting of the new Chapter
+ *
+ */
 nested Chapter #(Text title, Integer level) {
-	if (level <= this.level) {
+    if (level <= this.level) {
         Chapter c = nearestAncestor(Chapter.class);
         if (c != null) {
             return c.hash(title, level);
         } else {
             return nearestAncestor(Document.class).hash(title);
         }
-	}
+    }
     Chapter chapter = new Chapter(title, level);
     addContent(chapter);
-	
+    
     return chapter;
 }
 
+
+/**
+ * Returns the title
+ *
+ * @return Title
+ */
 Text title() {
     return title;
 }
 
+/**
+ * Creater a TeX representation of this and its children
+ *
+ * @return The TeX representation
+ */
 String toTex() {
-	return toTex(level) + super.toTex();
+    return toTex(level) + super.toTex();
 }
 
+/**
+ * Returns the TeX implementation of this Chapter and adds labels
+ * it to be able to reference to this Chapter later on.
+ *
+ * @param lvl The level of nesting of this Chapter
+ * @return      A TeX string representing this
+ */
 String toTex(Integer lvl) {
-    return "\\" + subs(lvl) + "section*{" + title.toTex() + "}";
+    String result = "\\" + subs(lvl) + texName + "{" + title.toTex() + "}\n";
+    return result + "\\label{" + hashCode() + "}";
 }
 
+/**
+ * Returns a string containing the right amount of "sub"'s to create a valid
+ * LaTeX section.
+ *
+ * @param lvl The level of nesting of this Chapter
+ * @return      The string containing all the needed "sub"'s 
+ */
 String subs(Integer lvl) {
-	String subs = "";
-	for (int i = 1; i < lvl; i = i + 1) {
-		subs = subs + "sub";
-	}
-	
-	return subs;
+    String subs = "";
+    for (int i = 1; i < lvl; i = i + 1) {
+        subs = subs + "sub";
+    }
+    
+    return subs;
+}
+
+/**
+ * Creates a reference to this Chapter and adds a correct prefix to it
+ * such as Chapter, Section or Subsection.
+ *
+ * @return A Reference to this Chapter
+ */
+Reference ref() {
+    String prefix = "";
+    if (level < 2) {
+        prefix = "Chapter";
+    } else if (level == 2) {
+         prefix = "Section";
+    } else {
+        prefix = "Subsection";
+    }
+    
+    return new Reference(prefix, "" + hashCode());
 }

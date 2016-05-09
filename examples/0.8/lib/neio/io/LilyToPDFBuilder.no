@@ -1,6 +1,8 @@
 namespace neio.io;
 
 import java.io.*;
+import java.util.List;
+import java.util.ArrayList;
 
 class LilyToPDFBuilder implements Builder;
 
@@ -12,15 +14,25 @@ LilyToPDFBuilder(String content) {
 
 void build(String name) {
     Process p = null;
-    String command = "lilypond -dbackend=eps -daux-files=#f -o " + name + " -";
-    p = Runtime.getRuntime().exec(command);
+    List<String> command = new ArrayList<String>();
+    command.add("lilypond");
+    command.add("-dbackend=eps");
+    command.add("-daux-files=#f");
+    command.add("-o");
+    command.add(name);
+    command.add("-");
+
+    ProcessBuilder pb = new ProcessBuilder(command);
+    pb.redirectOutput(ProcessBuilder.Redirect.INHERIT);
+    pb.redirectError(ProcessBuilder.Redirect.INHERIT);
+    p = pb.start();
+
     OutputStream stdin = p.getOutputStream();
-    InputStream stdout = p.getInputStream();
 
     BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(stdin));
 
     writer.write(content);
     writer.flush();
     writer.close();
-	p.waitFor();
+    p.waitFor();
 }

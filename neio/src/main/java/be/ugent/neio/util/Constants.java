@@ -7,11 +7,8 @@ public class Constants {
     // UTIL
     public static final String EXTENSION = "no";
     public static final String VERSION = "0.8";
-    private static final String BASE = "../examples/" + VERSION;
-    public static final String NEIO_HOME = BASE + "/neio";
     public static final String AUTO_GEN_DIR = "./gen";
     public static final String ASSIGNMENT = "assignment";
-
     // KNOWN CLASSES
     public static final String TEXT = "neio.lang.Text";
     public static final String STRING = "neio.lang.String";
@@ -19,7 +16,6 @@ public class Constants {
     public static final String IFCLASS = "neio.lang.If";
     public static final String DEFAULT_BUILDER = "TexToPDFBuilder";
     public static final String DEFAULT_WRITER = "TexFileWriter";
-
     // KNOWN METHODS
     public static final String IFCALL = "ifcall";
     public static final String NEWLINE = "newline";
@@ -29,4 +25,6 @@ public class Constants {
     public static final String BUILD_METHOD = "build";
     public static final String APPEND_CONTENT = "appendContent";
     public static final String GET_INSTANCE = "getInstance";
+    private static final String BASE = "../examples/" + VERSION;
+    public static final String NEIO_HOME = BASE + "/neio";
 }

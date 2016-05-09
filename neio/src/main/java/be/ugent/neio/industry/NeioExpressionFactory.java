@@ -10,7 +10,6 @@ import org.aikodi.chameleon.core.reference.CrossReferenceTarget;
 import org.aikodi.chameleon.oo.expression.Expression;
 import org.aikodi.chameleon.oo.expression.NameExpression;
 import org.aikodi.chameleon.oo.expression.ParExpression;
-import org.aikodi.chameleon.oo.type.BasicTypeReference;
 import org.aikodi.chameleon.oo.type.TypeReference;
 import org.aikodi.chameleon.support.expression.ClassCastExpression;
 
@@ -26,7 +25,7 @@ public class NeioExpressionFactory extends JavaExpressionFactory {
         return createConstructorInvocation(type, prefix, new ArrayList<>());
     }
 
-    public Expression createConstructorInvocation(String type, TypeReference prefix) {
+    public ConstructorInvocation createConstructorInvocation(String type, TypeReference prefix) {
         return createConstructorInvocation(new BasicJavaTypeReference(type), prefix, new ArrayList<>());
     }
 
