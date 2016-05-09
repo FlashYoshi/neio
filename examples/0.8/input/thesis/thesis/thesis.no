@@ -486,6 +486,8 @@ For this reason, it is possible to add code blocks in a Neio document. The three
 ## Considerations
 ### Static typing
 ### Security
+### Moving content
+
 
 ## Reuse of current possibilities
 ### Binding to {lat}
@@ -514,7 +516,8 @@ A prime subject of writing a book is this document itself. The entirety of this 
 ## Used libraries and frameworks
 ### ANTLR4
 ### Chameleon
-
+## Windows problem
+Commands need to have their input/output processed to make certain they dont deadlock.
 ## Compile flow
 {
     Image compileFlow = image("Illustration of how a Neio document is compiled. Neio class files translate to Java classes, Neio script files to a Java file with a main function. This then gets output to Tex using Neio's standard library", '''CompileFlow''');
