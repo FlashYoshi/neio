@@ -10,6 +10,10 @@ LstListing(String input) {
     this.input = input;
 }
 
+LstListing append(String append) {
+    return new LstListing(input + append);
+}
+
 String toTex() {
     StringBuilder result = new StringBuilder("\\begin{lstlisting}");
     result.append(input);

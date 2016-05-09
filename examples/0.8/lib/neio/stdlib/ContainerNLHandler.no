@@ -3,19 +3,23 @@ namespace neio.stdlib;
 import neio.lang.Content;
 import neio.lang.Text;
 
+/**
+ * Handles newlines that follow a TextContainer
+ */
 class ContainerNLHandler extends NLHandler;
 
+/**
+ * Creates a ContainerNLHandler and sets the TextContainer that created it as parent
+ */
 ContainerNLHandler(TextContainer parent) {
     super(parent);
 }
 
-Paragraph text(Text text) {
-    new Paragraph(text) par;
-    parent().addContent(par);
-    return par;
-}
-
+/**
+ * Returns this
+ *
+ * @return this
+ */
 ContainerNLHandler newline() {
-    // parent should always have a parent
     return this;
 }

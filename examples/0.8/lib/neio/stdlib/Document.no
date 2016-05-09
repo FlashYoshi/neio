@@ -2,11 +2,17 @@ namespace neio.stdlib;
 
 import neio.lang.Text;
 
+/**
+ * Represents the most basic of Documents
+ */
 class Document extends TextContainer;
 
 private Packages packages;
 private Bibtex bibtex;
 
+/**
+ * Creates a Document and adds common LaTeX packages to it
+ */
 Document() {
     packages = new Packages();
     packages.add("a4wide")
@@ -17,6 +23,12 @@ Document() {
     bibtex = null;
 }
 
+/**
+ * Creates a Chapter and adds it to this
+ *
+ * @param title The title to use for the new Chapter
+ * @return        The newly created Chapter
+ */
 Chapter #(Text title) {
     Chapter chapter = new Chapter(title, 1);
     addContent(chapter);
@@ -24,18 +36,41 @@ Chapter #(Text title) {
     return chapter;
 }
 
+/**
+ * Returns a list of Package's
+ *
+ * @return a list of used LaTeX packages
+ */
 Packages packages() {
     return packages;
 }
 
+/**
+ * Adds a LaTeX package
+ *
+ * @param pkg The package to add
+ * @return        The list of currently included packages
+ */
 Packages addPackage(String pkg) {
     return packages.add(pkg);
 }
 
+/**
+ * Sets a BibTeX file for this Document
+ *
+ * @param The name of the BibTeX file
+ */
 void addBibtex(String name) {
     this.bibtex = new Bibtex(name);
 }
 
+/**
+ * A proxy method for {@code BibTeX}'s {@code cite}
+ * Returns a Cite that is linked to {@code key}
+ *
+ * @param key The key to access the citation
+ * @return        The Cite corresponding to {@code key}
+ */
 Citation cite(String key) {
     if (bibtex != null) {
         return bibtex.cite(key);
@@ -44,6 +79,11 @@ Citation cite(String key) {
     }
 }
 
+/**
+ * Creates the LaTeX preamble
+ *
+ * @return The LaTeX preamble
+ */
 String header() {
     StringBuilder tex = new StringBuilder("\\documentclass{article}\n");
     for (int i = 0; i < packages.size(); i = i + 1) {
@@ -56,6 +96,11 @@ String header() {
      return tex.toString();
 }
 
+/**
+ * Creates a TeX representation of this object and its children
+ *
+ * @return The TeX representation of this object and its children
+ */
 String toTex() {
     StringBuilder result = new StringBuilder(header()).append("\\begin{document}\n")
     .append(super.toTex());

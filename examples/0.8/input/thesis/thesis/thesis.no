@@ -48,8 +48,6 @@ To illustrate the simplicity of {md} an example document is shown below:
     i.rightOf(new LstInputListing('''document.md'''));
 }}
 
-
-
 To allow for some customisability, {md} allows you to use inline HTML.
 In case {md} does not support what you want to do, HTML is what you use.
 Tables are not a part of default {md} (though there are variations that have syntax for them, like Github {md}), so an example of how to create one using HTML is shown below:
@@ -71,6 +69,7 @@ Below you can find an HTML table
 }}
 
 ### {lat}
+{Chapter latexGripes = (Chapter) parent()}
 // TODO: show some trees, that show structure
 {lat} provides a, Turing complete, programming model and due to this allows for rich customisability.
 It also provides a packaging system that allows for libraries, called packages, to be created using this programming model.
@@ -156,6 +155,8 @@ It is one thing that the syntactic shorthands can not be reused, but there is al
 Even though {lat} offers customisability through a programming model, it is not perfect.
 The programming model is hard to use and is not easy to read.
 Due to this programming model it also looks a lot more complex than {md}, scaring away a lot of potential users.
+There are a few ways to counter this complex look though, for one there is LyX. This is a GUI around {lat} offering some of the most common WYSIWG features, while still utilizing {lat}'s strength.
+Even though the complexity is now hidden under a GUI, it is still there and error messages are as bad as they were before, as is discussed beneath.
 
 Having a cumbersome programming model, {lat} makes it easy to create syntax errors.
 The robustness of a plain text document is also diminished, as your document will probably not even compile once an error occurs in one of the documents.
@@ -232,8 +233,7 @@ This means that your document might not show up the same, or at all, a few years
 Even though some customisability is available, no programming model is available and real customisability is far to be found.
 Due to their lack of a programming model, word processors do not allow for even the simplest of computations such as `The result is x + y`.
 
-// TODO: add a label
-It is also quite easy to create inconsistencies using word processors as noted above.
+It is also quite easy to create inconsistencies using word processors as noted above in {latexGripes.ref()}.
 Next to creating inconsistencies, as structure is not enforced on you, small changes could have big side effects on the document.
 // TODO: include image?
 E.g. you placed an image exactly like you wanted, you then later on add a newline somewhere higher up, reflowing the text underneath it an shifting the precisely placed image around.
@@ -252,7 +252,17 @@ To be able to solve some of the aforementioned problems and still make use of al
 
 The first goal supplies us with a simple language that allows to very easily create simple documents.
 The use of a modern programming paradigm allows us to customise the document and execute easy and complex computations easily in effect achieving the third goal.
+
 ### Target group
+Neio targets anyone that is currently using {md} but just wants to be able to customise their document a bit more.
+// TODO: label
+As we will see later, in Neio it is easy to for example create two images and put them next to each other, something that is not possible in markdown.
+
+It can also be used by people without technical expertise if templates are provided.
+E.g. given a template for a letter, even a non-technical person is able to quickly write down the contents of the letter and fill in the template variables.
+
+Neio also target package developers and programmers in general as it offers a modern programming model that is a lot well known and much easier than TeX's system.
+This includes full-time developers as well as students or professors.
 
 # Design of the Neio markup language
 In the previous chapter, {intro.ref()}, the state of the art concerning document creation has been discussed and we notice that some improvement is certainly possible.
@@ -261,20 +271,22 @@ In this chapter we will present the Neio language and we will explain how our de
 
 ## Neio document
 To illustrate some of the basic concepts we will now present an example. The typical files that a user will write are called Neio documents.
-Neio documents are heavily based on {md} as {md} is so easy to read and write, since this is what most of our consumers will be seeing, this was a very important property.
-Since our consumers will mostly write Neio documents, we are also able to use the widespread knowledge of {md} to increase the size of our audience and allow users to instantly get started with the language.
+Neio documents are heavily based on {md} as {md} is so easy to read and write.
+Since this document is what most of our consumers will be seeing, this was a very important property.
+Since our consumers will mostly write Neio documents, we are also able to use the widespread knowledge of {md} to increase the size of our audience and allow users to instantly transition to Neio.
 The following example is one of the most basic documents you can write using Neio.
 {
-    new LstListing('''
+    String simpleDocument = '''
 [Document]
 
 # Chapter 1
 This is some text in the first Paragraph.
-    ''');
+''';
+    Image i = new LstListing(simpleDocument).leftOf(image("The rendered document", '''simpleDocument'''));
+    
 }
 
-// TODO: show actual output
-Even if you are not familiar with {md} than you probably immediately know what this document represents.
+Even if you are not familiar with {md}, you can probably immediately tell what this document represents.
 There is however a very significant difference with {md}. In markdown the syntax is hard-coded into the language, a \\\# will always represent a chapter for example.
 In Neio, on the other hand, the language has no knowledge whatsoever of what \\\# means.
 In fact, it does not know what anything in a Neio document means.
@@ -317,27 +329,122 @@ As means of an introduction we will have a look at the Document class that was u
 
 Except for some variations on the syntax, such as using `namespace` instead of `package`, and the lack of access level modifiers, this is valid Java code.
 The access level modifiers are automatically set to `private` for members and `public` for methods.
-Again, I stand corrected, this would be valid Java code if not for the \\\# method.
-In Neio class files you are allowed to use symbols as a method name.
-This is a feature that is necessary to allow a Neio document to be represented as a chain of method calls as otherwise you would have to actually write out a document as series of method calls.
-This includes adding unnecessary symbols such as brackets to pass parameters, quotes to indicate strings and so on.
-All the symbols you can use for method names can be found in . // TODO: reference whitelist
+They do not have to be written explicitly as the default value is usually what the developer wants and it makes the class file just a little clearer and more concise.
+
+Again though, I stand corrected, this would be valid Java code if not for the \\\# method.
+In Neio class files, you are allowed to use symbols as a method name.
+This is a feature that is necessary to allow a Neio document to be represented as a chain of method calls as otherwise you would have to actually write out a document as series of method calls,
+or you would not be able to use symbols as syntactic shorthand.
+All the symbols you can use for method names at this time are TODO. // TODO: reference whitelist
 
 To keep the language simple and to maximize reusability (as well as making the parsing somewhat easier) some functionality from the Java language was dropped.
 It is for example not possible to create anonymous classes as this goes against the concept of reusability.
+It is also not possible to create multiple classes in a single file.
+
+## Newlines
+{Chapter newlines = (Chapter) parent()}
+Neio is newline sensitive, in the sense that newlines too are methods.
+The superclass `TextContainer` of `Document` and `Chapter` defines the following method.
+{
+    new LstListing('''
+/**
+ * Handles newlines
+ *
+ * @return returns a new ContainerNLHandler
+ */
+ContainerNLHandler newline() {
+    return new ContainerNLHandler(this);
+}''');
+}
+
+The `ContainerNLHandler` will then further handle the flow of the document.
+The code for `ContainerNLHandler` and `NLHandler` are added below.
+{
+    new LstInputListing('''../../examples/0.8/lib/neio/stdlib/ContainerNLHandler.no''');
+}
+
+{
+    new LstInputListing('''../../examples/0.8/lib/neio/stdlib/NLHandler.no''');
+}
+
+Our earlier example now translates to the following:
+{
+    new LstListing('''
+new Document()
+    .newline()
+    .newline()
+    .#("Chapter 1")
+    .newline()
+    .text("This is some text in the first Paragraph");
+    ''');
+}
+
+We needed to do this because a newline in a plain text document has meaning, depending on the context it can mean something else entirely.
+For example, a single newline in a paragraph should append the next sentence to the paragraph.
+But on the other hand when we separate two text blocks with an empty line (thus two newlines), the blocks of text are seen as two different paragraphs.
+
+It should also be noted that any text written in a Neio document gets translated to the `text` call as seen in the example above.
+An implementation of the text method is seen `NLHandler`.
+The reason for this will become clear later on.
+
+We will see more advanced examples using newline in Chapter 3 that will further expose its benefits.
+To avoid clutter, the `newline` method will not be shown in the further examples unless it is needed to understand the example.
 
 ## Language features
 ### Context types
 As said before, everything is a method call, but to be able to just chain any method to any other method, regular methods do not suffice.
 We want to be able to call methods of different class files whilst constructing our document, but we do not want to specify what object we're calling the method on.
-This is something that should be clear from the current structure of the file.
+This is something that should be clear from the current structure of the file, a previously created object should have a method with the correct signature.
 
-To be able to call the right methods, we introduced ContextTypes. Any time an instance of an object is returned form such a method we wrap it into a ContextType, together with the object created in the previous method call.
-This first object is the object that was returned from the most recent method call, we call it the actual type.
-The second object is the object that was returned in the last but one method call, it is called the context type as it represents the context of the document at that point in time.
-When we call a method on a ContextType, we first check if the actual type has the method we're trying to call.
-If it does than we stop searching, if not we recursively check the context type.
-// TODO: include figures
+To be able to call the right methods, we need to introduce something called ContextTypes.
+A ContextType combines an object, the actual type, with its context.
+We will illustrate this using an example.
+
+{
+    LstListing context = new LstListing('''\n[Document]\n''');
+    return context;
+}
+
+As we saw before this translates to the new call `new Document()`.
+This is actually a ContextType of the newly created `Document` and `null` as there is nothing else yet.
+We'll call this ContextType `ct1`.
+
+Lets add a chapter to it, when there are two elements, there should be some kind of context.
+{
+    Text ct2Caption = "In the image above we find ourselves at the *X*. We follow the green arrow upwards and find ourselves in Document.
+As `Document` contains the \\\# method, we call \\\# on `Document` and a `Chapter` is added to the `Document` , as represented by the green arrow.";
+    LstListing context2 = image(ct2Caption, '''ct1''').rightOf(context.append('''\n#Chapter 1'''));
+}
+
+After this call our document looks as follows `new Document().\\\#("Chapter 1")`.
+By adding a second element we created are able to see a ContextType in action.
+To know where to find the \\\# method, we will recursively iterate over our context.
+First we check the actual type of `ct1`, if we could not find the method there, we recursively proceed to check the context of `ct1`.
+As you can see above in the source code of `Document`, there is indeed a method \\\# in there, so there is no need to look any further.
+The current document translates to ContextType `ct2`, which contains the newly created Chapter and has `ct1` as context.
+
+We continue by adding one more Chapter.
+{
+    LstListing context3 = image('''ct2''').rightOf(context.append('''\n#Chapter 2'''));
+}
+
+Now when we look for the \\\# method in `ct2` we first have to check Chapter, but Chapter does not have this method.
+We thus recursively check the context of `ct2`, which is `ct1`.
+`ct1`'s actual type is a Document, of which we know that it has a \\\# method.
+As we have found the method we were looking for, \\\# will be called on the Document in `ct1`.
+The ContextType that is created for this call is `ct3` that has the newly created Chapter as the actual type, but that has *ct1* as context.
+This is because we have had to skip over `Chapter 1`, which shows us that `ct2` is not useful anymore for the continued creation of the document.
+
+Lastly we add a paragraph to the document.
+{
+    LstListing context4 = image('''ct3''').rightOf(context.append('''\nThis is a paragraph.'''));
+}
+
+We check the actual type of `ct3` and immediately have a matching method, we thus call the method on `Chapter 2`.
+The newly created ContextType `ct4`, contains the `Paragraph` as actual type and `ct3` as context.
+
+The following structure is what we are left with.
+{ image("The final structure built in the example", '''ct4''').scale(70) }
 
 ### Nested methods
 Documents often have recursive elements such as sections or enumerations, as in Neio, everything is a method every one of these levels would have to be defined as a separate method.
