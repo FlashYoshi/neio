@@ -449,17 +449,36 @@ We check the actual type of `ct3` and immediately have a matching method, we thu
 The newly created ContextType `ct4`, contains the `Paragraph` as actual type and `ct3` as context.
 
 The following structure is what we are left with.
-{ image("The final structure built in the example", '''ct4''').scale(70) }
+{ image("The final structure built in the example", '''ct4''').scale(100) }
 
 ### Nested methods
 Documents often have recursive elements such as sections or enumerations, as in Neio, everything is a method every one of these levels would have to be defined as a separate method.
-This is of course very cumbersome and we would like to only define it once. This is why nested methods were invented.
+That means creating a method for \\\#, \\\#\\\#, \\\#\\\#\\\#,... .
+This is of course very cumbersome, even impossible at times, and we would like to only define it once as the behaviour should be mostly the same no matter how many symbols we use.
+Usually only one property, such as font size, is effected by the number of symbols used in such a method call.
+This is why nested methods were invented.
 A method can be annotated with a `nested` modifier which means that this method implicitly takes an extra argument, an `Integer` that reflects the depth of this recursive method.
+The depth of this recursive method is just the number of times the symbol has been used.
+If we have a look at the `Chapter` class, we see that it has a nested method \\\#.
+{
+    new LstInputListing('''../../examples/0.8/lib/neio/stdlib/Chapter.no''');
+}
+
+If we would now call `chapter.\\\#\\\#("Chapter .1.1")` for example, it would translate to the following call: `chapter.\\\#("Chapter 1.1", 2)`.
+
+An important thing to note is that the regex matching a nested function is `..+` where `.` is the symbol that is being used as a method name.
+This means that the method name that contains a single symbol should be defined elsewhere. This has been done because the first level is usually special.
+In case of an Enumerate for example, when we create the first EnumerateItem, an Enumerate has to be added.
+Usually the object created by this method should also be added in a different place than the other objects.
 
 ### Surround methods
 A method could also be annotated with a `surround` modifier. This means that the method name surrounds a piece of text, this can be used to for example create bold text by surrounding it with stars.
+This is needed to be able to easily annotate text and it also looks very natural.
 
 ### Code blocks
+We've seen that we can use code in Neio class files and customise our document this way. But this doesn't allow us to do everything we have to.
+We don't want to create a new kind of documentclass every time we want to do something special. It's also not possible to add anything to a documentclass that does not exist.
+For this reason, it is possible to add code blocks in a Neio document. The three different kinds of code blocks are explained below.
 #### Scoped code
 #### Non scoped code
 #### Inline code
@@ -479,6 +498,8 @@ We will also discuss which libraries have been recreated in Neio to allow for a 
 ### Report
 ### Letter
 ### Book
+A prime subject of writing a book is this document itself. The entirety of this book has been created using Neio script.
+//TODO add url
 ### Article
 ### Slides
 
@@ -514,6 +535,7 @@ In {compileFlow.ref()} the flow that a source document goes through before reach
 # Future work
 ## Static typing of the language
 ## Package support
+## Implementation of packages
 ## Compiler improvement
 ### Correct stages
 ### Other front- and backends
