@@ -6,4 +6,10 @@
     <sourcepath>
         <source root="../examples/0.8/lib" />
     </sourcepath>
+    <binarypath>
+        <jar file="../neio/build/libs/rejuse.jar" />
+        <jar file="../neio/build/libs/chameleon.jar" />
+        <jar file="../neio/build/libs/ChameleonSupport.jar" />
+        <jar file="../neio/build/libs/jnome.jar" />
+    </binarypath>
 </project>

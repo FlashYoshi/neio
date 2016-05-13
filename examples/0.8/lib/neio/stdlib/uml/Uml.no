@@ -1,0 +1,29 @@
+namespace neio.stdlib.uml;
+
+import neio.lang.Content;
+
+import org.aikodi.chameleon.core.Config;
+import org.aikodi.chameleon.workspace.*;
+import be.kuleuven.cs.distrinet.jnome.core.language.Java7;
+import be.kuleuven.cs.distrinet.jnome.core.language.Java7LanguageFactory;
+
+import java.io.File;
+
+class Uml extends Content;
+
+Uml() {
+    Config.setCaching(true);
+    LanguageRepository repo = new LanguageRepository();
+    Workspace workspace = new Workspace(repo);
+
+    // CALLING THIS JAVA WILL CAUSE A LOOKUPEXCEPTION
+    Java7 arst = new Java7LanguageFactory().create();
+    repo.add(arst);
+    // TODO: ProjectConfigurator.searchInParent()?
+    //arst.plugin(ProjectConfigurator.class).searchInParent();
+
+    File configFile = new File("project.xml");
+    XMLProjectLoader config = new XMLProjectLoader(workspace);
+    Project project = config.project(configFile, null);
+    View view = project.views().get(0);
+}
