@@ -4,7 +4,6 @@ import be.kuleuven.cs.distrinet.jnome.core.language.Java7;
 import be.kuleuven.cs.distrinet.jnome.core.language.Java7LanguageFactory;
 import be.ugent.neio.industry.NeioLanguageFactory;
 import be.ugent.neio.language.Neio;
-import be.ugent.neio.language.NeioProjectConfigurator;
 import org.aikodi.chameleon.core.Config;
 import org.aikodi.chameleon.workspace.*;
 
@@ -24,7 +23,6 @@ public class NeioProjectBuilder {
         Neio neio = new NeioLanguageFactory().create();
         repo.add(neio);
         repo.add(java);
-        ((NeioProjectConfigurator) neio.plugin(ProjectConfigurator.class)).searchInParent();
 
         File configFile = new File(configfilePath);
         XMLProjectLoader config = new XMLProjectLoader(workspace);

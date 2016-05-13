@@ -11,5 +11,6 @@
         <jar file="../neio/build/libs/chameleon.jar" />
         <jar file="../neio/build/libs/ChameleonSupport.jar" />
         <jar file="../neio/build/libs/jnome.jar" />
+        <jar file="../neio/build/libs/neio-0.1.jar" />
     </binarypath>
 </project>

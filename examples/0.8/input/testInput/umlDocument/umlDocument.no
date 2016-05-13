@@ -1,0 +1,7 @@
+[Document]
+
+# Uml diagrams
+
+{
+    new Uml('''./project.xml''');
+}
