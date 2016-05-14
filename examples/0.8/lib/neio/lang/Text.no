@@ -86,7 +86,11 @@ public surround Text $(Text t) {
 String thisToTex() {
     String me = "";
     if (text == null) {
-        me = realText;
+        // Create valid tex text
+        me= realText.replaceAll("\\\\([^#%$+{}\\\\])", "$1");
+        me= me.replaceAll("\\\\~", "\\textasciitilde{}");
+        me= me.replaceAll("\\\\^", "\\textasciicircum{}");
+        me= me.replaceAll("\\\\\\\\", "\\backslash{}");
     } else {
         me = text.toTex();
     }
