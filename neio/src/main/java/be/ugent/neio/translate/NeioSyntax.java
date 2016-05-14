@@ -84,9 +84,13 @@ public class NeioSyntax extends Java7Syntax {
         try {
             String literalText = super.toCodeLiteral(literal);
             if (literal.getType().getFullyQualifiedName().equals("java.lang.String") && !literalText.startsWith("\"")) {
-                // Replace escape char to work with java
-                literalText = literalText.replaceAll("\\\\([^rftn])", "\\\\\\\\$1");
-                literalText = literalText.replaceAll("\"", "\\\\\"");
+                // Replace explicit backslash by two backslashes so it works with java
+                String bs = "\\\\";
+                // Replace double backslash (escaped backslash), by three backslashes
+                // This is represented in java by bs * 6 due to escaping
+                literalText = literalText.replaceAll(bs + bs, bs + bs + bs + bs + bs + bs);
+                literalText = literalText.replaceAll(bs + "([^rftn" + bs + "])", bs + bs + "$1");
+                literalText = literalText.replaceAll("\"", bs + '"');
                 return "\"" + literalText + "\"";
 
             } else {

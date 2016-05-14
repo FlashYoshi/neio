@@ -87,10 +87,11 @@ String thisToTex() {
     String me = "";
     if (text == null) {
         // Create valid tex text
-        me= realText.replaceAll("\\\\([^#%$+{}\\\\])", "$1");
-        me= me.replaceAll("\\\\~", "\\textasciitilde{}");
-        me= me.replaceAll("\\\\^", "\\textasciicircum{}");
-        me= me.replaceAll("\\\\\\\\", "\\backslash{}");
+        me = realText.replaceAll("\\\\([^#$%&_{}\\\\])", "$1");
+        me = me.replaceAll("\\\\~", "\\\\textasciitilde{}");
+        me = me.replaceAll("\\\\^", "\\\\textasciicircum{}");
+        me = me.replaceAll("\\\\\\\\\\\\", "\\\\textbackslash{}");
+        me = me.replaceAll("\\\\\\\\", "\\\\textbackslash{}");
     } else {
         me = text.toTex();
     }

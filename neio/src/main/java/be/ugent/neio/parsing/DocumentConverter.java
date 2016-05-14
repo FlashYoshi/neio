@@ -224,15 +224,20 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
     public Expression visitSurroundCall(@NotNull SurroundCallContext ctx) {
         String name = Constants.SURROUND + ctx.left.getText();
         Expression result;
-        if (ctx.inlinecode() != null) {
+
+        if (!ctx.ESCAPE().isEmpty()) {
+            String text = "";
+            for (TerminalNode tn : ctx.ESCAPE()) {
+                text += (String) visit(tn);
+            }
+            result = createText(text);
+        } else if (ctx.inlinecode() != null) {
             boolean temp = appendInline;
             appendInline = false;
             result = visitInlinecode(ctx.inlinecode());
             appendInline = temp;
-        } else if (ctx.WORD() != null) {
-            result = createText((String) visit(ctx.WORD()));
         } else {
-            result = createText((String) visit(ctx.ESCAPE()));
+            result = createText((String) visit(ctx.WORD()));
         }
 
         if (ctx.txt() != null) {
