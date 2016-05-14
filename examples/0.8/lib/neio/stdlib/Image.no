@@ -11,7 +11,7 @@ Text caption;
 String name;
 // Scale in percent
 Integer scale;
-public static final String PNG = ".png";
+String mode;
 
 Image(String name) {
     this(null, name);
@@ -21,6 +21,12 @@ Image(Text caption, String name) {
     this.caption = caption;
     this.name = name;
     this.scale = null;
+    this.mode = "H";
+}
+
+Image floating() {
+    mode = "h";
+    return this;
 }
 
 String name() {
@@ -37,25 +43,18 @@ Image scale(Integer scale) {
 }
 
 String toTex() {
-    StringBuilder result = new StringBuilder("\\begin{figure}[H]\n\\centering\n\\includegraphics[");
+    StringBuilder result = new StringBuilder("\\begin{figure}[").append(mode).append("]\n\\centering\n\\includegraphics[");
     if (scale == null) {
         result.append("width=\\linewidth]{");
     } else {
         result.append("scale=").append(new Double(scale) / 100).append("]{");
     }
     
-    result.append(name);
-    if (name.contains(".")) {
-        result.append("}\n");
-    } else {
-        result.append(PNG).append("}\n");
-    }
+    result.append(name).append("}\n");
     if (caption != null) {
         result.append("\\caption{").append(caption.toTex()).append("}\n");
     }
-    result.append("\\label{" + hashCode() + "}\n");
-    
-    result.append("\\end{figure}\n");
+    result.append("\\label{").append(hashCode()).append("}\n").append("\\end{figure}\n");
     
     return result.toString();
 }
