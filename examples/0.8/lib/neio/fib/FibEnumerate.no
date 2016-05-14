@@ -11,36 +11,37 @@ Integer second = 1;
 Integer index = 0;
 
 FibEnumerate() {
+    addClassMapping(Enumerate.class, FibEnumerate.class);
     addClassMapping(EnumerateItem.class, FibItem.class);
 }
 
 protected String header() {
-	String header = "\\begin{description}";
-	if ((option != null) && (option.length() > 0)) {
-		header = header + "[" + option + "]";
-	}
-	
-	return header + "\n";
+    String header = "\\begin{description}";
+    if ((option != null) && (option.length() > 0)) {
+        header = header + "[" + option + "]";
+    }
+    
+    return header + "\n";
 }
 
 // Finalize already exists in java.lang.Object
 protected String finalizer() {
-	return "\\end{description}\n";
+    return "\\end{description}\n";
 }
 
 Integer getNumber() {
-	index = index + 1;
-	if (index <= 2) {
-		return 1;
-	}
-	
-	Integer old = first;
-	first = calcNext();
-	second = old;
-	
-	return first;
+    index = index + 1;
+    if (index <= 2) {
+        return 1;
+    }
+    
+    Integer old = first;
+    first = calcNext();
+    second = old;
+    
+    return first;
 }
 
 private Integer calcNext() {
-	return first + second;
+    return first + second;
 }

@@ -7,13 +7,13 @@ import neio.lang.Content;
 class FibItem extends EnumerateItem;
 
 FibItem(Text text, Integer level) {
-	super(text, level);
+    super(text, level);
 }
 
 FibItem(Text text, Enumerate fib, Integer level) {
-	super(text, fib, level);
+    super(text, fib, level);
 }
 
 String toTex() {
-	return super.toTex(level + "." + enumerate.getNumber());
+    return super.toTex(level + "." + enumerate.getNumber());
 }

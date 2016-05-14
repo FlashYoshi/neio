@@ -507,14 +507,84 @@ Examples of surround methods are the ones available in Text.no.
     new LstInputListing('''../../examples/0.8/lib/neio/lang/Text.no''');
 }
 
-The text `This is \*bold\* text` will then be transformed in the following chain `text("This is ").text(\*("bold")).text(" text")`.
+The text `This is \*bold\* text` will then be transformed into the following chain `text("This is ").text(\*("bold")).text(" text")`.
 
 ### Code blocks
-We've seen that we can use code in Neio class files and customise our document this way. But this doesn't allow us to do everything we have to.
-We don't want to create a new kind of document class every time we want to do something special. It's also not possible to add anything to a document class that does not exist.
+We've seen that we can use code in Neio class files and customise our document this way. But this doesn't allow us to do everything we want to.
+We don't want to create a new document class every time we want to do something special. It's also not possible to add anything to a document class that does not exist.
+Sometimes we might just want to change a property of some content, which is not possible as of yet.
 For this reason, it is possible to add code blocks in a Neio document. The three different kinds of code blocks are explained below.
+
+#### Non-scoped code
+Now is a good time to mention that anything that is added to a NeioDocument, is a subtype of the `Content` class.
+The `Content` class is the base class in Neio documents, like `Object` is the base class in Java.
+Next to allowing a class to be represented in a Neio document, `Content` provides a lot of utility.
+It is for example possible to add other `Content` to a `Content`, or do lookups on the currently build document by use of the`nearestAncestor, descendants,...` methods.
+
+Now let us say that we want to create a `Document` that uses a special type of content that we have created.
+For example, we like Fibonacci so much, we have created a special `Enumerate` that is numbered according to the Fibonacci sequence.
+The code for this new `Enumerate`, `FibEnumerate` is shown below.
+We also show the code for the `EnumerateItem` that is used in `FibEnumerate`, `FibItem`.
+{
+    new LstInputListing('''../../examples/0.8/lib/neio/fib/FibEnumerate.no''');
+}
+
+{
+    new LstInputListing('''../../examples/0.8/lib/neio/fib/FibItem.no''');
+}
+
+To be able to get this `FibEnumerate` into a document all we have to do is open a code block and create a new `FibEnumerate`.
+{{
+    image("The rendered Fibonacci document", '''fibDocument''').scale(25)
+    .rightOf(new LstInputListing('''../../examples/0.8/input/testInput/fibDocument/fibDocument.no'''));
+}}
+
+
 #### Scoped code
-#### Non scoped code
+{Chapter scopedCode = (Chapter) parent()}
+If all you want to do, is execute some arbitrary code without corrupting your namespace, a block of scoped code is the way to go.
+The use of a block of scoped code is illustrated below.
+
+{
+    new LstListing('''
+[Document]
+# Chapter 1
+{{
+    List<String> l = new ArrayList<String>();
+    l.add("upquote");
+    l.add("pdfpages");
+    l.add("pdfpages");
+    for (int i = 0; i < l.size(); i = i + 1) {
+        addPackage(l.get(i));
+    }
+}}
+    ''');
+}
+In this example a `Document` is created but to be able to use it for our needs, we need a few more packages.
+We also do not want to think of very descriptive names for our variables as it's just a simple operation, the name `l`should suffice.
+Normally these variables would be defined in a short function and we would thus not have to worry about shadowing or overriding this name.
+But as we saw in {scopedCode.ref()}, our code is just inserted straight into the final document.
+The difference is that a block of scoped block is inserted into its own scope. It also does not add automatically add anything to the document like
+non-scoped code does.
+The previous example is translated to the following Java.
+{
+    new LstListing('''
+Document $var0 = new Document();
+ContainerNLHandler $var1 = $var0.newline();
+Chapter $var2 = $var0.hash(new neio.lang.Text("Chapter 1"));
+ContainerNLHandler $var3 = $var2.newline();
+{
+    List<String> l = new ArrayList<String>();
+    l.add("upquote");
+    l.add("pdfpages");
+    l.add("pdfpages");
+    for (int i = 0; (i) < (l.size()); i = (i) + (1)) {
+        $var0.addPackage(l.get(i));
+    }
+}
+    ''');
+}
+
 #### Inline code
 
 ### This

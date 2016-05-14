@@ -1,0 +1,12 @@
+[Document]
+# Chapter 1
+{{
+    List<String> l = new ArrayList<String>();
+    l.add('''upquote''');
+    l.add('''pdfpages''');
+    l.add('''pdfpages''');
+    
+    for (int i = 0; i < l.size(); i = i + 1) {
+        addPackage(l.get(i));
+    }
+}}
