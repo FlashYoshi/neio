@@ -3,5 +3,7 @@
 # Uml diagrams
 
 {
-    new Uml('''./project.xml''');
+    List<String> show = new ArrayList<String>();
+    show.add('''neio.lang.Content''');
+    new Uml('''./project.xml''').show(show);
 }

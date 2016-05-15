@@ -76,8 +76,8 @@ expression : literal                            #literalExpression
 		   | neioNewCall                        #neioNewExpression
            | expression DOT Identifier          #chainExpression
            | L_BRACE expression R_BRACE         #parExpression
-           | expression DOT name=(Identifier | MethodIdentifier | STAR| MINUS) args=arguments #qualifiedCallExpression
-           | name=(Identifier | MethodIdentifier | STAR | MINUS) args=arguments #selfCallExpression
+           | expression DOT name=(Identifier | NAMESPACE | MethodIdentifier | STAR| MINUS) args=arguments #qualifiedCallExpression
+           | name=(Identifier | NAMESPACE | MethodIdentifier | STAR | MINUS) args=arguments #selfCallExpression
            | op=E_MARK right=expression                                         #notExpression
            | left=expression op=(INCR | DECR)                                   #postfixCrementExpression
            | op=(INCR | DECR) right=expression                                  #prefixCrementExpression
@@ -104,7 +104,7 @@ arguments : L_BRACE expression (COMMA expression)* R_BRACE #someArguments
 parameters : parameter (COMMA parameter)*;
 parameter : type Identifier;
 
-type : Identifier (DOT Identifier)* (SMALLER typeArgumentList BIGGER)? (ARRAY)?;
+type : identifier (DOT identifier)* (SMALLER typeArgumentList BIGGER)? (ARRAY)?;
 typeArgumentList : typeArgumentList COMMA type  #typeArguments
                  | type                         #typeArgument
                  | Q_MARK EXTENDS bound=type    #boundedTypeArgument
@@ -114,3 +114,5 @@ typeParameterList : typeParameterList COMMA type  #typeParameters
                   | type                          #typeParameter
                   | Identifier EXTENDS bound=type #boundedTypeParameter
                   ;
+
+identifier : Identifier | NAMESPACE;

@@ -1,5 +1,8 @@
 namespace neio.lang;
 
+/**
+ * Represents the any kind of text that can be marked up
+ */
 class Text extends Content;
 
 Text text;
@@ -7,34 +10,70 @@ String realText;
 // The object to which this Text has been appended
 Text appendedTo;
 
+/**
+ * Creates an empty Text
+ */
 Text() {
     appendedTo = null;
     text = null;
     realText = "";
 }
 
+/**
+ * Creates a Text
+ *
+ * @param realText The content of the Text
+ */
 Text(String realText) {
     this();
     this.realText = realText;
 }
 
+/**
+ * Creates a Text with another Text as content.
+ * This allows to add more mark up to {@code text}
+ *
+ * @param text The Text to use as content
+ */
 Text(Text text) {
     this();
     this.text = text;
 }
 
+/**
+ * Append Text to this
+ *
+ * @param t The Text to append
+ * @return The appended Text
+ */
 Text text(Text t) {
     return appendText(t);
 }
 
+/**
+ * Returns the Text being used as content
+ *
+ * @return The Text used as content
+ */
 Text getText() {
     return text;
 }
 
+/**
+ * Returns the String used as content
+ *
+ * @return The String used as content
+ */
 String realText() {
     return realText;
 }
 
+/**
+ * Appends the root Text of {@code t} to this
+ *
+ * @param t The Text to append
+ * @return The appended Text
+ */
 Text appendText(Text t) {
     Text start = t;
     
@@ -46,18 +85,39 @@ Text appendText(Text t) {
     return t;
 }
 
+/**
+ * Sets the Text to which this is appended
+ *
+ * @param appendedTo The Text which we are appended to
+ */
 void appendTo(Text appendedTo) {
     this.appendedTo = appendedTo;
 }
 
+/**
+ * Returns the Text to which this is appended
+ *
+ * @return The Text to which this is appended
+ */
 Text appendedTo() {
     return appendedTo;
 }
 
+/**
+ * Returns if this Text is appended or not
+ *
+ * @return If this Text is appended or not
+ */
 Boolean isAppended() {
     return appendedTo != null;
 }
 
+/**
+ * Creates the TeX representation for the Text this is appended to
+ * Recursively calls {@code toTex} on the Text the current Text is appended to
+ *
+ * @return the TeX representation for the Text this is appended to
+ */
 String appendedToToTex() {
     String result = "";
     if (appendedTo != null) {
@@ -67,26 +127,57 @@ String appendedToToTex() {
     return result;
 }
 
+/**
+* Creates a new {@code BoldText} and appends it to this
+*
+* @param t The text to make bold
+* @return The newly created BoldText
+*/
 public surround Text *(Text t) {
     return appendText(new BoldText(t));
 }
 
+/**
+* Creates a new {@code ItalicText} and appends it to this
+*
+* @param t The text to make italic
+* @return The newly created ItalicText
+*/
 public surround Text _(Text t) {
     return appendText(new ItalicText(t));
 }
 
+/**
+* Creates a new {@code MonospaceText} and appends it to this
+*
+* @param t The text to show in a monospace font
+* @return The newly created MonospaceText
+*/
 public surround Text `(Text t) {
     return appendText(new MonospaceText(t));
 }
 
+/**
+* Wraps {@code t} in a new Text and appends it to this
+*
+* @param t The text to wrap
+* @return The wrapped Text
+*/
 public surround Text $(Text t) {
     return appendText(new Text(t));
 }
 
+/**
+ * Creates the TeX representation of this Text
+ * Printing out {@code realText} or the TeX representation of {@code text}
+ * Replaces special characters to create valid TeX
+ *
+ * @return The TeX representation of this Text
+ */
 String thisToTex() {
     String me = "";
     if (text == null) {
-        // Create valid tex text
+        // Create valid TeX text
         me = realText.replaceAll("\\\\([^#$%&_{}\\\\])", "$1");
         me = me.replaceAll("\\\\~", "\\\\textasciitilde{}");
         me = me.replaceAll("\\\\^", "\\\\textasciicircum{}");
@@ -99,6 +190,12 @@ String thisToTex() {
     return me;
 }
 
+/**
+ * Returns the TeX representation of this chain of Texts
+ * The chain being the Text this is appended to + this
+ *
+ * @return The TeX representation of this chain of Texts
+ */
 String toTex() {
     return appendedToToTex() + thisToTex();
 }

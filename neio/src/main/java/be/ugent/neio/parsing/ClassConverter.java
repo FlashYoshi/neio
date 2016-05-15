@@ -645,7 +645,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     @Override
     public JavaTypeReference visitType(@NotNull TypeContext ctx) {
-        String name = visitIdentifiers(ctx.Identifier());
+        String name = visitIdentifiers(ctx.identifier());
         JavaTypeReference type;
         List<TypeArgument> typeArguments = new ArrayList<>();
         if (ctx.typeArgumentList() != null) {
@@ -826,14 +826,14 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         return new DocumentParser(tokens);
     }
 
-    private String visitIdentifiers(List<TerminalNode> identifiers) {
+    private String visitIdentifiers(List<IdentifierContext> identifiers) {
         if (identifiers == null || identifiers.isEmpty()) {
             return "";
         }
 
         StringBuilder result = new StringBuilder(identifiers.get(0).getText());
         for (int i = 1; i < identifiers.size(); i++) {
-            result.append(".").append(identifiers.get(i));
+            result.append(".").append(identifiers.get(i).getText());
         }
 
         return result.toString();

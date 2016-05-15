@@ -1,0 +1,184 @@
+namespace neio.stdlib.uml;
+
+import be.kuleuven.cs.distrinet.jnome.core.language.Java7;
+import be.kuleuven.cs.distrinet.jnome.workspace.JavaView;
+import org.aikodi.chameleon.core.element.Element;
+import org.aikodi.chameleon.oo.method.Method;
+import org.aikodi.chameleon.oo.type.Type;
+import org.aikodi.chameleon.oo.variable.VariableDeclaration;
+import org.aikodi.chameleon.oo.variable.VariableDeclarator;
+import org.aikodi.chameleon.support.member.simplename.variable.MemberVariableDeclarator;
+
+import java.util.ArrayList;
+import java.util.List;
+
+class UmlClass implements UmlObject;
+
+JavaView view;
+Java7 lang;
+Type type;
+List<UmlMemberVariable> vars;
+List<UmlMethod> methods;
+Boolean showPrivate;
+Boolean showProtected;
+Boolean methodsShown;
+Boolean varsShown;
+
+UmlClass(Type type, Boolean showPrivate, Boolean showProtected) {
+    this.type = type;
+    this.showPrivate = showPrivate;
+    this.showProtected = showProtected;
+    this.view = (JavaView) (type.view());
+    this.lang = (Java7) (view.language());
+    vars = new ArrayList<UmlMemberVariable>();
+    methods = new ArrayList<UmlMethod>();
+    gatherVars();
+    gatherMethods();
+    this.methodsShown = false;
+    this.varsShown = false;
+}
+
+void gatherVars() {
+    List<VariableDeclarator> variableDeclarators = new ArrayList<VariableDeclarator>();
+    variableDeclarators.addAll(type.nearestDescendants(MemberVariableDeclarator.class));
+
+    for (int i = 0; i < variableDeclarators.size(); i = i + 1) {
+        List<VariableDeclaration> decls = variableDeclarators.get(i).variableDeclarations();
+        for (int j = 0; j < decls.size(); j = j + 1) {
+            VariableDeclaration decl = decls.get(j);
+            vars.add(new UmlMemberVariable(lang, decl, showPrivate, showProtected));
+        }
+    }
+}
+
+void gatherMethods() {
+    List<Method> rawMethods = type.nearestDescendants(Method.class);
+    for (int i = 0; i < rawMethods.size(); i = i + 1) {
+        Method m = rawMethods.get(i);
+        methods.add(new UmlMethod(lang, m, showPrivate, showProtected));
+    }
+}
+
+String toMetaUML() {
+    StringBuilder result = new StringBuilder("Class.")
+            .append(id())
+            .append("(\"")
+            .append(type.name())
+            .append('"')
+            .append(")\n\t(")
+            .append(variablesToUml(type))
+            .append(")\n\t(")
+            .append(methodsToUml(type))
+            .append(");\n")
+            .append(stereoTypeToUml(type));
+
+    if (!varsShown) {
+        result.append(id())
+            .append(".info.iAttributeStack.top := 0;\n")
+            .append(id())
+            .append(".info.iAttributeStack.bottom := 0;\n");
+    }
+    
+    if (!methodsShown) {
+        result.append(id())
+            .append(".info.iMethodStack.top := 0;\n")
+            .append(id())
+            .append(".info.iMethodStack.bottom := 0;\n");
+    }
+
+    return result.toString();
+}
+
+private String stereoTypeToUml(Type type) {
+    StringBuilder result = new StringBuilder();
+    Java7 lang = (Java7) (view.language());
+
+    if (type.isTrue(lang.INTERFACE) && type.isTrue(lang.ABSTRACT)) {
+        result.append("classStereotypes.").append(id())
+                .append("(")
+                .append('"')
+                .append("<<");
+
+        if (type.isTrue(lang.INTERFACE)) {
+            result.append("interface");
+        } else {
+            result.append("abstract");
+        }
+
+        result.append(">>\");\n");
+    }
+
+    return result.toString();
+}
+
+private String methodsToUml(Type type) {
+    StringBuilder result = new StringBuilder();
+
+    for (int i = 0; i < methods.size(); i = i + 1) {
+        if (methods.get(i).show()) {
+            methodsShown = true;
+            if (i != 0) {
+                result.append("\t");
+            }
+
+            result.append(methods.get(i).toMetaUML());
+
+            if (i != (methods.size() - 1)) {
+                result.append(",\n");
+            }
+        }
+    }
+
+    return result.toString();
+}
+
+private String variablesToUml(Type type) {
+    StringBuilder result = new StringBuilder();
+
+    for (int i = 0; i < vars.size(); i = i + 1) {
+        if (vars.get(i).show()) {
+            varsShown = true;
+            if (i != 0) {
+                result.append("\t");
+            }
+            result.append(vars.get(i).toMetaUML());
+            if (i != (vars.size() - 1)) {
+                result.append(",\n");
+            }
+        }
+    }
+
+    return result.toString();
+}
+
+private String accessModifierToUml(Element e) {
+    if (e.isTrue(lang.PRIVATE)) {
+        return "-";
+    } else if (e.isTrue(lang.PROTECTED)) {
+        return "#";
+    } else {
+        return "+";
+    }
+}
+
+/**
+ * Writes out the hashcode of this object as readable text.
+ * This allows us to use the hashcode as a unique identifier as MetaUML does
+ * not accept names that have such big numbers.
+ *
+ * @return The human readable hashcode of this object
+ */
+String id() {
+    String s = "" + hashCode();
+    s = s.replaceAll("0", "zero");
+    s = s.replaceAll("1", "one");
+    s = s.replaceAll("2", "two");
+    s = s.replaceAll("3", "three");
+    s = s.replaceAll("4", "four");
+    s = s.replaceAll("5", "five");
+    s = s.replaceAll("6", "six");
+    s = s.replaceAll("7", "seven");
+    s = s.replaceAll("8", "eight");
+    s = s.replaceAll("9", "nine");
+    return s;
+}

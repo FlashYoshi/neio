@@ -1,0 +1,5 @@
+namespace neio.stdlib.uml;
+
+interface UmlObject;
+
+String toMetaUML();

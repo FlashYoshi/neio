@@ -1,16 +1,27 @@
 namespace neio.stdlib.uml;
 
-import neio.lang.Content;
-
-import org.aikodi.chameleon.core.Config;
-import org.aikodi.chameleon.workspace.*;
-import be.kuleuven.cs.distrinet.jnome.core.language.Java7;
-import be.kuleuven.cs.distrinet.jnome.core.language.Java7LanguageFactory;
+import be.kuleuven.cs.distrinet.jnome.workspace.JavaView;
 import be.ugent.neio.builder.NeioProjectBuilder;
+import neio.io.MetaUMLBuilder;
+import neio.io.MetaUMLWriter;
+import neio.lang.Content;
+import neio.stdlib.Image;
+import org.aikodi.chameleon.core.namespace.Namespace;
+import org.aikodi.chameleon.oo.type.Type;
 
-import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
-class Uml extends Content;
+class Uml extends Content implements UmlObject;
+
+JavaView view;
+String ns;
+Boolean showPrivate;
+Boolean showProtected;
+List<String> show;
+List<UmlClass> classes;
 
 /*Uml() {
     Config.setCaching(true);
@@ -29,5 +40,85 @@ class Uml extends Content;
 
 Uml(String projectXml) {
         NeioProjectBuilder projectBuilder = new NeioProjectBuilder();
-        View view = projectBuilder.build(projectXml);
+        this.view = (JavaView) (projectBuilder.build(projectXml));
+        showPrivate = false;
+        showProtected = false;
+        show = null;
+        classes = new ArrayList<UmlClass>();
+}
+
+Uml(String projectXml, String ns) {
+    this(projectXml);
+    this.ns = ns;
+}
+
+Uml show(List<String> show) {
+    this.show = show;
+    return this;
+}
+
+Uml showPrivate() {
+    this.showPrivate = true;
+    return this;
+}
+
+Uml showProtected() {
+    this.showProtected = true;
+    return this;
+}
+
+Uml showAll() {
+    this.showPrivate = true;
+    this.showProtected = true;
+    return this;
+}
+
+String toTex() {
+    String metaUML = toMetaUML();
+    MetaUMLWriter writer = new MetaUMLWriter(metaUML);
+
+    Calendar cal = Calendar.getInstance();
+    SimpleDateFormat sdf = new SimpleDateFormat("HH-mm-ss-SSS");
+    String name = sdf.format(cal.getTime());
+
+    writer.write(name);
+
+    MetaUMLBuilder builder = new MetaUMLBuilder();
+    builder.build(name + ".mp");
+
+    return new Image(name + ".1").toTex();
+}
+
+String toMetaUML() {
+    StringBuilder result = new StringBuilder();
+
+    if (show == null) {
+        Namespace subNamespace = view.namespace().getSubNamespace(ns);
+        List<Type> types = subNamespace.nearestDescendants(Type.class);
+        for (int i = 0; i < types.size(); i = i + 1) {
+            Type type = types.get(i);
+            UmlClass uc = new UmlClass(type, showPrivate, showProtected);
+            classes.add(uc);
+        }
+    } else {
+        for (int i = 0; i < show.size(); i = i + 1) {
+            Type type = null;
+            type = view.findType(show.get(i));
+            UmlClass uc = new UmlClass(type, showPrivate, showProtected);
+            classes.add(uc);
+        }
+    }
+    
+    StringBuilder draw = new StringBuilder("\ndrawObjects(");
+    for (int i = 0; i < classes.size(); i = i + 1) {
+        result.append(classes.get(i).toMetaUML()).append("\n");
+        draw.append(classes.get(i).id());
+        if (i != (classes.size() - 1)) {
+            draw.append(", ");
+        }
+    }
+    draw.append(");\n");
+    result.append(draw.toString());
+
+    return result.toString();
 }

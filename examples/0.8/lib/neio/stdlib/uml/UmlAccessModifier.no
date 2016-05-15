@@ -1,0 +1,38 @@
+namespace neio.stdlib.uml;
+
+import be.kuleuven.cs.distrinet.jnome.core.language.Java7;
+import org.aikodi.chameleon.core.element.Element;
+
+class UmlAccessModifier;
+
+Boolean priv;
+Boolean prot;
+Boolean pub;
+
+UmlAccessModifier(Java7 lang, Element e) {
+    this.priv = e.isTrue(lang.PRIVATE);
+    this.prot = e.isTrue(lang.PROTECTED);
+    this.pub = e.isTrue(lang.PUBLIC);
+}
+
+Boolean priv() {
+    return priv;
+}
+
+Boolean prot() {
+    return prot;
+}
+
+Boolean pub() {
+    return pub;
+}
+
+String toMetaUML() {
+    if (priv) {
+        return "-";
+    } else if (prot) {
+        return "#";
+    } else {
+        return "+";
+    }
+}

@@ -91,7 +91,8 @@ String header() {
     }
     
     tex.append("\\setlength{\\parindent}{0em}\n")
-         .append("\\setlength{\\parskip}{1em}\n");
+         .append("\\setlength{\\parskip}{1em}\n")
+         .append("\\DeclareGraphicsRule{*}{mps}{*}{}\n");
          
      return tex.toString();
 }

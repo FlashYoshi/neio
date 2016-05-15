@@ -1,0 +1,36 @@
+namespace neio.io;
+
+import java.nio.file.*;
+import java.util.Arrays;
+import neio.lang.Content;
+
+/**
+ * Prints a MetaUML string to a file
+ *
+ * @author Titouan Vervack
+ */
+class MetaUMLWriter implements Writer;
+
+String content;
+
+/**
+ * Initializes the writer with the MetaUML string
+ */
+MetaUMLWriter(String content) {
+    this.content = content;
+}
+
+/**
+ * Creates the MetaUML file
+ *
+ * @param name The name of the file to print to (without extension)
+ * @return          The path to the created file
+ */
+String write(String name) {
+    String toWrite = "input metauml;\nbeginfig(1);\n" + content + "endfig;\nend";
+    Path path = Paths.get(name + ".mp");
+    Files.write(path, Arrays.asList(toWrite.split("\n")));
+    System.out.println("Wrote " + path.toAbsolutePath());
+    
+    return path.toAbsolutePath().toString();
+}

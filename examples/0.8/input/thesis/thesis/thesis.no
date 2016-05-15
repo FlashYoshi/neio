@@ -655,6 +655,8 @@ In {compileFlow.ref()} the flow that a source document goes through before reach
 
 # Future work
 ## Static typing of the language
+## Automatic StringBuilder
+## Automatic return of the object itself
 ## Package support
 ## Implementation of packages
 ## Compiler improvement

@@ -43,6 +43,7 @@ String header() {
     .append("\\setlength{\\textheight}{23.3cm}\n")
     .append("\\setlength{\\footskip}{1.5cm}\n")
     .append(packages.toTex())
+    .append("\\DeclareGraphicsRule{*}{mps}{*}{}")
     .append("\\pagestyle{fancy}\n")
     .append("\\renewcommand{\\chaptermark}[1]{\\markright{\\MakeUppercase{#1}}}\n")
     .append("\\renewcommand{\\sectionmark}[1]{\\markright{\\thesection~#1}}\n")
