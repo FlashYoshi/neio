@@ -20,6 +20,9 @@ Packages add(List<String> options, String name) {
     return this;
 }
 
+void preTex() {
+}
+
 String toTex() {
     StringBuilder result = new StringBuilder();
     for (int i = 0; i < size(); i = i + 1) {

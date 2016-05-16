@@ -118,6 +118,9 @@ Boolean isRoot() {
     return parent == null;
 }
 
+void preTex() {
+}
+
 /**
  * Internal method to print a subtree in sorted order.
  * @param t the node that roots the tree.
