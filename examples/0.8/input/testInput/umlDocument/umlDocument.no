@@ -4,10 +4,5 @@
 
 {
     List<String> show = new ArrayList<String>();
-    show.add('''neio.lang.Content''');
-    show.add('''neio.lang.Container''');
-    show.add('''neio.stdlib.TextContainer''');
-    show.add('''neio.stdlib.Document''');
-    show.add('''neio.thesis.Thesis''');
-    new Uml('''./project.xml''', '''neio''').scale(50).show(show);
+    new Uml('''./project.xml''', '''neio.lang''').scale(50);
 }

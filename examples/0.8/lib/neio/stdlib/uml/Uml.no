@@ -52,7 +52,12 @@ Uml(String projectXml, String ns) {
 }
 
 void gatherClasses() {
-    Namespace subNamespace = view.namespace().getSubNamespace(ns);
+    List<String> list = Arrays.asList(ns.split("\\."));
+    Namespace subNamespace = view.namespace();
+    for (int i = 0; i < list.size(); i = i + 1) {
+        subNamespace = subNamespace.getSubNamespace(list.get(i));
+    }
+    
     List<Type> types = subNamespace.nearestDescendants(Type.class);
     for (int i = 0; i < types.size(); i = i + 1) {
         Type type = types.get(i);
@@ -137,11 +142,15 @@ private String createLinks() {
             String id = id(list.get(j));
             List<UmlClass> supers = levels.get(i - 1);
             for (int k = 0; k < supers.size(); k = k + 1) {
-                result.append("clink(inheritance)(")
-                        .append(id)
-                        .append(", ")
-                        .append(id(supers.get(k)))
-                        .append(");\n");
+                Boolean b = false;
+                b = list.get(j).type().assignableTo(supers.get(k).type());
+                if (b) {
+                    result.append("clink(inheritance)(")
+                            .append(id)
+                            .append(", ")
+                            .append(id(supers.get(k)))
+                            .append(");\n");
+                }
             }
         }
     }
