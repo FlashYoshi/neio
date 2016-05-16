@@ -5,7 +5,7 @@ import be.ugent.neio.model.type.ContextType;
 import org.aikodi.chameleon.core.lookup.LookupException;
 import org.aikodi.chameleon.oo.expression.NameExpression;
 import org.aikodi.chameleon.oo.type.Type;
-import org.aikodi.chameleon.support.variable.LocalVariable;
+import org.aikodi.chameleon.oo.variable.RegularVariable;
 
 /**
  * @author Titouan Vervack
@@ -24,7 +24,13 @@ public class NeioNameExpression extends JavaNameExpression {
     @Override
     protected ContextType actualType() throws LookupException {
         Type returnType = super.actualType();
-        Type contextType = (((LocalVariable) getElement()).getInitialization()).getType();
+        RegularVariable var = (RegularVariable) getElement();
+        Type contextType;
+        if (var.getInitialization() != null) {
+            contextType = var.getInitialization().getType();
+        } else {
+            contextType = var.getType();
+        }
         ContextType ctx = new ContextType(returnType, contextType);
         ctx.setUniParent(parent());
 

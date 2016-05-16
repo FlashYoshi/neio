@@ -15,11 +15,13 @@ import org.aikodi.chameleon.core.tag.TagImpl;
 import org.aikodi.chameleon.core.variable.Variable;
 import org.aikodi.chameleon.exception.ChameleonProgrammerException;
 import org.aikodi.chameleon.oo.expression.*;
+import org.aikodi.chameleon.oo.method.Method;
 import org.aikodi.chameleon.oo.plugin.ObjectOrientedFactory;
 import org.aikodi.chameleon.oo.statement.Block;
 import org.aikodi.chameleon.oo.statement.Statement;
 import org.aikodi.chameleon.oo.type.RegularType;
 import org.aikodi.chameleon.oo.type.Type;
+import org.aikodi.chameleon.oo.variable.FormalParameter;
 import org.aikodi.chameleon.oo.variable.VariableDeclaration;
 import org.aikodi.chameleon.support.expression.AssignmentExpression;
 import org.aikodi.chameleon.support.expression.ThisLiteral;
@@ -27,6 +29,7 @@ import org.aikodi.chameleon.support.member.simplename.method.NormalMethod;
 import org.aikodi.chameleon.support.member.simplename.method.RegularMethodInvocation;
 import org.aikodi.chameleon.support.member.simplename.operator.infix.InfixOperatorInvocation;
 import org.aikodi.chameleon.support.statement.ReturnStatement;
+import org.aikodi.chameleon.support.variable.LocalVariable;
 import org.aikodi.chameleon.support.variable.LocalVariableDeclarator;
 
 import java.util.ArrayList;
@@ -40,7 +43,6 @@ import static be.ugent.neio.util.Constants.*;
 public class Java8Generator {
 
     private static final String VAR_NAME = "$var";
-    private static final String ROOT = VAR_NAME + "0";
     private Neio neio;
     private int id;
     private String lastElement = null;
@@ -73,6 +75,9 @@ public class Java8Generator {
     private Block replaceMethodChain(Block oldBlock) throws LookupException {
         // The defined variables
         Stack<Variable> variables = new Stack<>();
+        // The parameter passed to the {@code Constants.CREATE_DOCUMENT} method
+        FormalParameter formalParameter = oldBlock.nearestAncestor(Method.class).formalParameter(0);
+        variables.push(formalParameter);
         // Use a string as we constantly have to create new NameExpressions
         lastElement = null;
 
@@ -135,6 +140,7 @@ public class Java8Generator {
                     break;
                 }
             }
+
 
             breakupMethodChain(callStack, variables, block, methodChain, statement);
         }
@@ -499,7 +505,7 @@ public class Java8Generator {
         Block block = neioDocument.getBlock();
 
         List<Expression> arguments = new ArrayList<>();
-        arguments.add(eFactory().createNameExpression(ROOT));
+        arguments.add(eFactory().createNameExpression(Constants.CD_PARAM));
         Expression ci = eFactory().createConstructorInvocation(DEFAULT_WRITER, null, arguments);
 
         List<Expression> miArguments = new ArrayList<>();
