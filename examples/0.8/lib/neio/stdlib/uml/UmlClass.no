@@ -2,7 +2,6 @@ namespace neio.stdlib.uml;
 
 import be.kuleuven.cs.distrinet.jnome.core.language.Java7;
 import be.kuleuven.cs.distrinet.jnome.workspace.JavaView;
-import org.aikodi.chameleon.core.element.Element;
 import org.aikodi.chameleon.oo.method.Method;
 import org.aikodi.chameleon.oo.type.Type;
 import org.aikodi.chameleon.oo.variable.VariableDeclaration;
@@ -17,6 +16,7 @@ class UmlClass implements UmlObject;
 JavaView view;
 Java7 lang;
 Type type;
+String name;
 List<UmlMemberVariable> vars;
 List<UmlMethod> methods;
 Boolean showPrivate;
@@ -28,6 +28,7 @@ UmlClass(Type type, Boolean showPrivate, Boolean showProtected) {
     this.type = type;
     this.showPrivate = showPrivate;
     this.showProtected = showProtected;
+    this.name = type.getFullyQualifiedName();
     this.view = (JavaView) (type.view());
     this.lang = (Java7) (view.language());
     vars = new ArrayList<UmlMemberVariable>();
@@ -59,9 +60,17 @@ void gatherMethods() {
     }
 }
 
+Type type() {
+    return type;
+}
+
+String name() {
+    return name;
+}
+
 String toMetaUML() {
     StringBuilder result = new StringBuilder("Class.")
-            .append(id())
+            .append(Uml.id(this))
             .append("(\"")
             .append(type.name())
             .append('"')
@@ -70,31 +79,30 @@ String toMetaUML() {
             .append(")\n\t(")
             .append(methodsToUml(type))
             .append(");\n")
-            .append(stereoTypeToUml(type));
+            .append(stereotypeToUml());
 
     if (!varsShown) {
-        result.append(id())
+        result.append(Uml.id(this))
             .append(".info.iAttributeStack.top := 0;\n")
-            .append(id())
+            .append(Uml.id(this))
             .append(".info.iAttributeStack.bottom := 0;\n");
     }
     
     if (!methodsShown) {
-        result.append(id())
+        result.append(Uml.id(this))
             .append(".info.iMethodStack.top := 0;\n")
-            .append(id())
+            .append(Uml.id(this))
             .append(".info.iMethodStack.bottom := 0;\n");
     }
 
     return result.toString();
 }
 
-private String stereoTypeToUml(Type type) {
+private String stereotypeToUml() {
     StringBuilder result = new StringBuilder();
-    Java7 lang = (Java7) (view.language());
 
-    if (type.isTrue(lang.INTERFACE) && type.isTrue(lang.ABSTRACT)) {
-        result.append("classStereotypes.").append(id())
+    if (type.isTrue(lang.INTERFACE) || type.isTrue(lang.ABSTRACT)) {
+        result.append("classStereotypes.").append(Uml.id(this))
                 .append("(")
                 .append('"')
                 .append("<<");
@@ -149,36 +157,4 @@ private String variablesToUml(Type type) {
     }
 
     return result.toString();
-}
-
-private String accessModifierToUml(Element e) {
-    if (e.isTrue(lang.PRIVATE)) {
-        return "-";
-    } else if (e.isTrue(lang.PROTECTED)) {
-        return "#";
-    } else {
-        return "+";
-    }
-}
-
-/**
- * Writes out the hashcode of this object as readable text.
- * This allows us to use the hashcode as a unique identifier as MetaUML does
- * not accept names that have such big numbers.
- *
- * @return The human readable hashcode of this object
- */
-String id() {
-    String s = "" + hashCode();
-    s = s.replaceAll("0", "zero");
-    s = s.replaceAll("1", "one");
-    s = s.replaceAll("2", "two");
-    s = s.replaceAll("3", "three");
-    s = s.replaceAll("4", "four");
-    s = s.replaceAll("5", "five");
-    s = s.replaceAll("6", "six");
-    s = s.replaceAll("7", "seven");
-    s = s.replaceAll("8", "eight");
-    s = s.replaceAll("9", "nine");
-    return s;
 }
