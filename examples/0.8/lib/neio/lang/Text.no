@@ -178,7 +178,7 @@ String thisToTex() {
     String me = "";
     if (text == null) {
         // Create valid TeX text
-        me = realText.replaceAll("\\\\([^#$%&_{}\\\\])", "$1");
+        me = realText.replaceAll("\\\\([^#$%&~\\^_{}\\\\])", "$1");
         me = me.replaceAll("\\\\~", "\\\\textasciitilde{}");
         me = me.replaceAll("\\\\^", "\\\\textasciicircum{}");
         me = me.replaceAll("\\\\\\\\\\\\", "\\\\textbackslash{}");

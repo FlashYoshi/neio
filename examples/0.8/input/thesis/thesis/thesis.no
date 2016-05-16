@@ -24,7 +24,7 @@ It is introduced by the designers of the language as follows:
 {md}'s goal is to be easy to write and read as a plain text document and as such is actually based on plain text emails.
 Due to this, it attracts a lot of people's attention as it is very easy to create a new simple document, such as a short report.
 It achieves this by introducing a small and simple syntax {cite('''mdsyntax''')}. The syntax they chose also feels very natural.
-For example, to create a title you could underline it with \- or = to create an enumeration, you can use \*'s instead of bullet points.
+For example, to create a title you could underline it with \- or \= to create an enumeration, you can use \*'s instead of bullet points.
 
 By using such a simple syntax compile times for the documents are very short and IDE support is wide.
 Even without the help of an IDE, {md} is very readable as it was designed to be.
@@ -346,7 +346,7 @@ Again though, I stand corrected, this would be valid Java code if not for the \#
 In Neio class files, you are allowed to use symbols as a method name.
 This is a feature that is necessary to allow a Neio document to be represented as a chain of method calls as otherwise you would have to actually write out a document as series of method calls,
 or you would not be able to use symbols as syntactic shorthand.
-All the symbols you can use for method names at this time are `\#, \-, \*, \_, \$, \|`, the backtick and the newline.
+All the symbols you can use for method names at this time are `\#, \-, \*, \_, \$, \|, \=, \^`, the backtick and the newline.
 The newline character is recognised by the following regex `\\n\\r?`.
 
 To keep the language simple and to maximize reusability (as well as making the parsing somewhat easier) some functionality from the Java language was dropped.
@@ -658,6 +658,7 @@ In {compileFlow.ref()} the flow that a source document goes through before reach
 ## Automatic StringBuilder
 ## Automatic return of the object itself
 ## Package support
+## Using Java syntax
 ## Implementation of packages
 ## Compiler improvement
 ### Correct stages

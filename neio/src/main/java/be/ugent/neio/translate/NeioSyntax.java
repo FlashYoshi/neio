@@ -44,6 +44,7 @@ public class NeioSyntax extends Java7Syntax {
         map.put("#", "hash");
         map.put("*", "star");
         map.put("=", "equalSign");
+        map.put("^", "caret");
         map.put("-", "dash");
         map.put("_", "underscore");
         map.put("`", "backquote");
