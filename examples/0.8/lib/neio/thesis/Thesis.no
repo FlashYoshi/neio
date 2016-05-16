@@ -30,8 +30,8 @@ Thesis() {
     addContent(new MainMatter());
 }
 
-String header() {
-    StringBuilder header = new StringBuilder("\\documentclass[11pt,a4paper,oneside,notitlepage]{book}\n")
+String preamble() {
+    StringBuilder preamble = new StringBuilder("\\documentclass[11pt,a4paper,oneside,notitlepage]{book}\n")
     .append("\\setlength{\\hoffset}{-1in}\n")
     .append("\\setlength{\\voffset}{-1in}\n")
     .append("\\setlength{\\topmargin}{2cm}\n")
@@ -82,5 +82,5 @@ String header() {
     .append("lineskip={-1.5pt}\n")
     .append("}\n");
 
-    return header.toString();
+    return preamble.toString();
 }

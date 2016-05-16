@@ -5,6 +5,7 @@ import be.ugent.neio.builder.NeioProjectBuilder;
 import neio.io.MetaUMLBuilder;
 import neio.io.MetaUMLWriter;
 import neio.lang.Content;
+import neio.stdlib.Document;
 import neio.stdlib.Image;
 import org.aikodi.chameleon.core.namespace.Namespace;
 import org.aikodi.chameleon.oo.type.Type;
@@ -90,6 +91,11 @@ Uml showAll() {
 Uml scale(Integer scale) {
     this.scale = scale;
     return this;
+}
+
+void preTex() {
+    nearestAncestor(Document.class).addToPreamble("\\DeclareGraphicsRule{*}{mps}{*}{}\n");
+    super.preTex();
 }
 
 String toTex() {

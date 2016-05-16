@@ -1,4 +1,4 @@
-[RBTDocument]
+[Document]
 
 {
     List<Integer> tree = new ArrayList<Integer>();
