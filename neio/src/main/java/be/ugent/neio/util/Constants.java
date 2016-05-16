@@ -26,6 +26,7 @@ public class Constants {
     public static final String APPEND_CONTENT = "appendContent";
     public static final String GET_INSTANCE = "getInstance";
     public static final String CREATE_DOCUMENT = "createDocument";
+    public static final String FINISH_DOCUMENT = "finishDocument";
     // KNOWN VARS
     public static final String CD_PARAM = "input";
 }

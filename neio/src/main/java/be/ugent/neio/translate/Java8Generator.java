@@ -60,8 +60,6 @@ public class Java8Generator {
         id = 0;
 
         neioDocument.setBlock(replaceMethodChain(neioDocument.getBlock()));
-        String writerReturn = callWriter(neioDocument);
-        callBuilder(neioDocument, writerReturn);
 
         return neioDocument;
     }
@@ -493,48 +491,6 @@ public class Java8Generator {
         NormalMethod method = mi.getElement();
         Type type = method.nearestAncestor(Type.class);
         replacee.replaceWith(eFactory().createNeioNameExpression(getPrefix(type, variables)));
-    }
-
-    /**
-     * Creates a document writer and calls the write method on it creating a TeX/JS/... string
-     *
-     * @param neioDocument The document to write
-     * @return The variable name of the generated string
-     */
-    private String callWriter(TextDocument neioDocument) {
-        Block block = neioDocument.getBlock();
-
-        List<Expression> arguments = new ArrayList<>();
-        arguments.add(eFactory().createNameExpression(Constants.CD_PARAM));
-        Expression ci = eFactory().createConstructorInvocation(DEFAULT_WRITER, null, arguments);
-
-        List<Expression> miArguments = new ArrayList<>();
-        miArguments.add(oFactory().createStringLiteral(neioDocument.getName()));
-        MethodInvocation mi = eFactory().createNeioMethodInvocation(WRITE_METHOD, ci, miArguments);
-        LocalVariableDeclarator varDecl = new LocalVariableDeclarator(oFactory().createTypeReference("java.lang.String"));
-        String varName = getVarName();
-        VariableDeclaration var = new VariableDeclaration(varName, mi);
-        varDecl.add(var);
-
-        block.addStatement(varDecl);
-        return varName;
-    }
-
-    /**
-     * Builds the TeX/JS/... string into a real document such as a PDF
-     *
-     * @param neioDocument The document to build
-     * @param writerReturn The variable name of the TeX/JS/... string
-     */
-    private void callBuilder(TextDocument neioDocument, String writerReturn) {
-        List<Expression> arguments = new ArrayList<>();
-        Expression ci = eFactory().createConstructorInvocation(DEFAULT_BUILDER, null, arguments);
-
-        List<Expression> miArguments = new ArrayList<>();
-        miArguments.add(eFactory().createNameExpression(writerReturn));
-        MethodInvocation mi = eFactory().createNeioMethodInvocation(BUILD_METHOD, ci, miArguments);
-
-        neioDocument.getBlock().addStatement(oFactory().createStatement(mi));
     }
 
     /**
