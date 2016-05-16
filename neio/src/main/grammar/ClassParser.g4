@@ -28,7 +28,7 @@ fieldAssignmentExpression : var=fieldDecl EQUALS val=expression;
 
 method : methodExpression block;
 methodExpression : modifier* methodHeader L_BRACE parameters? R_BRACE;
-methodHeader : (SMALLER typeParameterList BIGGER)? (type | VOID)? name=(Identifier | MethodIdentifier | STAR | MINUS | PIPE);
+methodHeader : (SMALLER typeParameterList BIGGER)? (type | VOID)? name=(Identifier | MethodIdentifier | STAR | MINUS | PIPE | HAT | EQUALS);
 modifier : ABSTRACT
          | PRIVATE
          | PROTECTED
@@ -76,8 +76,8 @@ expression : literal                            #literalExpression
 		   | neioNewCall                        #neioNewExpression
            | expression DOT Identifier          #chainExpression
            | L_BRACE expression R_BRACE         #parExpression
-           | expression DOT name=(Identifier | NAMESPACE | MethodIdentifier | STAR| MINUS) args=arguments #qualifiedCallExpression
-           | name=(Identifier | NAMESPACE | MethodIdentifier | STAR | MINUS) args=arguments #selfCallExpression
+           | expression DOT name=(Identifier | NAMESPACE | MethodIdentifier | STAR| MINUS | EQUALS | HAT) args=arguments #qualifiedCallExpression
+           | name=(Identifier | NAMESPACE | MethodIdentifier | STAR | MINUS | EQUALS | HAT) args=arguments #selfCallExpression
            | op=E_MARK right=expression                                         #notExpression
            | left=expression op=(INCR | DECR)                                   #postfixCrementExpression
            | op=(INCR | DECR) right=expression                                  #prefixCrementExpression
