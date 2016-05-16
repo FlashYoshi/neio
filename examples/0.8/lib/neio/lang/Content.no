@@ -382,7 +382,6 @@ public final <T> T getInstance(Class<T> klass, Class[] paramTypes, Object[] para
     }
 }
 
-
 /**
  * Does the actual instantiation of an object using Reflection
  *
@@ -393,6 +392,19 @@ public final <T> T getInstance(Class<T> klass, Class[] paramTypes, Object[] para
  */
 private <T> T instantiate(Class<T> klass, Class[] paramTypes, Object[] params) {
     return klass.getConstructor(paramTypes).newInstance(params);
+}
+
+/**
+ * Should be called before {@code toTex} to assure correct initialisation
+ * of all the objects.
+ * Recursively calls preTex on all the Content in this Content.
+ * It allows the Content in this Content to perform operations after their
+ * initialization, but before they are written out.
+ */
+void preTex() {
+    for (int i = 0; i < content.size(); i = i + 1) {
+        content.get(i).preTex();
+    }
 }
 
 /**

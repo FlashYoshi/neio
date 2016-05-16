@@ -14,6 +14,7 @@ TexStdOutWriter(Content content) {
 }
 
 String write(String name) {
+    content.preTex();
     System.out.println("% Name: " + name + "\n");
     System.out.println(content.toTex());
     
