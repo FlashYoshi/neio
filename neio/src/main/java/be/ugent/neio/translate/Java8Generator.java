@@ -553,6 +553,9 @@ public class Java8Generator {
      */
     private boolean isNested(String name) {
         String c = firstChar(name);
+        if (c.equals("^")) {
+            c = "\\^";
+        }
         Pattern p = Pattern.compile("^[" + c + "][" + c + "]+$");
         Matcher m = p.matcher(name);
         return m.matches();

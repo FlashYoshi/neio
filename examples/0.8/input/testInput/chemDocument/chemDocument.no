@@ -1,0 +1,15 @@
+[Document]
+
+This document demonstrates the creation of molecules.
+{
+    new Structure()
+}
+
+$ C * 6 _ OH ^ - C _ ^ OH - O - C _ ^ CH2OH - C _ HO ^ - C _ ^ OH - 
+| Glucose
+$ A * 5 - B = C = = D - E - 
+| Ring fantasy molecule
+$ D = E _ H - A = B = C ^ OH
+| Straight fantasy molecule
+
+And another paragraph proving we're not stuck with only molecules.
