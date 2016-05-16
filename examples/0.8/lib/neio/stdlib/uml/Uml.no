@@ -21,6 +21,7 @@ Boolean showProtected;
 List<String> show;
 List<UmlClass> classes;
 Map<Integer, List<UmlClass> > levels;
+Integer scale;
 
 /*Uml() {
     Config.setCaching(true);
@@ -47,6 +48,7 @@ Uml(String projectXml, String ns) {
     classes = new ArrayList<UmlClass>();
     gatherClasses();
     levels = new HashMap<Integer, List<UmlClass> >();
+    scale = null;
 }
 
 void gatherClasses() {
@@ -80,6 +82,11 @@ Uml showAll() {
     return this;
 }
 
+Uml scale(Integer scale) {
+    this.scale = scale;
+    return this;
+}
+
 String toTex() {
     String metaUML = toMetaUML();
     MetaUMLWriter writer = new MetaUMLWriter(metaUML);
@@ -93,7 +100,12 @@ String toTex() {
     MetaUMLBuilder builder = new MetaUMLBuilder();
     builder.build(name + ".mp");
 
-    return new Image(name + ".1").toTex();
+    Image i = new Image(name + ".1");
+    if (scale != null) {
+        i.scale(scale);
+    }
+
+    return i.toTex();
 }
 
 String toMetaUML() {
