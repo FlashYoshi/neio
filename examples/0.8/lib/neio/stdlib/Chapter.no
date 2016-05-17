@@ -36,7 +36,6 @@ Chapter(Text title, Integer level) {
  *
  * @param title  The title of the new Chapter
  * @param level The level of nesting of the new Chapter
- *
  */
 nested Chapter #(Text title, Integer level) {
     if (level <= this.level) {
@@ -64,7 +63,7 @@ Text title() {
 }
 
 /**
- * Creater a TeX representation of this and its children
+ * Creates a TeX representation of this and its children
  *
  * @return The TeX representation
  */
