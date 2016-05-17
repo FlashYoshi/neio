@@ -764,12 +764,23 @@ We could for example create a bold Chapter using the following code `new Chapter
 ## Considerations
 {Chapter considerations = (Chapter) parent()}
 Whilst constructing the language a few other things were considered but not implemented, they will be discussed below.
-### Static typing
-### Security
-### Moving content
-When we assign content to a variable, and try to use it later on with small changes, it is possible that the content moves or that both the original as the new content are changed.
-The language does not enforce every placed content to be static and in turn this is the responsibility of the library developer and the user of those libraries.
-### Use
+#### Static typing
+The language has been designed using static typing.
+The reason for this is, that while we are writing a Neio document in Code mode, or we are writing a Neio class, we can be notified of possible type mismatches.
+This decreases the time spent debugging and spend waiting on the compiler as you weed out one type mismatch after another.
+It also allows you to create a safer program as type errors might be caught at compile time when using static typing.
+On the other hand when using dynamic typing, type errors will only show up at runtime.
+With the help of an IDE, we also don't really have that much more typing to do than when we would be using dynamic typing.
+The language has been designed with static typing in mind, and types have been incorporated into the compiler, but the necessary checks are not yet in place.
+At this point in time, when a type error appears in the code, we will get a `LookupException` when we're looking for that method or variable.
+In the future, checks should be placed and appropriate errors should be thrown that make clear where exactly the error occurs.
+
+#### Security
+Another issue that we have considered is security. As it is possible to directly execute Java code, security is an issue.
+However, security is also an issue in {lat} as has been shown in several articles {cite('''checkoway2010text''')} {cite('''checkoway2011don''')}.
+Since our language is more readable than {lat} it might be easier to spot for people who understand code, that the document or library contains malicious code, than it is to spot malicious code in a {lat} document.
+Adding a layer of security on top of Neio would require a lot of effort and research and is not in scope of this thesis.
+Thus we conclude by saying that we known there is a security risk, but dismissing it should be seen as future work.
 
 # Supported document types and libraries
 This chapter will go into some more details about what document types can be handled by Neio, and how to specifically build these kind of documents.
@@ -836,6 +847,11 @@ As mentioned before in {considerations.ref()} there are still a few things that 
 There are however a lot more things that could be done and we will discuss them in the rest of this chapter.
 ## Automatic StringBuilder
 ## Automatic return of the object itself
+## Moving content
+When we assign content to a variable, and try to use it later on with small changes, it is possible that the content moves or that both the original as the new content are changed.
+The language does not enforce every placed content to be static and in turn this is the responsibility of the library developer and the user of those libraries.
+
+## Use
 ## Package support
 ## Implementation of packages
 ## Using Java syntax
