@@ -39,7 +39,6 @@ fragment DOLLAR : '$';
 fragment PIPE : '|';
 fragment EQUALS : '=';
 fragment CARET : '^';
-BANG : '!';
 MethodName : {getCharPositionInLine() == 0}? (H | D | ST | DLR | EQUALS | CARET | B_QUOTE | UNDERSCORE | P)+;
 HASH : H;
 DASH : D;
@@ -51,7 +50,7 @@ BQ : B_QUOTE;
 US : UNDERSCORE;
 DLR : DOLLAR;
 
-fragment VALID_CHAR : ~[#-*_`\[\]{} \r\n] | SQ | HASH | BANG | DLR | L_BRACE | R_BRACE | EQ | CA;
+fragment VALID_CHAR : ~[#-*_`\[\]{} \r\n] | SQ | HASH | DLR | L_BRACE | R_BRACE | EQ | CA;
 
 WORD : VALID_CHAR+;
 
