@@ -19,6 +19,8 @@ Thesis() {
     .add("amsmath")
     .add("float")
     .add("listings")
+    .add("tocloft")
+    .add("color")
     .add("hyperref");
 
     List<String> options = new ArrayList<String>();
@@ -67,10 +69,14 @@ String preamble() {
     .append("\\hyphenation{ditmagnooitgesplitstworden dit-woord-splitst-hier}\n")
     .append("\\setlength{\\parindent}{0em}\n")
     .append("\\setlength{\\parskip}{1em}\n")
+    .append("\\definecolor{comments}{RGB}{98, 151, 85}\n")
     .append("\\lstset{\n")
     .append("belowcaptionskip=1\\baselineskip,\n")
     .append("breaklines=true,\n")
     .append("frame=l,\n")
+    .append("comment=[l]{//},\n")
+    .append("morecomment=[s]{/**}{*/},\n")
+    .append("commentstyle=\\color{comments},\n")
     .append("xleftmargin=\\parindent,\n")
     .append("showstringspaces=false,\n")
     .append("basicstyle=\\footnotesize\\ttfamily,\n")
