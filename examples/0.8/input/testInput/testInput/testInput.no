@@ -1,12 +1,12 @@
 [Document]
+
 # Chapter 1
-{{
-    List<String> l = new ArrayList<String>();
-    l.add('''upquote''');
-    l.add('''pdfpages''');
-    l.add('''pdfpages''');
-    
-    for (int i = 0; i < l.size(); i = i + 1) {
-        addPackage(l.get(i));
-    }
-}}
+I created a document that only contained one chapter.
+{
+    Chapter c1 = nearestAncestor(Chapter.class);
+    Integer printing = 1;
+    Integer driving = 2;
+    Integer timeWasted = 14;
+}
+
+It's called {c1.title()} and it cost me {printing + driving + timeWasted}€!
