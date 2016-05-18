@@ -515,6 +515,7 @@ Examples of surround methods are the ones available in Text.no.
 The text `This is \*bold\* text` will then be transformed into the following chain `text("This is ").text(\*("bold")).text(" text")`.
 
 ### Code blocks
+{Chapter codeBlocks = (Chapter) parent()}
 We've seen that we can use code in Neio class files and customise our document this way. But this doesn't allow us to do everything we want to.
 We don't want to create a new document class every time we want to do something special. It's also not possible to add anything to a document class that does not exist.
 Sometimes we might just want to change a property of some content, which is not possible as of yet.
@@ -735,24 +736,27 @@ I created a document that only contained one chapter.
     Integer timeWasted = 14;
 }
 
-It's called { c1.title() } and it cost me { printing + driving + timeWasted }!
+It is called { c1.title() } and it cost me { printing + driving + timeWasted }!
     '''))
 }}
 
 In the example we get the first `Chapter` structurally above us, define some integers, and then later on we get the title of this chapter and do a calculation with our integers.
 The result of this is returned and passed to the `text` method, as would normally happen with a piece of text.
-Note that whatever comes out of the inline code block is first transformed into a String using the toString\(\) method.
+Note that whatever comes out of the inline code block is first transformed into a String using the toString() method.
 
 The paragraph thus translates into the following chain.
-
-`this.text("It's called ").text(c1.title().toString()).text(" and it cost me ").text("" + (printing + driving + timeWasted)).text("!");`
+{
+    new LstListing('''
+this.text("It is called ").text(c1.title().toString()).text(" and it cost me ").text("" + (printing + driving + timeWasted)).text("!");
+    ''')
+}
 
 ### Text
 Something that has not been noted yet, is that most of the time, we don't actually use Java String's.
 What is used most of the time is Neio Text. Neio Text (in Code mode, not in class files) is created like Java String's, by enclosing some text with a pair of doubles quotes \(`\"`\).
 A Java String is still sometimes needed and can be created using a pair of triple, single-quotes \(`\'\'\'`\).
 The difference is that Neio text can contain anything you would type in Text mode, which includes code blocks, you can thus effectively endlessly nest Text and Code mode.
-The reason we use Neio text for most things instead of Java String's \(just have a look at a few of the methods in the UML shown below\), is because Neio text can be marked up, by using surround methods for example.
+The reason we use Neio text for most things instead of Java String's (just have a look at a few of the methods in the UML shown below), is because Neio text can be marked up, by using surround methods for example.
 {
     List<String> showTC = new ArrayList<String>();
     showTC.add('''neio.stdlib.TextContainer''');
@@ -786,20 +790,30 @@ Thus we conclude by saying that we known there is a security risk, but dismissin
 This chapter will go into some more details about what document types can be handled by Neio, and how to specifically build these kind of documents.
 We will also discuss which libraries have been recreated in Neio to allow for a wide use of the language.
 
-## Document types
-### Report
+## Document classes
+The simplest of documents can be created using the `Document` class.
+It provides syntax to create anything that {md} can create, and on top of that, it allows you to create tables, {lat} math, uml,...
+It also allows you to use the code blocks defined in { codeBlocks.ref() }, to customise your document.
+For example, it is possible to place two `Content`'s next to each other by using the `leftOf` and `rightOf` methods that are defined in the `Content` class.
+The code of these methods is shown below.
+{
+    new LstInputListing(118, 182, '''../../examples/0.8/lib/neio/lang/Content.no''')
+}
+This code generates {lat} minipages {cite('''minipage''')}.
+
 ### Letter
 ### Book
 A prime subject of writing a book is this document itself. The entirety of this book has been created using Neio script.
 //TODO add url
 ### Article
 ### Slides
+
+## Libraries
 ### BibTeX
 It is important to note that our BibTeX implementation is just a binding to LaTeX and does not really allow for any customisation.
 We chose to do it this way, to illustrate that binding to LaTeX is not very difficult, and because we would have to create an entire parser for BibTeX to be able to create the object structure needed to have full control over BibTeX.
 As the BibTeX format is quite complicated we felt that our time was better spent elsewhere.
 
-## Libraries
 ### TikZ
 ### Beamer
 ### {lat} math and amsmath
@@ -863,4 +877,3 @@ The language does not enforce every placed content to be static and in turn this
 ### Syntax highlighting
 ### Auto completion
 ### IDE with preview
-
