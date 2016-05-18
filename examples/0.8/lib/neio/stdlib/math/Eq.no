@@ -20,7 +20,7 @@ Eq sqrt(Content arg) {
     return sqrt(null, arg);
 }
 
-Eq pow(Content base, Content pow) {
+Eq ^(Content base, Content pow) {
     addContent(new Pow(base, pow));
     return this;
 }
@@ -30,7 +30,7 @@ Eq nonu() {
     return this;
 }
 
-Eq e() {
+Eq =() {
     addContent(new Equals());
     return this;
 }

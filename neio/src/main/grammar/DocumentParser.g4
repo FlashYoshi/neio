@@ -20,7 +20,7 @@ cPrefixCall : preMethodName S+ txt (S+ cPrefixCall)?
             | preMethodName S+ cPrefixCall?;
 preMethodName : P | STAR | EQ | DASH | CA | US;
 // We don't allow spaces next to the MethodName to not confuse us with prefixCalls
-surroundCall : left=(MethodName|HASH|DASH|STAR|BQ|US|DLR|EQ|CA)+ (ESCAPE+ | (inlinecode | WORD)) txt? right=(HASH|DASH|STAR|BQ|US|DLR|EQ|CA)+ {$left.text.equals($right.text)}?;
+surroundCall : left=(MethodName|HASH|DASH|STAR|BQ|US|DLR|EQ|CA)+ (ESCAPE+ | (inlinecode | WORD)) txt?? right=(HASH|DASH|STAR|BQ|US|DLR|EQ|CA)+ {$left.text.equals($right.text)}?;
 
 text : txt;
 txt : ( textWSpaces

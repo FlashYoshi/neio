@@ -338,7 +338,10 @@ To further understand this example we need to introduce the second kind of files
 
 ## Class files
 Class files are very similar to class files in Java. They are the thriving force behind the Neio documents, they define all the object and methods that are used in a Neio document.
-As means of an introduction we will have a look at the Document class that was used as a document class in the previous section.
+They are extremely important to the design of the language as they allow us to represent everything in the document with an object structure.
+The use of this object structure is extensively used in Neio and examples of this will be shown further on.
+
+As means of an introduction we will have a look at the `Document` class that was used as a document class in the previous section.
 {
     new LstInputListing('''../../examples/0.8/lib/neio/stdlib/Document.no''');
 }
@@ -473,7 +476,7 @@ A method can be annotated with a `nested` modifier which means that this method 
 The depth of this recursive method is just the number of times the symbol has been used.
 If we have a look at the `Chapter` class, we see that it has a nested method \#.
 {
-    new LstInputListing('''../../examples/0.8/lib/neio/stdlib/Chapter.no''');
+    new LstInputListing(1, 53, '''../../examples/0.8/lib/neio/stdlib/Chapter.no''');
 }
 
 If we would now call `chapter.\#\#("Chapter 1.1")` for example, it would translate to the following call: `chapter.\#("Chapter 1.1", 2)`.
@@ -791,6 +794,10 @@ This chapter will go into some more details about what document types can be han
 We will also discuss which libraries have been recreated in Neio to allow for a wide use of the language.
 
 ## Document classes
+It is important to note that to create complete document classes would require a lot more work than was available for this thesis.
+If we just have a look at the user guides of Memoir {cite('''memoir''')} or KOMA-Script {cite('''komascript''')}, we see that they consist of 609 and 419 pages respectively.
+This is not something we could hope to reproduce in the scope of this thesis.
+
 The simplest of documents can be created using the `Document` class.
 It provides syntax to create anything that {md} can create, and on top of that, it allows you to create tables, {lat} math, uml,...
 It also allows you to use the code blocks defined in { codeBlocks.ref() }, to customise your document.
@@ -799,23 +806,148 @@ The code of these methods is shown below.
 {
     new LstInputListing(118, 182, '''../../examples/0.8/lib/neio/lang/Content.no''')
 }
-This code generates {lat} minipages {cite('''minipage''')}.
+This code takes the parent from one of the two `Content`'s, the base, and links the other Content to the base.
+The implementation creates a root {lat} `Minipage` {cite('''minipage''')} if these are the first two objects in a row to be placed next to each other, otherwise it just wraps the two `Content`'s in a `minipage`.
+The root `minipage` takes up the total width, while the `minipage`'s that wrap the content take up 1/children of the width.
 
-### Letter
+Another of implementing this, that would probably have worked better was through `TikZ` picture's.
+This would have been better because it allows you to easily set any two things next to each other or above/beneath each other.
+`Minipage`'s require a lot more manual work, they might also split at a page-end which is not what we really want.
+
+The `Document` document class can thus be used to write simple documents, such as small reports on various tasks.
 ### Book
-A prime subject of writing a book is this document itself. The entirety of this book has been created using Neio script.
-//TODO add url
-### Article
+A prime subject of writing a book is this document itself. The entirety of this book has been created in a single Neio document.
+The way we do this is by creating a new `Document` class that represents our {lat} template.
+In this case the template is implemented in the `Thesis` class given below.
+{
+    new LstInputListing('''../../examples/0.8/lib/neio/thesis/Thesis.no''')
+}
+
+It also says that any `Chapter` that is automatically created, typically by the `\#` method in `Document` or `Chapter`, should be an instance of `ThesisChapter`.
+This is done through the following line.
+{
+    new LstListing('''addClassMapping(Chapter.class, ThesisChapter.class);''')
+}
+
+A `ThesisChapter` just redefines a chapter so that it translates into the {lat} `chapter` macro when it is level 1 instead of directly calling the {lat} section macro.
+{
+    new LstInputListing('''../../examples/0.8/lib/neio/thesis/ThesisChapter.no''')
+}
+
+It extends the `Document` class and adds its own packages and creates its own {lat} preamble.
+One of the things it also does, is automatically adding a Table of Contents (ToC) using the following line.
+{
+    new LstListing('''addContent(new Toc());''')
+}
+
+The code for a ToC is shown below.
+{
+    new LstInputListing('''../../examples/0.8/lib/neio/stdlib/Toc.no''')
+}
+
+We can also add things to a document class ourselves which might allow us to reuse other document classes
+For example, to add an abstract to the `Thesis` document class, we just have to create an `Abstract` class that extends `Content` and add it to the document at the right time.
+This allows us to add more functionality to a document class, without having to modify the document class itself, or without having to create a new one, e.g. Thesis and ThesisWithAbstract.
+
+To add an abstract , we could initialise an `Abstract`, this `Abstract` might then overwrite the `newline` function to create an `AbstractNLHandler`.
+The `AbsttractNLHandler` can then override the `text` method to initialize itself, as an abstract is just a block of text.
+Overriding the `newline` method in the `AbstractNLHandler` allows us to escape this \"Abstract mode\" by typing an empty line.
+The code to for `Abstract` and `AbstractNLHandler` are shown below, an example of what the output looks like can be found at the beginning of this document.
+// TODO refer to extended Abstract
+
+### Other document classes
+To be able to create an article, a letter, or anything else, the only thing we would have to do is create a new Neio class for this document class.
+This Neio class will then implement its own {lat} preamble and decide what packages to include by default and it might have to redefine what types of objects should be used using `addClassMapping`.
+It might also add methods to be filled in, using a code block, or by overwriting methods and making use of the newline handlers.
+
+For example, you might create a `LetterHeader` class that represents the header of a formal letter.
+This header requires some information about the writer, the name, the addressee,....
+One way to fill these in is just by passing them to the constructor of `LetterHeader` or by using setters defined in `LetterHeader`.
+Another way to do this, is by overwriting some methods in `LetterHeader`.
+We could overwrite the `\#` method to represent the author's name, and `\-` to represent the addressee for example.
+Another possibility is to used nested methods for this, `\#` represents the author, `\#\#` represents the addressee and so on.
+
+Yet another way would be to create objects for the parameters we need (grouping some together if that makes sense) such as `Author` and `Addressee`.
+We then implement a method, let us take `\#` once more, in `LetterHeader` that creates a new `Author` and returns it.
+We then override a method, the same or a different one, in `Author` that creates the `Addressee` and returns it.
+The advantage of this last step is that the structure of the letter is well split up and is enforced on the user.
+Forgetting to define the `Author` should be immediately noticeable as the method to create the `Addressee` should not be known yet without creating the `Author` first.
+On the other hand this is also more prune to error as people tend to forget things all the time.
+// TODO: implement at least one of these
+
 ### Slides
+// TODO: What do we do with slides?
 
 ## Libraries
-### BibTeX
-It is important to note that our BibTeX implementation is just a binding to LaTeX and does not really allow for any customisation.
-We chose to do it this way, to illustrate that binding to LaTeX is not very difficult, and because we would have to create an entire parser for BibTeX to be able to create the object structure needed to have full control over BibTeX.
-As the BibTeX format is quite complicated we felt that our time was better spent elsewhere.
+To show what the language is capable of a few libraries were created or reimplemented. All of the currently available libraries in Neio will be explained below.
+Note that none of these libraries are complete and would require a lot more effort to reach a state of completion.
+Just having a look at the manuals of a few popular libraries such as TikZ{cite('''tikzman''')} we can see that more time is needed to write such a library than there is available for this thesis.
+The libraries that were created, are meant for illustrative purpose, to show what Neio is capable of.
 
-### TikZ
-### Beamer
+### BibTeX
+The library created for BibTeX is one of the easiest ones created for Neio.
+The implementation is just a binding to LaTeX and does not really allow for a lot of customisation as we do not have an object model of the BibTeX file.
+We chose to implement BibTeX this way to illustrate that binding to LaTeX is not very difficult, and because we would have had to create an entire parser for BibTeX to be able to create the object structure needed to have full control over the BibTeX files.
+As the BibTeX format is quite complicated we felt that our time was better spent elsewhere.
+This is mainly because the only thing we require of BibTeX for this thesis, is to allow us to easily quote articles, websites and so on.
+The code for our implementation of BibTeX can be found below.
+{
+    new LstInputListing('''../../examples/0.8/lib/neio/stdlib/Bibtex.no''');
+}
+
+A BibTeX can now be added through the `addBibtex` method in `Document` and we can cite an entry by using the proxy method, `cite`, in `Document`.
+{
+    new LstInputListing(60, 82, '''../../examples/0.8/lib/neio/stdlib/Document.no''');
+}
+
+Lastly we show the code for the `Citation` class.
+{
+    new LstInputListing('''../../examples/0.8/lib/neio/stdlib/Citation.no''');
+}
+
+The `Citation` class is a subclass of `Text` as we call it through an inline code block.
+All the cites in this thesis have been provided through these classes and are called as below.
+`key` is a Java String as it is used to do a lookup on the BibTeX entries, it should not be allowed to be marked up.
+{
+    new LstListing('''
+[Document]
+This is how we cite something {cite(\u0039''key\u0039'')}.
+    ''')
+}
+
+### References
+The way references have been implemented is quite straightforward.
+Any class that implements the `Referable` interface, such as `Chapter` or `Image`, can be referenced by calling the `ref` method.
+The way we typically go about a reference is as follows.
+{
+    new LstListing('''
+[Document]
+# Chapter 1
+{Chapter chap = (Chapter) parent()}
+
+In {chap.ref()} we will explain references.
+    ''')
+}
+
+What we use here is a little trick to be able to get the `Chapter` into a variable.
+What happens is as follows, a `Chapter` is created using the `\#` method and then the `newline` method is called upon it (this method has been inherited from `TextContainer`).
+A `NewlineHandler` always takes the object that created it as a parameter in its constructor so that it can refer to it later on.
+The `parent` call in the inline code block is thus called on the NewlineHandler, more specifically the `ContainerNLHandler`.
+As the parent of a `ContainerNLHandler` is a `TextContainer`, a cast to `Chapter` is needed.
+The code block is allowed to be an inline code block instead of a non-scoped code block because the statement in it is an assignment and thus returns nothing.
+The newline method from `TextContainer` as well as the `ref` method in `Chapter` and the `Referable` interface are shown below.
+{
+    new LstInputListing(12, 19, '''../../examples/0.8/lib/neio/stdlib/TextContainer.no''');
+}
+
+{
+    new LstInputListing(102, 119, '''../../examples/0.8/lib/neio/stdlib/Chapter.no''');
+}
+
+{
+    new LstInputListing('''../../examples/0.8/lib/neio/lang/Referable.no''');
+}
+
 ### {lat} math and amsmath
 ### {lat} tables
 ### MetaUML

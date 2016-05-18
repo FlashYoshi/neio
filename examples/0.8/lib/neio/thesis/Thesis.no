@@ -8,10 +8,16 @@ import neio.stdlib.Document;
 import neio.stdlib.Packages;
 import neio.stdlib.Toc;
 
+/**
+ * A document class to be used in for a Thesis
+ */
 class Thesis extends Document;
 
 private Packages packages;
 
+/**
+ * Intialises the document class, adding the required packages and adding a ToC
+ */
 Thesis() {
     packages = new Packages();
     packages.add("graphicx")
@@ -32,6 +38,11 @@ Thesis() {
     addContent(new MainMatter());
 }
 
+/**
+ * Builds the preamble for this document class
+ *
+ * @return The preamble for this document class
+ */
 String preamble() {
     StringBuilder preamble = new StringBuilder("\\documentclass[11pt,a4paper,oneside,notitlepage]{book}\n")
     .append("\\setlength{\\hoffset}{-1in}\n")
