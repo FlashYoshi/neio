@@ -122,8 +122,9 @@ void preTex() {
 }
 
 /**
- * Internal method to print a subtree in sorted order.
- * @param t the node that roots the tree.
+ * Recursively creates the Text representation of the tree.
+ *
+ * @return The TeX representation of the tree
  */
 String toTex() {
     StringBuilder result = new StringBuilder();

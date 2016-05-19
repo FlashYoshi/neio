@@ -9,6 +9,11 @@ import java.util.ArrayList;
  */
 class TexToPDFBuilder implements Builder;
 
+/**
+ * Compiles a TeX file
+ *
+ * @param name The name of the file to compile (without extension)
+ */
 void build(String name) {
     if (name != null) {
         List<String> command = new ArrayList<String>();

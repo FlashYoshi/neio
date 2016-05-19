@@ -6,8 +6,6 @@ import neio.lang.Content;
 
 /**
  * Recursively converts Content into a TeX string and prints it to a file
- *
- * @author Titouan Vervack
  */
 class TexFileWriter implements Writer;
 
@@ -15,17 +13,18 @@ Content content;
 
 /**
  * Initializes the writer with a root content
+ *
+ * @param content The root Content
  */
 TexFileWriter(Content content) {
     this.content = content;
 }
 
-
 /**
  * Creates the TeX string
  *
  * @param name The name of the file to print to (without extension)
- * @return          The path to the created file
+ * @return The path to the created file
  */
 String write(String name) {
     content.preTex();

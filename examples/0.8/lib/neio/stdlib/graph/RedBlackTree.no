@@ -35,6 +35,12 @@ RedBlackTree insert(List<Integer> items) {
     return current;
 }
 
+/**
+ * Clones the current red black tree and inserts a new element into items
+ *
+ * @param value The value to insert
+ * @return The newly created red black tree
+ */
 RedBlackTree insert(Integer value) {
     if (last == null) {
         last = new RedBlackNode(RedBlackNode.BLACK, value);
@@ -161,6 +167,9 @@ void rotateRight(RedBlackNode node) {
     node.setLeft(r);
 }
 
+/**
+ * Makes sure the TikZ library is used and that everything is prepared to typeset a red black tree in LaTeX
+ */
 void preTex() {
     Document d = nearestAncestor(Document.class);
     d.addPackage("tikz");
@@ -180,6 +189,11 @@ void preTex() {
     super.preTex();
 }
 
+/**
+ * Creates the TeX representation this red black tree 
+ *
+ * @return The TeX representation of this tree
+ */
 String toTex() {
     if (last == null) {
         return "";

@@ -12,7 +12,7 @@ class TextContainer extends Container;
 /**
  * Handles newlines
  *
- * @return returns a new ContainerNLHandler
+ * @return Returns a new ContainerNLHandler
  */
 ContainerNLHandler newline() {
     return new ContainerNLHandler(this);
@@ -23,7 +23,7 @@ ContainerNLHandler newline() {
  * The Itemize is added to this.
  *
  * @param text The text to use for the ItemizeItem
- * @return        The created ItemizeItem
+ * @return The created ItemizeItem
  */
 Itemize *(Text text) {
     Itemize itemize = new Itemize();
@@ -39,7 +39,7 @@ Itemize *(Text text) {
  * The Enumerate is added to this.
  *
  * @param text The text to use for the EnumerateItem
- * @return        The created EnumerateItem
+ * @return The created EnumerateItem
  */
 Enumerate -(Text text) {
     Enumerate enumerate = new Enumerate();
@@ -54,7 +54,7 @@ Enumerate -(Text text) {
  * Creates a new Image and adds it to this.
  *
  * @param imageName The name of the Image
- * @return                   The created Image
+ * @return The created Image
  */
 Image image(String imageName) {
     return image(null, imageName);
@@ -63,9 +63,9 @@ Image image(String imageName) {
 /**
  * Creates a new Image and adds it to this.
  *
- * @param caption        The caption to use for the Image
+ * @param caption   The caption to use for the Image
  * @param imageName The name of the Image
- * @return                   The created Image
+ * @return The created Image
  */
 Image image(Text caption, String imageName) {
     new Image(caption, imageName) neioImage;
@@ -98,7 +98,7 @@ InlineEq ieq() {
  * The Table is added to this.
  *
  * @param text The text to use in the first element of the TableRow
- * @return        The created TableRow
+ * @return The created TableRow
  */
 TableRow |(Text text) {
     new TableRow(text) row;
