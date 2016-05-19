@@ -6,7 +6,7 @@ import org.aikodi.chameleon.oo.variable.FormalParameter;
 
 import java.util.List;
 
-class UmlMethod implements UmlObject;
+class UmlMethod;
 
 Method method;
 Boolean showPrivate;

@@ -13,7 +13,7 @@ import org.aikodi.chameleon.oo.type.Type;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-class Uml extends Content implements UmlObject;
+class Uml extends Content;
 
 JavaView view;
 String ns;

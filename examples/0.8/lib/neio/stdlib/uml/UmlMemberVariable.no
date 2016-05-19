@@ -3,7 +3,7 @@ namespace neio.stdlib.uml;
 import be.kuleuven.cs.distrinet.jnome.core.language.Java7;
 import org.aikodi.chameleon.oo.variable.VariableDeclaration;
 
-class UmlMemberVariable implements UmlObject;
+class UmlMemberVariable;
 
 Boolean showPrivate;
 Boolean showProtected;

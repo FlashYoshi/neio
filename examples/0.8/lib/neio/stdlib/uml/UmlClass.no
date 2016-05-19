@@ -11,7 +11,7 @@ import org.aikodi.chameleon.support.member.simplename.variable.MemberVariableDec
 import java.util.ArrayList;
 import java.util.List;
 
-class UmlClass implements UmlObject;
+class UmlClass;
 
 JavaView view;
 Java7 lang;
