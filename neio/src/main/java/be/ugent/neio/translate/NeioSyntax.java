@@ -90,7 +90,7 @@ public class NeioSyntax extends Java7Syntax {
                 // Replace double backslash (escaped backslash), by three backslashes
                 // This is represented in java by bs * 6 due to escaping
                 literalText = literalText.replaceAll(bs + bs, bs + bs + bs + bs + bs + bs);
-                literalText = literalText.replaceAll(bs + "([^rftn" + bs + "])", bs + bs + "$1");
+                literalText = literalText.replaceAll(bs + "([^rfutn" + bs + "])", bs + bs + "$1");
                 literalText = literalText.replaceAll("\"", bs + '"');
                 return "\"" + literalText + "\"";
 
