@@ -43,7 +43,7 @@ public class NeioClassTranslator extends IncrementalTranslator<Neio, Java7> {
      */
     public NeioClassTranslator(View source, View target) {
         super(source, target);
-        neio = (Neio) source.language();
+        neio = source.language(Neio.class);
     }
 
     private NeioFactory ooFactory() {

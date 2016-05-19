@@ -1,5 +1,13 @@
 namespace neio.lang;
 
+/**
+ * Declares that a class can be referred to
+ */
 interface Referable;
 
+/**
+ * References an object
+ *
+ * @return A reference to this object
+ */
 Reference ref();

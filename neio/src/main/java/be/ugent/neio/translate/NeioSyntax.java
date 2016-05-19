@@ -44,6 +44,7 @@ public class NeioSyntax extends Java7Syntax {
         map.put("#", "hash");
         map.put("*", "star");
         map.put("=", "equalSign");
+        map.put("^", "caret");
         map.put("-", "dash");
         map.put("_", "underscore");
         map.put("`", "backquote");
@@ -84,11 +85,15 @@ public class NeioSyntax extends Java7Syntax {
         try {
             String literalText = super.toCodeLiteral(literal);
             if (literal.getType().getFullyQualifiedName().equals("java.lang.String") && !literalText.startsWith("\"")) {
-                // Replace escape char to work with java
-                String s = "\\\\([^rftn])";
-                literalText = literalText.replaceAll("([^\\\\])" + s + "|^" + s, "$1$2$3");
-                literalText = literalText.replaceAll("\"", "\\\\\"");
+                // Replace explicit backslash by two backslashes so it works with java
+                String bs = "\\\\";
+                // Replace double backslash (escaped backslash), by three backslashes
+                // This is represented in java by bs * 6 due to escaping
+                literalText = literalText.replaceAll(bs + bs, bs + bs + bs + bs + bs + bs);
+                literalText = literalText.replaceAll(bs + "([^rfutn" + bs + "])", bs + bs + "$1");
+                literalText = literalText.replaceAll("\"", bs + '"');
                 return "\"" + literalText + "\"";
+
             } else {
                 return literalText;
             }

@@ -19,6 +19,9 @@ Package(List<String> options, String name) {
     this.options = options;
 }
 
+void preTex() {
+}
+
 String toTex() {
     StringBuilder result = new StringBuilder("\\usepackage");
     for (int i = 0; i < options.size(); i = i + 1) {

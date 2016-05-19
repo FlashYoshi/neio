@@ -23,7 +23,7 @@ Normally we can just add references like so: {ref1}
 If you do really want to use a variable on a line of itself, you have to do so explicitely:
 {new Paragraph(full)}
 
-Assignments are never printed out, and as _i++_ is actually `i = i + 1`, increments and decrements are not printed out either
+Assignments are never printed out, and as _i++_ is actually `i \= i + 1`, increments and decrements are not printed out either
 // Does nothing
 {i = i + 1}
 

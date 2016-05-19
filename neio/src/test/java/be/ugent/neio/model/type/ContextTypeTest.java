@@ -64,7 +64,6 @@ public class ContextTypeTest {
             Type paragraph = view.findType(par);
             Type chapter = view.findType(cha);
 
-
             ContextType ctx = new ContextType(chapter, document);
             assert (ctx.getDirectSuperTypes() != null && ctx.getDirectSuperTypes().size() == 2);
             assert (ctx.getDirectSuperTypes().get(0).getFullyQualifiedName().equals(cha));

@@ -1,0 +1,11 @@
+namespace neio.stdlib;
+
+import java.util.ArrayList;
+import java.util.List;
+
+class Ranges extends ArrayList<Range>;
+
+Ranges add(Integer start, Integer end) {
+    super.add(new Range(start, end));
+    return this;
+}

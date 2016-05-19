@@ -7,8 +7,9 @@ import neio.lang.Text;
  */
 class Document extends TextContainer;
 
-private Packages packages;
-private Bibtex bibtex;
+Packages packages;
+Bibtex bibtex;
+String extraPreamble;
 
 /**
  * Creates a Document and adds common LaTeX packages to it
@@ -21,6 +22,7 @@ Document() {
     .add("float");
     
     bibtex = null;
+    extraPreamble = "";
 }
 
 /**
@@ -84,16 +86,29 @@ Citation cite(String key) {
  *
  * @return The LaTeX preamble
  */
-String header() {
+String preamble() {
     StringBuilder tex = new StringBuilder("\\documentclass{article}\n");
     for (int i = 0; i < packages.size(); i = i + 1) {
         tex.append(packages.get(i).toTex()).append("\n");
     }
     
     tex.append("\\setlength{\\parindent}{0em}\n")
-         .append("\\setlength{\\parskip}{1em}\n");
+         .append("\\setlength{\\parskip}{1em}\n")
+         .append(extraPreamble);
          
      return tex.toString();
+}
+
+/**
+ * Adds a string to the preamble, checking if it is not yet
+ * included already.
+ *
+ * @param s The String to add to the preamble
+ */
+void addToPreamble(String s) {
+    if (!preamble().contains(s)) {
+        extraPreamble = extraPreamble + s;
+    }
 }
 
 /**
@@ -102,7 +117,7 @@ String header() {
  * @return The TeX representation of this object and its children
  */
 String toTex() {
-    StringBuilder result = new StringBuilder(header()).append("\\begin{document}\n")
+    StringBuilder result = new StringBuilder(preamble()).append("\\begin{document}\n")
     .append(super.toTex());
     if (bibtex != null) {
         result.append(bibtex.toTex());

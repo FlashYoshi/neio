@@ -5,18 +5,46 @@ import neio.lang.Content;
 class LstInputListing extends Content;
 
 String path;
+Ranges ranges;
+
+LstInputListing(Integer start, Integer end, String path) {
+    this.ranges = new Ranges();
+    ranges.add(new Range(start, end));
+    this.path = path;
+}
+
+LstInputListing(Ranges ranges, String path) {
+    this.ranges = ranges;
+    this.path = path;
+}
 
 LstInputListing(String path) {
-    this.path = path;
+    this(null, path);
 }
 
 String toTex() {
     String name = path.substring(path.lastIndexOf('/') + 1, path.length());
-    StringBuilder result = new StringBuilder("\\lstinputlisting[caption=");
-    result.append(name);
-    result.append("]{");
-    result.append(path);
-    result.append("}");
+    StringBuilder result = new StringBuilder("\\lstinputlisting[");
+    
+    if ((ranges != null) && (!ranges.isEmpty())) {
+        result.append("linerange={");
+        for (int i = 0; i < ranges.size(); i = i + 1) {
+            if (i != 0) {
+                result.append(", ");
+            }
+            Range range = ranges.get(i);
+            result.append(range.start())
+                    .append("-")
+                    .append(range.end());
+        }
+        result.append("}, ");
+    }
+    
+    result.append("caption=")
+        .append(name)
+        .append("]{")
+        .append(path)
+        .append("}");
 
     return result.toString();
 }

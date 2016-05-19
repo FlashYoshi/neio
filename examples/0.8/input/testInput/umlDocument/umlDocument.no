@@ -1,0 +1,8 @@
+[Document]
+
+# Uml diagrams
+
+{
+    List<String> show = new ArrayList<String>();
+    new Uml('''./project.xml''', '''neio.lang''').scale(50);
+}

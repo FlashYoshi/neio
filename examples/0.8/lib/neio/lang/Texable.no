@@ -2,4 +2,6 @@ namespace neio.lang;
 
 interface Texable;
 
+void preTex();
+
 String toTex();

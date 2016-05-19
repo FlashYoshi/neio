@@ -34,9 +34,9 @@ Content() {
  * Adds Content at position {@code index} and sets this object as
  * parent of the added Content.
  *
- * @param index   The index at which to put the Content
- * @param c         The Content to add
- * @return            The added Content
+ * @param index The index at which to put the Content
+ * @param c     The Content to add
+ * @return The added Content
  */
 <T extends Content> T addContent(Integer index, T c) {
     if (content.contains(c)) {
@@ -51,7 +51,7 @@ Content() {
  * Adds Content to the end of the list
  *
  * @param c The Content to add
- * @return    The added Content
+ * @return The added Content
  */
 <T extends Content> T addContent(T c) {
     return addContent(contentSize(), c);
@@ -60,9 +60,9 @@ Content() {
 /**
  * Adds Content before a given Content
  *
- * @param c         The Content to add
+ * @param c      The Content to add
  * @param before The Content preceding the new Content
- * @return           The added Content
+ * @return The added Content
  */
 <T extends Content> T addContentBefore(T c, Content before) {
     return addContent(content().indexOf(c), c);
@@ -71,9 +71,9 @@ Content() {
 /**
  * Adds Content after a given Content
  *
- * @param c      The Content to add
+ * @param c     The Content to add
  * @param after The Content succeeding the added Content
- * @return         The added Content
+ * @return The added Content
  */
 <T extends Content> T addContentAfter(T c, Content after) {
     return addContent(content().indexOf(after) + 1, c);
@@ -85,7 +85,7 @@ Content() {
  * this method.
  *
  * @param c The Content to add
- * @return    The added Content
+ * @return The added Content
  */
 <T extends Content> T appendContent(T c) {
     if (parent() != null) {
@@ -100,7 +100,7 @@ Content() {
  * Also sets the parent of this to null;
  *
  * @param newC The new object to be added
- * @return           null if this has no parent, {@code newC} otherwise
+ * @return null if this has no parent, {@code newC} otherwise
  */
 <T extends Content> T replaceWith(T newC) {
     if (parent() == null) {
@@ -120,7 +120,7 @@ Content() {
  * has a parent. One of the Contents should have a parent!
  *
  * @param c The Content to our right
- * @return    The Content to our right
+ * @return The Content to our right
  */
 <T extends Content> T leftOf(T c) {
     Minipage mp = prepareParent(this, c);
@@ -138,7 +138,7 @@ Content() {
  * has a parent. One of the Contents should have a parent!
  *
  * @param c The Content to our left
- * @return    The Content to our left
+ * @return The Content to our left
  */
 <T extends Content> T rightOf(T c) {
     c.leftOf(this);
@@ -150,9 +150,9 @@ Content() {
  * Prepares the parent of {@code left} or {@code right} to have
  * horizontally aligned children (by using Minipage).
  *
- * @param left   The left element whose parent has to be prepared
+ * @param left  The left element whose parent has to be prepared
  * @param right The right element whose parent has to be prepared
- * @return         The root Minipage
+ * @return The root Minipage
  */
 private Minipage prepareParent(Content left, Content right) {
     Content child = null;
@@ -185,7 +185,7 @@ private Minipage prepareParent(Content left, Content right) {
  * Checks if a given Content is a child of this Content
  *
  * @param c Content to check as being a child of this Content
- * @return    If {@code c} c is contained in this Content
+ * @return If {@code c} c is contained in this Content
  */
 Boolean contains(Content c) {
     return content.contains(c);
@@ -231,7 +231,7 @@ List<Content> content() {
  * Return the Content at position {@code i}
  *
  @param i The position of the Content to get
- @return   The Content at position {@code i}
+ @return The Content at position {@code i}
  */
 Content content(Integer i) {
     return content.get(i);
@@ -259,7 +259,7 @@ List<Content> ancestors() {
  * Recursively checks for a parent of type {@code c}
  *
  * @param c Type of the demanded Content
- * @return    The first lexical parent of type {@code c}
+ * @return The first lexical parent of type {@code c}
  */
 <T> T nearestAncestor(Class<T> c) {
     Content p = parent();
@@ -274,7 +274,7 @@ List<Content> ancestors() {
  * Returns a list of Content objects on the same level as this Content
  *
  * @param c The class of the siblings
- * @return    The list of siblings of {@code c}
+ * @return The list of siblings of {@code c}
  */
 List<Content> siblings(Class c) {
     Content p = parent();
@@ -300,7 +300,7 @@ List<Content> descendants() {
  * Recursively gathers all the children Content of this Content
  *
  * @param input The list of current children
- * @return         A list of al the children of this Content
+ * @return A list of al the children of this Content
  */
 protected List<Content> descendants(List<Content> input) {
     List<Content> list = new ArrayList<Content>();
@@ -319,7 +319,7 @@ protected List<Content> descendants(List<Content> input) {
  * class {@code k}
  *
  * @param k The class of the descendants we are looking for
- * @return    A list of direct descendants of class {@code k}
+ * @return A list of direct descendants of class {@code k}
  */
 <T extends Content> List<T> directDescendants(Class<T> k) {
     List<T> descendants = new ArrayList<T>();
@@ -335,6 +335,9 @@ protected List<Content> descendants(List<Content> input) {
 
 /**
  * Returns the Class as which a Class should be instantiated
+ *
+ * @param klass The key of which we want to get a mapping
+ * @return The mapping found for key {@code klass}
  */
 final Class classMapping(Class klass) {
     return _classMapping.get(klass);
@@ -343,7 +346,7 @@ final Class classMapping(Class klass) {
 /**
  * Overrides default behaviour and instantiates new instances of {@code oldClass} as instances of {@code newClass}
  *
- * @param oldClass   The old class object
+ * @param oldClass The old class object
  * @param newClass The new class object
  */
 public final <T> void addClassMapping(Class<T> oldClass, Class<? extends T> newClass) {
@@ -357,10 +360,10 @@ public final <T> void addClassMapping(Class<T> oldClass, Class<? extends T> newC
  * It will create an instance of {@code klass} in case the class mapping has not been overridden.
  * If the mapping was overridden, an instance of the overriding class will be created.
  *
- * @param klass            The class to instantiate
+ * @param klass      The class to instantiate
  * @param paramTypes The types of the parameters
- * @param params        The parameters to instantiate {@code klass}
- * @return                    The instantiated object
+ * @param params     The parameters to instantiate {@code klass}
+ * @return The instantiated object
  */
 public final <T> T getInstance(Class<T> klass, Class[] paramTypes, Object[] params) {
     // Have I been overridden?
@@ -382,17 +385,29 @@ public final <T> T getInstance(Class<T> klass, Class[] paramTypes, Object[] para
     }
 }
 
-
 /**
  * Does the actual instantiation of an object using Reflection
  *
- * @param klass            The class to instantiate
+ * @param klass      The class to instantiate
  * @param paramTypes The types of the parameters
- * @param params        The parameters to instantiate {@code klass}
- * @return                    The instantiated object
+ * @param params     The parameters to instantiate {@code klass}
+ * @return The instantiated object
  */
 private <T> T instantiate(Class<T> klass, Class[] paramTypes, Object[] params) {
     return klass.getConstructor(paramTypes).newInstance(params);
+}
+
+/**
+ * Should be called before {@code toTex} to assure correct initialisation
+ * of all the objects.
+ * Recursively calls preTex on all the Content in this Content.
+ * It allows the Content in this Content to perform operations after their
+ * initialization, but before they are written out.
+ */
+void preTex() {
+    for (int i = 0; i < content.size(); i = i + 1) {
+        content.get(i).preTex();
+    }
 }
 
 /**

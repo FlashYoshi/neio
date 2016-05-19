@@ -2,14 +2,28 @@ namespace neio.stdlib;
 
 import neio.lang.Text;
 
+/**
+ * Represents something that has been cited.
+ * It is a subclass of Text to allow for it to be used in inline code blocks.
+ */
 class Citation extends Text;
 
 String name;
 
+/**
+ * Initialises a Citation
+ *
+ * @param name The name of the Citation
+ */
 Citation(String name) {
     this.name = name;
 }
 
+/**
+ * Creates a TeX representation of this
+ *
+ * @return The TeX representation of this
+ */
 String thisToTex() {
     return "\\cite{" + name + "}";
 }

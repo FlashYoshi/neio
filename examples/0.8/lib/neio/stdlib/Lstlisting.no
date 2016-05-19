@@ -16,7 +16,17 @@ LstListing append(String append) {
 
 String toTex() {
     StringBuilder result = new StringBuilder("\\begin{lstlisting}");
+    Boolean oneline = !input.contains("\n");
+    if (oneline) {
+        result.append("\n");
+    }
+
     result.append(input);
+    
+    if (oneline) {
+        result.append("\n");
+    }
+
     result.append("\\end{lstlisting}");
 
     return result.toString();

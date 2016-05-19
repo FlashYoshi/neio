@@ -8,10 +8,16 @@ import neio.stdlib.Document;
 import neio.stdlib.Packages;
 import neio.stdlib.Toc;
 
+/**
+ * A document class to be used in for a Thesis
+ */
 class Thesis extends Document;
 
 private Packages packages;
 
+/**
+ * Intialises the document class, adding the required packages and adding a ToC
+ */
 Thesis() {
     packages = new Packages();
     packages.add("graphicx")
@@ -19,6 +25,8 @@ Thesis() {
     .add("amsmath")
     .add("float")
     .add("listings")
+    .add("tocloft")
+    .add("color")
     .add("hyperref");
 
     List<String> options = new ArrayList<String>();
@@ -30,8 +38,13 @@ Thesis() {
     addContent(new MainMatter());
 }
 
-String header() {
-    StringBuilder header = new StringBuilder("\\documentclass[11pt,a4paper,oneside,notitlepage]{book}\n")
+/**
+ * Builds the preamble for this document class
+ *
+ * @return The preamble for this document class
+ */
+String preamble() {
+    StringBuilder preamble = new StringBuilder("\\documentclass[11pt,a4paper,oneside,notitlepage]{book}\n")
     .append("\\setlength{\\hoffset}{-1in}\n")
     .append("\\setlength{\\voffset}{-1in}\n")
     .append("\\setlength{\\topmargin}{2cm}\n")
@@ -43,6 +56,7 @@ String header() {
     .append("\\setlength{\\textheight}{23.3cm}\n")
     .append("\\setlength{\\footskip}{1.5cm}\n")
     .append(packages.toTex())
+    .append("\\DeclareGraphicsRule{*}{mps}{*}{}")
     .append("\\pagestyle{fancy}\n")
     .append("\\renewcommand{\\chaptermark}[1]{\\markright{\\MakeUppercase{#1}}}\n")
     .append("\\renewcommand{\\sectionmark}[1]{\\markright{\\thesection~#1}}\n")
@@ -66,10 +80,14 @@ String header() {
     .append("\\hyphenation{ditmagnooitgesplitstworden dit-woord-splitst-hier}\n")
     .append("\\setlength{\\parindent}{0em}\n")
     .append("\\setlength{\\parskip}{1em}\n")
+    .append("\\definecolor{comments}{RGB}{98, 151, 85}\n")
     .append("\\lstset{\n")
     .append("belowcaptionskip=1\\baselineskip,\n")
     .append("breaklines=true,\n")
     .append("frame=l,\n")
+    .append("comment=[l]{//},\n")
+    .append("morecomment=[s]{/**}{*/},\n")
+    .append("commentstyle=\\color{comments},\n")
     .append("xleftmargin=\\parindent,\n")
     .append("showstringspaces=false,\n")
     .append("basicstyle=\\footnotesize\\ttfamily,\n")
@@ -81,5 +99,5 @@ String header() {
     .append("lineskip={-1.5pt}\n")
     .append("}\n");
 
-    return header.toString();
+    return preamble.toString();
 }

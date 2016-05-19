@@ -3,6 +3,7 @@ namespace neio.stdlib.graph;
 import java.util.List;
 
 import neio.lang.Content;
+import neio.stdlib.Document;
 
 class RedBlackTree extends Content;
 
@@ -34,6 +35,12 @@ RedBlackTree insert(List<Integer> items) {
     return current;
 }
 
+/**
+ * Clones the current red black tree and inserts a new element into items
+ *
+ * @param value The value to insert
+ * @return The newly created red black tree
+ */
 RedBlackTree insert(Integer value) {
     if (last == null) {
         last = new RedBlackNode(RedBlackNode.BLACK, value);
@@ -160,6 +167,33 @@ void rotateRight(RedBlackNode node) {
     node.setLeft(r);
 }
 
+/**
+ * Makes sure the TikZ library is used and that everything is prepared to typeset a red black tree in LaTeX
+ */
+void preTex() {
+    Document d = nearestAncestor(Document.class);
+    d.addPackage("tikz");
+
+    StringBuilder header = new StringBuilder("\\usetikzlibrary{arrows}")
+    .append("\\tikzset{treenode/.style = {align=center, inner sep=0pt, text centered, font=\\sffamily},\n")
+    .append("arn_n/.style = {treenode, circle, white, font=\\sffamily\\bfseries, draw=black,\n")
+    .append("fill=black, text width=1.5em},% arbre rouge noir, noeud noir\n")
+    .append("arn_r/.style = {treenode, circle, red, draw=red,\n")
+    .append("text width=1.5em, very thick},% arbre rouge noir, noeud rouge\n")
+    .append("arn_x/.style = {treenode, rectangle, draw=black,\n")
+    .append("minimum width=0.5em, minimum height=0.5em}% arbre rouge noir, nil\n")
+    .append("}\n");
+
+    d.addToPreamble(header.toString());
+    
+    super.preTex();
+}
+
+/**
+ * Creates the TeX representation this red black tree 
+ *
+ * @return The TeX representation of this tree
+ */
 String toTex() {
     if (last == null) {
         return "";

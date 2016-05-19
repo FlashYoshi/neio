@@ -1,0 +1,38 @@
+namespace neio.stdlib.chem;
+
+import neio.lang.Texable;
+import neio.lang.Text;
+
+class ChemName implements Texable;
+
+Atom atom;
+Text text;
+
+ChemName(Atom atom, Text text) {
+    this.atom = atom;
+    this.text = text;
+}
+
+StructureNLHandler newline() {
+    return new StructureNLHandler(atom.parent());
+}
+
+void preTex() {
+    // Allow the atom to write itself out
+    atom.allowToTex();
+}
+
+String toTex() {
+    StringBuilder result = new StringBuilder();
+    result.append("\n\\chemname{")
+        .append("\\chemfig{");
+        if (atom.isRing()) {
+            result.append("[:90]");
+        }
+        result.append(atom.toTex())
+        .append("}}{")
+        .append(text.toTex())
+        .append("}\n");
+
+    return result.toString();
+}

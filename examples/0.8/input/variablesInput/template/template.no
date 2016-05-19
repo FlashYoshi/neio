@@ -2,13 +2,13 @@
 
 // RETURNS NOTHING
 {
-	String address = '''Sint-pietersnieuwstraat 7''';
-	String city = '''Ghent''';
-	String name = '''Titouan Vervack''';
-	String addressee = '''Thomas Vanhaskel''';
-	String help = '''my math class''';
-	String helpSubject = '''test''';
-	String closings = '''Kind regards,''';
+    String address = '''Sint-pietersnieuwstraat 7''';
+    String city = '''Ghent''';
+    String name = '''Titouan Vervack''';
+    String addressee = '''Thomas Vanhaskel''';
+    String help = '''my math class''';
+    String helpSubject = '''test''';
+    String closings = '''Kind regards,''';
 }
 
 // Calls append content on the Text('''Dear''')

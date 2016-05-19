@@ -37,17 +37,20 @@ fragment D : '-';
 fragment ST : '*';
 fragment DOLLAR : '$';
 fragment PIPE : '|';
-BANG : '!';
-MethodName : {getCharPositionInLine() == 0}? (H | D | ST | DLR | B_QUOTE | UNDERSCORE | P)+;
+fragment EQUALS : '=';
+fragment CARET : '^';
+MethodName : {getCharPositionInLine() == 0}? (H | D | ST | DLR | EQUALS | CARET | B_QUOTE | UNDERSCORE | P)+;
 HASH : H;
 DASH : D;
 STAR : ST;
 P : PIPE;
+EQ : EQUALS;
+CA : CARET;
 BQ : B_QUOTE;
 US : UNDERSCORE;
 DLR : DOLLAR;
 
-fragment VALID_CHAR : ~[#-*_`\[\]{} \r\n] | SQ | HASH | BANG | DLR | L_BRACE | R_BRACE | B_SLASH;
+fragment VALID_CHAR : ~[#-*_`\[\]{} \r\n] | SQ | HASH | DLR | L_BRACE | R_BRACE | EQ | CA;
 
 WORD : VALID_CHAR+;
 

@@ -3,43 +3,89 @@ namespace neio.stdlib.math;
 import neio.lang.Content;
 import neio.lang.Text;
 
+/**
+ * Creates an explicit equation
+ */
 class Eq extends Content;
 
 String texname;
 
+/**
+ * Initialises the equation
+ */
 Eq() {
     texname = "equation";
 }
 
+/**
+ * Creates a square root and adds it to this equation, returning this to allow further chaining
+ *
+ * @param root The base of the square root
+ * @param arg  The value to take the square root of
+ * @return This equation
+ */
 Eq sqrt(Content root, Content arg) {
     addContent(new Sqrt(root, arg));
     return this;
 }
 
+/**
+ * Creates a square root with no explicit base
+ *
+ * @param arg The value to take the square root of
+ * @return This equation
+ */
 Eq sqrt(Content arg) {
     return sqrt(null, arg);
 }
 
-Eq pow(Content base, Content pow) {
+/**
+ * Creates an exponentiation and appends it to this equation
+ *
+ * @param base The base of the exponentiation
+ * @param pow The exponent of the exponentiation
+ * @return This equation
+ */
+Eq ^(Content base, Content pow) {
     addContent(new Pow(base, pow));
     return this;
 }
 
+/**
+ * Disables numbers for this equation
+ *
+ * @return This equation
+ */
 Eq nonu() {
     texname = texname + "*";
     return this;
 }
 
-Eq e() {
+/**
+ * Appends an equals sign to this equation
+ *
+ * @return This equation
+ */
+Eq =() {
     addContent(new Equals());
     return this;
 }
 
+/**
+ * Appends a value to this equation
+ *
+ * @return This equation
+ */
 Eq v(Text t) {
     addContent(new Value(t));
     return this;
 }
 
+/**
+ * Creates the TeX representation of this equation
+ *
+ * @return The TeX representation of this equation
+ */
 String toTex() {
     return "\\begin{" + texname + "}" + super.toTex() + "\n\\end{" + texname + "}";
 }

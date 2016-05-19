@@ -25,6 +25,8 @@ public class Constants {
     public static final String BUILD_METHOD = "build";
     public static final String APPEND_CONTENT = "appendContent";
     public static final String GET_INSTANCE = "getInstance";
-    private static final String BASE = "../examples/" + VERSION;
-    public static final String NEIO_HOME = BASE + "/neio";
+    public static final String CREATE_DOCUMENT = "createDocument";
+    public static final String FINISH_DOCUMENT = "finishDocument";
+    // KNOWN VARS
+    public static final String CD_PARAM = "input";
 }

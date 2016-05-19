@@ -15,11 +15,13 @@ import org.aikodi.chameleon.core.tag.TagImpl;
 import org.aikodi.chameleon.core.variable.Variable;
 import org.aikodi.chameleon.exception.ChameleonProgrammerException;
 import org.aikodi.chameleon.oo.expression.*;
+import org.aikodi.chameleon.oo.method.Method;
 import org.aikodi.chameleon.oo.plugin.ObjectOrientedFactory;
 import org.aikodi.chameleon.oo.statement.Block;
 import org.aikodi.chameleon.oo.statement.Statement;
 import org.aikodi.chameleon.oo.type.RegularType;
 import org.aikodi.chameleon.oo.type.Type;
+import org.aikodi.chameleon.oo.variable.FormalParameter;
 import org.aikodi.chameleon.oo.variable.VariableDeclaration;
 import org.aikodi.chameleon.support.expression.AssignmentExpression;
 import org.aikodi.chameleon.support.expression.ThisLiteral;
@@ -27,6 +29,7 @@ import org.aikodi.chameleon.support.member.simplename.method.NormalMethod;
 import org.aikodi.chameleon.support.member.simplename.method.RegularMethodInvocation;
 import org.aikodi.chameleon.support.member.simplename.operator.infix.InfixOperatorInvocation;
 import org.aikodi.chameleon.support.statement.ReturnStatement;
+import org.aikodi.chameleon.support.variable.LocalVariable;
 import org.aikodi.chameleon.support.variable.LocalVariableDeclarator;
 
 import java.util.ArrayList;
@@ -40,7 +43,6 @@ import static be.ugent.neio.util.Constants.*;
 public class Java8Generator {
 
     private static final String VAR_NAME = "$var";
-    private static final String ROOT = VAR_NAME + "0";
     private Neio neio;
     private int id;
     private String lastElement = null;
@@ -58,8 +60,6 @@ public class Java8Generator {
         id = 0;
 
         neioDocument.setBlock(replaceMethodChain(neioDocument.getBlock()));
-        String writerReturn = callWriter(neioDocument);
-        callBuilder(neioDocument, writerReturn);
 
         return neioDocument;
     }
@@ -73,6 +73,9 @@ public class Java8Generator {
     private Block replaceMethodChain(Block oldBlock) throws LookupException {
         // The defined variables
         Stack<Variable> variables = new Stack<>();
+        // The parameter passed to the {@code Constants.CREATE_DOCUMENT} method
+        FormalParameter formalParameter = oldBlock.nearestAncestor(Method.class).formalParameter(0);
+        variables.push(formalParameter);
         // Use a string as we constantly have to create new NameExpressions
         lastElement = null;
 
@@ -135,6 +138,7 @@ public class Java8Generator {
                     break;
                 }
             }
+
 
             breakupMethodChain(callStack, variables, block, methodChain, statement);
         }
@@ -490,48 +494,6 @@ public class Java8Generator {
     }
 
     /**
-     * Creates a document writer and calls the write method on it creating a TeX/JS/... string
-     *
-     * @param neioDocument The document to write
-     * @return The variable name of the generated string
-     */
-    private String callWriter(TextDocument neioDocument) {
-        Block block = neioDocument.getBlock();
-
-        List<Expression> arguments = new ArrayList<>();
-        arguments.add(eFactory().createNameExpression(ROOT));
-        Expression ci = eFactory().createConstructorInvocation(DEFAULT_WRITER, null, arguments);
-
-        List<Expression> miArguments = new ArrayList<>();
-        miArguments.add(oFactory().createStringLiteral(neioDocument.getName()));
-        MethodInvocation mi = eFactory().createNeioMethodInvocation(WRITE_METHOD, ci, miArguments);
-        LocalVariableDeclarator varDecl = new LocalVariableDeclarator(oFactory().createTypeReference("java.lang.String"));
-        String varName = getVarName();
-        VariableDeclaration var = new VariableDeclaration(varName, mi);
-        varDecl.add(var);
-
-        block.addStatement(varDecl);
-        return varName;
-    }
-
-    /**
-     * Builds the TeX/JS/... string into a real document such as a PDF
-     *
-     * @param neioDocument The document to build
-     * @param writerReturn The variable name of the TeX/JS/... string
-     */
-    private void callBuilder(TextDocument neioDocument, String writerReturn) {
-        List<Expression> arguments = new ArrayList<>();
-        Expression ci = eFactory().createConstructorInvocation(DEFAULT_BUILDER, null, arguments);
-
-        List<Expression> miArguments = new ArrayList<>();
-        miArguments.add(eFactory().createNameExpression(writerReturn));
-        MethodInvocation mi = eFactory().createNeioMethodInvocation(BUILD_METHOD, ci, miArguments);
-
-        neioDocument.getBlock().addStatement(oFactory().createStatement(mi));
-    }
-
-    /**
      * Get the nearest element of type T
      *
      * @param element The element in which to look for the nearest element
@@ -591,6 +553,9 @@ public class Java8Generator {
      */
     private boolean isNested(String name) {
         String c = firstChar(name);
+        if (c.equals("^")) {
+            c = "\\^";
+        }
         Pattern p = Pattern.compile("^[" + c + "][" + c + "]+$");
         Matcher m = p.matcher(name);
         return m.matches();
