@@ -1,12 +1,4 @@
 [Document]
 
 # Chapter 1
-I created a document that only contained one chapter.
-{
-    Chapter c1 = nearestAncestor(Chapter.class);
-    Integer printing = 1;
-    Integer driving = 2;
-    Integer timeWasted = 14;
-}
-
-It's called {c1.title()} and it cost me {printing + driving + timeWasted}€!
+This is some text in the first Paragraph

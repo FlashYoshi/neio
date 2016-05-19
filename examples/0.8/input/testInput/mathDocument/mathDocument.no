@@ -11,5 +11,5 @@ A few example equations:
 
 {{
     eq().nonu().sqrt("{base}", "{arg}");
-    eq().^("{base}", "{arg}").=().v("{Math.pow(2, 10)}");
+    eq().^("{base}", "{arg}").=().v("{Math.pow(base, arg)}");
 }}
