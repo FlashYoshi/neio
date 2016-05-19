@@ -207,7 +207,7 @@ Not only is this nearly unreadable and very complicated for such a common concep
 
 Now we can include the `pgffor` package and apply this function. Luckily it is somewhat easier to use, than to create, as is shown below.
 {
-    Image loopFunction = new LstInputListing('''loopFunction.tex''')
+    Image loopFunction = new LstInputListing('''loopfunction.tex''')
     .leftOf(image("The document produced from calling `loopfunction` with parameter `1`", '''loopfunction''')).scale(30);
 }
 The macro, called `loopfunction`, loops from 1 to a parameter \#1 and prints out a section in every iteration.
@@ -1482,15 +1482,63 @@ A way that this might be implemented is by copying objects that are going to be 
 // TODO: is this correct?
 
 ## Use
-## Package support
-## Implementation of packages
-## Reference to undefined Content
+## Packages
+#### Package support
+No package system was provided in this thesis, but in the future however it would be beneficial to do so.
+It would allow users without a lot of technical expertise to import new functionality easily.
+The way packaging is handled right now is straight through {lat} packages and Java packages.
+We allow you to add {lat} packages through the `addPackage` method in `Document` and we allow you to import Java classes 
+through the regular `import namespace` statements. To actually include a Neio library in the document, right now the source code for it 
+has to be put into a folder, next to the rest of the standard Neio library. In the future we should be able to download (manually or automatically) packaged libraries 
+and have them be stored somewhere else.
+
+#### Implementation of packages
+As we said before, non of the document classes or libraries that were created in this thesis are complete, and we also did not create that many of them, in comparison to what Java and {lat} offer that is.
+In the future a lot of work should be put into writing complete libraries and porting libraries from other available languages such as {lat}.
+This can however be done by the community for a big part, as is what happens for Java and {lat}.
+
 ## Compiler improvement
-### Other front- and back ends
+#### Efficiency
+The compiler is fast enough for small documents but for a large document like this thesis, the compile time starts to ramp up.
+The thesis takes about 30 seconds to a minute to compile, depending on the compute power of your computer.
+This is on top of the `latexmk` that has to run afterwards and that also takes quite a while.
+However no attention was paid to the efficiency of the compiler in this thesis, as thus it is likely that there are a lot of 
+optimizations that can be performed.
+
+#### Other front- and back ends
+Another compiler improvement that could be created in the future, is that we could create different front and back ends.
+We don't have to output to Java, if someone were to write a back end for python for example, we could make use of that back end.
+The same thing is possible for the front end. The syntax of Neio documents and class files could be changed, as long as the fundamental 
+design decisions of the language are kept the same, such as `ContextType`'s and nested methods, another syntax could be designed. As long 
+as a front end is developed that can parse a Neio document with a different syntax that can still parse the document into the same AST as is 
+used at this moment, it is possible to change the currently used syntax..
+
 ## Tool improvement
-### Syntax highlighting
-### Auto completion
-### IDE with preview
+To effectively be able to use Neio, we need some improvements to the tools available right now.
+Chameleon provides support for the Eclipse IDE and in the future this could be used to improve our tooling.
+#### Syntax highlighting
+One of the base requirements to be able to work with a language is syntax highlighting.
+This is one of the features that Chameleon provides through its Eclipse integration.
+However it was not made for a language such as Neio where we represent a document as a series of method chains.
+At this moment the Eclipse integration treats the entire method chain as a whole instead of every method call separately.
+This would cause problems as everything between codeblocks would be colored the same and we would not be able to have different 
+colouring for special methods, such as the symbol methods.
+
+It should however work out of the box for Code mode and the class files.
+
+#### Auto completion
+A second feature that Chameleon offers and that is very useful when writing in a certain language, is auto completion.
+This should again work well in Code mode and class files, however it would be a bit harder in Text mode.
+This is because it would have to know when to auto complete and when it should just let us write.
+It might be best to hide the auto complete behind a hotkey while in Text mode.
+This still allows the user to get a list of methods he could use at a certain time, but would remove the annoyance of having a pop-up 
+for auto completion come up at every word that is written.
+
+#### IDE with preview
+The last thing that would be a very nice to have for a markup language like this, would be an IDE that previews the document.
+This is not something that is supported by Chameleon and would thus require quite a bit more work.
+The compiler in its current state is also not ready for this, as said before it gets quite slow on large documents.
+As it would have to be constantly running in the background, it would use a lot of energy (which is problematic for laptops) and would be too slow to actually produce results in time.
 
 # Conclusion and reflection
 #### Reflection
