@@ -1,0 +1,9 @@
+namespace neio.stdlib;
+
+import neio.lang.Content;
+
+class BlankPage extends Content;
+
+String toTex() {
+    return "\\newpage\n" + "\\thispagestyle{empty}\n" + "\\mbox{}\n";
+}
