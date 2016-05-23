@@ -5,5 +5,5 @@ import neio.lang.Content;
 class BlankPage extends Content;
 
 String toTex() {
-    return "\\newpage\n" + "\\thispagestyle{empty}\n" + "\\mbox{}\n";
+    return new NewPage().toTex() + "\\thispagestyle{empty}\n" + "\\mbox{}\n";
 }

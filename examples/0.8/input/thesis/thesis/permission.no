@@ -1,0 +1,14 @@
+[Document]
+
+# Permission for usage
+
+"The author(s) gives (give) permission to make this master dissertation available for consultation
+and to copy parts of this master dissertation for personal use.
+In the case of any other use, the copyright terms have to be respected, in particular with regard to
+the obligation to state expressly the source when quoting results from this master dissertation."
+
+Titouan Vervack, June 2016
+
+{{
+    newpage();
+}}

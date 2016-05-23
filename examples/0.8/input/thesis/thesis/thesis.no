@@ -1,10 +1,13 @@
 [Thesis]
-
 {
+    preface.createDocument((Document) parent());
+    permission.createDocument((Document) parent());
+    overview.createDocument((Document) parent());
     addBibtex('''references''');
     String lat = '''LaTeX''';
     String md = '''Markdown''';
     String pan = '''Pandoc''';
+    mainMatter();
 }
 
 # Introduction
@@ -816,8 +819,10 @@ This would have been better because it allows you to easily set any two things n
 `Minipage`'s require a lot more manual work, they might also split at a page-end which is not what we really want.
 
 The `Document` document class can thus be used to write simple documents, such as small reports on various tasks.
+
 ### Book
-A prime subject of writing a book is this document itself. The entirety of this book has been created in a single Neio document.
+A prime subject of writing a book, is this document itself. The entirety of this book has been created in a single Neio document.
+// TODO: Not true
 The way we do this is by creating a new `Document` class that represents our {lat} template.
 In this case the template is implemented in the `Thesis` class given below.
 {
@@ -836,11 +841,7 @@ A `ThesisChapter` just redefines a chapter so that it translates into the {lat} 
 }
 
 It extends the `Document` class and adds its own packages and creates its own {lat} preamble.
-One of the things it also does, is automatically adding a Table of Contents (ToC) using the following line.
-{
-    new LstListing('''addContent(new Toc());''')
-}
-
+It also provides a method that will initialise the main matter, which contains a Table of Contents (ToC) using the following line.
 The code for a ToC is shown below.
 {
     new LstInputListing('''../../examples/0.8/lib/neio/stdlib/Toc.no''')
