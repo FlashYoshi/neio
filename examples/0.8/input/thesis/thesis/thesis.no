@@ -1154,26 +1154,26 @@ This is shown in the example beneath
 
 As the code for this library is over 600 lines long, we will not show all of the code.
 To get an image out of this, we output our object structure to the MetaUML format, instead of {lat}.
-And then run it through the `mpost` command line program which generates tex code for the UML, which we 
+And then run it through the `mpost` command line program which generates TeX code for the UML, which we 
 can then include. The problem with the MetaUML tool is that positioning is not done automatically.
 The way it was implemented in our case is a bit like a tree.
-We build a tree of levels. the bottom level contains all the classes that have no super class to be shown,
-or that are a subclass of a class on the level above.
+We build a tree of levels, the first level contains all the classes that have no super class to be shown as well as the highest level classes.
+Subclasses are shown on the level beneath their super class.
 For example, `ThesisChapter` is a subclass of `Chapter`, which is a subclass of `TextContainer`.
 If we now show these three classes, they will be displayed one under the other because we built a tree with 
-three levels, to show that levels are being used we will add the Bibtex class to the UML as well, as it has no connection 
-with the other classes.
+three levels. To visualize how the levels are being used, we show this example below but also add the Bibtex class 
+to the UML , as it has no connection to the other classes.
 {
     List<String> list2 = new ArrayList<String>();
     list2.add('''neio.thesis.ThesisChapter''');
     list2.add('''neio.stdlib.Chapter''');
     list2.add('''neio.stdlib.TextContainer''');
     list2.add('''neio.stdlib.Bibtex''');
-    new Uml('''./project.xml''','''neio.stdlib.uml''').scale(80).show(list2).showPrivate();
+    new Uml('''./project.xml''','''neio''').scale(80).show(list2).showPrivate();
 }
 
-Note that our implementation of UML diagrams only shows what it is asked to show (hence there are no inheritance 
-arrows so far) and it only draws inheritance arrows to avoid clutter.
+Note that our implementation of UML diagrams only shows what it is asked to show (hence there are no uses 
+arrows) and only draws inheritance arrows for what is shown. This is done to avoid clutter.
 // TODO: talk about DOT
 
 ### Chemfig
