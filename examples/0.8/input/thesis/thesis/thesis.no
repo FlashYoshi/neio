@@ -16,7 +16,7 @@ This introduction will provide the context from which the necessity of this thes
 ## State of the art
 ### {md}
 One of the most popular markup languages at this point in time is {md} {cite('''markdown''')}.
-It is introduced by the designers of the language as follows:
+It is introduced by the designers of the language as follows: {cite('''markdown''')}
 
 `Markdown is a text-to-HTML conversion tool for web writers.`
 `Markdown allows you to write using an easy-to-read, easy-to-write plain text format, then convert it to structurally valid XHTML (or HTML).`
@@ -1161,7 +1161,7 @@ We build a tree of levels. the bottom level contains all the classes that have n
 or that are a subclass of a class on the level above.
 For example, `ThesisChapter` is a subclass of `Chapter`, which is a subclass of `TextContainer`.
 If we now show these three classes, they will be displayed one under the other because we built a tree with 
-three levels, to show that levels are being used we will add the Bibtex class to the UML as well as it has no connection 
+three levels, to show that levels are being used we will add the Bibtex class to the UML as well, as it has no connection 
 with the other classes.
 {
     List<String> list2 = new ArrayList<String>();
@@ -1562,4 +1562,5 @@ We showed that the language can be as easy to read, write and learn as {md}.
 While it can also be as powerful and diverse as {lat} whilst remaining quite legible.
 A lot of work can still be done, and should still be done to commercially use Neio, as shown in {fut.ref()}, but we think that good basis has been provided.
 The completion of this book should be enough proof of this.
+
 // TODO: does this sound arrogant? I sure hope not
