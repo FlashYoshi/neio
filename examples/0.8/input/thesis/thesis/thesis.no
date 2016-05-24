@@ -12,28 +12,104 @@
 
 # Introduction
 {Chapter intro = (Chapter) parent()}
-In this thesis we will be introducing a new markup language that tries to improve upon a few others, namely {lat} and {md}, whilst still holding on to their advantages.
-Before we get into the details of this new language it is necessary to introduce some of the currently most used markup languages and word processors.
-This introduction will provide the context from which the necessity of this thesis was sparked.
+In this thesis we introduce a new markup language that improves upon a few others, namely {lat} and {md}, whilst still holding on to their advantages.
+Before we get into the details of this new language it is necessary to introduce some of the most used markup languages and word processors.
 
-## State of the art
+## State-of-the-art
+### Word processors
+The best known solution for creating documents, are so called What You See Is What You Get (WYSIWYG) editors, such as Microsoft Word and Pages.
+As you immediately, without compiling, see what your document will look like, it is a very popular tool.
+Because of this, the complexity of the tool is significantly decreased allowing anyone to use the tool.
+It is less complex because you do not have to type in commands and wait for a preview to change.
+Instead you select the property from a drop-down list or click a button and the document is updated instantly.
+The GUI essentially hides the complexity.
+
+A WYSIWYG editor gives the author freedom, for example it is very easy to change a font or change the font size of a certain part of the text 
+and you can easily add an image and drag-and-drop it around.
+
+A lot of these WYSIWG editors are grouped into packets, such as Office or iWork.
+Using one of these packets, it is also to insert slides or tables. 
+These will then be editable with the specialized program for it (like Excel), but you will not have to leave the document. 
+In the example below an Excel chart has been inserted into a Word document. 
+{
+    image("An Excel chart in a Word document", '''excelInWord''')
+}
+
+It is also easy to collaborate on documents, using online versions of these solutions, such as Microsoft Word Online or Google Docs.
+These make documents cross-platform and allow multiple people to work on them at the same time. 
+// TODO: read only versions?
+
+This is not the only way to collaborate, you can also add comments or suggestions on (online) a document. 
+These changes can then be resolved in just one click by an authorized editor.
+// TODO: autosave?
+
+Some documents however are more complex and have need for a more powerful tool such as {lat}.
+
+### {lat}
+{Chapter latexAdv = (Chapter) parent()}
+// TODO: show some trees, that show structure
+{lat} provides a, Turing complete, programming model and due to this allows for rich customisability.
+It also provides a packaging system that allows for libraries, called packages, to be created using this programming model.
+Over the course of the past 38 years (the initial TeX release was in 1978) a lot of packages have been created for all kinds of different functionality.
+This is one of the reasons why {lat} is often used for long and complex documents such as books, articles, scientific papers and syllabi.
+
+Like {md}, {lat} uses a plain text format that is quite robust to file corruptions and is well suited for VCS.
+It is however less robust against file corruption as the syntax is a lot more extensive and thus file corruption could lead to your document not compiling any more a lot easier.
+It also does not use UTF-8 making it harder to type more exotic characters such as *ë*. Later iterations of TeX, such as XeTex and LuaTex do support UTF-8 though.
+
+In {lat} the structure and the layout of your document are split by design. {lat} forces you to create a structured document by requiring you to use `sections, paragraphs,...`.
+When using a WYSIWYG word processor for example, usually there is a way to structure your documents, using `styles, headers,...` but it is not forced on the user.
+As a result, in {lat} consistency is enforced throughout the entire document without too much effort, while in aforementioned WYSIWYG word processors this is often forgotten and less convenient to use.
+In a WYSIWG word processor, the user thus has to make sure his document is consistent.
+Once documents get longer, this gets very hard to manage and to spot the inconsistencies.
+
+Next to this customisability, the typography of {lat} is also very sophisticated.
+It has support for kerning and ligatures and uses an advanced line-breaking algorithm, the Knuth-Plass line-breaking algorithm {cite('''texlba''')}.
+The algorithm sees a paragraph as a whole instead of using a more naive approach and seeing each line individually.
+Kerning places letters closer together or further away depending on character combinations.
+A ligature is when multiple characters are joined into one glyph for example fi vs. `fi`.
+
+Another reason why {lat} is widely used is because, with its libraries, it offers good support for mathematics as well as other scientific areas.
+Because of its high customisability, {lat} can handle about any kind of document, from sheet music and graphs, to letters and books.
+It should be noted that a lot of this functionality is offered through libraries such as PGF/TikZ {cite('''tikzman''')}.
+
+{lat} also works together with BibTeX, a reference management software that is very robust and makes certain all of your references are consistent.
+It also allows you to create the references outside of your main document, decreasing the amount of clutter in the document.
+Whilst on the topic of including other files in your document, in {lat} you can split up your document into multiple smaller documents, allowing for easier management.
+A common use of this function is to write every chapter, for example in a book, in a separate document and than all the chapters are imported into the main document.
+This allows to easily remove or switch out different parts of a document.
+
+Another very simple feature that {lat} has, is that is allows you to use vector graphics or PDF as images in your document.
+This is something not possible in WYSIWIG word processors or lightweight markup languages such as {md}.
+
+{lat} is free and open source, which is a huge point of attraction for the open source community.
+As a result of this free and open source model, combined with its popularity and good scientific support, LaTeX has been integrated in many other applications.
+A few examples are:
+* MediaWiki {cite('''mwikilat''')}
+* Stack Exchange
+* JMathTex {cite('''jmathtex''')}
+//TODO: add more examples
+
+{lat} is powerful but it is complex and has a steep learning curve, for this reason simpler alternatives such as {md} can be used.
+
 ### {md}
-One of the most popular markup languages at this point in time is {md} {cite('''markdown''')}.
-It is introduced by the designers of the language as follows: {cite('''markdown''')}
-
 `Markdown is a text-to-HTML conversion tool for web writers.`
 `Markdown allows you to write using an easy-to-read, easy-to-write plain text format, then convert it to structurally valid XHTML (or HTML).`
 
-{md}'s goal is to be easy to write and read as a plain text document and as such is actually based on plain text emails.
-Due to this, it attracts a lot of people's attention as it is very easy to create a new simple document, such as a short report.
-It achieves this by introducing a small and simple syntax {cite('''mdsyntax''')}. The syntax they chose also feels very natural.
-For example, to create a title you could underline it with \- or \= to create an enumeration, you can use \*'s instead of bullet points.
+(Markdown, 2016)
+
+One of the most popular markup languages is {md} {cite('''markdown''')}.
+Its goal is to be easy to write and read as a plain text document and as such is actually based on plain text emails.
+Because of this, it attracts a lot of attention. It is for example very easy to create a new simple document, such as a short report.
+It achieves this simplicity by introducing a small and simple syntax {cite('''mdsyntax''')}. The syntax they chose also feels very natural.
+For example, to create a title you underline it with `minus` or `equals` characters.
+To create an enumeration, you use `star` characters instead of bullet points.
 
 By using such a simple syntax compile times for the documents are very short and IDE support is wide.
 Even without the help of an IDE, {md} is very readable as it was designed to be.
 Another advantage of this simple syntax is that it almost entirely removes the possibility of syntax errors to occur.
 
-Due to it's simple nature and limited syntax {md} can be easily translated into other formats such as PDF or HTML.
+Due to its simple nature and limited syntax {md} can be easily translated into other formats such as PDF or HTML.
 A tool to convert {md} to HTML is offered by the designers of the language itself, as stated above.
 This further increases the appeal of the language, as it allows to very easily create elegant looking documents in a variety of formats.
 
@@ -42,7 +118,7 @@ A corrupted byte would show easily and it would likely not destroy the layout of
 
 Due to the fact that {md} uses plain text, it is cross-platform and because it has such a simple syntax, compilers are available for all major operating systems.
 As a matter of fact, the Perl script offered by the {md} designers, is cross-platform.
-{md} also natively allows for UTF-8 characters to be used in the text thus not requiring weird escape sequences to insert certain symbols.
+{md} also natively allows for UTF-8 characters to be used in the text thus not requiring escape sequences to insert certain symbols.
 A last advantage of plain text is that it is well suited for Version Control Systems (VCS) such as Git and Mercury.
 
 To illustrate the simplicity of {md} an example document is shown below:
@@ -53,7 +129,7 @@ To illustrate the simplicity of {md} an example document is shown below:
 
 To allow for some customisability, {md} allows you to use inline HTML.
 In case {md} does not support what you want to do, HTML is what you use.
-Tables are not a part of default {md} (though there are variations that have syntax for them, like Github {md}), so an example of how to create one using HTML is shown below:
+Tables are not a part of default {md} (though there are variations that have syntax for them, like Github Flavored {md}), so an example of how to create one using HTML is shown below:
 {{
     Image i = image("The table document rendered as HTML by the official markdown conversion tool", '''htmltable''');
     i.rightOf(new LstListing('''
@@ -71,51 +147,7 @@ Below you can find an HTML table
     '''));
 }}
 
-### {lat}
-{Chapter latexAdv = (Chapter) parent()}
-// TODO: show some trees, that show structure
-{lat} provides a, Turing complete, programming model and due to this allows for rich customisability.
-It also provides a packaging system that allows for libraries, called packages, to be created using this programming model.
-Over the course of the past 38 years (the initial TeX release was in 1978) a lot of packages have been created for all kinds of different functionality.
-This is one of the reasons why {lat} is often used for long and complex documents such as books, articles, scientific papers and syllabi.
-
-Like {md} lat uses a plain text format that is quite robust to file corruptions and is well suited for VCS.
-It is however less robust against file corruption as the syntax is a lot more extensive and thus file corruption could lead to your document not compiling any more a lot easier.
-It also doesn't use UTF-8 making it harder to type more exotic characters such as *ë*. Later iterations of TeX, such as XeTex and LuaTex do support UTF-8 though.
-
-In {lat} the structure and the layout of your document are split by design. {lat} forces you to create a structured document by requiring you to use `sections, paragraphs,...`.
-When using a WYSIWYG word processor for example, usually there is a way to structure your documents, using `styles, headers,...` but it is not forced on the user.
-As a result, in {lat} consistency is enforced throughout the entire document without too much effort, while in aforementioned WYSIWYG word processors this is often forgotten and less convenient to use.
-In a WYSIWG word processor, the user thus has to make sure his document is consistent.
-Once documents get longer, this gets very hard to manage and to spot the inconsistencies.
-
-Next to this customisability, {lat}'s typography is also very sophisticated.
-It has support for kerning and ligatures and uses an advanced line-breaking algorithm, the Knuth-Plass line-breaking algorithm {cite('''texlba''')}.
-The algorithm sees a paragraph as a whole instead of using a more naive approach and seeing each line individually.
-Kerning places letters closer together or further away depending on character combinations.
-A ligature is when multiple characters are joined into one glyph e.g fi vs. `fi`.
-
-Another reason why {lat} is widely used due to its good scientific support.
-{lat} and its libraries offer good support for mathematics as well as other scientific areas, e.g. you can create complex good looking graphs using {lat}.
-Due to its high customisability, {lat} can handle about any kind of document you could think of, from sheet music and graphs, to letters and books.
-It should be noted though that almost all of this functionality is offered through libraries such as PGF/TikZ {cite('''tikzman''')}.
-
-{lat} also works together with BibTeX, a reference management software that is very robust and makes certain all of your references are consistent.
-It also allows you to create the references outside of your main document, decreasing the amount of clutter in the document.
-Whilst on the topic of including other files in your document, in {lat} you can split up your document into multiple smaller documents, allowing for easier management.
-A common use of this function is to write every chapter, e.g. in a book, in a separate document and than all the chapters are imported into the main document.
-This allows to easily remove or switch out different parts of a document.
-
-Another very simple feature that {lat} has, is that is allows you to use vector graphics or PDF as images in your document.
-This is something not possible in WYSIWIG word processors or lightweight markup languages such as {md}.
-
-{lat} is free and open source, which is a huge point of attraction for the open source community.
-As a result of this free and open source model, combined with its popularity and good scientific support, LaTeX has been integrated in many other applications.
-A few examples are:
-* MediaWiki {cite('''mwikilat''')}
-* Stack Exchange
-* JMathTex {cite('''jmathtex''')}
-//TODO: add more examples
+{md} is simple, but has almost no customisability. Because of this, solutions such as {pan} have been created.
 
 ### {pan}
 {pan} {cite('''pandoc''')} is a document converter, but in reality it can do much more than just convert a document from one format to another.
@@ -126,31 +158,39 @@ This AST can then be transformed using filters, the AST enters a filter, is tran
 Filters can be written in a multitude of languages such as Haskell, Python, Perl,... and the filters to be used are passed as a command line argument to the conversion command.
 // TODO: show an example
 
-### Word processors
-Modern word processors such as Microsoft Word and Pages are so called WYSIWYG editors.
-As you immediately, without compiling, see what your document will look like it is a very popular tool.
-The fact that you immediately see what you are writing also significantly decreases the complexity of the tool and it does not scare away less technical people the way {lat} does.
-There is also no possibility to use commands as in {lat} or shorthand syntax as in {md}, instead buttons in the GUI offer all of the functionality.
-Structure is not forced onto the user which offers less restrictions allowing the user to do what he wants.
-It is also very easy to change a font type or change the font size of a certain part of the text.
-Another feature that is loved in the WYSIWIG community is that you can easily add an image and drag and drop it around.
-
 ## Problem statement
 We can see that these solutions all have there strong points but there are also quite a few gripes.
 We will discuss the most common gripes for every solution underneath and afterwards introduce the problem statement.
 
-### {md}
-To achieve {md}'s simplicity, a hefty price has to be paid. All of the syntax elements have been hard coded into the language meaning there is no room for customisability.
-The only way to customise {md} is by embedding inline HTML.
-HTML allows users to create a solid structured model but it still does not allow for very much customisability.
-While {md} is meant to be easily readable and writeable, HTML is not and using it thus decreases readability and cleanliness of your document significantly.
-Once you use HTML in an {md} document, you also require a certain technical proficiency for the source document to be read or edited.
-HTML also does away with the robustness of {md}'s plain text format, as having a tag being corrupted could lead to very big changes in the rendered file and might not even allow for compilation anymore.
-HTML also reintroduces the possibility of syntax errors and thus slows down the document creation.
-// TODO: example of layout destruction
+### Word processors
+// TODO: ToC, Tekst onder images
+// TODO: consider templates
+A first point to note is that the most popular word processors such as Microsoft Word and Pages are not free, but instead cost a significant amount.
+There are free variants, such as LibreOffice and OpenOffice, but the compatibility between these word processors is not perfect.
+The free alternatives usually also have less of a focus on the UI, making them look somewhat less sleek.
 
-The lack of customisability in {md} is further enforced due to the fact that it has no programming model.
-It is one thing that the syntactic shorthands can not be reused, but there is also no other way, next to HTML to create an entirely new entity.
+Another problem with word processors is that their format often changes over the years.
+This means that your document might not show up the same, or at all, a few years after you wrote it.
+
+// TODO: no programming model or something like VB
+Even though some customisability is available, no programming model is available and real customisability is far to be found. You are stuck to what the developers of editor defined and implemented.
+There is no way to go beyond what the designers specified. Due to this it is not always possible to do exactly what you want either.
+When you have a few elements in your document and you try to align a new element with it, it will snap to all sorts of guidelines, but chances are you want to place it in between all of the guidelines,
+which is not possible at that moment.
+Due to their lack of a programming model, word processors do not allow for even the simplest of computations such as `The result is x + y`.
+
+It is also quite easy to create inconsistencies using word processors as noted above in {latexAdv.ref()}.
+Next to creating inconsistencies, as structure is not enforced on you, small changes could have big side effects on the document.
+// TODO: include image?
+For example, you placed an image exactly like you wanted, you then later on add a newline somewhere higher up, reflowing the text underneath it an shifting the precisely placed image around.
+These changes are not always immediately clear, which further contributes to the creation of inconsistencies in the document.
+
+Lastly, word processors often use a proprietary or complex format for there documents, which is not only bigger than a plain text document, but also a lot more prune to corruption.
+A single bit flip could potentially irreversibly destroy your document.
+As complex or binary document formats are used, it is hard to use WYSIWIG editors in combination with VCS.
+This makes it inconvenient to track changes made to the document and go back to an earlier version of the document.
+It also makes it harder to work on a document as a team, you might be making changes at the same time as someone else, but you have no way of automatically merging both documents 
+creating a possibility of data to get lost.
 
 ### {lat}
 // TODO: easy syntax errors, not robust to errors, long repl cycles, unreadable error messages, mention LyX, customizing a document can be very hard
@@ -158,7 +198,7 @@ It is one thing that the syntactic shorthands can not be reused, but there is al
 Even though {lat} offers customisability through a programming model, it is not perfect.
 The programming model is hard to use and is not easy to read.
 Due to this programming model it also looks a lot more complex than {md}, scaring away a lot of potential users.
-There are a few ways to counter this complex look though, for one there is LyX. This is a GUI around {lat} offering some of the most common WYSIWG features, while still utilizing {lat}'s strength.
+There are a few ways to counter this complex look though, for one there is LyX. This is a GUI around {lat} offering some of the most common WYSIWG features, while still utilizing the strength of {lat}.
 Even though the complexity is now hidden under a GUI, it is still there and error messages are as bad as they were before, as is discussed beneath.
 
 Having a cumbersome programming model, {lat} makes it easy to create syntax errors.
@@ -184,7 +224,7 @@ What it is actually trying to tell you is that you are not allowed to use \$ ins
 // TODO: Explain a little about macro expansion
 The programming model used in {lat} does not use a static type system, which means that we have to compile the document to be able to see if we passed a wrong type to a macro at some point in the document.
 It also does not work the way we are used to in imperative and functional languages. It does not have functions that receive parameters and that then call more functions.
-Instead it has macro's and uses macroexpansion. As an example of how this translates into a real world example, a function the implementation of *foreach* in PGF/TikZ is shown below.
+Instead it has macros and uses macroexpansion. As an example of how this translates into a real world example, a function the implementation of *foreach* in PGF/TikZ is shown below.
 
 // TODO: reference src code
 {
@@ -216,37 +256,21 @@ Now we can include the `pgffor` package and apply this function. Luckily it is s
 The macro, called `loopfunction`, loops from 1 to a parameter \#1 and prints out a section in every iteration.
 Calling it using the following code `\\loopfunction{5}` results into the document shown in {loopFunction.ref()}.
 
+### {md}
+{md} is simple but pays a hefty price for it. All of the syntax elements have been hard coded into the language meaning there is no room for customisability.
+The only way to customise {md} is by embedding inline HTML.
+HTML allows users to create a solid structured model but it still does not allow for very much customisability.
+While {md} is meant to be easily readable and writeable, HTML is not and using it thus decreases readability and cleanliness of your document significantly.
+Once you use HTML in an {md} document, you also require a certain technical proficiency for the source document to be read or edited.
+HTML also does away with the robustness of the plain text format of {md}, as having a tag being corrupted could lead to very big changes in the rendered file and might not even allow for compilation anymore.
+HTML also reintroduces the possibility of syntax errors and thus slows down the document creation.
+// TODO: example of layout destruction
+
+The lack of customisability in {md} is further enforced due to the fact that it has no programming model.
+It is one thing that the syntactic shorthands can not be reused, but there is also no other way, next to HTML to create an entirely new entity.
+
 ### {pan}
 Transforming an AST afterwards is not always as easy as doing so inline, and it also hides what really happens to the document, which could cause confusion.
-
-### Word processors
-// TODO: consider templates
-A first point to note is that the most popular word processors such as Microsoft Word and Pages are not free, but instead cost a significant amount.
-There are free variants, such as LibreOffice and OpenOffice, but the compatibility between these word processors is not perfect.
-The free alternatives usually also have less of a focus on the UI, making them look somewhat less sleek.
-
-Another problem with word processors is that their format often changes over the years.
-This means that your document might not show up the same, or at all, a few years after you wrote it.
-
-// TODO: no programming model or something like VB
-Even though some customisability is available, no programming model is available and real customisability is far to be found. You are stuck to what the developers of editor defined and implemented.
-There is no way to go beyond what the designers specified. Due to this it is not always possible to do exactly what you want either.
-When you have a few elements in your document and you try to align a new element with it, it will snap to all sorts of guidelines, but chances are you want to place it in between all of the guidelines,
-which is not possible at that moment.
-Due to their lack of a programming model, word processors do not allow for even the simplest of computations such as `The result is x + y`.
-
-It is also quite easy to create inconsistencies using word processors as noted above in {latexAdv.ref()}.
-Next to creating inconsistencies, as structure is not enforced on you, small changes could have big side effects on the document.
-// TODO: include image?
-E.g. you placed an image exactly like you wanted, you then later on add a newline somewhere higher up, reflowing the text underneath it an shifting the precisely placed image around.
-These changes are not always immediately clear, which further contributes to the creation of inconsistencies in the document.
-
-Lastly, word processors often use a proprietary or complex format for there documents, which is not only bigger than a plain text document, but also a lot more prune to corruption.
-A single bit flip could potentially irreversibly destroy your document.
-As complex or binary document formats are used, it is hard to use WYSIWIG editors in combination with VCS.
-This makes it inconvenient to track changes made to the document and go back to an earlier version of the document.
-It also makes it harder to work on a document as a team, you might be making changes at the same time as someone else, but you have no way of automatically merging both documents 
-creating a possibility of data to get lost.
 
 ## Proposed solution: Neio
 To counter the problems occurring in the state of the art solutions, we bring forth a new markup language called `Neio` (read as neo).
@@ -259,8 +283,9 @@ The first goal supplies us with a simple language that allows to very easily cre
 The use of a modern programming paradigm allows us to customise the document and execute easy and complex computations easily in effect achieving the third goal.
 
 To achieve this we chose to use a syntax like {md} to write our documents in as it is the easiest to read and write.
-For the programming paradigm we chose for something much like Java as Java is very well known, and working with macro expansion's or filters is not ideal.
-Lastly, we choose to translate to LaTeX as it has been successively used for decades and has proven by now that it can deliver very clean looking documents.
+For the programming paradigm we chose something much like Java as Java is very well known, and working with macro expansions or filters is not ideal.
+Lastly, we chose to translate to {lat} as it has been successively used for decades and has proven by now that it can deliver very clean looking documents.
+It also offers a powerful programming model that we can translate to.
 Later on more back ends, such as HTML, could be implemented, but that is outside of scope of this thesis.
 
 ### Target group
@@ -269,21 +294,22 @@ Neio targets anyone that is currently using {md} but just wants to be able to cu
 As we will see later, in Neio it is easy to for example create two images and put them next to each other, something that is not possible in markdown.
 
 It can also be used by people without technical expertise if templates are provided.
-E.g. given a template for a letter, even a non-technical person is able to quickly write down the contents of the letter and fill in the template variables.
+For example, given a template for a letter, even a non-technical person is able to quickly write down the contents of the letter and fill in the template variables.
 
-Neio also target package developers and programmers in general as it offers a modern programming model that is a lot well known and much easier than TeX's system.
+Neio also target package developers and programmers in general as it offers a modern programming model that is a well known and more conventional than the system in TeX.
 This includes full-time developers as well as students or professors.
 
 # Design of the Neio markup language
-In the previous chapter, {intro.ref()}, the state of the art concerning document creation has been discussed and we notice that some improvement is certainly possible.
-All of the document creation tools discussed above have their advantages and disadvantages. 
-In this chapter we will present the Neio language and we will explain how our decisions were reached and how they were affected by the state of the art solutions.
+In {intro.ref()} the state-of-the-art concerning document creation has been discussed and we concluded that improvements can be made.
+All of the solutions discussed above have their advantages and disadvantages. 
+In this chapter we present the Neio language and we explain how our decisions were reached and how they were affected by these solutions.
 
 ## Neio document
-To illustrate some of the basic concepts we will now present an example. The typical files that a user will write are called Neio documents.
-Neio documents are heavily based on {md} as {md} is so easy to read and write.
-Since this document is what most of our consumers will be seeing, this was a very important property.
-Since our consumers will mostly write Neio documents, we are also able to use the widespread knowledge of {md} to increase the size of our audience and allow users to instantly transition to Neio.
+To illustrate some of the basic concepts we now present an example. 
+The typical files that a user will write are called Neio documents, these have to be as simple as possible. 
+As {md} is so easy to read and write, Neio documents are heavily based on {md}.
+This allows us to make use of the widespread knowledge of {md} to increase the size of our audience and allow users to easily transition to Neio.
+
 The following example is one of the most basic documents you can write using Neio.
 {
     String simpleDocument = '''
@@ -296,15 +322,16 @@ This is some text in the first Paragraph.
     
 }
 
-Even if you are not familiar with {md}, you can probably immediately tell what this document represents.
-There is however a very significant difference with {md}. In markdown the syntax is hard-coded into the language, a \# will always represent a chapter for example.
-In Neio, on the other hand, the language has no knowledge whatsoever of what \# means.
-In fact, it does not know what anything in a Neio document means.
-It does not know about these things because everything is a method call, chained together to form an object model that represents the document.
-The reason for doing so is simple, we want to be able to customise our documents!
-For example, when you are creating a slide show you might not want \# to create a new chapter, instead it would be better and clearer if it would just create a new slide.
+Even if you are not familiar with {md}, you can immediately tell what this document represents. 
+There is however a significant difference with {md}. 
+In markdown the syntax is hard-coded into the language, a \# will always represent a chapter for example.
+Neio however has no knowledge of what \# means.
 
-Knowing this we can now represent the document as a chain of method calls as follows:
+Neio does not know about such syntax because everything is a method call, chained together to form an object model that represents the document.
+The reason for doing so is simple, we want to be able to customise our documents!
+For example, when you are creating a slide show, you want \# to create a new slide instead of a chapter.
+
+Knowing this, we can now represent the document as a chain of method calls as follows:
 {
     new LstListing('''
 new Document()
@@ -413,7 +440,7 @@ To avoid clutter, the `newline` method will not be shown in the further examples
 ### Context types
 {Chapter ctxTypes = (Chapter) parent()}
 As said before, everything is a method call, but to be able to just chain any method to any other method, regular methods do not suffice.
-We want to be able to call methods of different class files whilst constructing our document, but we do not want to specify what object we're calling the method on.
+We want to be able to call methods of different class files whilst constructing our document, but we do not want to specify what object we are calling the method on.
 This is something that should be clear from the current structure of the file, a previously created object should have a method with the correct signature.
 
 To be able to call the right methods, we need to introduce something called ContextTypes.
@@ -427,7 +454,7 @@ We will illustrate this using an example.
 
 As we saw before this translates to the new call `new Document()`.
 This is actually a ContextType of the newly created `Document` and `null` as there is nothing else yet.
-We'll call this ContextType `ct1`.
+We will call this ContextType `ct1`.
 
 Lets add a chapter to it, when there are two elements, there should be some kind of context.
 {
@@ -450,10 +477,10 @@ We continue by adding one more Chapter.
 
 Now when we look for the \# method in `ct2` we first have to check Chapter, but Chapter does not have this method.
 We thus recursively check the context of `ct2`, which is `ct1`.
-`ct1`'s actual type is a Document, of which we know that it has a \# method.
+The actual type of `ct1` is Document, of which we know that it has a \# method.
 As we have found the method we were looking for, \# will be called on the Document in `ct1`.
 The ContextType that is created for this call is `ct3` that has the newly created Chapter as the actual type, but that has *ct1* as context.
-This is because we have had to skip over `Chapter 1`, which shows us that `ct2` is not useful anymore for the continued creation of the document.
+This is because we have had to skip over `Chapter 1`, which shows us that `ct2` is not useful any more for the continued creation of the document.
 
 Lastly we add a paragraph to the document.
 {
@@ -482,7 +509,8 @@ If we have a look at the `Chapter` class, we see that it has a nested method \#.
 If we would now call `chapter.\#\#("Chapter 1.1")` for example, it would translate to the following call: `chapter.\#("Chapter 1.1", 2)`.
 
 An important thing to note is, that the regex matching a nested function, is `..+` where `.` is the symbol that is being used as a method name.
-This means that the method that contains a single symbol, the method that defines the first level e.g. `\#(String name)`, should be defined elsewhere. This has been done because the first level is usually special.
+This means that the method that contains a single symbol, the method that defines the first level for example `\#(String name)`, should be defined elsewhere.
+This has been done because the first level is usually special.
 In case of an Enumerate for example, when we create the first EnumerateItem, not only an EnumerateItem but also an Enumerate has to be added.
 Usually the object created by this method should also be added in a different place than the other objects.
 Let us take the following example:
@@ -519,8 +547,8 @@ The text `This is \*bold\* text` will then be transformed into the following cha
 
 ### Code blocks
 {Chapter codeBlocks = (Chapter) parent()}
-We've seen that we can use code in Neio class files and customise our document this way. But this doesn't allow us to do everything we want to.
-We don't want to create a new document class every time we want to do something special. It's also not possible to add anything to a document class that does not exist.
+We have seen that we can use code in Neio class files and customise our document this way. But this does not allow us to do everything we want to.
+We do not want to create a new document class every time we want to do something special. It is also not possible to add anything to a document class that does not exist.
 Sometimes we might just want to change a property of some content, which is not possible as of yet.
 For this reason, it is possible to add code blocks in a Neio document. The three different kinds of code blocks are explained below.
 To avoid confusion, when you are writing text into a Neio document, we say that we are in Text mode.
@@ -541,7 +569,7 @@ We also show the code for the `EnumerateItem` that is used in `FibEnumerate`, `F
 }
 
 The only real thing that changed in this code, compared to their super classes `Enumerate` and `EnumerateItem`, is the code to translate the object, given in the `toTex()` method.
-There is however another odd line present in `FibEnumerate`'s constructor.
+There is however another odd line present in the constructor of `FibEnumerate`.
 It concerns the following line:
 {
     new LstListing('''
@@ -550,10 +578,10 @@ addClassMapping(EnumerateItem.class, FibItem.class);
 }
 
 For now, it is enough simply to know that this acts mostly as a factory.
-For this example it means that if `FibEnumerate` or one of it's children \(`FibItem`'s for example\) were to create an instance of the class `EnumerateItem`, that it will actually create a `FibItem`.
-The reason we say it, acts as a factory, is because we're asking for a new instance of some object to be created and what we receive is a new instance of that specific class, or one of its subclasses.
+For this example it means that if `FibEnumerate` or one of its children \(a `FibItem` for example\) were to create an instance of the class `EnumerateItem`, that it will actually create a `FibItem`.
+The reason we say it, acts as a factory, is because we are asking for a new instance of some object to be created and what we receive is a new instance of that specific class, or one of its subclasses.
 How this works will be explained further on, in Chapter 4.
-The bottom line is that this line of code allows us to reuse the `\-` method that has been defined in `Enumerate`, to create `FibItem`'s instead of having to redefine this method simply to create an instance of a subclass.
+The bottom line is that this line of code allows us to reuse the `\-` method that has been defined in `Enumerate`, to create a `FibItem` instead of having to redefine this method simply to create an instance of a subclass.
 It also makes sure that we do not have to write a new factory every time we want to replace a general class by a more specific subclass, as would otherwise have been needed here.
 
 Now to be able to get this `FibEnumerate` into a document all we have to do is open a code block and create a new `FibEnumerate`.
@@ -647,8 +675,9 @@ this.newline().newline().text("This is a paragraph");
     ''')
 }
 
-In further translation the first `this` will result into the `Document` while the second this will be `c1`. The reason that the first `this` will be the `Document` instead of `Paragraph`, is because of ContextType's.
-`Paragraph` and `ContainerNLHandler` do not have a `\#` method', but `Document` does as is shown in the following UML (only public members are shown to prevent clutter).
+In further translation the first `this` will result into the `Document` while the second this will be `c1`.
+The reason that the first `this` will be the `Document` instead of `Paragraph`, is because of `ContextType`s.
+`Paragraph` and `ContainerNLHandler` do not have a `\#` method, but `Document` does, as is shown in the following UML (only public members are shown to prevent clutter).
 {
     List<String> show = new ArrayList<String>();
     show.add('''neio.stdlib.Paragraph''');
@@ -680,7 +709,7 @@ for (int i = 0; i < l.size(); i = i + 1) {
 }
 
 In this example a `Document` is created but to be able to use it for our needs, we need a few more packages that are not included by default in `Document`.
-We also do not want to think of very descriptive identifiers for our variables as it's just a simple operation, the name `l`should suffice.
+We also do not want to think of very descriptive identifiers for our variables as it is just a simple operation, the name `l`should suffice.
 Normally these variables would be defined in a short function and we would thus not have to worry about shadowing or overriding this name.
 But as we saw in {thisCode.ref()}, our code is just inserted straight into the final document.
 The difference is that a block of scoped block is inserted into its own scope. It also does not automatically add anything to the document like
@@ -717,7 +746,7 @@ An example is shown below.
     ''');
 }
 
-This code creates an `Image`, but also adds it to the `Document`, as we don't want to add it twice, or invent an identifier for it, we use non-scoped code.
+This code creates an `Image`, but also adds it to the `Document`, as we do not want to add it twice, or invent an identifier for it, we use non-scoped code.
 The code for the image function is shown below.
 {
     new LstInputListing(53, 75, '''../../examples/0.8/lib/neio/stdlib/TextContainer.no''')
@@ -757,13 +786,13 @@ this.text("It is called ").text(c1.title().toString()).text(" and it cost me ").
 }
 
 ### Text
-Something that has not been noted yet, is that most of the time, we don't actually use Java String's.
-What is used most of the time is Neio Text. Neio Text (in Code mode, not in class files) is created like Java String's, by enclosing some text with a pair of doubles quotes \(`\"`\).
+Something that has not been noted yet, is that most of the time, we do not actually use Java `String`s.
+What is used most of the time is Neio Text. Neio Text (in Code mode, not in class files) is created like Java `String`s, by enclosing some text with a pair of doubles quotes \(`\"`\).
 A Java String is still sometimes needed and can be created using a pair of triple, single-quotes \(`\'\'\'`\).
 We use three quotes, as a pair of single quotes still represents a Java Character, while two quotes would be very confusing when used in combination with double quotes in a non-monospace font.
 The inspiration of using three quotes came from the multi-line String literal in Python.
 The difference is that Neio text can contain anything you would type in Text mode, which includes code blocks, you can thus effectively endlessly nest Text and Code mode.
-The reason we use Neio text for most things instead of Java String's (just have a look at a few of the methods in the UML shown below), is because Neio text can be marked up, by using surround methods for example.
+The reason we use Neio text for most things instead of Java `String`s (just have a look at a few of the methods in the UML shown below), is because Neio text can be marked up, by using surround methods for example.
 {
     List<String> showTC = new ArrayList<String>();
     showTC.add('''neio.stdlib.TextContainer''');
@@ -781,9 +810,9 @@ The reason for this is, that while we are writing a Neio document in Code mode, 
 This decreases the time spent debugging and spend waiting on the compiler as you weed out one type mismatch after another.
 It also allows you to create a safer program as type errors might be caught at compile time when using static typing.
 On the other hand when using dynamic typing, type errors will only show up at runtime.
-With the help of an IDE, we also don't really have that much more typing to do than when we would be using dynamic typing.
+With the help of an IDE, we also do not really have that much more typing to do than when we would be using dynamic typing.
 The language has been designed with static typing in mind, and types have been incorporated into the compiler, but the necessary checks are not yet in place.
-At this point in time, when a type error appears in the code, we will get a `LookupException` when we're looking for that method or variable.
+At this point in time, when a type error appears in the code, we will get a `LookupException` when we are looking for that method or variable.
 In the future, checks should be placed and appropriate errors should be thrown that make clear where exactly the error occurs.
 
 #### Security
@@ -805,18 +834,18 @@ This is not something we could hope to reproduce in the scope of this thesis.
 The simplest of documents can be created using the `Document` class.
 It provides syntax to create anything that {md} can create, and on top of that, it allows you to create tables, {lat} math, uml,...
 It also allows you to use the code blocks defined in { codeBlocks.ref() }, to customise your document.
-For example, it is possible to place two `Content`'s next to each other by using the `leftOf` and `rightOf` methods that are defined in the `Content` class.
+For example, it is possible to place two `Content`s next to each other by using the `leftOf` and `rightOf` methods that are defined in the `Content` class.
 The code of these methods is shown below.
 {
     new LstInputListing(118, 182, '''../../examples/0.8/lib/neio/lang/Content.no''')
 }
-This code takes the parent from one of the two `Content`'s, the base, and links the other Content to the base.
-The implementation creates a root {lat} `Minipage` {cite('''minipage''')} if these are the first two objects in a row to be placed next to each other, otherwise it just wraps the two `Content`'s in a `minipage`.
-The root `minipage` takes up the total width, while the `minipage`'s that wrap the content take up 1/children of the width.
+This code takes the parent from one of the two `Content`s, the base, and links the other Content to the base.
+The implementation creates a root {lat} `Minipage` {cite('''minipage''')} if these are the first two objects in a row to be placed next to each other, otherwise it just wraps the two `Content`s in a `minipage`.
+The root `minipage` takes up the total width, while the `minipage`s that wrap the content take up 1/children of the width.
 
-Another of implementing this, that would probably have worked better was through `TikZ` picture's.
+Another way of implementing this, that would probably have worked better, was through `TikZ` pictures.
 This would have been better because it allows you to easily set any two things next to each other or above/beneath each other.
-`Minipage`'s require a lot more manual work, they might also split at a page-end which is not what we really want.
+`Minipage`s require a lot more manual work, they might also split at a page-end which is not what we really want.
 
 The `Document` document class can thus be used to write simple documents, such as small reports on various tasks.
 
@@ -849,7 +878,7 @@ The code for a ToC is shown below.
 
 We can also add things to a document class ourselves which might allow us to reuse other document classes
 For example, to add an abstract to the `Thesis` document class, we just have to create an `Abstract` class that extends `Content` and add it to the document at the right time.
-This allows us to add more functionality to a document class, without having to modify the document class itself, or without having to create a new one, e.g. Thesis and ThesisWithAbstract.
+This allows us to add more functionality to a document class, without having to modify the document class itself, or without having to create a new one, for example `Thesis` and `ThesisWithAbstract`.
 
 To add an abstract , we could initialise an `Abstract`, this `Abstract` might then overwrite the `newline` function to create an `AbstractNLHandler`.
 The `AbsttractNLHandler` can then override the `text` method to initialize itself, as an abstract is just a block of text.
@@ -866,7 +895,7 @@ For example, you might create a `LetterHeader` class that represents the header 
 This header requires some information about the writer, the name, the addressee,....
 One way to fill these in is just by passing them to the constructor of `LetterHeader` or by using setters defined in `LetterHeader`.
 Another way to do this, is by overwriting some methods in `LetterHeader`.
-We could overwrite the `\#` method to represent the author's name, and `\-` to represent the addressee for example.
+We could overwrite the `\#` method to represent the name of the author, and `\-` to represent the addressee for example.
 Another possibility is to used nested methods for this, `\#` represents the author, `\#\#` represents the addressee and so on.
 
 Yet another way would be to create objects for the parameters we need (grouping some together if that makes sense) such as `Author` and `Addressee`.
@@ -1008,7 +1037,7 @@ As most of the code in this library is straightforward, does nothing new and is 
 
 ### {lat} tables
 Tables are one of the main things missing in {md} and is one of the things people have the most problems with in {lat}.
-As such we tried to make a table that is simple to create, that is readable in source code and that allows you to easily edit values in the table later on, making it so we don't have to inline all of the changes, making it hard to read how the table.
+As such we tried to make a table that is simple to create, that is readable in source code and that allows you to easily edit values in the table later on, making it so we do not have to inline all of the changes, making it hard to read how the table.
 The table is created like you would create an ASCII table, with pipes, spaces, dashes and values for the elements of the table. An example is shown below.
 {
     new LstListing('''
@@ -1039,7 +1068,7 @@ In the table below you can see the results of the 33rd 12urenloop of the Univers
 
 First of all, we note that it does not matter how many spaces are placed in side the elements of the table.
 The way this table is build is by mixing the use of normal method calls of `\|`, a nested call of `\-` and by making use of a NewlineHandler.
-The table is created by the `\|` method in `TextContainer`, so that it van be used in `Chapter`'s as well as `Document`'s (they are both subclasses of `TextContainer`).
+The table is created by the `\|` method in `TextContainer`, so that it van be used in `Chapter`s as well as `Document`s (they are both subclasses of `TextContainer`).
 {
     new LstInputListing(96, 109, '''../../examples/0.8/lib/neio/stdlib/TextContainer.no''');
 }
@@ -1073,7 +1102,7 @@ When we want to show a red black tree in {lat}, we can typeset an instance of su
 Or we could create it in a third party program and include an image of an instance of such tree in our document,
 this is a solution that would also work {md}.
 
-However, since an algorithm is used, and we have a programming model, couldn't we just build the tree and then display it?
+However, since an algorithm is used, and we have a programming model, could not we just build the tree and then display it?
 It turns out that we can.
 All that we have to do is take some code that can generate red black trees and add a display method to it.
 We show an example of the red black trees in use.
@@ -1116,9 +1145,9 @@ would all be shown exactly the same and they would all show the last version of 
 The next example has already been used a few times in this document.
 Every UML diagram up to now was created using a UML library implemented in Neio.
 It is also a little different from the other libraries we have seen thus far as it does not directly translate
-into {lat}. Instead we're making use of MetaUML {cite('''metauml''')}.
+into {lat}. Instead we are making use of MetaUML {cite('''metauml''')}.
 A high-level overview of how we create UML diagrams will be given here, but a lower level overview will be given
-in Chapter 4. We'll start out with an example.
+in Chapter 4. We will start out with an example.
 {
     new LstListing('''
 [Document]
@@ -1199,7 +1228,7 @@ The ANTLR4 {cite('''antlr4''')} library is an open-source parser generator relea
 It is used to parse all of the Neio files, the Neio documents and the Neio classes.
 We used ANTLR4 in the following way.
 First we created two grammars, consisting of a parser and a lexer, for the Neio documents and classes, thus four files in total.
-These are written in ANTLR4's own DSL.
+These are written using the ANTLR4 DSL.
 These grammars are then fed to the `antlr4` command line tool, this tool generates Java classes using the grammars 
 you defined.
 The ANTLR4 Java classes provide us with an interface that makes use of the Visitor pattern.
@@ -1222,7 +1251,7 @@ It is also able to write out Java code, given an AST built from Jnome and Chamel
 This part is the backend of the compiler.
 
 Jnome can read entire Java projects at once, in our compiler for example, it loads the entire Java library.
-This is needed because our objects use Java objects, such as String's.
+This is needed because our objects use Java objects, such as `String`s.
 It will read all of the source files and libraries that are specified in a file called `project.xml`.
 This file was mentioned earlier in {umlChap.ref()}.
 This same file is used to read Neio projects in our compiler. The `project.xml` for the Neio compiler is shown below.
@@ -1237,14 +1266,14 @@ After the manipulations have been completed, we write it out using the Jnome bac
 Now that all parts of the compiler have been introduced, we show a diagram that depicts the flow a source file 
 from Neio source up to to the final {lat} file.
 {
-    Image compileFlow = image("Illustration of how a Neio document is compiled. Neio class files translate to Java classes, Neio script files to a Java file with a main function. This then gets output to Tex using Neio's standard library", '''CompileFlow''');
+    Image compileFlow = image("Illustration of how a Neio document is compiled. Neio class files translate to Java classes, Neio script files to a Java file with a main function. This then gets output to TeX using the Neio standard library", '''CompileFlow''');
     return compileFlow;
 }
 
 First of the Java and Neio library (the Neio class files) are read by the front end of the Neio compiler and translated into an AST.
 Then Neio documents are read by the front end and it is also transformed in an AST.
 The latter AST is past to the middle end of the compiler and is transformed to an object model that can be output to valid Java.
-Then the transformed AST and the AST's for the Neio library are passed to the compiler back end which will generate the final Java code.
+Then the transformed AST and the ASTs for the Neio library are passed to the compiler back end which will generate the final Java code.
 This final Java code will then be compiled and executed again.
 During the execution, resources might be created, if so, they can be used in the next step.
 This next step is the building of the document to a final representation.
@@ -1285,7 +1314,7 @@ The way we choose to translate it, is by breaking up the method chains created i
 A variable is then assigned to the output of this method call.
 
 // TODO: make clearer
-To know what to call our method on, `ContextType`'s were implemented as an extension of `RegularJavaType`'s in Jnome.
+To know what to call our method on, `ContextType`s were implemented as an extension of `RegularJavaType`s in Jnome.
 A `RegularJavaType` is what we know as a Java class.
 This `ContextType` adds a virtual inheritance relation between itself and the actual type of the method, and 
 one between itself and the ContextType of this method.
@@ -1301,7 +1330,7 @@ we check what type is returned by this method and look for the first variable in
 We then know what to call our method on.
 
 Lastly, we also have to translate `this`. The translation is analogue to the previous step, where we searched what to call the method on.
-To have a starting point, we just replace `this` with the last defined variable and let the `ContextType`'s do their job.
+To have a starting point, we just replace `this` with the last defined variable and let the `ContextType`s do their job.
 A translation for the very first example we looked at in this document is shown below.
 {
     LstInputListing ctxExample = new LstInputListing('''../../examples/0.8/input/testInput/testInput/testInput.no''');
@@ -1342,7 +1371,7 @@ overrides the `\#` method, we also have to override the nested `\#` method in `C
 an instance of the special `Chapter`.
 
 This is a problem that is normally solved by using factories.
-When you know your object will create instances of other objects, in our example a `Document` creates `Chapter`'s, 
+When you know your object will create instances of other objects, in our example a `Document` creates `Chapters, 
 that might be changed with more specialized forms of that object, you create a factory.
 This factory however would have to be generic enough to be able to be used almost anywhere.
 Even if we are able to do this, the writer of the specialized object would still have to create a new factory.
@@ -1364,7 +1393,7 @@ The code needed to understand this process, as well as an example call is given 
 If you already understood the code from the comments, this paragraph can be skipped.
 Every instance of content has a mapping from `Class` to `Class`, by default this mapping is empty.
 When we want to use a specialized form of an object we call `addClassMapping`, as we did in {nsCode.ref()}.
-Let's say we have the following example.
+Take the following example.
 {
     new LstListing('''
 [Document]
@@ -1374,6 +1403,7 @@ Let's say we have the following example.
 }
     ''')
 }
+
 We added a mapping from `Enumerate.class` to `FibEnumerate.class` in the root `Document`.
 When we now call `getInstance(Enumerate.class, ...)`, this will be called on `Chapter`, not on `Document`.
 But fear not, class mappings are looked up recursively. In the `getInstance` method we first check if we have 
@@ -1389,7 +1419,7 @@ just add a `\\` before the character you want to escape and it is escaped. Of co
 special meaning. However `\\\[bfu\]` have not been included in Neio as they are not yet needed. In the future it might 
 prove useful to include these special characters to.
 
-Moving on, we can't just translate these characters straight to Java as we have no special meaning for `\\\[bfu\]`.
+Moving on, we can not just translate these characters straight to Java as we have no special meaning for `\\\[bfu\]`.
 For this reason the middle end transforms every backslash into two backslashes, and transforms a double backslash (used to denote an 
 escaped single backslash in Neio) to four backslashes in Java as this is how you represent an escaped backslash in a Java String.
 We then do some further translation in the Text class to assure that we are able to create valid latex.
@@ -1448,12 +1478,12 @@ An example is almost every `toTex` method, we show the one defined in `Content` 
     new LstInputListing(413, 427, '''../../examples/0.8/lib/neio/lang/Content.no''')
 }
 
-In fact we use it so many that in the future it might be better to just replace String's by `StringBuilder`'s at all times.
+In fact we use it so many that in the future it might be better to just replace `String`s by `StringBuilder`s at all times.
 This would make it easier for people to write packages. The performance gain, or loss of this would have to be investigated though.
 
 #### Automatic return of the object itself
 {Chapter autoRet = (Chapter) parent()}
-Another pattern that is often encountered is that we often return the same object even when we haven't changed it.
+Another pattern that is often encountered is that we often return the same object even when we have not changed it.
 This is to be able to make use of fluent interfaces, as said before. An example from the `InlineEq` class is shown below.
 {
     new LstInputListing(17, 27, '''../../examples/0.8/lib/neio/stdlib/math/InlineEq.no''')
@@ -1508,9 +1538,9 @@ optimizations that can be performed.
 
 #### Other front- and back ends
 Another compiler improvement that could be created in the future, is that we could create different front and back ends.
-We don't have to output to Java, if someone were to write a back end for python for example, we could make use of that back end.
+We do not have to output to Java, if someone were to write a back end for python for example, we could make use of that back end.
 The same thing is possible for the front end. The syntax of Neio documents and class files could be changed, as long as the fundamental 
-design decisions of the language are kept the same, such as `ContextType`'s and nested methods, another syntax could be designed. As long 
+design decisions of the language are kept the same, such as `ContextType`s and nested methods, another syntax could be designed. As long 
 as a front end is developed that can parse a Neio document with a different syntax that can still parse the document into the same AST as is 
 used at this moment, it is possible to change the currently used syntax..
 
