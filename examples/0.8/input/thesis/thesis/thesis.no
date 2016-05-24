@@ -48,7 +48,7 @@ Some documents however are more complex and have need for a more powerful tool s
 ### {lat}
 {Chapter latexAdv = (Chapter) parent()}
 // TODO: show some trees, that show structure
-{lat} provides a, Turing complete, programming model and due to this allows for rich customisability.
+{lat} provides a, Turing complete, programming model and because of this allows for rich customisability.
 It also provides a packaging system that allows for libraries, called packages, to be created using this programming model.
 Over the course of the past 38 years (the initial TeX release was in 1978) a lot of packages have been created for all kinds of different functionality.
 This is one of the reasons why {lat} is often used for long and complex documents such as books, articles, scientific papers and syllabi.
@@ -109,14 +109,14 @@ By using such a simple syntax compile times for the documents are very short and
 Even without the help of an IDE, {md} is very readable as it was designed to be.
 Another advantage of this simple syntax is that it almost entirely removes the possibility of syntax errors to occur.
 
-Due to its simple nature and limited syntax {md} can be easily translated into other formats such as PDF or HTML.
+Because of its simple nature and limited syntax, {md} can be easily translated into other formats such as PDF or HTML.
 A tool to convert {md} to HTML is offered by the designers of the language itself, as stated above.
 This further increases the appeal of the language, as it allows to very easily create elegant looking documents in a variety of formats.
 
 As {md} files are just plain text files they are robust to file corruption and easy to recover from said corruption.
 A corrupted byte would show easily and it would likely not destroy the layout of the document as there are so few reserved symbols being used in a {md} document.
 
-Due to the fact that {md} uses plain text, it is cross-platform and because it has such a simple syntax, compilers are available for all major operating systems.
+Because {md} uses plain text, it is cross-platform and because it has such a simple syntax, compilers are available for all major operating systems.
 As a matter of fact, the Perl script offered by the {md} designers, is cross-platform.
 {md} also natively allows for UTF-8 characters to be used in the text thus not requiring escape sequences to insert certain symbols.
 A last advantage of plain text is that it is well suited for Version Control Systems (VCS) such as Git and Mercury.
@@ -174,10 +174,10 @@ This means that your document might not show up the same, or at all, a few years
 
 // TODO: no programming model or something like VB
 Even though some customisability is available, no programming model is available and real customisability is far to be found. You are stuck to what the developers of editor defined and implemented.
-There is no way to go beyond what the designers specified. Due to this it is not always possible to do exactly what you want either.
+There is no way to go beyond what the designers specified. Because of this, it is not always possible to do exactly what you want either.
 When you have a few elements in your document and you try to align a new element with it, it will snap to all sorts of guidelines, but chances are you want to place it in between all of the guidelines,
 which is not possible at that moment.
-Due to their lack of a programming model, word processors do not allow for even the simplest of computations such as `The result is x + y`.
+Because of their lack of a programming model, word processors do not allow for even the simplest of computations such as `The result is x + y`.
 
 It is also quite easy to create inconsistencies using word processors as noted above in {latexAdv.ref()}.
 Next to creating inconsistencies, as structure is not enforced on you, small changes could have big side effects on the document.
@@ -197,7 +197,7 @@ creating a possibility of data to get lost.
 // TODO: requires some time to learn, especially to be able to customize/write packages, no UTF-8 without xe/luatex
 Even though {lat} offers customisability through a programming model, it is not perfect.
 The programming model is hard to use and is not easy to read.
-Due to this programming model it also looks a lot more complex than {md}, scaring away a lot of potential users.
+Because of this programming model it also looks a lot more complex than {md}, scaring away a lot of potential users.
 There are a few ways to counter this complex look though, for one there is LyX. This is a GUI around {lat} offering some of the most common WYSIWG features, while still utilizing the strength of {lat}.
 Even though the complexity is now hidden under a GUI, it is still there and error messages are as bad as they were before, as is discussed beneath.
 
@@ -266,51 +266,52 @@ HTML also does away with the robustness of the plain text format of {md}, as hav
 HTML also reintroduces the possibility of syntax errors and thus slows down the document creation.
 // TODO: example of layout destruction
 
-The lack of customisability in {md} is further enforced due to the fact that it has no programming model.
+The lack of customisability in {md} is further enforced because it has no programming model.
 It is one thing that the syntactic shorthands can not be reused, but there is also no other way, next to HTML to create an entirely new entity.
 
 ### {pan}
 Transforming an AST afterwards is not always as easy as doing so inline, and it also hides what really happens to the document, which could cause confusion.
 
 ## Proposed solution: Neio
-To counter the problems occurring in the state of the art solutions, we bring forth a new markup language called `Neio` (read as neo).
-To be able to solve some of the aforementioned problems and still make use of all of their advantages, the following goals were devised for the Neio markup language:
-- User-friendliness: has to be easy to get started with the language
-- Has to use a modern programming paradigm
-- Has to be highly customisable
+{Chapter goals = (Chapter) parent()}
+To counter the problems occurring in the state-of-the-art solutions whilst retaining their advantages, we created a new markup language called `Neio` (read as neo).
+// TODO: naam uitleggen?
+Based on these solutions, the following goals were created for the Neio markup language:
+- It has to be user-friendly and easy to get started with the language
+- It has to use a modern programming paradigm
+- It has to be highly customisable
 
-The first goal supplies us with a simple language that allows to very easily create simple documents.
-The use of a modern programming paradigm allows us to customise the document and execute easy and complex computations easily in effect achieving the third goal.
+The first goal is achieved by using a syntax like {md} for the documents.
 
-To achieve this we chose to use a syntax like {md} to write our documents in as it is the easiest to read and write.
-For the programming paradigm we chose something much like Java as Java is very well known, and working with macro expansions or filters is not ideal.
-Lastly, we chose to translate to {lat} as it has been successively used for decades and has proven by now that it can deliver very clean looking documents.
-It also offers a powerful programming model that we can translate to.
+To achieved the second goal a typical document was analysed.
+A document has a strong structure consisting of a lot of elements like chapters, sections, paragraphs and so on.
+An object-oriented model, like the one in Java, is able to represent this structure well.
+Inheritance allows us to easily make small changes to the elements for example changing the default font size of a chapter.
+We also chose this model because it is well known and working with macro expansions or filters is not ideal.
+
+Because it offers a powerful programming model that we can translate to, we chose to translate to {lat}.
+It has also been used successively for decades and has proven that it can deliver very clean looking documents.
 Later on more back ends, such as HTML, could be implemented, but that is outside of scope of this thesis.
 
 ### Target group
-Neio targets anyone that is currently using {md} but just wants to be able to customise their document a bit more.
-// TODO: label
-As we will see later, in Neio it is easy to for example create two images and put them next to each other, something that is not possible in markdown.
-
-It can also be used by people without technical expertise if templates are provided.
-For example, given a template for a letter, even a non-technical person is able to quickly write down the contents of the letter and fill in the template variables.
-
-Neio also target package developers and programmers in general as it offers a modern programming model that is a well known and more conventional than the system in TeX.
-This includes full-time developers as well as students or professors.
+Neio targets anyone that is currently using {md} but wants to customise their document further.
+For example, using Neio you can create citations and references, which is not possible in {md}.
+It also targets package developers and programmers in general as it offers a well-known, modern programming model that is more conventional than the macro model in TeX.
+// TODO
+//It can also be used by people without technical expertise if templates are provided.
+//For example, given a template for a letter, even a non-technical person is able to quickly write down the contents of the letter and fill in the template variables.
 
 # Design of the Neio markup language
 In {intro.ref()} the state-of-the-art concerning document creation has been discussed and we concluded that improvements can be made.
-All of the solutions discussed above have their advantages and disadvantages. 
-In this chapter we present the Neio language and we explain how our decisions were reached and how they were affected by these solutions.
+In this chapter the Neio language is presented.
+We explain how our decisions were reached and how they were affected by the presented solutions.
 
 ## Neio document
-To illustrate some of the basic concepts we now present an example. 
-The typical files that a user will write are called Neio documents, these have to be as simple as possible. 
-As {md} is so easy to read and write, Neio documents are heavily based on {md}.
+The typical files that a user will write are called Neio documents, these have to be as simple as possible.
+As mentioned in {goals.ref()}, Neio documents are heavily based on {md}.
 This allows us to make use of the widespread knowledge of {md} to increase the size of our audience and allow users to easily transition to Neio.
 
-The following example is one of the most basic documents you can write using Neio.
+To illustrate some of the basic concepts we now present an example Neio document.
 {
     String simpleDocument = '''
 [Document]
@@ -1244,11 +1245,11 @@ shown in this Thesis, a markup language. It does so by providing a lot of object
 commonly used in programming languages. A few examples of such objects are the following:
 `Expression, VariableDeclaration, Type, MethodInvocation, InfixOperatorInvocation,...`.
 
-Jnome {cite('''jnome''')} uses Chameleon and implements the front end and backend of a compiler specifically for the Java language.
+Jnome {cite('''jnome''')} uses Chameleon and implements the front end and back end of a compiler specifically for the Java language.
 It can read Java and build an AST from it (using ANTLR3), thus it is a front end for the Java language.
 To be able to do this it extends the object model available in Chameleon with Java specific objects.
 It is also able to write out Java code, given an AST built from Jnome and Chameleon objects.
-This part is the backend of the compiler.
+This part is the back end of the compiler.
 
 Jnome can read entire Java projects at once, in our compiler for example, it loads the entire Java library.
 This is needed because our objects use Java objects, such as `String`s.
@@ -1260,7 +1261,7 @@ This same file is used to read Neio projects in our compiler. The `project.xml` 
 }
 
 Having obtained an AST in {antlr4C.ref()}, we now manipulate it in the middle end of our compiler.
-After the manipulations have been completed, we write it out using the Jnome backend.
+After the manipulations have been completed, we write it out using the Jnome back end.
 
 ## Compile flow
 Now that all parts of the compiler have been introduced, we show a diagram that depicts the flow a source file 
@@ -1440,13 +1441,13 @@ In {rsc.ref()} we saw that command line commands are sometimes executed. Executi
 When developing on Linux, executing shell commands from Java worked perfectly fine and gave no problems whatsoever.
 However, on Windows some of the processes would hang, some would always hang, some would hang only once in a while.
 The reason for this is that Windows offers only a limited buffer size for the input and output streams of a process, the program deadlocks if the input is not written or read.
-After closer inspection of the Javadoc {cite('''javaprocess''')} this became apparent but due to the API for the Process class being so simple, it was a surprise nevertheless.
+After closer inspection of the Javadoc {cite('''javaprocess''')} this became apparent but since the API for the Process class is so simple, it was a surprise nevertheless.
 The fact that we have to worry about different platforms on a cross-platform language as Java is also something that is not too common.
 
 ### Back end
-About every back end has some limitations on how we can translate our Neio document. This is due to the fact that 
-Neio can use symbols as methods. In Java methods can only contain letters, numbers, \$ or \_. This means we have 
-to translate the symbol function to valid Java identifiers. The way we do this is very straight forward.
+About every back end has some limitations on how we can translate our Neio document. This is because Neio can use symbols as methods.
+In Java, methods can only contain letters, numbers, \$ or \_. This means we have to translate the symbol function to valid Java identifiers.
+The way we do this is very straightforward.
 We use the following mapping and just replace any occurrence of a key in a method or method invocation with the value.
 {
     new LstListing('''
