@@ -1371,7 +1371,7 @@ overrides the `\#` method, we also have to override the nested `\#` method in `C
 an instance of the special `Chapter`.
 
 This is a problem that is normally solved by using factories.
-When you know your object will create instances of other objects, in our example a `Document` creates `Chapters, 
+When you know your object will create instances of other objects, in our example a `Document` creates `Chapter`s, 
 that might be changed with more specialized forms of that object, you create a factory.
 This factory however would have to be generic enough to be able to be used almost anywhere.
 Even if we are able to do this, the writer of the specialized object would still have to create a new factory.
