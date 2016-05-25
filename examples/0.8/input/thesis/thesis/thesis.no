@@ -16,81 +16,156 @@ In this thesis we introduce a new markup language that improves upon a few other
 Before we get into the details of this new language it is necessary to introduce some of the most used markup languages and word processors.
 
 ## State-of-the-art
+Before we discuss the state-of-the-art we first discuss the difference between saving a document as plain text or in a binary format.
+
+{md}, {lat} and {pan} use a plain text format that is quite robust to file corruptions and is well suited for Version Control Systems (VCS) such as Git and Mercury.
+It is robust in the sense that a if a single bit of the document gets flipped, the document is not irreversibly destroyed.
+
+When the syntax is more extensive, the chances to create a problem upon compilation increase.
+This is both good and bad, if a part of important syntax got corrupted, the compiler will tell you and you will know that the document has to be fixed, otherwise this might have been missed.
+However corruption of such syntax might prevent the document to compile at all.
+In any case, the document is not irreversibly destroyed.
+
+This is possible however when using the binary format of a What You See Is What You Get (WYSIWIG) editor.
+As a matter of proof, we created a Word document and flipped one bit (an `E` was changed to a `D` at a random place).
+We then tried to open the document an received the following sequence of errors and were unable to retrieve the contents of the file.
+{
+    Image wordCorr = image("The detection of an error", '''wordCorruption''')
+}
+{{
+    wordCorr.leftOf(new Image("The warning before trying to repair the error", '''wordCorruption2'''));
+    image("The inability to repair the error", '''wordCorruption3''').scale(80);
+}}
+
+It is to be noted that the errors depend on what exactly was corrupted, in some cases the corruption can be automatically repaired.
+
 ### Word processors
-The best known solution for creating documents, are so called What You See Is What You Get (WYSIWYG) editors, such as Microsoft Word and Pages.
-As you immediately, without compiling, see what your document will look like, it is a very popular tool.
+{Chapter goodWord = (Chapter) parent()}
+The best known solution for creating documents, are so called WYSIWYG editors, examples include 'Microsoft Word' and 'Pages'.
+They are called as such because you immediately, without compiling, see what your document will look like.
 Because of this, the complexity of the tool is significantly decreased allowing anyone to use the tool.
 It is less complex because you do not have to type in commands and wait for a preview to change.
 Instead you select the property from a drop-down list or click a button and the document is updated instantly.
 The GUI essentially hides the complexity.
 
-A WYSIWYG editor gives the author freedom, for example it is very easy to change a font or change the font size of a certain part of the text 
+A WYSIWYG editor gives the author freedom, for example it is very easy to change a font or change the font size of a certain part of the text
 and you can easily add an image and drag-and-drop it around.
 
 A lot of these WYSIWG editors are grouped into packets, such as Office or iWork.
-Using one of these packets, it is also to insert slides or tables. 
-These will then be editable with the specialized program for it (like Excel), but you will not have to leave the document. 
-In the example below an Excel chart has been inserted into a Word document. 
+Using one of these packets, it is also easy to insert slides or tables.
+These will then be editable with the specialized program for it (like Excel), but you will not have to leave the document.
+In the example below an Excel chart has been inserted into a Word document.
 {
     image("An Excel chart in a Word document", '''excelInWord''')
 }
 
-It is also easy to collaborate on documents, using online versions of these solutions, such as Microsoft Word Online or Google Docs.
-These make documents cross-platform and allow multiple people to work on them at the same time. 
+It is also easy to collaborate on documents, using online versions of these solutions, such as 'Microsoft Word Online' or 'Google Docs'.
+These make documents cross-platform and allow multiple people to work on them at the same time.
 // TODO: read only versions?
 
-This is not the only way to collaborate, you can also add comments or suggestions on (online) a document. 
+This is not the only way to collaborate, you can also add comments or suggestions on (online) a document.
 These changes can then be resolved in just one click by an authorized editor.
-// TODO: autosave?
+// TODO: auto-save?
 
 Some documents however are more complex and have need for a more powerful tool such as {lat}.
 
 ### {lat}
 {Chapter latexAdv = (Chapter) parent()}
 // TODO: show some trees, that show structure
-{lat} provides a, Turing complete, programming model and because of this allows for rich customisability.
-It also provides a packaging system that allows for libraries, called packages, to be created using this programming model.
-Over the course of the past 38 years (the initial TeX release was in 1978) a lot of packages have been created for all kinds of different functionality.
-This is one of the reasons why {lat} is often used for long and complex documents such as books, articles, scientific papers and syllabi.
+TeX provides rich customisability through its Turing complete programming model.
+The model is different from modern programming models, it does not use regular variable or functions, instead it uses macros.
+A macro starts with a `\\` character, followed by a name and optionally followed by parameters.
+To show how these work, we show the process involved in processing some input that includes a macro.
 
-Like {md}, {lat} uses a plain text format that is quite robust to file corruptions and is well suited for VCS.
-It is however less robust against file corruption as the syntax is a lot more extensive and thus file corruption could lead to your document not compiling any more a lot easier.
-It also does not use UTF-8 making it harder to type more exotic characters such as *ë*. Later iterations of TeX, such as XeTex and LuaTex do support UTF-8 though.
+In TeX, every character and macro in the input is a token, `a` is a token but `\\macro` is also a token.
+The input is transformed into a list of tokens and is then processed token after token.
+When a macro is encountered, it is expanded.
 
-In {lat} the structure and the layout of your document are split by design. {lat} forces you to create a structured document by requiring you to use `sections, paragraphs,...`.
-When using a WYSIWYG word processor for example, usually there is a way to structure your documents, using `styles, headers,...` but it is not forced on the user.
-As a result, in {lat} consistency is enforced throughout the entire document without too much effort, while in aforementioned WYSIWYG word processors this is often forgotten and less convenient to use.
-In a WYSIWG word processor, the user thus has to make sure his document is consistent.
-Once documents get longer, this gets very hard to manage and to spot the inconsistencies.
+Expansion removes the current token from the list and adds every expandable item in its body to the token list recursively.
+This is best shown using an example.
 
-Next to this customisability, the typography of {lat} is also very sophisticated.
-It has support for kerning and ligatures and uses an advanced line-breaking algorithm, the Knuth-Plass line-breaking algorithm {cite('''texlba''')}.
+We define two macros using `\\def` and call the `\\b` macro.
+{
+    new LstListing('''
+\def\{This is \a\}
+\def\a\{a\}
+\b ''')
+}
+
+The output is `This is a`.
+The step by step expansion works as follows.
+* TeX encounters the token `\\b` without arguments and expands it.
+* `\\b` is removed from the token list and `This is \\\u0061` is added to it.
+* `This is ` is read and `\\a` is encountered, `\\a` gets expanded.
+* `\\a` is removed from the token list and `a` is added.
+
+Arguments can also be passed to a macro by using the `hash` character followed by a number.
+For example, the output of code beneath is `This is a macro`.
+{
+    new LstListing('''
+\def\macro#1\{This is #1\}
+\macro\{a macro\}`
+''')
+}
+It is also possible to pass these arguments in a different way, for example `\\def\\\u0061uthor(\#1,\#2)\{\#1, \#2\}` will expect two arguments surrounded by a pair of brackets and separated by a comma.
+We can also pass macros as an argument.
+Given `\\def\\\u0073urname\{Vervack\}` and `\\def\\\u0067ivenname\{Titouan\}`,
+we can call the previous macro like `\\\u0061uthor(\\\u0073urname,\\\u0067ivenname)`.
+However calling `\\author` using the following macro`\\def\\\u006congname\{(Vervack,Titouan)\}` causes the call to fail.
+It does so because it expects a `\(` token but it found the `\\longname` token as the argument has not been expanded yet.
+This is the reason that we are able to finely control macro expansion.
+
+To make the previous example work we need the `\\expandafter` macro.
+First, it removes the first token two tokens behind itself, then it expands the second token once and adds the first token along with the expansion back to the token list.
+If we call `\\expandafter\\\u0061uthor\\\u006congname` we get the expected result.
+There are a lot of different ways to control expansion and all of them are used in practice.
+This makes macro expansion complex and shows how different is compared to functions being used in modern programming languages.
+
+Variables can be declared as a macro as follows: `\\def\\\u0076arname\{A string\}`.
+The `\\def` macro defines a macro with the name `varname` and when used it will output the body of the macro, `A string`.
+The macro can be called by writing `\\varname` somewhere in the text.
+The value of a macro is a string, to use integers we can use the `count` register.
+
+There are 256 `count` registers, you can define one as follows: `\\count0=1`.
+This assigns the value `1` to the first register.
+Calculations can now be done on it, for example `\\advance\\\u0063ount0 by 1` will increase the register by one.
+This also shows that arithmetics are handled differently in latex than in the languages we are used to.
+There are no `\*, +, \-` or `/` symbols to define the basic mathematical operations.
+To show the a register, we can use the `\the` macro, `\\the\\\u0063ount0` will output 1.
+
+Using this programming model, libraries, called packages can be created.
+Over the course of the past 38 years (the initial TeX release was in 1978), a lot of them have been created.
+They offer all kinds of functionalities, ranging from the creation sheet music and graphs to providing the base to write letters and books.
+This is one of the reasons why {lat} is often used for long and complex documents such as books, scientific papers and syllabi.
+
+The goal of {lat} {cite('''latintro''')} is for the user to focus on the structure and content of the document and to let designers worry about the design of the document.
+To make sure the document will look good afterwards, it is important to structure it using elements such as sections and paragraphs.
+Because of the freedom given in WYSIWYG word processor, it is often forgotten to use styles, headers and so on.
+This can cause inconsistencies to appear as the document grows.
+
+Designers can use the very sophisticated typesetting of {lat} to create designs for well structured {lat} documents.
+The typesetting improves readability by supporting kerning, ligatures,... and using the advanced Knuth-Plass line-breaking algorithm {cite('''texlba''')}.
 The algorithm sees a paragraph as a whole instead of using a more naive approach and seeing each line individually.
 Kerning places letters closer together or further away depending on character combinations.
 A ligature is when multiple characters are joined into one glyph for example fi vs. `fi`.
 
-Another reason why {lat} is widely used is because, with its libraries, it offers good support for mathematics as well as other scientific areas.
-Because of its high customisability, {lat} can handle about any kind of document, from sheet music and graphs, to letters and books.
-It should be noted that a lot of this functionality is offered through libraries such as PGF/TikZ {cite('''tikzman''')}.
+{lat} also knows how to work with bibliographies by using programs such as Bib(La)Tex or Biber.
+These are reference management programs that are very robust and makes certain all of your references are consistent.
+They allow you to create the references outside of your main document, decreasing the amount of clutter in the document.
 
-{lat} also works together with BibTeX, a reference management software that is very robust and makes certain all of your references are consistent.
-It also allows you to create the references outside of your main document, decreasing the amount of clutter in the document.
 Whilst on the topic of including other files in your document, in {lat} you can split up your document into multiple smaller documents, allowing for easier management.
 A common use of this function is to write every chapter, for example in a book, in a separate document and than all the chapters are imported into the main document.
 This allows to easily remove or switch out different parts of a document.
 
-Another very simple feature that {lat} has, is that is allows you to use vector graphics or PDF as images in your document.
-This is something not possible in WYSIWIG word processors or lightweight markup languages such as {md}.
-
-{lat} is free and open source, which is a huge point of attraction for the open source community.
-As a result of this free and open source model, combined with its popularity and good scientific support, LaTeX has been integrated in many other applications.
+{lat} employs a free and open source model, which is a big reason why it is so popular in the open source community.
+As a result of this model, combined with its popularity and good scientific support, LaTeX has been integrated in many other applications.
 A few examples are:
 * MediaWiki {cite('''mwikilat''')}
 * Stack Exchange
 * JMathTex {cite('''jmathtex''')}
-//TODO: add more examples
+//TODO: add more examples, reddit?
 
-{lat} is powerful but it is complex and has a steep learning curve, for this reason simpler alternatives such as {md} can be used.
+{lat} is powerful but it is also complex and has a steep learning curve, because of this simpler alternatives such as {md} have been created.
 
 ### {md}
 `Markdown is a text-to-HTML conversion tool for web writers.`
@@ -98,34 +173,26 @@ A few examples are:
 
 (Markdown, 2016)
 
-One of the most popular markup languages is {md} {cite('''markdown''')}.
-Its goal is to be easy to write and read as a plain text document and as such is actually based on plain text emails.
+Another popular markup languages is {md} {cite('''markdown''')}.
+Its goal is to be easy-to-write and read as a plain text document and as such is actually based on plain text emails.
 Because of this, it attracts a lot of attention. It is for example very easy to create a new simple document, such as a short report.
-It achieves this simplicity by introducing a small and simple syntax {cite('''mdsyntax''')}. The syntax they chose also feels very natural.
+
+It achieves this simplicity, by introducing a small and simple syntax {cite('''mdsyntax''')} that feels natural.
 For example, to create a title you underline it with `minus` or `equals` characters.
 To create an enumeration, you use `star` characters instead of bullet points.
-
-By using such a simple syntax compile times for the documents are very short and IDE support is wide.
-Even without the help of an IDE, {md} is very readable as it was designed to be.
-Another advantage of this simple syntax is that it almost entirely removes the possibility of syntax errors to occur.
-
-Because of its simple nature and limited syntax, {md} can be easily translated into other formats such as PDF or HTML.
-A tool to convert {md} to HTML is offered by the designers of the language itself, as stated above.
-This further increases the appeal of the language, as it allows to very easily create elegant looking documents in a variety of formats.
-
-As {md} files are just plain text files they are robust to file corruption and easy to recover from said corruption.
-A corrupted byte would show easily and it would likely not destroy the layout of the document as there are so few reserved symbols being used in a {md} document.
-
-Because {md} uses plain text, it is cross-platform and because it has such a simple syntax, compilers are available for all major operating systems.
-As a matter of fact, the Perl script offered by the {md} designers, is cross-platform.
-{md} also natively allows for UTF-8 characters to be used in the text thus not requiring escape sequences to insert certain symbols.
-A last advantage of plain text is that it is well suited for Version Control Systems (VCS) such as Git and Mercury.
-
-To illustrate the simplicity of {md} an example document is shown below:
+An example {md} document is shown below:
 {{
-    Image i = image("The document rendered as HTML by the official markdown conversion tool", '''document''');
+    Image i = image("The document rendered as HTML by the official markdown conversion tool", '''document''').scale(60);
     i.rightOf(new LstInputListing('''document.md'''));
 }}
+
+The simple syntax allows for short compile times and wide IDE support.
+Even without the help of an IDE, {md} is very readable as it was designed to be.
+Another advantage of the simple syntax is that it almost entirely removes the possibility of syntax errors to occur.
+
+The limited syntax allows {md} to be easily translated into other formats such as PDF or HTML.
+A tool to convert {md} to HTML is offered by the designers of the language itself, as stated above.
+It is also cross-platform and as such widens the target audience of {md}.
 
 To allow for some customisability, {md} allows you to use inline HTML.
 In case {md} does not support what you want to do, HTML is what you use.
@@ -159,19 +226,15 @@ Filters can be written in a multitude of languages such as Haskell, Python, Perl
 // TODO: show an example
 
 ## Problem statement
-We can see that these solutions all have there strong points but there are also quite a few gripes.
-We will discuss the most common gripes for every solution underneath and afterwards introduce the problem statement.
+We can see that these solutions all have there advantages, but there are also quite a few disadvantages.
+We will discuss the most common ones for every solution underneath and afterwards we introduce the problem statement.
 
 ### Word processors
 // TODO: ToC, Tekst onder images
 // TODO: consider templates
-A first point to note is that the most popular word processors such as Microsoft Word and Pages are not free, but instead cost a significant amount.
-There are free variants, such as LibreOffice and OpenOffice, but the compatibility between these word processors is not perfect.
-The free alternatives usually also have less of a focus on the UI, making them look somewhat less sleek.
-
-Another problem with word processors is that their format often changes over the years.
-This means that your document might not show up the same, or at all, a few years after you wrote it.
-
+// TODO:
+//Another problem with word processors is that their format often changes over the years.
+//This means that your document might not show up the same, or at all, a few years after you wrote it.
 // TODO: no programming model or something like VB
 Even though some customisability is available, no programming model is available and real customisability is far to be found. You are stuck to what the developers of editor defined and implemented.
 There is no way to go beyond what the designers specified. Because of this, it is not always possible to do exactly what you want either.
@@ -179,26 +242,19 @@ When you have a few elements in your document and you try to align a new element
 which is not possible at that moment.
 Because of their lack of a programming model, word processors do not allow for even the simplest of computations such as `The result is x + y`.
 
-It is also quite easy to create inconsistencies using word processors as noted above in {latexAdv.ref()}.
-Next to creating inconsistencies, as structure is not enforced on you, small changes could have big side effects on the document.
 // TODO: include image?
-For example, you placed an image exactly like you wanted, you then later on add a newline somewhere higher up, reflowing the text underneath it an shifting the precisely placed image around.
-These changes are not always immediately clear, which further contributes to the creation of inconsistencies in the document.
-
-Lastly, word processors often use a proprietary or complex format for there documents, which is not only bigger than a plain text document, but also a lot more prune to corruption.
-A single bit flip could potentially irreversibly destroy your document.
-As complex or binary document formats are used, it is hard to use WYSIWIG editors in combination with VCS.
-This makes it inconvenient to track changes made to the document and go back to an earlier version of the document.
-It also makes it harder to work on a document as a team, you might be making changes at the same time as someone else, but you have no way of automatically merging both documents 
-creating a possibility of data to get lost.
+In word processors small changes could also have big side effects on the document.
+For example, you placed an image exactly where you wanted and later on, you add a newline somewhere higher up.
+The reflowing of the text underneath it and shifts the precisely placed image out of place.
+These changes are not always immediately clear, which creates inconsistencies in the document.
 
 ### {lat}
 // TODO: easy syntax errors, not robust to errors, long repl cycles, unreadable error messages, mention LyX, customizing a document can be very hard
 // TODO: requires some time to learn, especially to be able to customize/write packages, no UTF-8 without xe/luatex
 Even though {lat} offers customisability through a programming model, it is not perfect.
-The programming model is hard to use and is not easy to read.
-Because of this programming model it also looks a lot more complex than {md}, scaring away a lot of potential users.
-There are a few ways to counter this complex look though, for one there is LyX. This is a GUI around {lat} offering some of the most common WYSIWG features, while still utilizing the strength of {lat}.
+The programming model is hard to use and read.
+It also makes {lat} seem complex, scaring away a lot of potential users.
+A way to counter this complex look, is LyX. This is a GUI around {lat} offering some of the most common WYSIWG features, while still utilizing the strength of {lat}.
 Even though the complexity is now hidden under a GUI, it is still there and error messages are as bad as they were before, as is discussed beneath.
 
 Having a cumbersome programming model, {lat} makes it easy to create syntax errors.
@@ -257,17 +313,15 @@ The macro, called `loopfunction`, loops from 1 to a parameter \#1 and prints out
 Calling it using the following code `\\loopfunction{5}` results into the document shown in {loopFunction.ref()}.
 
 ### {md}
-{md} is simple but pays a hefty price for it. All of the syntax elements have been hard coded into the language meaning there is no room for customisability.
+{md} is simple but pays a hefty price for it.
+All of the syntax elements have been hard coded into the language meaning there is no room for customisability.
 The only way to customise {md} is by embedding inline HTML.
-HTML allows users to create a solid structured model but it still does not allow for very much customisability.
+This allows to create a solid structured model but it still does not allow for very much customisability.
+There is no programming model that can provide the customisability.
+
 While {md} is meant to be easily readable and writeable, HTML is not and using it thus decreases readability and cleanliness of your document significantly.
 Once you use HTML in an {md} document, you also require a certain technical proficiency for the source document to be read or edited.
-HTML also does away with the robustness of the plain text format of {md}, as having a tag being corrupted could lead to very big changes in the rendered file and might not even allow for compilation anymore.
 HTML also reintroduces the possibility of syntax errors and thus slows down the document creation.
-// TODO: example of layout destruction
-
-The lack of customisability in {md} is further enforced because it has no programming model.
-It is one thing that the syntactic shorthands can not be reused, but there is also no other way, next to HTML to create an entirely new entity.
 
 ### {pan}
 Transforming an AST afterwards is not always as easy as doing so inline, and it also hides what really happens to the document, which could cause confusion.
