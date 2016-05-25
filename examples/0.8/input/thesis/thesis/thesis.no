@@ -328,7 +328,7 @@ The first goal is achieved by using a syntax like {md} for the documents.
 To achieve the second goal we note that a document has a strong structure consisting of a lot of elements like chapters, sections, paragraphs and so on.
 An object-oriented model, like the one in Java, is able to represent this structure well by using object for each element.
 Inheritance allows us to easily make small changes to the elements for example changing the default font size of a certain kind of chapter.
-We also chose this model because it is well known and as seen in {panAdv} and {latexAdv.ref()},working with macro expansions or filters is not ideal.
+We also chose this model because it is well known and as seen in {panAdv.ref()} and {latexAdv.ref()}, working with macro expansions or filters is not ideal.
 
 Because it offers a powerful programming model that we can translate to, we chose to translate to {lat}.
 It has also been used successively for decades and has proven that it can deliver very clean looking documents.
