@@ -232,7 +232,7 @@ The AST is read in a filter, then transformed and passed on to the next filter.
 
 Filters can be written in a multitude of languages such as Haskell, Python, Perl,... .
 They are then passed as a command line argument to the conversion command.
-We illustrate this using an official {pan} {cite('''panexample''')} example.
+We illustrate this using an example from the {pan} tutorial on scripting {cite('''panexample''')}.
 {
     new LstInputListing('''behead2.hs''')
 }
