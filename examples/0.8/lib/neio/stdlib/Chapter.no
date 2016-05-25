@@ -14,6 +14,7 @@ protected Text title;
 protected String marker;
 protected Integer level;
 protected String texName;
+protected Boolean nonu;
 
 /**
  * Creates a new Chapter
@@ -24,7 +25,8 @@ protected String texName;
 Chapter(Text title, Integer level) {
     this.title = title;
     this.level = level;
-    this.texName = "section*";
+    this.texName = "section";
+    this.nonu = false;
 }
 
 /**
@@ -52,6 +54,15 @@ nested Chapter #(Text title, Integer level) {
     return chapter;
 }
 
+/**
+ * Disables numbering of this Chapter and returns the Chapter
+ *
+ * @return This Chapter
+ */
+Chapter nonu() {
+    nonu = true;
+    return this;
+}
 
 /**
  * Returns the title
@@ -79,7 +90,11 @@ String toTex() {
  * @return      A TeX string representing this
  */
 String toTex(Integer lvl) {
-    String result = "\\" + subs(lvl) + texName + "{" + title.toTex() + "}\n";
+    String result = "\\" + subs(lvl) + texName;
+    if (nonu) {
+        result = result + "*";
+    }
+    result = result + "{" + title.toTex() + "}\n";
     return result + "\\label{" + hashCode() + "}";
 }
 

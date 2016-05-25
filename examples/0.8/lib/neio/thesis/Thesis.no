@@ -59,10 +59,10 @@ void mainMatter() {
 String preamble() {
     StringBuilder preamble = new StringBuilder("\\documentclass[11pt,a4paper,oneside,notitlepage]{book}\n")
     .append("\\setlength{\\topmargin}{2cm}\n")
-    .append("\\setlength{\\headheight}{0.5cm}\n")
+    .append("\\setlength{\\headheight}{14.49998pt}\n")
     .append("\\setlength{\\headsep}{1cm}\n")
-    .append("\\setlength{\\oddsidemargin}{3.5cm}\n")
-    .append("\\setlength{\\evensidemargin}{3.5cm}\n")
+    .append("\\setlength{\\oddsidemargin}{2.5cm}\n")
+    .append("\\setlength{\\evensidemargin}{2.5cm}\n")
     .append("\\setlength{\\textwidth}{16cm}\n")
     .append("\\setlength{\\textheight}{23.3cm}\n")
     .append("\\setlength{\\footskip}{1.5cm}\n")

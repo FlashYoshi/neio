@@ -1,0 +1,50 @@
+namespace neio.thesis;
+
+import neio.lang.Text;
+import neio.stdlib.ContainerNLHandler;
+import neio.stdlib.TextContainer;
+
+class AbstractNLHandler extends ContainerNLHandler;
+
+AbstractNLHandler(Abstract a) {
+    super(a);
+}
+
+Abstract parent() {
+    return (Abstract) (super.parent());
+}
+
+Abstract *(Text text) {
+    parent().supervisor(text.realText());
+    return parent();
+}
+
+Abstract -(Text text) {
+    parent().counsellor(text.realText());
+    return parent();
+}
+
+Abstract |(Text text) {
+    Abstract a = parent();
+    if (a.title() == null) {
+        a.title(text.realText());
+    } else if (a.author() == null) {
+        a.author(text.realText());
+    } else if (a.program() == null) {
+        a.program(text.realText());
+    } else if (a.faculty() == null) {
+        a.faculty(text.realText());
+    } else if (a.university() == null) {
+        a.university(text.realText());
+    } else if (a.department() == null) {
+        a.department(text.realText());
+    } else if (a.chairman() == null) {
+        a.chairman(text.realText());
+    }
+
+    return parent();
+}
+
+ContainerNLHandler newline() {
+    return ((TextContainer) (parent().parent())).newline();
+}

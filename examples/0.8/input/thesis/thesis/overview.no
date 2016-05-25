@@ -1,7 +1,19 @@
 [Document]
+{
+    new Abstract()
+}
+| The design and implementation of a userfriendly object-oriented markup language
+| Titouan VERVACK
+| Science in Computer Science Engineering
+* Prof. dr. ir. Marko van Dooren
+- Ir. Benoit Desouter
+| Engineering and Architecture
+| Ghent University
+| Applied mathematics, computer science and statistics
+| Prof. dr. Willy Goovaerts
 
-# Overview
+# Abstract
+A small try at the abstract.
 
-{{
-    newpage();
-}}
+# Keywords
+Markup, Object-oriented, LaTeX, Markdown
