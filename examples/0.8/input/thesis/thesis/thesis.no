@@ -215,14 +215,64 @@ Below you can find an HTML table
 
 ### {pan}
 {Chapter panAdv = (Chapter) parent()}
-{pan} {cite('''pandoc''')} is a document converter, but in reality it can do much more than just convert a document from one format to another.
-Notably, it allows you to write inline {lat} inside of a {md} document allowing for a much better experience than just using one of them.
+{pan} {cite('''pandoc''')} is a document converter, but it can do much more than just convert a document from one format to another.
+Notably, it allows you to write inline {lat} in a {md} document, combining the power of both.
+An example is shown below.
+{
+    LstInputListing pandocListing = new LstInputListing('''pandocExample.md''');
+    return pandocListing;
+}
+{{
+    pandocListing.leftOf(new Image("The output of the document to the left.", '''pandocExample.png'''))
+}}
 
-However, {pan} does not really have a programming model, outside of the {lat} one, it works with so called filters.
-When a document is issued for conversion, {pan} will transform the document into an Abstract Syntax Tree.
-This AST can then be transformed using filters, the AST enters a filter, is transformed and is then past on to the next filter.
-Filters can be written in a multitude of languages such as Haskell, Python, Perl,... and the filters to be used are passed as a command line argument to the conversion command.
-// TODO: show an example
+However, outside of the {lat} one, {pan} does not really have a programming model and instead works with so called filters.
+A document in {pan} can be read and transformed into an Abstract Syntax Tree (AST).
+The AST is read in a filter, then transformed and passed on to the next filter.
+
+Filters can be written in a multitude of languages such as Haskell, Python, Perl,... .
+They are then passed as a command line argument to the conversion command.
+We illustrate this using an official {pan} {cite('''panexample''')} example.
+{
+    new LstInputListing('''behead2.hs''')
+}
+
+(Pandoc, 2016)
+
+The example above shows a filter written in Haskell.
+It replaces all the headers of level 2 or more in a {md} file by paragraphs.
+The `toJSONfilter` function constructs a JSON representation of the AST.
+Using this, we find the headers of level of 2 or more and create a new paragraph.
+The document can be created using the following command `pandoc -f SOURCEFORMAT -t TARGETFORMAT --filter ./behead2.hs`.
+
+This example shows the power of {pan}, it can do its work directly on the AST.
+This means that the source document does not have to be a {md} document, it could also use HTML or any other supported input format.
+
+Using another one of these filters, PanPipe, you can execute programs defined outside of a document.
+The stdout of the program will be inserted into the document and the stderr will be redirected to the stderr of {pan}.
+An example is shown below.
+{
+    LstListing panShell = new LstListing('''
+This document executes a shell command.
+```{pipe="sh"}
+echo "Hello world! I am " $(whoami)
+```
+    ''')
+}
+{{
+    panShell.leftOf(new Image("The output of the document to the left.", '''panShell'''))
+}}
+
+Using {pan}, you can also declare templates, that allow you to use variables.
+The variables are predefined (such as `\$body\$`\) or passed through the command line.
+These can then be used in conditionals or loops.
+You can see an example below.
+{
+    LstInputListing panLetter = new LstInputListing('''letterTemplate.tex''')
+}
+{{
+    panLetter.leftOf(new LstInputListing('''letter.md'''))
+}}
 
 ## Problem statement
 We can see that these solutions all have there advantages, but there are also quite a few disadvantages.
@@ -260,7 +310,7 @@ The reflowing of the text underneath it shifts the precisely placed image out of
 These changes are not always immediately clear, which creates inconsistencies in the document.
 
 Another problem that occurs with images, is that the caption does not move together with the image.
-In the example belown an image is inserted and a caption is added.
+In the example below an image is inserted and a caption is added.
 The image is then dragged to the end of the file and we see that the caption remains in place.
 {
     Image wordCaption = image("An image with a caption", '''wordCaption''');
@@ -274,7 +324,7 @@ The image is then dragged to the end of the file and we see that the caption rem
 Even though {lat} offers customisability through a programming model, it is not perfect.
 The programming model is hard to use and read, creating a steep learning curve.
 It also makes {lat} seem complex, scaring away a lot of potential users.
-A way to counter this complex look, is LyX. This is a GUI around {lat} offering some of the most common WYSIWYG features, while still utilizing the strength of {lat}.
+A way to counter this complex look, is LyX {cite('''lyx''')}. This is a GUI around {lat} offering some of the most common WYSIWYG features, while still utilizing the strength of {lat}.
 Even though the complexity can be hidden under a GUI, it is still there and error messages are as bad as they were before, as is discussed beneath.
 
 Having a cumbersome programming model, {lat} makes it easy to create syntax errors.
@@ -312,7 +362,22 @@ Once you use HTML in an {md} document, you also require a certain technical prof
 HTML also reintroduces the possibility of syntax errors and thus slows down the document creation.
 
 ### {pan}
-Transforming an AST afterwards is not always as easy as doing so inline, and it also hides what really happens to the document, which could cause confusion.
+{pan} allows you to execute exterior programs, but the only result is the stdout and stderr of the program.
+These do not allow you to change the output afterwards because you have no more structure.
+The structural elements such as sections and paragraphs have disappeared.
+This decreases the amount of control on the final document.
+For example, you create a binary tree using a 3rd party application.
+Then you want to insert a new value into the tree, which requires it to be rebalanced.
+However this is impossible as you lost all of the structure of the tree, it is only represented as a string.
+
+To access the structure of the document, the AST can be used.
+Transforming an AST afterwards however, does not allow for precise control either.
+In {panAdv.ref()} we saw how we could replace all of the headers of a level higher than 2, but changing it for only a few would require us to find them.
+If we could have done this inline or if we could redefine the meaning of the `\#` symbol, the problem would be avoided.
+
+Finally, the variables used in {pan} have some limitations.
+They can not be defined inline, only through the command line and they can only be used in templates.
+This means that you can not easily embed variables and execute simple expressions such as `x + y`.
 
 ## Proposed solution: Neio
 {Chapter goals = (Chapter) parent()}
