@@ -29,7 +29,6 @@ import org.aikodi.chameleon.support.member.simplename.method.NormalMethod;
 import org.aikodi.chameleon.support.member.simplename.method.RegularMethodInvocation;
 import org.aikodi.chameleon.support.member.simplename.operator.infix.InfixOperatorInvocation;
 import org.aikodi.chameleon.support.statement.ReturnStatement;
-import org.aikodi.chameleon.support.variable.LocalVariable;
 import org.aikodi.chameleon.support.variable.LocalVariableDeclarator;
 
 import java.util.ArrayList;
@@ -311,12 +310,14 @@ public class Java8Generator {
      * @param statement The last statement in the block
      * @return True if a statement was made into a returnstatement
      */
-    private boolean makeReturnable(Statement statement) {
+    private boolean makeReturnable(Statement statement) throws LookupException {
         if (statement.metadata(ASSIGNMENT) == null) {
             Expression e = statement.nearestDescendants(Expression.class).get(0);
-            Statement returnStatement = oFactory().createReturnStatement(e);
-            statement.replaceWith(returnStatement);
-            return true;
+            if (!e.getType().name().equals("void")) {
+                Statement returnStatement = oFactory().createReturnStatement(e);
+                statement.replaceWith(returnStatement);
+                return true;
+            }
         }
 
         return false;
@@ -356,6 +357,10 @@ public class Java8Generator {
                         // Check if we return Content
                         NormalMethod method = (NormalMethod) ((MethodInvocation) e).getElement();
                         type = method.returnType();
+                        if (type.name().equals("void")) {
+                            returnStat.replaceWith(oFactory().createStatement(e));
+                            return block;
+                        }
                         if (!subtypeOf(type, BASE_CLASS)) {
                             System.err.println("You can only return Content in an inline code block, unknown expression: " + e.toString());
                             return block;

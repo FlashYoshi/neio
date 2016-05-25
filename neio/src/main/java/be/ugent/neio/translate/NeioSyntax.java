@@ -84,7 +84,7 @@ public class NeioSyntax extends Java7Syntax {
     public String toCodeLiteral(Literal literal) {
         try {
             String literalText = super.toCodeLiteral(literal);
-            if (literal.getType().getFullyQualifiedName().equals("java.lang.String") && !literalText.startsWith("\"")) {
+            if (literal.getType().getFullyQualifiedName().equals("java.lang.String") && !(literalText.startsWith("\"") && literalText.endsWith("\""))) {
                 // Replace explicit backslash by two backslashes so it works with java
                 String bs = "\\\\";
                 // Replace double backslash (escaped backslash), by three backslashes

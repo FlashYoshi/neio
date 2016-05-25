@@ -5,5 +5,5 @@ import neio.lang.Content;
 class Toc extends Content;
 
 String toTex() {
-    return "\\pagestyle{fancy}\n" + "\\tableofcontents\n";
+    return "\\newpage\n\\pagestyle{fancy}\n\\tableofcontents\n";
 }

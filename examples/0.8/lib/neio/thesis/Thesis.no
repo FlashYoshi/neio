@@ -41,6 +41,12 @@ Thesis() {
     addContent(new BlankPage());
     addContent(new Pdf("TitlePage"));
     addContent(new FrontMatter());
+}
+
+/**
+ * Sets up the main matter
+ */
+void mainMatter() {
     addContent(new Toc());
     addContent(new MainMatter());
 }

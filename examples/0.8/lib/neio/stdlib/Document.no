@@ -100,6 +100,13 @@ String preamble() {
 }
 
 /**
+ * Adds a newpage to the Document
+ */
+void newpage() {
+    addContent(new NewPage());
+}
+
+/**
  * Adds a string to the preamble, checking if it is not yet
  * included already.
  *

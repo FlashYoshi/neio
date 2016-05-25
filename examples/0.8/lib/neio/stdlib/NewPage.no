@@ -1,0 +1,9 @@
+namespace neio.stdlib;
+
+import neio.lang.Content;
+
+class NewPage extends Content;
+
+String toTex() {
+    return "\\newpage\n";
+}
