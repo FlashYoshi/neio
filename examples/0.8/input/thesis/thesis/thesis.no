@@ -268,11 +268,18 @@ The variables are predefined (such as `\$body\$`\) or passed through the command
 These can then be used in conditionals or loops.
 You can see an example below.
 {
-    LstInputListing panLetter = new LstInputListing('''letterTemplate.tex''')
+    LstInputListing panLetter = new LstInputListing('''letterTemplate.latex''')
 }
 {{
     panLetter.leftOf(new LstInputListing('''letter.md'''))
 }}
+
+The document can then be build with the following command.
+{
+    new LstListing('''
+pandoc letter.md -o letter.pdf --template letterTemplate --variable=addressee:"John Doe"
+    ''')
+}
 
 ## Problem statement
 We can see that these solutions all have there advantages, but there are also quite a few disadvantages.

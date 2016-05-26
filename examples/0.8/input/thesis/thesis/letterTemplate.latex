@@ -1,4 +1,5 @@
 \documentclass{letter}
+\signature{Titouan Vervack}
 \begin{document}
 \opening{Dear $addressee$,}
 
