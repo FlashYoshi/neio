@@ -114,18 +114,27 @@ String toTex() {
         .append(author)
         .append("\n\nMaster's dissertation submitted in order to obtain the academic degree of \\\\\n Master of ")
         .append(program)
-        .append("\n\nAcademic year 2015--2016\n\nSupervisors: ")
-        .append(supervisors.get(0));
+        .append("\n\nAcademic year 2015--2016\n\nSupervisor");
 
+    if (supervisors.size() > 1) {
+        result.append("s");
+    }
+    result.append(": ")
+        .append(supervisors.get(0));
     for (int i = 1; i < supervisors.size(); i = i + 1) {
         result.append(", ")
             .append(supervisors.get(i));
     }
 
-    result.append("\\\\\nCounsellors: ")
+    result.append("\\\\\nCounsellor");
+    if (counsellors.size() > 1) {
+        result.append("s");
+    }
+    result.append(": ")
         .append(counsellors.get(0));
     for (int i = 1; i < counsellors.size(); i = i + 1) {
-        result.append(counsellors.get(i));
+        result.append(", ")
+            .append(counsellors.get(i));
     }
 
     result.append("\n\nFaculty of ")
