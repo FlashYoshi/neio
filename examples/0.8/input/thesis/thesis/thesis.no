@@ -1045,7 +1045,7 @@ The code for our implementation of BibTeX can be found below.
 
 A BibTeX can now be added through the `addBibtex` method in `Document` and we can cite an entry by using the proxy method, `cite`, in `Document`.
 {
-    new LstInputListing(60, 82, '''../../examples/0.8/lib/neio/stdlib/Document.no''');
+    new LstInputListing(73, 95, '''../../examples/0.8/lib/neio/stdlib/Document.no''');
 }
 
 Lastly we show the code for the `Citation` class.
@@ -1331,8 +1331,7 @@ arrows) and only draws inheritance arrows for what is shown. This is done to avo
 Next to designing a language, a compiler to be able to actually use the language had to be build.
 How we implemented the compiler, as well as some lower level concepts used in Neio classes, will be explained 
 in this chapter.
-// TODO: MetaUML and commands
-// TODO: addMapping
+
 ## Used libraries and frameworks
 To be able to build the compiler, we made few of a few open-source libraries and frameworks. They will be 
 explained in this section. The number of libraries or framework that we used is rather limited, only three 
@@ -1546,7 +1545,8 @@ We then do some further translation in the Text class to assure that we are able
 
 ## Resource usage and creation
 {Chapter rsc = (Chapter) parent()}
-//TODO: don't forget this
+// TODO: don't forget this
+// TODO: MetaUML and commands
 
 ## Limitations
 Whilst development of the compiler a few limitations were discovered, they are discussed in this section.
@@ -1560,6 +1560,7 @@ After closer inspection of the Javadoc {cite('''javaprocess''')} this became app
 The fact that we have to worry about different platforms on a cross-platform language as Java is also something that is not too common.
 
 ### Back end
+// TODO: mention alias
 About every back end has some limitations on how we can translate our Neio document. This is because Neio can use symbols as methods.
 In Java, methods can only contain letters, numbers, \$ or \_. This means we have to translate the symbol function to valid Java identifiers.
 The way we do this is very straightforward.
