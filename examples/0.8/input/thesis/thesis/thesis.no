@@ -1323,6 +1323,46 @@ arrows) and only draws inheritance arrows for what is shown. This is done to avo
 // TODO: talk about DOT
 
 ### Chemfig
+In this example we approach a different domain, the domain of Biology and Chemistry.
+For it, we created a library and DSL to create structural formulas.
+An example of the structural formula for glucose is given below.
+{
+    new LstListing('''
+[Document]
+{
+    new Structure()
+}
+
+$ C * 6 _ OH ^ - C _ ^ OH - O - C _ ^ CH2OH - C _ HO ^ - C _ ^ OH - 
+| Glucose
+    ''')
+}
+
+This example produces the following output
+{
+    new Structure();
+}
+
+$ C * 6 _ OH ^ - C _ ^ OH - O - C _ ^ CH2OH - C _ HO ^ - C _ ^ OH - 
+| Glucose
+
+
+The first thing we see, is that we create a new `Structure`.
+This will provide a newline handler that allows us to instantiate structure formulas using the `\$` method and captions for them using the `\|` method.
+The '\$' method shown below, creates an atom and adds it to the structure, the rest of the structural formula will then be build by chaining atoms together.
+{
+    new LstInputListing(18, 23, '''../../examples/0.8/lib/neio/stdlib/chem/StructureNLHandler.no''');
+}
+
+The `\*` method, followed by a number, defines that the formula is a ring, the number defines the number of edges of this ring.
+The `\-` method creates a single link from the previous atom to the next, `\=` creates a double link.
+The `\^` method define that the next atom is above the previous one, while `\_` puts the next atom below the previous one.
+The code for one of these is found below.
+{
+    new LstInputListing(79, 88, '''../../examples/0.8/lib/neio/stdlib/chem/Atom.no''');
+}
+
+All of this code is then transformed into a TeX string that is understood by the {lat} package `chemfig` {cite('''chemfig''')}.
 
 ### Lilypond
 {Chapter lily = (Chapter) parent()}

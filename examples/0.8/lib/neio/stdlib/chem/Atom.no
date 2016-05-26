@@ -80,16 +80,16 @@ Atom =() {
     return createNext("", "=");
 }
 
-private Atom createNext(String atomText, String l, Integer a) {
-    Atom at = createNext(atomText, l);
-    return at.setAngle(a);
-}
-
 private Atom createNext(String atomText, String link) {
     Atom a = new Atom(atomText);
     a.setParent(structure);
     next = a.setLink(link);
     return a;
+}
+
+private Atom createNext(String atomText, String l, Integer a) {
+    Atom at = createNext(atomText, l);
+    return at.setAngle(a);
 }
 
 Atom *(Text text){
