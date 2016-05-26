@@ -15,14 +15,11 @@ import neio.stdlib.Toc;
  */
 class Thesis extends Document;
 
-private Packages packages;
-
 /**
  * Intialises the document class, adding the required packages and adding a ToC
  */
 Thesis() {
-    packages = new Packages();
-    packages.add("graphicx")
+    addPackage("graphicx")
     .add("fancyhdr")
     .add("amsmath")
     .add("float")
@@ -34,7 +31,7 @@ Thesis() {
 
     List<String> options = new ArrayList<String>();
     options.add("english");
-    packages.add(options, "babel");
+    addPackage(options, "babel");
 
     addClassMapping(Chapter.class, ThesisChapter.class);
     addContent(new Pdf("TitlePage"));
@@ -59,14 +56,14 @@ void mainMatter() {
 String preamble() {
     StringBuilder preamble = new StringBuilder("\\documentclass[11pt,a4paper,oneside,notitlepage]{book}\n")
     .append("\\setlength{\\topmargin}{2cm}\n")
-    .append("\\setlength{\\headheight}{0.5cm}\n")
+    .append("\\setlength{\\headheight}{14.49998pt}\n")
     .append("\\setlength{\\headsep}{1cm}\n")
-    .append("\\setlength{\\oddsidemargin}{3.5cm}\n")
-    .append("\\setlength{\\evensidemargin}{3.5cm}\n")
+    .append("\\setlength{\\oddsidemargin}{2.5cm}\n")
+    .append("\\setlength{\\evensidemargin}{2.5cm}\n")
     .append("\\setlength{\\textwidth}{16cm}\n")
     .append("\\setlength{\\textheight}{23.3cm}\n")
     .append("\\setlength{\\footskip}{1.5cm}\n")
-    .append(packages.toTex())
+    .append(packages().toTex())
     .append("\\DeclareGraphicsRule{*}{mps}{*}{}")
     .append("\\pagestyle{fancy}\n")
     .append("\\renewcommand{\\chaptermark}[1]{\\markright{\\MakeUppercase{#1}}}\n")

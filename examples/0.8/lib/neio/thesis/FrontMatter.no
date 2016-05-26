@@ -6,7 +6,6 @@ class FrontMatter extends Content;
 
 String toTex() {
     return new StringBuilder("\\frontmatter\n")
-        .append("\\setlength{\\hoffset}{-1in}\n")
-        .append("\\setlength{\\voffset}{-1in}\n")
+        .append("\\pagestyle{empty}\n")
         .toString();
 }

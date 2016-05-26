@@ -1,5 +1,7 @@
 namespace neio.stdlib;
 
+import java.util.List;
+
 import neio.lang.Text;
 
 /**
@@ -55,6 +57,17 @@ Packages packages() {
  */
 Packages addPackage(String pkg) {
     return packages.add(pkg);
+}
+
+/**
+ * Adds a LaTeX package with options
+ *
+ * @param options The options for the package
+ * @param pkg     The package to add
+ * @return        The list of currently included packages
+ */
+Packages addPackage(List<String> options, String pkg) {
+    return packages.add(options, pkg);
 }
 
 /**

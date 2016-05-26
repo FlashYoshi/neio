@@ -1,7 +1,31 @@
 [Document]
+{
+    new Abstract()
+}
+| The design and implementation of a userfriendly object-oriented markup language
+| Titouan VERVACK
+| Science in Computer Science Engineering
+* Prof. dr. ir. Marko van Dooren
+- Ir. Benoit Desouter
+| Engineering and Architecture
+| Ghent University
+| Applied mathematics, computer science and statistics
+| Prof. dr. Willy Goovaerts
 
-# Overview
+# Abstract
+A lot of solutions exist for document creation.
+These are split up into What You See Is What You Get (WYSIWYG) editors and markup languages.
+Both of these provide a lot of advantages as well as disadvantages.
+WYSIWYG editors immediately show the final document and help the user by providing a GUI for all the features.
+Markup languages put greater emphasis on letting the user structure a document properly, by providing specialised syntax for certain structural elements for example.
+Because of this some solutions are easy-to-read and write while others offer a lot of customisability, usually through some programming model.
+However, a good combination of both is hard to find.
+As such the goal of this thesis is to design a markup language that is easy-to-read and write as well as providing a modern programming model to allow for full customisation of the document.
+An introduction to the state-of-the-art solutions for document production is given (chapter 1) in which the (dis)advantages of said solutions are discussed.
+This is followed by an introduction to the new markup language, its features and the made design decisions (chapter 2).
+Then several proofs of concept for document types and libraries build with the language are presented (chapter 3).
+The development of the compiler for the language, its features and the faced challenges are then discussed (chapter 4).
+The text concludes with possible future work on this work (chapter 5), as well as a short reflection and summary on it (chapter 6).
 
-{{
-    newpage();
-}}
+# Keywords
+Markup, Object-oriented, LaTeX, Markdown
