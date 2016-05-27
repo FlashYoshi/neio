@@ -950,6 +950,7 @@ Adding a layer of security on top of Neio would require a lot of effort and rese
 Thus we conclude by saying that we known there is a security risk, but dismissing it should be seen as future work.
 
 # Supported document types and libraries
+{Chapter examples = (Chapter) parent()}
 This chapter will go into some more details about what document types can be handled by Neio, and how to specifically build these kind of documents.
 We will also discuss which libraries have been recreated in Neio to allow for a wide use of the language.
 
