@@ -6,6 +6,8 @@ import java.util.List;
 import neio.stdlib.BlankPage;
 import neio.stdlib.Chapter;
 import neio.stdlib.Document;
+import neio.stdlib.FiguresList;
+import neio.stdlib.ListingsList;
 import neio.stdlib.Packages;
 import neio.stdlib.Pdf;
 import neio.stdlib.Toc;
@@ -45,6 +47,8 @@ Thesis() {
  */
 void mainMatter() {
     addContent(new Toc());
+    addContent(new FiguresList());
+    addContent(new ListingsList());
     addContent(new MainMatter());
 }
 

@@ -1,0 +1,9 @@
+namespace neio.stdlib;
+
+import neio.lang.Content;
+
+class FiguresList extends Content;
+
+String toTex() {
+    return new NewPage().toTex() + "\\listoffigures" + new NewPage().toTex();
+}
