@@ -94,6 +94,17 @@ InlineEq ieq() {
 }
 
 /**
+ * Creates a new Href
+ *
+ * @param text The text to show instead of the url
+ * @param url  The url we are referring to
+ * @return the new Href
+ */
+Href href(Text text, String url) {
+    return new Href(text, url);
+}
+
+/**
  * Creates a new Table and adds a new TableRow to it.
  * The Table is added to this.
  *

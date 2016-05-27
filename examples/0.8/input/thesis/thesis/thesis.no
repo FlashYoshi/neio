@@ -13,10 +13,16 @@
 # Introduction
 {Chapter intro = (Chapter) parent()}
 In this thesis we introduce a new markup language that improves upon a few others, namely {lat} and {md}, whilst still holding on to their advantages.
+
+The language has been used to write this entire book {cite('''neiosrc''')} with the exclusion of the title page and a few images.
+The source code of the book is available on the {href("UGent GitHub", '''https://github.ugent.be/tivervac/neio/blob/master/examples/0.8/input/thesis/thesis/thesis.no''')}.
+In the same repository you also find the {href("Neio library", '''https://github.ugent.be/tivervac/neio/tree/master/examples/0.8/lib/neio''')} and source code for 
+the {href("Neio compiler", '''https://github.ugent.be/tivervac/neio/tree/master/neio''')}.
+
 Before we get into the details of this new language it is necessary to introduce some of the most used markup languages and word processors.
 
 ## State-of-the-art
-Before we discuss the state-of-the-art we first discuss the difference between saving a document as plain text or in a binary format.
+Before we discuss the state-of-the-art, we first discuss the difference between saving a document as plain text or in a binary format.
 
 {md}, {lat} and {pan} use a plain text format that is quite robust to file corruptions and is well suited for Version Control Systems (VCS) such as Git and Mercury.
 It is robust in the sense that a if a single bit of the document gets flipped, the document is not irreversibly destroyed.
@@ -26,8 +32,8 @@ This is both good and bad, if a part of important syntax got corrupted, the comp
 However corruption of such syntax can prevent the document from successfully compiling.
 In any case, the document is not irreversibly destroyed.
 
-This is possible however when using the binary format, like the ones used by default in a What You See Is What You Get (WYSIWYG) editor.
-As a matter of proof, we created a Word document and flipped one bit (an `E` was changed to a `D` at a random place).
+This is not always possible however when using the binary format, like the ones used by default in a What You See Is What You Get (WYSIWYG) editor.
+As a matter of fact, we created a Word document and flipped one bit (an `E` was changed to a `D` at a random place).
 We then tried to open the document and received the following sequence of errors and were unable to retrieve the contents of the file.
 {
     Image wordCorr = image("The detection of an error", '''wordCorruption''')
@@ -41,7 +47,7 @@ It is to be noted that the errors depend on what exactly was corrupted, in some 
 
 ### Word processors
 {Chapter goodWord = (Chapter) parent()}
-The best known solution for creating documents, are so called WYSIWYG editors, examples include 'Microsoft Word' and 'Pages'.
+The best-known solution for creating documents, are so called WYSIWYG editors, examples include 'Microsoft Word' and 'Pages'.
 They are called as such because you immediately, without compiling, see what your document will look like.
 Because of this, the complexity of the tool is significantly decreased allowing anyone to use the tool.
 It is less complex because you do not have to type in commands and wait for a preview to change.
@@ -51,7 +57,7 @@ The GUI essentially hides the complexity.
 A WYSIWYG editor gives the author freedom, for example it is very easy to change a font or change the font size of a certain part of the text
 and you can easily add an image and drag-and-drop it around.
 
-A lot of these editors are grouped into packets, such as Office or iWork.
+A lot of these editors are grouped into packets, such as Office or LibreOffice.
 Using one of these packets, it is also easy to insert slides or tables.
 These will then be editable with the specialized program for it (like Excel), but you will not have to leave the document.
 In the example below an Excel chart has been inserted into a Word document.
@@ -84,7 +90,7 @@ This is best shown using an example.
 We define two macros using `\\def` and call the `\\b` macro.
 {
     new LstListing('''
-\def\{This is \a\}
+\def\b{This is \a\}
 \def\a\{a\}
 \b ''')
 }
@@ -93,7 +99,7 @@ The output is `This is a`.
 The step by step expansion works as follows.
 * TeX encounters the token `\\b` without arguments and expands it.
 * `\\b` is removed from the token list and `This is \\\u0061` is added to it.
-* `This is ` is read and `\\a` is encountered, `\\a` gets expanded.
+* `This is` is read and `\\a` is encountered, `\\a` gets expanded.
 * `\\a` is removed from the token list and `a` is added.
 
 Arguments can also be passed to a macro by using the `hash` character followed by a number.
@@ -117,7 +123,7 @@ To make the previous example work, we need the `\\expandafter` macro.
 First, it removes the first token two tokens behind itself, then it expands the second token once and adds the first token along with the expansion back to the token list.
 If we call `\\expandafter\\\u0061uthor\\\u0066fullname` we get the expected result.
 There are a lot of different ways to control expansion and all of them are used in practice.
-This makes macro expansion complex and shows how different is compared to functions being used in modern programming languages.
+This makes macro expansion complex and shows how different this is compared to functions being used in modern programming languages.
 
 Variables can be declared as a macro as follows: `\\def\\\u0076arname\{A string\}`.
 The `\\def` macro defines a macro with the name `varname` and when used it will output the body of the macro, `A string`.
@@ -128,13 +134,13 @@ There are 256 `count` registers, you can define one as follows: `\\count0=1`.
 This assigns the value `1` to the first register.
 Calculations can now be done on it, for example `\\advance\\\u0063ount0 by 1` will increase the register by one.
 
-This also shows that arithmetics are handled differently in latex than in the languages we are used to.
+This also shows that arithmetics are handled differently in {lat} than in the languages we are used to.
 There are no `\*, +, \-` or `/` symbols to define the basic mathematical operations.
 To show a register, we can use the `\\the` macro, `\\the\\\u0063ount0` will output 1.
 
 Using this programming model, libraries, called packages can be created.
 Over the course of the past 38 years (the initial TeX release was in 1978), a lot of them have been created.
-They offer all kinds of functionalities, ranging from the creation sheet music and graphs to providing the base to write letters and books.
+They offer all kinds of functionalities, ranging from the creation of sheet music and graphs to providing the base to write letters and books.
 This is one of the reasons why {lat} is often used for long and complex documents such as books, scientific papers and syllabi.
 
 The goal of {lat} {cite('''latintro''')} is for the user to focus on the structure and content of the document and to let designers worry about the design of the document.
@@ -148,8 +154,8 @@ The algorithm sees a paragraph as a whole instead of using a more naive approach
 Kerning places letters closer together or further away depending on character combinations.
 A ligature is when multiple characters are joined into one glyph for example fi vs. `fi`.
 
-{lat} also knows how to work with bibliographies by using programs such as Bib(La)Tex or Biber.
-These are reference management programs that are very robust and makes certain all of your references are consistent.
+{lat} also knows how to work with bibliographies by using programs such as Bib(La)TeX or Biber.
+These are reference management programs that are very robust and make certain that all of your references are consistent.
 They allow you to create the references outside of your main document, decreasing the amount of clutter in the document.
 
 Whilst on the topic of including other files in your document, in {lat} you can split up your document into multiple smaller documents, allowing for easier management.
@@ -177,14 +183,14 @@ Because of this, it attracts a lot of attention. It is for example very easy to 
 
 It achieves this simplicity, by introducing a small and simple syntax {cite('''mdsyntax''')} that feels natural.
 For example, to create a title you underline it with `minus` or `equals` characters.
-To create an enumeration, you use `star` characters instead of bullet points.
+To create an enumeration, you use `star` characters as bullet points.
 An example {md} document is shown below:
 {{
-    Image i = image("The document rendered as HTML by the official markdown conversion tool", '''document''').scale(40);
+    Image i = image("The document rendered as HTML by the official {md} conversion tool", '''document''').scale(40);
     i.rightOf(new LstInputListing('''document.md'''));
 }}
 
-The simple syntax decreases the amount of possible syntax errors and allows for short compile times and wide IDE support.
+The simple syntax decreases the amount of possible syntax errors and allows for short compile times and wide editor support.
 Even without the help of an IDE {md} is very readable, as it was designed to be.
 
 The syntax allows {md} to be easily translated into other formats such as PDF or HTML.
@@ -193,7 +199,7 @@ It is also cross-platform and as such widens the target audience of {md}.
 
 To allow for some customisability, {md} allows you to use inline HTML.
 In case {md} does not support what you want to do, HTML is what you use.
-Tables are not a part of default {md} (though there are variations that have syntax for them, like Github Flavored {md}), so an example of how to create one using HTML is shown below:
+Tables are not a part of default {md} (though there are variations that have syntax for them, like GitHub Flavored {md} {cite('''ghfmd''')}), so an example of how to create one using HTML is shown below:
 {{
     Image i = image("The table document rendered as HTML by the official markdown conversion tool", '''htmltable''');
     i.rightOf(new LstListing('''
@@ -245,7 +251,7 @@ The `toJSONfilter` function constructs a JSON representation of the AST.
 Using this, we find the headers of level of 2 or more and create a new paragraph.
 The document can be created using the following command `pandoc -f SOURCEFORMAT -t TARGETFORMAT --filter ./behead2.hs`.
 
-This example shows the power of {pan}, it can do its work directly on the AST.
+This example shows the power of {pan}: it can do its work directly on the AST.
 This means that the source document does not have to be a {md} document, it could also use HTML or any other supported input format.
 
 Using another one of these filters, PanPipe, you can execute programs defined outside of a document.
@@ -254,17 +260,18 @@ An example is shown below.
 {
     LstListing panShell = new LstListing('''
 This document executes a shell command.
+
 ```{pipe="sh"}
 echo "Hello world! I am " $(whoami)
 ```
     ''')
 }
 {{
-    panShell.leftOf(new Image("The output of the document to the left.", '''panShell'''))
+    panShell.leftOf(image("The output of the document to the left.", '''panShell'''))
 }}
 
 Using {pan}, you can also declare templates, that allow you to use variables.
-The variables are predefined (such as `\$body\$`\) or passed through the command line.
+The value of the variables is predefined (such as `\$body\$`\) or passed through the command line.
 These can then be used in conditionals or loops.
 You can see an example below.
 {
@@ -282,7 +289,7 @@ pandoc letter.md -o letter.pdf --template letterTemplate --variable=addressee:"J
 }
 
 ## Problem statement
-We can see that these solutions all have there advantages, but there are also quite a few disadvantages.
+We can see that these solutions all have their advantages, but there are also quite a few disadvantages.
 We will discuss the most common ones for every solution underneath and afterwards we introduce the problem statement.
 
 ### Word processors
@@ -316,7 +323,8 @@ For example, you placed an image exactly where you wanted and later on, you add 
 The reflowing of the text underneath it shifts the precisely placed image out of place.
 These changes are not always immediately clear, which creates inconsistencies in the document.
 
-Another problem that occurs with images, is that the caption does not move together with the image.
+Another problem that occurs with images (thought it is not an inherent problem of WYSIWYG editors, rather a bad implementation), 
+is that the caption does not move together with the image.
 In the example below an image is inserted and a caption is added.
 The image is then dragged to the end of the file and we see that the caption remains in place.
 {
@@ -389,18 +397,21 @@ This means that you can not easily embed variables and execute simple expression
 ## Proposed solution: Neio
 {Chapter goals = (Chapter) parent()}
 To counter the problems occurring in the state-of-the-art solutions whilst retaining their advantages, we created a new markup language called `Neio` (read as neo).
+The name `Neio` was chosen because `neo` means new and we are developing a new language.
+The spelling however, came from the Colemak keyboard layout {cite('''colemak''')}, the letters on the home row, beneath the right hand, spell `n-e-i-o`.
+
 // TODO: naam uitleggen?
 Based on these solutions, the following goals were created for the Neio markup language:
-- It has to be user-friendly and easy to get started with the language
-- It has to use a modern programming paradigm
-- It has to be highly customisable
+- It has to be user-friendly and easy to get started with the language;
+- It has to use a modern programming paradigm;
+- It has to be highly customisable.
 
 The first goal is achieved by using a syntax like {md} for the documents.
 
 To achieve the second goal we note that a document has a strong structure consisting of a lot of elements like chapters, sections, paragraphs and so on.
-An object-oriented model, like the one in Java, is able to represent this structure well by using object for each element.
+An object-oriented model, like the one in Java, is able to represent this structure well by using an object for each element.
 Inheritance allows us to easily make small changes to the elements for example changing the default font size of a certain kind of chapter.
-We also chose this model because it is well known and as seen in {panAdv.ref()} and {latexAdv.ref()}, working with macro expansions or filters is not ideal.
+We also chose this model because it is well known and as seen in {latexAdv.ref()} and {panAdv.ref()}, working with macro expansions or filters is not ideal.
 
 Because it offers a powerful programming model that we can translate to, we chose to translate to {lat}.
 It has also been used successively for decades and has proven that it can deliver very clean looking documents.
@@ -1745,10 +1756,8 @@ We think that it would have been better to have just used pure Java syntax and a
 In the future we might then also add the proposition made in {autoRet.ref()}.
 
 #### Conclusion
-In the end we think we showed that is possible to create a healthy mix between user friendlyness and a powerful programming model.
+In the end, we showed that is possible to create a healthy mix between user friendliness and a powerful programming model.
 We showed that the language can be as easy to read, write and learn as {md}.
 While it can also be as powerful and diverse as {lat} whilst remaining quite legible.
-A lot of work can still be done, and should still be done to commercially use Neio, as shown in {fut.ref()}, but we think that good basis has been provided.
-The completion of this book should be enough proof of this.
-
-// TODO: does this sound arrogant? I sure hope not
+A lot of work can still be done, and should still be done to allow the widespread use of Neio, as is shown in {fut.ref()}, but we think that good basis has been provided.
+The completion of this book and the diverse examples in {examples.ref()} should be enough proof of this.
