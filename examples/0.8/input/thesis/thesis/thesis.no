@@ -21,6 +21,7 @@ the {href("Neio compiler", '''https://github.ugent.be/tivervac/neio/tree/master/
 
 Before we get into the details of this new language it is necessary to introduce some of the most used markup languages and word processors.
 
+// TODO desktop publishing programs: InDesign, Scribus
 ## State-of-the-art
 Before we discuss the state-of-the-art, we first discuss the difference between saving a document as plain text or in a binary format.
 
@@ -150,6 +151,7 @@ To make sure the document will look good afterwards, it is important to structur
 Because of the freedom given in WYSIWYG word processor, it is often forgotten to use styles, headers and so on.
 This can cause inconsistencies to appear as the document grows.
 
+// TODO: explaing kerning/ligature better
 Designers can use the very sophisticated typesetting of {lat} to create designs for well structured {lat} documents.
 The typesetting improves readability by supporting kerning, ligatures,... and using the advanced Knuth-Plass line-breaking algorithm {cite('''texlba''')}.
 The algorithm sees a paragraph as a whole instead of using a more naive approach and seeing each line individually.
@@ -162,19 +164,19 @@ They allow you to create the references outside of your main document, decreasin
 
 Whilst on the topic of including other files in your document, in {lat} you can split up your document into multiple smaller documents, allowing for easier management.
 A common use of this function is to write every chapter, for example in a book, in a separate document and than all the chapters are imported into the main document.
-This allows to easily remove or switch out different parts of a document. This is also possible in {pan} (as you can inline {lat}) and the WYSIWYG editors {cite('''ole''')}.
+This allows to easily remove or switch out different parts of a document. This is also possible in {pan} (as you can inline {lat}\) and the WYSIWYG editors {cite('''ole''')}.
 
 Finally, {lat} employs a free and open source model, which is a big reason why it is so popular in the open source community.
 As a result of this model, combined with its popularity and good scientific support, LaTeX has been integrated in many other applications.
 A few examples are:
 * MediaWiki {cite('''mwikilat''')} {cite('''mediawiki''')}: a free and open-source software package that powers sites as Wikipedia {cite('''wikipedia''')} and Wiktionary {cite('''wiktionary''')}.
-* Stack Exchange {cite('''stackexchange''')}: a network of Q&A web sites
+* Stack Exchange {cite('''stackexchange''')}: a network of Q\&A web sites
 * JMathTex {cite('''jmathtex''')}: a Java library adds functionality to display mathematical formulas in a Java application
-//TODO: add more examples, reddit?
 
 {lat} is powerful but it is also complex and has a steep learning curve, because of this, simpler alternatives such as {md} have been created.
 
 ### {md}
+// TODO use correct font
 `Markdown is a text-to-HTML conversion tool for web writers.`
 `Markdown allows you to write using an easy-to-read, easy-to-write plain text format, then convert it to structurally valid XHTML (or HTML).`
 
@@ -199,27 +201,8 @@ The syntax allows {md} to be easily translated into other formats such as PDF or
 A tool to convert {md} to HTML is offered by the designers of the language itself, as stated above.
 It is also cross-platform and as such widens the target audience of {md}.
 
-To allow for some customisability, {md} allows you to use inline HTML.
-In case {md} does not support what you want to do, HTML is what you use.
-Tables are not a part of default {md} (though there are variations that have syntax for them, like GitHub Flavored {md} {cite('''ghfmd''')}), so an example of how to create one using HTML is shown below:
-{{
-    Image i = image("The table document rendered as HTML by the official markdown conversion tool", '''htmltable''');
-    i.rightOf(new LstListing('''
-Below you can find an HTML table
-<table border="1">
-    <tr>
-        <td>
-            Element 1
-        </td>
-        <td>
-            Element 2
-         </td>
-     </tr>
-</table>
-    '''));
-}}
-
-{md} is simple, but has almost no customisability. Because of this, solutions such as {pan} have been created.
+However, for a lot of cases {md} is too simple.
+Because of this, solutions such as {pan} have been created.
 
 ### {pan}
 {Chapter panAdv = (Chapter) parent()}
@@ -242,10 +225,13 @@ Filters can be written in a multitude of languages such as Haskell, Python, Perl
 They are then passed as a command line argument to the conversion command.
 We illustrate this using an example from the {pan} tutorial on scripting {cite('''panexample''')}.
 {
-    new LstInputListing('''behead2.hs''')
+    LstInputListing behead2 = new LstInputListing('''behead2.hs''');
+    return behead2;
 }
 
 (Pandoc, 2016)
+
+// TODO what is emph in code?
 
 The example above shows a filter written in Haskell.
 It replaces all the headers of level 2 or more in a {md} file by paragraphs.
@@ -272,8 +258,8 @@ echo "Hello world! I am " $(whoami)
     panShell.leftOf(image("The output of the document to the left.", '''panShell'''))
 }}
 
-Using {pan}, you can also declare templates, that allow you to use variables.
-The value of the variables is predefined (such as `\$body\$`\) or passed through the command line.
+Using {pan}, you can also declare templates that allow you to use variables.
+The value of the variables is predefined (such as `\$body\$`\) or passed in through the command line.
 These can then be used in conditionals or loops.
 You can see an example below.
 {
@@ -295,7 +281,6 @@ We can see that these solutions all have their advantages, but there are also qu
 We will discuss the most common ones for every solution underneath and afterwards we introduce the problem statement.
 
 ### Word processors
-// TODO: consider templates
 // TODO:
 //Another problem with word processors is that their format often changes over the years.
 //This means that your document might not show up the same, or at all, a few years after you wrote it.
@@ -316,10 +301,9 @@ In there you create a new module in which you define your new variables as follo
 }
 
 The result variable can then be inserted by selecting `Quick parts` in the `Insert` tab, selecting `Field`, then selecting `DocVariable` and finally typing in `result`.
-This will insert the `result` variable into the document, but the variable will not be kept up-to-date.
+This will insert the `result` variable into the document, but the variable will not automatically update.
 To achieve that you have to right-click it and click `Update field`.
 
-// TODO: include image?
 In word processors small changes can also have big side effects on the document.
 For example, you placed an image exactly where you wanted and later on, you add a newline somewhere higher up.
 The reflowing of the text underneath it shifts the precisely placed image out of place.
@@ -334,7 +318,7 @@ The image is then dragged to the end of the file and we see that the caption rem
     return wordCaption;
 }
 {{
-    wordCaption.leftOf(new Image("The image moved, but the caption did not", '''wordCaption2'''))
+    wordCaption.leftOf(new Image("The image moved, but the caption did not.", '''wordCaption2'''))
 }}
 
 ### {lat}
@@ -374,22 +358,40 @@ The only way to customise {md} is by embedding inline HTML.
 This allows to create a solid structured model but it still does not allow for very much customisability.
 There is no programming model that can provide the customisability.
 
-While {md} is meant to be easily readable and writeable, HTML is not and using it thus decreases readability and cleanliness of your document significantly.
-Once you use HTML in an {md} document, you also require a certain technical proficiency for the source document to be read or edited.
-HTML also reintroduces the possibility of syntax errors and thus slows down the document creation.
+As an example, we use HTML to create a table, as these are not a part of default {md} (though there are variations that have syntax for them, like GitHub Flavored {md} {cite('''ghfmd''')}).
+{{
+    Image i = image("The table document rendered as HTML by the official markdown conversion tool", '''htmltable''');
+    i.rightOf(new LstListing('''
+Below you can find an HTML table
+<table border="1">
+    <tr>
+        <td>
+            Element 1
+        </td>
+        <td>
+            Element 2
+         </td>
+     </tr>
+</table>
+    '''));
+}}
+
+Adding HTML to {md} decreases readability and cleanliness of your document significantly, which goes against the goal of {md}.
+Using it also introduces the need for a certain technical proficiency to read and edit the source document.
+Finally, HTML reintroduces the possibility of syntax errors and thus slows down the document creation.
 
 ### {pan}
-{pan} allows you to execute exterior programs, but the only result is the stdout and stderr of the program.
+{pan} allows you to execute exterior programs through the PanPipe filter, but the only result is the stdout and stderr of the program.
 These do not allow you to change the output afterwards because you have no more structure.
 The structural elements such as sections and paragraphs have disappeared.
-This decreases the amount of control on the final document.
 For example, you create a binary tree using a 3rd party application.
-Then you want to insert a new value into the tree, which requires it to be rebalanced.
+Then you want to insert a new value into this tree, which requires it to be rebalanced.
 However this is impossible as you lost all of the structure of the tree, it is only represented as a string.
+You thus have to redraw every instance of the tree instead of creating it once, programmatically transforming it and redisplaying the transformed tree.
 
 To access the structure of the document, the AST can be used.
 Transforming an AST afterwards however, does not allow for precise control either.
-In {panAdv.ref()} we saw how we could replace all of the headers of a level higher than 2, but changing it for only a few would require us to find them.
+In {behead2.ref()} we saw how we could replace all of the headers of a level higher than 2, but changing it for only a few would require us to find them.
 If we could have done this inline or if we could redefine the meaning of the `\#` symbol, the problem would be avoided.
 
 Finally, the variables used in {pan} have some limitations.
@@ -402,8 +404,8 @@ To counter the problems occurring in the state-of-the-art solutions whilst retai
 The name `Neio` was chosen because `neo` means new and we are developing a new language.
 The spelling however, came from the Colemak keyboard layout {cite('''colemak''')}, the letters on the home row, beneath the right hand, spell `n-e-i-o`.
 
-// TODO: naam uitleggen?
 Based on these solutions, the following goals were created for the Neio markup language:
+// TODO: what is user-friendly
 - It has to be user-friendly and easy to get started with the language;
 - It has to use a modern programming paradigm;
 - It has to be highly customisable.
@@ -423,8 +425,9 @@ Later on more back ends, such as HTML, could be implemented, but that is outside
 Neio targets anyone that is currently using {md} but wants to customise their document further.
 For example, using Neio you can create citations and references, which is not possible in {md}.
 
-By offering a simpler syntax and less foreign programming model than used in {lat}, we target {lat} users .
-Lastly, offering a well-known, modern programming model that is more conventional than the macro model in TeX, we target {lat} package developers.
+By offering a simpler syntax than used in {lat}, we target {lat} users.
+Lastly, offering a well-known, modern programming model that is more conventional than the macro model in TeX, we target developers.
+// TODO: Is this better?
 // TODO
 //It can also be used by people without technical expertise if templates are provided.
 //For example, given a template for a letter, even a non-technical person is able to quickly write down the contents of the letter and fill in the template variables.
@@ -727,7 +730,7 @@ The example above shows us that this works, but how exactly does this work, you 
 The reason that this works is because the new object is added to the current document and the following `\-` calls will thus be called on this object.
 An object can only be added in this way through the last statement in a non-scoped code block and the object will only be added if it is a subtype of `Content`.
 If the last statement does not return an object (a method call with a void return type or an assignment), nothing will be added.
-It is also possible to explicitly return something from a non-scoped code block by using the `return` keyword.
+It is also possible to explicitly return something from a non-scoped code block by using the `return` keyword in the last statement of the block.
 
 To further explain this, and to explain how we could possibly call functions on an object we need to introduce a new concept called `this`.
 

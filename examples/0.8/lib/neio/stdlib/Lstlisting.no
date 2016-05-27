@@ -1,12 +1,21 @@
 namespace neio.stdlib;
 
 import neio.lang.Content;
+import neio.lang.Referable;
+import neio.lang.Reference;
+import neio.lang.Text;
 
-class LstListing extends Content;
+class LstListing extends Content implements Referable;
 
+Text caption;
 String input;
 
 LstListing(String input) {
+    this(null, input);
+}
+
+LstListing(Text caption, String input) {
+    this.caption = caption;
     this.input = input;
 }
 
@@ -14,20 +23,34 @@ LstListing append(String append) {
     return new LstListing(input + append);
 }
 
+Reference ref() {
+    return new Reference("Listing", "" + hashCode());
+}
+
 String toTex() {
     StringBuilder result = new StringBuilder("\\begin{lstlisting}");
+    result.append("[label={")
+        .append(hashCode())
+        .append("}");
+
+    if (caption != null) {
+        result.append(", caption={")
+            .append(caption.toTex())
+            .append("}");
+    }
+
+    result.append("]");
     Boolean oneline = !input.contains("\n");
     if (oneline) {
         result.append("\n");
     }
 
     result.append(input);
-    
     if (oneline) {
         result.append("\n");
     }
 
-    result.append("\\end{lstlisting}");
+    result.append("\\end{lstlisting}\n");
 
     return result.toString();
 }

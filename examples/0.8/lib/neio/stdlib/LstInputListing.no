@@ -1,8 +1,10 @@
 namespace neio.stdlib;
 
 import neio.lang.Content;
+import neio.lang.Referable;
+import neio.lang.Reference;
 
-class LstInputListing extends Content;
+class LstInputListing extends Content implements Referable;
 
 String path;
 Ranges ranges;
@@ -20,6 +22,10 @@ LstInputListing(Ranges ranges, String path) {
 
 LstInputListing(String path) {
     this(null, path);
+}
+
+Reference ref() {
+    return new Reference("Listing", "" + hashCode());
 }
 
 String toTex() {
@@ -40,11 +46,13 @@ String toTex() {
         result.append("}, ");
     }
     
-    result.append("caption=")
+    result.append("caption={")
         .append(name)
-        .append("]{")
+        .append("}, label={")
+        .append(hashCode())
+        .append("}]{")
         .append(path)
-        .append("}");
+        .append("}\n");
 
     return result.toString();
 }

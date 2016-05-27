@@ -60,5 +60,5 @@ String toTex() {
 }
 
 Reference ref() {
-    return new Reference("Figure ", "" + hashCode());
+    return new Reference("Figure", "" + hashCode());
 }
