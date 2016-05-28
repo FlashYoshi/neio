@@ -1,14 +1,14 @@
 [Document]
 
 // {{ scoped RETURNS NOTHING, OWN LINE
-// { ref (Is between/before/after text/prefix method, is not an assignment) RETURNS SOMETHING WE CAN STRINGIFY INLINE
+// { ref (Is between/before/after text/prefix method, is not an assignment) RETURNS SOMETHING WE CAN TextIFY INLINE
 // { type name: S/D/L}
 // { cc (content creation: is on it's own line, nothing before or after the braces, has an expression with returntype Content as last line) RETURNS CONTENT, OWN LINE
 // { variable decl (same as before but the last line does not return Content) RETURNS NOTHING, OWN LINE
 {
-    String chap = '''Chapter 1''';
-    String ref1 = '''reference1''';
-    String full = '''This is a full paragraph.''';
+    Text chap = "Chapter 1";
+    Text ref1 = "reference1";
+    Text full = "This is a full paragraph.";
     Integer i = 0;
     Integer j = 18;
 }
@@ -20,7 +20,7 @@
 
 Normally we can just add references like so: {ref1}
 
-If you do really want to use a variable on a line of itself, you have to do so explicitely:
+If you do really want to use a variable on a line of itself, you have to do so explicitly:
 {new Paragraph(full)}
 
 Assignments are never printed out, and as _i++_ is actually `i \= i + 1`, increments and decrements are not printed out either

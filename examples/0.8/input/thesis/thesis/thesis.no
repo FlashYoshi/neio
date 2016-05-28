@@ -52,7 +52,7 @@ It is to be noted that the error handling depends on what exactly was corrupted,
 ### Word processors
 {Chapter goodWord = (Chapter) parent()}
 The best-known solution for creating documents, are so called WYSIWYG editors, examples include \`Microsoft Word' and \`Pages'.
-They are called as such because you immediately, without compiling, see what your document will look like.
+They are called as such because you immediately, without compiling, see what your final document is going to look like.
 Because of this, the complexity of the tool is significantly decreased allowing anyone to use the tool.
 It is less complex because you do not have to type in commands and wait for a preview to change.
 Instead you select the property from a drop-down list or click a button and the document is updated instantly.
@@ -160,7 +160,7 @@ The step-by-step expansion for the previous example is given below:
 
 Using this programming model, libraries, called packages can be created.
 Over the course of the past 31 years (the initial {lat} release was in 1985), a lot of them have been created.
-They offer all kinds of functionalities, ranging from the creation of sheet music and graphs to providing the base to write letters and books.
+They offer all kinds of functionalities, ranging from the creation of sheet music and slide shows {cite('''beamer''')} to providing the base to write letters and books.
 This is one of the reasons why {lat} is often used for long and complex documents such as books, scientific papers and syllabi.
 
 The goal of {lat} {cite('''latintro''')} is for the user to focus on the structure and content of the document and to let designers worry about the design of the document.
@@ -378,7 +378,7 @@ There is no programming model that can provide the customisability.
 
 As an example, we use HTML to create a table, as these are not a part of default {md} (though there are variations that have syntax for them, like GitHub Flavored {md} {cite('''ghfmd''')}).
 {{
-    Image i = image("The table document rendered as HTML by the official markdown conversion tool", '''htmltable''');
+    Image i = image("The table document rendered as HTML by the official {md} conversion tool", '''htmltable''');
     i.rightOf(new LstListing('''
 Below you can find an HTML table
 <table border="1">
@@ -453,31 +453,60 @@ Finally, we target developers by offering a well-known, modern programming model
 # Design of the Neio markup language
 In {intro.ref()} the state-of-the-art concerning document creation has been discussed and we concluded that improvements can be made.
 In this chapter the Neio language is presented.
-We explain how our decisions were reached and how they were affected by the presented solutions.
+We explain how our decisions were reached and how they were affected by the state-of-the-art.
 
 ## Neio document
-The typical files that a user writes is called Neio documents, these have to be as simple as possible.
-As mentioned in {goals.ref()}, Neio documents are heavily based on {md}.
-This allows us to make use of the widespread knowledge of {md} to increase the size of our audience and allow users to easily transition to Neio.
+The typical files that a user writes are called Neio documents; these have to be as simple as possible.
+Based on our state-of-the-art analysis, we chose to base Neio documents on {md}.
 
 To illustrate some of the basic concepts we now present an example Neio document.
 {
     String simpleDocument = '''
+// This is a Neio document
 [Document]
 
+/* Below we define a chapter
+ * and a paragraph.
+ */
 # Chapter 1
 This is some text in the first Paragraph.
 ''';
-    Image i = new LstListing(simpleDocument).leftOf(image("The rendered document", '''simpleDocument'''));
+    LstListing neioEx = new LstListing(simpleDocument);
+    Image neioExImage = neioEx.leftOf(image("The rendered document", '''simpleDocument'''));
     
 }
 
-Even if you are not familiar with {md}, you can immediately tell what this document represents. 
-There is however a significant difference with {md}. 
-In markdown the syntax is hard-coded into the language, a \# always represents a chapter for example.
+Even if you are not familiar with {md}, you can immediately tell what this document represents.
+It creates a document, a chapter (through the `\#` symbol) and a paragraph, and it contains two comments.
+
+A difference with {md}, but a resemblance with {lat}, is that every Neio document starts out with document class, it tells us what kind of document we are building.
+This is done to improve customisability and to be able to support multiple kinds of documents.
+
+In Neio there are two sets of syntax called text- and code mode.
+{neioEx.ref()} is written in text mode, the code files in next section are written in code mode.
+
+## Code files
+Code files are very similar to class files in Java.
+As means of an introduction we have a look at the `Paragraph` class that is used to represent the paragraph in {neioEx.ref()}.
+{
+    Ranges parRanges = new Ranges().add(1, 52).add(62, 84);
+    new LstInputListing(parRanges, '''../../examples/0.8/lib/neio/stdlib/Paragraph.no''');
+}
+
+Except for some variations on the syntax, such as using `namespace` instead of `package`, and the lack of access level modifiers (which can be specified), this is valid Java code.
+The absent access level modifiers are automatically set to `private` for members and `public` for methods.
+They do not have to be written explicitly as the default value is usually what the developer wants and it makes the class file just a little clearer and more concise.
+
+To keep code mode simple and to maximize reusability (as well as making the parsing somewhat easier) some functionality from the Java language was dropped.
+It is for example not possible to create anonymous classes as these are not reusable and do not provide any new functionality.
+It is also not possible to create multiple classes in a single file.
+
+## Method chains
+There is however a significant difference between {md} and Neio document.
+In {md} the semantics for the syntax are hard-coded in the language, a \# always represents a chapter for example.
 Neio however has no knowledge of what \# means.
 
-Neio does not know about such syntax because everything is a method call, chained together to form an object model that represents the document.
+Neio does not know any of the semantics because everything is a method call, chained together to form an object model that represents the document.
 The reason for doing so is simple, we want to be able to customise our documents!
 For example, when you are creating a slide show, you want \# to create a new slide instead of a chapter.
 
@@ -490,55 +519,28 @@ new Document()
     ''');
 }
 
-For this to work of course, every one of these method calls has to return an object.
-In fact, every one of these methods returns an object that is a subtype of the `Content` class, anything in a Neio document that can be shown is a subtype of `Content`.
-The `Content` class is the base class in Neio documents, like `Object` is the base class in Java.
-
-Now is also a good time to explain a small syntactical difference with {md}, which you might have already noticed.
-Every Neio document has to begin with a so-called document class. This is a concept borrowed from {lat}, and just as in {lat} it tells us what kind of document the user is trying to build.
-We say that a Neio document  has to start with a document class, but this is not entirely correct.
-You are allowed to add single- or multi-line Java style comments before the document, or anywhere else in the document for a matter of fact.
-The following is thus also a valid document.
-{
-    new LstListing('''
-// A single-line comment
-[Document]
-/*
- * Multi-line comments are also available!
- */
-    ''');
-}
-
-To further understand this example we need to introduce the second kind of files available in the Neio markup language, Class files.
-
-## Class files
-Class files are very similar to class files in Java. They are the thriving force behind the Neio documents, they define all the object and methods that are used in a Neio document.
+// TODO: fit this in here
+Code files are the thriving force behind the Neio documents, they define all the object and methods that are used in a Neio document.
 They are extremely important to the design of the language as they allow us to represent everything in the document with an object structure.
 This object structure is extensively used in Neio and examples of this are shown further on.
 
-As means of an introduction we have a look at the `Document` class that was used as a document class in the previous section.
-{
-    new LstInputListing('''../../examples/0.8/lib/neio/stdlib/Document.no''');
-}
+For this to work of course, every one of these method calls has to return an object.
+In fact, all of these methods returns an object that is a subtype of the `Content` class, as anything in a Neio document that can be shown is a subtype of `Content`.
+The `Content` class is the base class in Neio documents, like `Object` is the base class in Java.
 
-Except for some variations on the syntax, such as using `namespace` instead of `package`, and the lack of access level modifiers, this is valid Java code.
-The access level modifiers are automatically set to `private` for members and `public` for methods.
-They do not have to be written explicitly as the default value is usually what the developer wants and it makes the class file just a little clearer and more concise.
-
-Again though, I stand corrected, this would be valid Java code if not for the \# method.
-In Neio class files, you are allowed to use symbols as a method name.
+// TODO: fit this in here
+This would be valid Java code if not for the \# method.
+In Neio code files, you are allowed to use symbols as a method name.
 This is a feature that is necessary to allow a Neio document to be represented as a chain of method calls as otherwise you would have to actually write out a document as series of method calls,
 or you would not be able to use symbols as syntactic shorthand.
 All the symbols you can use for method names at this time are `\#, \-, \*, \_, \$, \|, \=, \^`, the backtick and the newline.
 The newline character is recognised by the following regex `\\n\\r?`.
 By using all of these symbols we are able to create Domain Specific Languages (DSL) for some things such as tables or structural formulas. This is illustrated in Chapter 3.
 
-To keep the language simple and to maximize reusability (as well as making the parsing somewhat easier) some functionality from the Java language was dropped.
-It is for example not possible to create anonymous classes as this goes against the concept of reusability.
-It is also not possible to create multiple classes in a single file.
-
 ## Newlines
 {Chapter newlines = (Chapter) parent()}
+// TODO: extension of fluid API
+// TODO: text()
 Neio is newline sensitive, in the sense that newlines too are methods.
 The superclass `TextContainer` of `Document` and `Chapter` defines the following method.
 {
@@ -589,7 +591,7 @@ To avoid clutter, the `newline` method is not shown in the further examples unle
 ## Context types
 {Chapter ctxTypes = (Chapter) parent()}
 As said before, everything is a method call, but to be able to just chain any method to any other method, regular methods do not suffice.
-We want to be able to call methods of different class files whilst constructing our document, but we do not want to specify what object we are calling the method on.
+We want to be able to call methods of different code files whilst constructing our document, but we do not want to specify what object we are calling the method on.
 This is something that should be clear from the current structure of the file, a previously created object should have a method with the correct signature.
 
 To be able to call the right methods, we need to introduce something called ContextTypes.
@@ -696,7 +698,7 @@ The text `This is \*bold\* text` is then transformed into the following chain `t
 
 ## Code blocks
 {Chapter codeBlocks = (Chapter) parent()}
-We have seen that we can use code in Neio class files and customise our document this way. But this does not allow us to do everything we want to.
+We have seen that we can use code in code files and customise our document this way. But this does not allow us to do everything we want to.
 We do not want to create a new document class every time we want to do something special. It is also not possible to add anything to a document class that does not exist.
 Sometimes we might just want to change a property of some content, which is not possible as of yet.
 For this reason, it is possible to add code blocks in a Neio document. The three different kinds of code blocks are explained below.
@@ -936,7 +938,7 @@ this.text("It is called ").text(c1.title().toString()).text(" and it cost me ").
 
 ## Text
 Something that has not been noted yet, is that most of the time, we do not actually use Java `String`s.
-What is used most of the time is Neio Text. Neio Text (in Code mode, not in class files) is created like Java `String`s, by enclosing some text with a pair of doubles quotes \(`\"`\).
+What is used most of the time is Neio Text. Neio Text (in Code mode, not in code files) is created like Java `String`s, by enclosing some text with a pair of doubles quotes \(`\"`\).
 A Java String is still sometimes needed and can be created using a pair of triple, single-quotes \(`\'\'\'`\).
 We use three quotes, as a pair of single quotes still represents a Java Character, while two quotes would be very confusing when used in combination with double quotes in a non-monospace font.
 The inspiration of using three quotes came from the multi-line String literal in Python.
@@ -1455,11 +1457,11 @@ After the manipulations have been completed, we write it out using the Jnome bac
 Now that all parts of the compiler have been introduced, we show a diagram that depicts the flow a source file 
 from Neio source up to to the final {lat} file.
 {
-    Image compileFlow = image("Illustration of how a Neio document is compiled. Neio class files translate to Java classes, Neio script files to a Java file with a main function. This then gets output to TeX using the Neio standard library", '''CompileFlow''');
+    Image compileFlow = image("Illustration of how a Neio document is compiled. Neio code files translate to Java classes, Neio script files to a Java file with a main function. This then gets output to TeX using the Neio standard library", '''CompileFlow''');
     return compileFlow;
 }
 
-First of the Java and Neio library (the Neio class files) are read by the front end of the Neio compiler and translated into an AST.
+First of the Java and Neio library (the Neio code files) are read by the front end of the Neio compiler and translated into an AST.
 Then Neio documents are read by the front end and it is also transformed in an AST.
 The latter AST is past to the middle end of the compiler and is transformed to an object model that can be output to valid Java.
 Then the transformed AST and the ASTs for the Neio library are passed to the compiler back end which generates the final Java code.
@@ -1730,7 +1732,7 @@ optimizations that can be performed.
 #### Other front- and back ends
 Another compiler improvement that could be created in the future, is that we could create different front and back ends.
 We do not have to output to Java, if someone were to write a back end for python for example, we could make use of that back end.
-The same thing is possible for the front end. The syntax of Neio documents and class files could be changed, as long as the fundamental 
+The same thing is possible for the front end. The syntax of Neio documents and code files could be changed, as long as the fundamental 
 design decisions of the language are kept the same, such as `ContextType`s and nested methods, another syntax could be designed. As long 
 as a front end is developed that can parse a Neio document with a different syntax that can still parse the document into the same AST as is 
 used at this moment, it is possible to change the currently used syntax..
@@ -1746,11 +1748,11 @@ At this moment the Eclipse integration treats the entire method chain as a whole
 This would cause problems as everything between codeblocks would be colored the same and we would not be able to have different 
 colouring for special methods, such as the symbol methods.
 
-It should however work out of the box for Code mode and the class files.
+It should however work out of the box for Code mode and the code files.
 
 #### Auto completion
 A second feature that Chameleon offers and that is very useful when writing in a certain language, is auto completion.
-This should again work well in Code mode and class files, however it would be a bit harder in Text mode.
+This should again work well in Code mode and code files, however it would be a bit harder in Text mode.
 This is because it would have to know when to auto complete and when it should just let us write.
 It might be best to hide the auto complete behind a hotkey while in Text mode.
 This still allows the user to get a list of methods he could use at a certain time, but would remove the annoyance of having a pop-up 
@@ -1770,7 +1772,7 @@ The reason for the latter was because in our eyes namespace was a more general t
 
 But by choosing different keywords, we ended up with name conflicts. At some point in development we wanted to make use of a class in a package called `namespace`.
 Of course this did not work out well as the parser did not know how to parse this. By changing the syntax as much as we did, it also became impossible to run Javadoc 
-on our class files without making major changes to it.
+on our code files without making major changes to it.
 
 Disallowing a substantial part of Java (anonymous classes, shorthand operators such as `++`, `+=`, ...) and so on also hurts the 
 adoption rate of the language as it is a bit harder to convert a Java file into a Neio file.
