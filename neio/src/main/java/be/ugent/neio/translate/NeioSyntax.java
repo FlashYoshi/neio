@@ -38,6 +38,8 @@ import java.util.regex.Pattern;
 public class NeioSyntax extends Java7Syntax {
 
     private static final Map<String, String> ALIASES;
+    private static final String BS = "\\\\";
+    private static final String ESC = "%neio%escape%char%";
 
     static {
         Map<String, String> map = new HashMap<>();
@@ -85,13 +87,14 @@ public class NeioSyntax extends Java7Syntax {
         try {
             String literalText = super.toCodeLiteral(literal);
             if (literal.getType().getFullyQualifiedName().equals("java.lang.String") && !(literalText.startsWith("\"") && literalText.endsWith("\""))) {
-                // Replace explicit backslash by two backslashes so it works with java
-                String bs = "\\\\";
-                // Replace double backslash (escaped backslash), by three backslashes
-                // This is represented in java by bs * 6 due to escaping
-                literalText = literalText.replaceAll(bs + bs, bs + bs + bs + bs + bs + bs);
-                literalText = literalText.replaceAll(bs + "([^rfutn" + bs + "])", bs + bs + "$1");
-                literalText = literalText.replaceAll("\"", bs + '"');
+                // Replace double backslash (escaped backslash), by an escape sequence
+                literalText = literalText.replaceAll(BS + BS, ESC);
+                // Replace the backslash in escaped characters with double backslash to prevent the creation of special
+                // java characters such as '\n'
+                literalText = literalText.replaceAll(BS + "([^rfutn" + NeioSyntax.BS + "])", BS + BS + "$1");
+                // Replace the escape sequence by four backslashes (2 escaped backslashes in Java)
+                literalText = literalText.replaceAll(ESC, BS + BS + BS + BS);
+                literalText = literalText.replaceAll("\"", BS + '"');
                 return "\"" + literalText + "\"";
 
             } else {

@@ -101,7 +101,7 @@ We define two macros using `\\def` and call the `\\b` macro.
 The output is `This is a`.
 The step by step expansion works as follows.
 * TeX encounters the token `\\b` without arguments and expands it.
-* `\\b` is removed from the token list and `This is \\\u0061` is added to it.
+* `\\b` is removed from the token list and `This is \\a` is added to it.
 * `This is` is read and `\\a` is encountered, `\\a` gets expanded.
 * `\\a` is removed from the token list and `a` is added.
 
@@ -114,32 +114,32 @@ For example, the output of code beneath is `This is a macro`.
 ''')
 }
 
-It is also possible to pass these arguments in a different way, for example `\\def\\\u0061uthor(\#1,\#2)\{\#1, \#2\}` will expect two arguments surrounded by a pair of brackets and separated by a comma.
+It is also possible to pass these arguments in a different way, for example `\\def\\author(\#1,\#2)\{\#1, \#2\}` will expect two arguments surrounded by a pair of brackets and separated by a comma.
 We can also pass macros as an argument.
-Given `\\def\\\u0073urname\{Vervack\}` and `\\def\\\u0066irstname\{Titouan\}` for example,
-we can call the previous macro: `\\author(\\\u0073urname,\\\u0066irstname)`.
-However if we create a new macro fullname `\\def\\\u0066ullname\{(Vervack,Titouan)\}` and call `\\author` as follows `\\author\\\u0066ullname`, the call fails.
+Given `\\def\\surname\{Vervack\}` and `\\def\\firstname\{Titouan\}` for example,
+we can call the previous macro: `\\author(\\surname,\\firstname)`.
+However if we create a new macro fullname `\\def\\fullname\{(Vervack,Titouan)\}` and call `\\author` as follows `\\author\\fullname`, the call fails.
 It does so because it expects a `\(` token but it found the `\\fullname` token as the argument has not been expanded yet.
 This is the reason that we are able to finely control macro expansion.
 
 To make the previous example work, we need the `\\expandafter` macro.
 First, it removes the first token two tokens behind itself, then it expands the second token once and adds the first token along with the expansion back to the token list.
-If we call `\\expandafter\\\u0061uthor\\\u0066fullname` we get the expected result.
+If we call `\\expandafter\\author\\fullname` we get the expected result.
 There are a lot of different ways to control expansion and all of them are used in practice.
 This makes macro expansion complex and shows how different this is compared to functions being used in modern programming languages.
 
-Variables can be declared as a macro as follows: `\\def\\\u0076arname\{A string\}`.
+Variables can be declared as a macro as follows: `\\def\\varname\{A string\}`.
 The `\\def` macro defines a macro with the name `varname` and when used it will output the body of the macro, `A string`.
 The macro can be called by writing `\\varname` somewhere in the text.
 The value of a macro is a string, to use integers we can use the `count` register.
 
 There are 256 `count` registers, you can define one as follows: `\\count0=1`.
 This assigns the value `1` to the first register.
-Calculations can now be done on it, for example `\\advance\\\u0063ount0 by 1` will increase the register by one.
+Calculations can now be done on it, for example `\\advance\\count0 by 1` will increase the register by one.
 
 This also shows that arithmetics are handled differently in {lat} than in the languages we are used to.
 There are no `\*, +, \-` or `/` symbols to define the basic mathematical operations.
-To show a register, we can use the `\\the` macro, `\\the\\\u0063ount0` will output 1.
+To show a register, we can use the `\\the` macro, `\\the\\count0` will output 1.
 
 Using this programming model, libraries, called packages can be created.
 Over the course of the past 31 years (the initial {lat} release was in 1985), a lot of them have been created.
@@ -281,7 +281,7 @@ We can see that these solutions all have their advantages, but there are also qu
 We will discuss the most common ones for every solution underneath and afterwards we introduce the problem statement.
 
 ### Word processors
-// TODO:
+// TODO
 //Another problem with word processors is that their format often changes over the years.
 //This means that your document might not show up the same, or at all, a few years after you wrote it.
 The UI in WYSIWYG editors allows you to customise the document, you can insert other documents, tables, figures,... and adjust a lot of properties.
