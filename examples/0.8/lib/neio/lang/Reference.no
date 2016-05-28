@@ -12,7 +12,7 @@ String reference;
 /**
  * Intialises the Reference
  *
- * @param prefix       The name of the object e.g. Chapter, Image,...
+ * @param prefix    The name of the object e.g. Chapter, Image,...
  * @param reference The object to refer to
  */
 Reference(String prefix, String reference) {
@@ -30,6 +30,6 @@ String thisToTex() {
     if (!result.isEmpty()) {
         result = result + " ";
     }
-    
+
     return result + "\\ref{" + reference + "}";
 }

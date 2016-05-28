@@ -9,7 +9,8 @@ Text text;
 String realText;
 // The object to which this Text has been appended
 Text appendedTo;
-
+private static final String BS = "\\\\";
+private static final String ESC = "%neio%escape%char%";
 /**
  * Creates an empty Text
  */
@@ -178,11 +179,11 @@ String thisToTex() {
     String me = "";
     if (text == null) {
         // Create valid TeX text
-        me = realText.replaceAll("\\\\([^#$%&~\\^_{}\\\\])", "$1");
-        me = me.replaceAll("\\\\~", "\\\\textasciitilde{}");
-        me = me.replaceAll("\\\\^", "\\\\textasciicircum{}");
-        me = me.replaceAll("\\\\\\\\\\\\", "\\\\textbackslash{}");
-        me = me.replaceAll("\\\\\\\\", "\\\\textbackslash{}");
+        me = realText.replaceAll(BS + BS, ESC + "textbackslash{}");
+        me = me.replaceAll(BS + "([^#$%&~\\^_{}" + BS + "])", "$1");
+        me = me.replaceAll(ESC, BS);
+        me = me.replaceAll(BS + "~", BS + "textasciitilde{}");
+        me = me.replaceAll(BS + "^", BS + "textasciicircum{}");
     } else {
         me = text.toTex();
     }
