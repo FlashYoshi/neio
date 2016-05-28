@@ -45,7 +45,8 @@ String toTex() {
         result.append("\n");
     }
 
-    result.append(input);
+    String output = input.replaceAll("\\\\\\\\", "\\\\");
+    result.append(output);
     if (oneline) {
         result.append("\n");
     }
