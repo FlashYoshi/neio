@@ -2,32 +2,47 @@ namespace neio.stdlib;
 
 import neio.lang.*;
 
+/**
+ * Represents a paragraph
+ */
 class Paragraph extends Content;
 
+// private
 Text text;
 
-Paragraph() {
-    text = null;
-}
-
-Paragraph(String parText) {
-	text = new Text(parText);
-}
-
+/**
+ * Intialises a paragraph with some text
+ *
+ * @param parText The initial text of the paragraph
+ */
 Paragraph(Text text) {
     this.text = text;
 }
 
-Paragraph appendLine(String s) {
-    return appendLine(new Text(s));
+/**
+ * Initialises an empty Paragraph
+ */
+Paragraph() {
+    this(null);
 }
 
+/**
+ * Appends some text on a new line within the same paragraph
+ *
+ * @param t The text to add after the newline
+ * @return This paragraph with a newline and {@code t} added to it
+ */
 Paragraph appendLine(Text t) {
-    text = text.appendText(new Text("\n")).appendText(t);
-    return this;
+    return appendText(new Text("\n").appendText(t));
 }
 
-Paragraph appendText(Text t) {
+/**
+ * Appends Text to this Paragraph
+ *
+ * @param t The Text to add
+ * @return This paragraph with {@code t} added to it
+ */
+private Paragraph appendText(Text t) {
     if (text == null) {
         text = t;
     } else {
@@ -36,18 +51,30 @@ Paragraph appendText(Text t) {
     return this;
 }
 
+/**
+ * Creates a newline handler to handle newlines following a Paragraph
+ *
+ * @return A new {@code ParNLHandler} with this Paragraph as parent
+ */
 ParNLHandler newline() {
-    return new ParNLHandler(this) handler;
+    return new ParNLHandler(this);
 }
 
-Paragraph text(Text t) {
-    return appendText(t);
-}
-
+/**
+ * Return the Text of this Paragraph
+ *
+ * @return The Text of this Paragraph
+ */
 Text getText() {
     return text;
 }
 
+/**
+ * Returns the LaTeX representation of this Paragraph.
+ * It is the empty string in case there is no Text in this paragraph.
+ *
+ * @return The LaTeX representation of this Paragraph
+ */
 String toTex() {
     if (text != null) {
         return "\\par " + text.toTex();
