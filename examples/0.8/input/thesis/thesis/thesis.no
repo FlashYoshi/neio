@@ -30,7 +30,7 @@ It is robust in the sense that a if a single bit of the document gets flipped, t
 The user can find the error on his own, or he can use the variety of editors to find help him as every editor can handle errors differently.
 
 When the syntax gets more extensive and less human-readable, the chances to encounter a problem upon compilation increase.
-This is both good and bad, if a part of the syntax got corrupted, the compiler will tell you and you will know that the document has been corrupted.
+This is both good and bad, if a part of the syntax got corrupted, the compiler tells you and you know that the document has been corrupted.
 Had it not warned the user, the document would be in a corrupt state without the user noticing so.
 On the other hand the corruption can prevent the document from successfully compiling, forcing the user to find out what happened to the document.
 In any case however, the error can still be tracked down and repaired.
@@ -44,7 +44,7 @@ We then tried to open the document and received the following sequence of errors
     image("The inability to repair the error", '''wordCorruption3''').scale(80);
 }}
 
-A regular user, without technical expertise, will not be able to repair this error as the source code is not human-readable.
+A regular user, without technical expertise, is not be able to repair this error as the source code is not human-readable.
 There are also almost no other tools to help the user as the binary format can only be interpreted correctly by a few editors.
 
 It is to be noted that the error handling depends on what exactly was corrupted, in some cases the corruption can be automatically repaired.
@@ -63,7 +63,7 @@ and you can easily add an image and drag-and-drop it around.
 
 A lot of these editors are grouped into packets, such as Office or LibreOffice.
 Using one of these packets, it is also easy to insert slides, tables or another document {cite('''ole''')}.
-These will then be editable with the specialized program for it (like Excel), but you will not have to leave the document.
+These are then be editable with the specialized program for it (like Excel), but you do not have to leave the document.
 In the example below an Excel chart has been inserted into a Word document.
 {
     image("An Excel chart in a Word document", '''excelInWord''')
@@ -125,7 +125,7 @@ The braces around the first required argument are optional, thus we can also wri
 }
 
 To elaborate further on expansion, we have a look at another example.
-We have the string `Hello` saved in a command and want to concatenate a string to it so that it will print out `Hello world`.
+We have the string `Hello` saved in a command and want to concatenate a string to it so that it prints out `Hello world`.
 To do this, we have to redefine the command, this can be done using `\\renewcommand`.
 We thus get the following:
 {
@@ -164,7 +164,7 @@ They offer all kinds of functionalities, ranging from the creation of sheet musi
 This is one of the reasons why {lat} is often used for long and complex documents such as books, scientific papers and syllabi.
 
 The goal of {lat} {cite('''latintro''')} is for the user to focus on the structure and content of the document and to let designers worry about the design of the document.
-To make sure the document will look good afterwards, it is important to structure it using elements such as sections and paragraphs.
+To make sure the document looks good afterwards, it is important to structure it using elements such as sections and paragraphs.
 Because of the freedom given in WYSIWYG word processor, it is often forgotten to use styles, headers and so on.
 This can cause inconsistencies to appear as the document grows.
 
@@ -253,7 +253,7 @@ This example shows the power of {pan}: it can do its work directly on the AST.
 This means that the source document does not have to be a {md} document, it could also use HTML or any other supported input format.
 
 Using another one of these filters, PanPipe {cite('''panpipe''')}, you can execute programs defined outside of a document.
-The stdout of the program will be inserted into the document and the stderr will be redirected to the stderr of {pan}.
+The stdout of the program is inserted into the document and the stderr is redirected to the stderr of {pan}.
 An example is shown below.
 {
     LstListing panShell = new LstListing('''
@@ -288,7 +288,7 @@ pandoc letter.md -o letter.pdf --template letterTemplate --variable=addressee:"J
 
 ## Problem statement
 We can see that these solutions all have their advantages, but there are also quite a few disadvantages.
-We will discuss the most common ones for every solution underneath and afterwards we introduce the problem statement.
+We discuss the most common ones for every solution underneath and afterwards we introduce the problem statement.
 
 ### Word processors
 // TODO
@@ -311,7 +311,7 @@ In there you create a new module in which you define your new variables as follo
 }
 
 The result variable can then be inserted by selecting `Quick parts` in the `Insert` tab, selecting `Field`, then selecting `DocVariable` and finally typing in `result`.
-This will insert the `result` variable into the document, but the variable will not automatically update.
+This inserts the `result` variable into the document, but the variable is not automatically update.
 To achieve that you have to right-click it and click `Update field`.
 
 In word processors small changes can also have big side effects on the document.
@@ -361,11 +361,11 @@ As mentioned in {latexAdv.ref()}, the macro model does not work as we are used t
 Keeping up with these expansions is confusing and requires a lot of work.
 
 Next to this, we also have to watch out for name clashes, because {lat} does not uses namespaces.
-The `newcommand` we saw in {latexAdv.ref()}, requires that the command has not been defined earlier, if it was, an error will be thrown.
-`renewcommand` requires that the command was defined earlier, it will overwrite the previous command and it will crash if the command was not yet defined.
+The `newcommand` we saw in {latexAdv.ref()}, requires that the command has not been defined earlier, if it was, an error is thrown.
+`renewcommand` requires that the command was defined earlier, it overwrites the previous command and it crashes if the command was not yet defined.
 Lastly, `providecommand` acts as `newcommand` if the command was not yet defined and does nothing if it was already defined, leaving the old definition intact.
 For example, we can not define a command called `name` using `newcommand` as this command already exists, we have to use `renewcommand` to this.
-This should be used with care however, as every command that uses `name` will now use the newly defined `name`.
+This should be used with care however, as every command that uses `name` now uses the newly defined `name`.
 
 Lastly, {lat} does not use a static type system while this could provide us with information needed for refactoring and auto-completion based on the context.
 
@@ -456,7 +456,7 @@ In this chapter the Neio language is presented.
 We explain how our decisions were reached and how they were affected by the presented solutions.
 
 ## Neio document
-The typical files that a user will write are called Neio documents, these have to be as simple as possible.
+The typical files that a user writes is called Neio documents, these have to be as simple as possible.
 As mentioned in {goals.ref()}, Neio documents are heavily based on {md}.
 This allows us to make use of the widespread knowledge of {md} to increase the size of our audience and allow users to easily transition to Neio.
 
@@ -474,7 +474,7 @@ This is some text in the first Paragraph.
 
 Even if you are not familiar with {md}, you can immediately tell what this document represents. 
 There is however a significant difference with {md}. 
-In markdown the syntax is hard-coded into the language, a \# will always represent a chapter for example.
+In markdown the syntax is hard-coded into the language, a \# always represents a chapter for example.
 Neio however has no knowledge of what \# means.
 
 Neio does not know about such syntax because everything is a method call, chained together to form an object model that represents the document.
@@ -491,7 +491,7 @@ new Document()
 }
 
 For this to work of course, every one of these method calls has to return an object.
-In fact, every one of these methods will return an object that is a subtype of the `Content` class, anything in a Neio document that can be shown is a subtype of `Content`.
+In fact, every one of these methods returns an object that is a subtype of the `Content` class, anything in a Neio document that can be shown is a subtype of `Content`.
 The `Content` class is the base class in Neio documents, like `Object` is the base class in Java.
 
 Now is also a good time to explain a small syntactical difference with {md}, which you might have already noticed.
@@ -514,9 +514,9 @@ To further understand this example we need to introduce the second kind of files
 ## Class files
 Class files are very similar to class files in Java. They are the thriving force behind the Neio documents, they define all the object and methods that are used in a Neio document.
 They are extremely important to the design of the language as they allow us to represent everything in the document with an object structure.
-The use of this object structure is extensively used in Neio and examples of this will be shown further on.
+This object structure is extensively used in Neio and examples of this are shown further on.
 
-As means of an introduction we will have a look at the `Document` class that was used as a document class in the previous section.
+As means of an introduction we have a look at the `Document` class that was used as a document class in the previous section.
 {
     new LstInputListing('''../../examples/0.8/lib/neio/stdlib/Document.no''');
 }
@@ -531,7 +531,7 @@ This is a feature that is necessary to allow a Neio document to be represented a
 or you would not be able to use symbols as syntactic shorthand.
 All the symbols you can use for method names at this time are `\#, \-, \*, \_, \$, \|, \=, \^`, the backtick and the newline.
 The newline character is recognised by the following regex `\\n\\r?`.
-By using all of these symbols we are able to create Domain Specific Languages (DSL) for some things such as tables or structural formulas. This will be illustrated in Chapter 3.
+By using all of these symbols we are able to create Domain Specific Languages (DSL) for some things such as tables or structural formulas. This is illustrated in Chapter 3.
 
 To keep the language simple and to maximize reusability (as well as making the parsing somewhat easier) some functionality from the Java language was dropped.
 It is for example not possible to create anonymous classes as this goes against the concept of reusability.
@@ -553,7 +553,7 @@ ContainerNLHandler newline() {
 }''');
 }
 
-The `ContainerNLHandler` will then further handle the flow of the document.
+The `ContainerNLHandler` then handles the flow of the document.
 The code for `ContainerNLHandler` and `NLHandler` are added below.
 {
     new LstInputListing('''../../examples/0.8/lib/neio/stdlib/ContainerNLHandler.no''');
@@ -581,13 +581,12 @@ But on the other hand when we separate two text blocks with an empty line (thus 
 
 It should also be noted that any text written in a Neio document gets translated to the `text` call as seen in the example above.
 An implementation of the text method is seen `NLHandler`.
-The reason for this will become clear later on.
+The reason for this becomes clear later on.
 
-We will see more advanced examples using newline in Chapter 3 that will further expose its benefits.
-To avoid clutter, the `newline` method will not be shown in the further examples unless it is needed to understand the example.
+We see more advanced examples using newline in Chapter 3 that further expose its benefits.
+To avoid clutter, the `newline` method is not shown in the further examples unless it is needed to understand the example.
 
-## Language features
-### Context types
+## Context types
 {Chapter ctxTypes = (Chapter) parent()}
 As said before, everything is a method call, but to be able to just chain any method to any other method, regular methods do not suffice.
 We want to be able to call methods of different class files whilst constructing our document, but we do not want to specify what object we are calling the method on.
@@ -595,7 +594,7 @@ This is something that should be clear from the current structure of the file, a
 
 To be able to call the right methods, we need to introduce something called ContextTypes.
 A ContextType combines an object, the actual type, with its context.
-We will illustrate this using an example.
+We illustrate this using an example.
 
 {
     LstListing context = new LstListing('''\n[Document]\n''');
@@ -604,7 +603,7 @@ We will illustrate this using an example.
 
 As we saw before this translates to the new call `new Document()`.
 This is actually a ContextType of the newly created `Document` and `null` as there is nothing else yet.
-We will call this ContextType `ct1`.
+We call this ContextType `ct1`.
 
 Lets add a chapter to it, when there are two elements, there should be some kind of context.
 {
@@ -615,7 +614,7 @@ Lets add a chapter to it, when there are two elements, there should be some kind
 By adding this call our document translates to the following`new Document().\#("Chapter 1")`.
 The addition of a second element allows us to see a ContextType in action.
 
-To know where to find the \# method, we will recursively iterate over our context.
+To know where to find the \# method, we recursively iterate over our context.
 First we check the actual type of `ct1`, if we could not find the method there, we recursively proceed to check the context of `ct1`.
 As you can see above in the source code of `Document`, there is indeed a method \# in there, so there is no need to look any further.
 The current document translates to ContextType `ct2`, which contains the newly created Chapter and has `ct1` as context.
@@ -628,7 +627,7 @@ We continue by adding one more Chapter.
 Now when we look for the \# method in `ct2` we first have to check Chapter, but Chapter does not have this method.
 We thus recursively check the context of `ct2`, which is `ct1`.
 The actual type of `ct1` is Document, of which we know that it has a \# method.
-As we have found the method we were looking for, \# will be called on the Document in `ct1`.
+As we have found the method we were looking for, \# is called on the Document in `ct1`.
 The ContextType that is created for this call is `ct3` that has the newly created Chapter as the actual type, but that has *ct1* as context.
 This is because we have had to skip over `Chapter 1`, which shows us that `ct2` is not useful any more for the continued creation of the document.
 
@@ -643,7 +642,7 @@ The newly created ContextType `ct4`, contains the `Paragraph` as actual type and
 The following structure is what we are left with.
 { image("The final structure built in the example", '''ct4''').scale(100) }
 
-### Nested methods
+## Nested methods
 Documents often have recursive elements such as sections or enumerations, as in Neio, everything is a method every one of these levels would have to be defined as a separate method.
 That means creating a method for \#, \#\#, \#\#\#,... .
 This is of course very cumbersome, even impossible at times, and we would like to only define it once as the behaviour should be mostly the same no matter how many symbols we use.
@@ -684,7 +683,7 @@ If we now say that the nested modifier works on any level, including the first l
 The ContextType representation of this document would be as shown in {nestedWrong.ref()}.
 This is because `\# Chapter 2` is now a method call on `ct1` instead of on `ct0` as the `nested Chapter \#(String name, Integer level)` method in Chapter would be the function that resulted from our lookup.
 
-### Surround methods
+## Surround methods
 A method could also be annotated with a `surround` modifier. This means that the method name surrounds a piece of text, this can be used to for example create bold text by surrounding it with stars.
 This is needed to be able to easily annotate text and it also looks very natural.
 
@@ -693,9 +692,9 @@ Examples of surround methods are the ones available in Text.no.
     new LstInputListing('''../../examples/0.8/lib/neio/lang/Text.no''');
 }
 
-The text `This is \*bold\* text` will then be transformed into the following chain `text("This is ").text(\*("bold")).text(" text")`.
+The text `This is \*bold\* text` is then transformed into the following chain `text("This is ").text(\*("bold")).text(" text")`.
 
-### Code blocks
+## Code blocks
 {Chapter codeBlocks = (Chapter) parent()}
 We have seen that we can use code in Neio class files and customise our document this way. But this does not allow us to do everything we want to.
 We do not want to create a new document class every time we want to do something special. It is also not possible to add anything to a document class that does not exist.
@@ -704,7 +703,7 @@ For this reason, it is possible to add code blocks in a Neio document. The three
 To avoid confusion, when you are writing text into a Neio document, we say that we are in Text mode.
 While when we are writing code in a Neio document, we say that we are in Code mode.
 
-#### Non-scoped code
+### Non-scoped code
 {Chapter nsCode = (Chapter) parent()}
 Now let us say that we want to create a `Document` that uses a special type of content that we have created.
 For example, we like Fibonacci so much, that we have created a special `Enumerate` that is numbered according to the Fibonacci sequence.
@@ -728,16 +727,16 @@ addClassMapping(EnumerateItem.class, FibItem.class);
 }
 
 For now, it is enough simply to know that this acts mostly as a factory.
-For this example it means that if `FibEnumerate` or one of its children \(a `FibItem` for example\) were to create an instance of the class `EnumerateItem`, that it will actually create a `FibItem`.
+For this example it means that if `FibEnumerate` or one of its children \(a `FibItem` for example\) were to create an instance of the class `EnumerateItem`, it actually creates a `FibItem`.
 The reason we say it, acts as a factory, is because we are asking for a new instance of some object to be created and what we receive is a new instance of that specific class, or one of its subclasses.
-How this works will be explained further on, in Chapter 4.
+How this works is explained further on, in Chapter 4.
 The bottom line is that this line of code allows us to reuse the `\-` method that has been defined in `Enumerate`, to create a `FibItem` instead of having to redefine this method simply to create an instance of a subclass.
 It also makes sure that we do not have to write a new factory every time we want to replace a general class by a more specific subclass, as would otherwise have been needed here.
 
 Now to be able to get this `FibEnumerate` into a document all we have to do is open a code block and create a new `FibEnumerate`.
 A non-scoped code block is represented as a pair of `\{\}`, where the `\{` is at the start of a line and the `\}` is followed by a newline.
-The `\{` and `\}` can not appear on the same line. The reason for this will become clear further on.
-Also note that a semicolon at the end of the last statement is optional, this is mostly useful in inline code blocks as we will see further on, but even in this case, it makes the document just a little bit easier and less prune to syntax errors.
+The `\{` and `\}` can not appear on the same line. The reason for this become clear further on.
+Also note that a semicolon at the end of the last statement is optional, this is mostly useful in inline code blocks as we see further on, but even in this case, it makes the document just a little bit easier and less prune to syntax errors.
 
 {{
     image("The rendered Fibonacci document", '''fibDocument''').scale(25)
@@ -745,19 +744,19 @@ Also note that a semicolon at the end of the last statement is optional, this is
 }}
 
 The example above shows us that this works, but how exactly does this work, you might ask.
-The reason that this works is because the new object is added to the current document and the following `\-` calls will thus be called on this object.
-An object can only be added in this way through the last statement in a non-scoped code block and the object will only be added if it is a subtype of `Content`.
-If the last statement does not return an object (a method call with a void return type or an assignment), nothing will be added.
+The reason that this works is because the new object is added to the current document and the following `\-` calls are thus be called on this object.
+An object can only be added in this way through the last statement in a non-scoped code block and the object is only added if it is a subtype of `Content`.
+If the last statement does not return an object (a method call with a void return type or an assignment), nothing is be added.
 It is also possible to explicitly return something from a non-scoped code block by using the `return` keyword in the last statement of the block.
 
 To further explain this, and to explain how we could possibly call functions on an object we need to introduce a new concept called `this`.
 
-#### This
+### This
 {Chapter thisCode = (Chapter) parent()}
 A Neio document has a concept of `this` like many programming languages do.
-`this` will always refer to the last element that was created in Text mode.
+`this` always refers to the last element that was created in Text mode.
 But if that was the only way to interact with `this` we would not be able to call any methods (as we have nothing to call objects on) and we would not be able to add, modify or remove anything to/in the document either.
-To show how exactly this works we will take a look at the translated form of the previous example.
+To show how exactly this works we take a look at the translated form of the previous example.
 {
     new LstListing('''
         new Document();
@@ -774,11 +773,11 @@ To show how exactly this works we will take a look at the translated form of the
 
 We see that a separate statement was created for everything above our code block and that the code in our code block was than directly included into the code.
 The last statement gets assigned to a variable and `appendContent` is called on `this`.
-This is always what will happen when you use a non-scoped code block, this means that the compiler knows about the `appendContent` method.
-Another example to further illustrate the use of non-scoped code blocks and `this` will be shown later on.
+This is always what happens when you use a non-scoped code block, this means that the compiler knows about the `appendContent` method.
+Another example to further illustrate the use of non-scoped code blocks and `this` is shown later on.
 After appending the content, a new statement is started, containing our well known chain of method calls, but the first method is called upon `this`.
 
-In the next stage of translation, variables will be assigned to the objects and this will be filled in with the last object created in Text mode, or the `Content` returned in a non-scoped code block.
+In the next stage of translation, variables are assigned to the objects and `this` is filled in with the last object created in Text mode, or the `Content` returned in a non-scoped code block.
 The next step of translation is shown below.
 {
     new LstListing('''
@@ -794,7 +793,7 @@ The next step of translation is shown below.
     ''')
 }
 
-To show how code blocks work in combination with this, we will show another example.
+To show how code blocks work in combination with this, we show another example.
 {
     new LstListing('''
 [Document]
@@ -825,8 +824,8 @@ this.newline().newline().text("This is a paragraph");
     ''')
 }
 
-In further translation the first `this` will result into the `Document` while the second this will be `c1`.
-The reason that the first `this` will be the `Document` instead of `Paragraph`, is because of `ContextType`s.
+In further translation the first `this` results into the `Document` while the second this is be `c1`.
+The reason that the first `this` is a `Document` instead of a `Paragraph`, is because of `ContextType`s.
 `Paragraph` and `ContainerNLHandler` do not have a `\#` method, but `Document` does, as is shown in the following UML (only public members are shown to prevent clutter).
 {
     List<String> show = new ArrayList<String>();
@@ -836,10 +835,10 @@ The reason that the first `this` will be the `Document` instead of `Paragraph`, 
     new Uml('''./project.xml''', '''neio''').show(show);
 }
 
-A last point to note is that since your code is directly inserted into the translation, all the variables you have defined will be available from there on, and will take up their space in the current namespace.
+A last point to note is that since your code is directly inserted into the translation, all the variables you have defined are available from there on, and take up their space in the current namespace.
 This means that you can use your variables in other code blocks, but also means that generic identifiers like `i` should be avoided as you might want to be able to use this identifier again later on.
 
-#### Scoped code
+### Scoped code
 If all you want to do, is execute some arbitrary code without corrupting your namespace, a block of scoped code is the way to go.
 The use of a block of scoped code is illustrated below.
 {
@@ -902,7 +901,7 @@ The code for the image function is shown below.
     new LstInputListing(53, 75, '''../../examples/0.8/lib/neio/stdlib/TextContainer.no''')
 }
 
-#### Inline code
+### Inline code
 Inline code is the last type of code blocks and is very like non-scoped code.
 The difference is that it only allows one statement, and the opening and closing brackets should be placed on the same line.
 As the name implies, this is code that is meant to be used inline. A few examples of this are shown below.
@@ -935,7 +934,7 @@ this.text("It is called ").text(c1.title().toString()).text(" and it cost me ").
     ''')
 }
 
-### Text
+## Text
 Something that has not been noted yet, is that most of the time, we do not actually use Java `String`s.
 What is used most of the time is Neio Text. Neio Text (in Code mode, not in class files) is created like Java `String`s, by enclosing some text with a pair of doubles quotes \(`\"`\).
 A Java String is still sometimes needed and can be created using a pair of triple, single-quotes \(`\'\'\'`\).
@@ -953,16 +952,16 @@ We could for example create a bold Chapter using the following code `new Chapter
 
 ## Considerations
 {Chapter considerations = (Chapter) parent()}
-Whilst constructing the language a few other things were considered but not implemented, they will be discussed below.
+Whilst constructing the language a few other things were considered but not implemented, they are discussed below.
 #### Static typing
 The language has been designed using static typing.
 The reason for this is, that while we are writing a Neio document in Code mode, or we are writing a Neio class, we can be notified of possible type mismatches.
 This decreases the time spent debugging and spend waiting on the compiler as you weed out one type mismatch after another.
 It also allows you to create a safer program as type errors might be caught at compile time when using static typing.
-On the other hand when using dynamic typing, type errors will only show up at runtime.
+On the other hand when using dynamic typing, type errors only show up at runtime.
 With the help of an IDE, we also do not really have that much more typing to do than when we would be using dynamic typing.
 The language has been designed with static typing in mind, and types have been incorporated into the compiler, but the necessary checks are not yet in place.
-At this point in time, when a type error appears in the code, we will get a `LookupException` when we are looking for that method or variable.
+At this point in time, when a type error appears in the code, we get a `LookupException` when we are looking for that method or variable.
 In the future, checks should be placed and appropriate errors should be thrown that make clear where exactly the error occurs.
 
 #### Security
@@ -974,8 +973,8 @@ Thus we conclude by saying that we known there is a security risk, but dismissin
 
 # Supported document types and libraries
 {Chapter examples = (Chapter) parent()}
-This chapter will go into some more details about what document types can be handled by Neio, and how to specifically build these kind of documents.
-We will also discuss which libraries have been recreated in Neio to allow for a wide use of the language.
+This chapter goes into some more details about what document types can be handled by Neio, and how to specifically build these kind of documents.
+We also discuss which libraries have been recreated in Neio to allow for a wide use of the language.
 
 ## Document classes
 It is important to note that to create complete document classes would require a lot more work than was available for this thesis.
@@ -1021,7 +1020,7 @@ A `ThesisChapter` just redefines a chapter so that it translates into the {lat} 
 }
 
 It extends the `Document` class and adds its own packages and creates its own {lat} preamble.
-It also provides a method that will initialise the main matter, which contains a Table of Contents (ToC) using the following line.
+It also provides a method that initialises the main matter, which contains a Table of Contents (ToC) using the following line.
 The code for a ToC is shown below.
 {
     new LstInputListing('''../../examples/0.8/lib/neio/stdlib/Toc.no''')
@@ -1039,7 +1038,7 @@ The code to for `Abstract` and `AbstractNLHandler` are shown below, an example o
 
 ### Other document classes
 To be able to create an article, a letter, or anything else, the only thing we would have to do is create a new Neio class for this document class.
-This Neio class will then implement its own {lat} preamble and decide what packages to include by default and it might have to redefine what types of objects should be used using `addClassMapping`.
+This Neio class then implements its own {lat} preamble and decide what packages to include by default and it might have to redefine what types of objects should be used using `addClassMapping`.
 It might also add methods to be filled in, using a code block, or by overwriting methods and making use of the newline handlers.
 
 For example, you might create a `LetterHeader` class that represents the header of a formal letter.
@@ -1062,7 +1061,7 @@ On the other hand this is also more prune to error as people tend to forget thin
 
 ## Libraries
 {Chapter libraries = (Chapter) parent()}
-To show what the language is capable of a few libraries were created or reimplemented. All of the currently available libraries in Neio will be explained below.
+To show what the language is capable of a few libraries were created or reimplemented. All of the currently available libraries in Neio are explained below.
 Note that none of these libraries are complete and would require a lot more effort to reach a state of completion.
 Just having a look at the manuals of a few popular libraries such as TikZ{cite('''tikzman''')} we can see that more time is needed to write such a library than there is available for this thesis.
 The libraries that were created, are meant for illustrative purpose, to show what Neio is capable of.
@@ -1108,7 +1107,7 @@ The way we typically go about a reference is as follows.
 # Chapter 1
 {Chapter chap = (Chapter) parent()}
 
-In {chap.ref()} we will explain references.
+In {chap.ref()} we explain references.
     ''')
 }
 
@@ -1148,7 +1147,7 @@ The UML below shows the currently implemented set of objects in the Neio math li
 }
 
 To create an inline math formula, in {lat} this is done by surrounding some text with a pair of `\ $`'s, we create an instance of the `InlineEq` class.
-The only method that has been implemented for it thus far is `sqrt` so we will show how we can create an inline square root.
+The only method that has been implemented for it thus far is `sqrt` so we show how we can create an inline square root.
 {
     new LstListing('''
 {
@@ -1279,7 +1278,7 @@ we only show the code to display it and to append something to it.
 
 We also show the {lat} code that is generated for the first of the three trees. This code is not that 
 easy to read, hard to write and thus prune to syntax errors. This code is also newline sensitive, placing
-empty newlines between the entries will make it so that your document no longer compiles. The code for the
+empty newlines between the entries makes it so that your document no longer compiles. The code for the
 next tree is very similar, but it is hard to reuse this code.
 {
     new LstInputListing('''rbtDocument.tex''')
@@ -1297,8 +1296,8 @@ The next example has already been used a few times in this document.
 Every UML diagram up to now was created using a UML library implemented in Neio.
 It is also a little different from the other libraries we have seen thus far as it does not directly translate
 into {lat}. Instead we are making use of MetaUML {cite('''metauml''')}.
-A high-level overview of how we create UML diagrams will be given here, but a lower level overview will be given
-in Chapter 4. We will start out with an example.
+A high-level overview of how we create UML diagrams is given here, but a lower level overview is given
+in Chapter 4. We start out with an example.
 {
     new LstListing('''
 [Document]
@@ -1333,7 +1332,7 @@ This is shown in the example beneath
     new Uml('''./project.xml''','''neio.stdlib.uml''').scale(80).show(list).showPrivate();
 }
 
-As the code for this library is over 600 lines long, we will not show all of the code.
+As the code for this library is over 600 lines long, we do not show all of the code.
 To get an image out of this, we output our object structure to the MetaUML format, instead of {lat}.
 And then run it through the `mpost` command line program which generates TeX code for the UML, which we 
 can then include. The problem with the MetaUML tool is that positioning is not done automatically.
@@ -1341,7 +1340,7 @@ The way it was implemented in our case is a bit like a tree.
 We build a tree of levels, the first level contains all the classes that have no super class to be shown as well as the highest level classes.
 Subclasses are shown on the level beneath their super class.
 For example, `ThesisChapter` is a subclass of `Chapter`, which is a subclass of `TextContainer`.
-If we now show these three classes, they will be displayed one under the other because we built a tree with 
+If we now show these three classes, they are displayed one under the other because we built a tree with 
 three levels. To visualize how the levels are being used, we show this example below but also add the Bibtex class 
 to the UML , as it has no connection to the other classes.
 {
@@ -1383,8 +1382,8 @@ $ C * 6 _ OH ^ - C _ ^ OH - O - C _ ^ CH2OH - C _ HO ^ - C _ ^ OH -
 
 
 The first thing we see, is that we create a new `Structure`.
-This will provide a newline handler that allows us to instantiate structure formulas using the `\$` method and captions for them using the `\|` method.
-The '\$' method shown below, creates an atom and adds it to the structure, the rest of the structural formula will then be build by chaining atoms together.
+This provides a newline handler that allows us to instantiate structure formulas using the `\$` method and captions for them using the `\|` method.
+The '\$' method shown below, creates an atom and adds it to the structure, the rest of the structural formula is then be build by chaining atoms together.
 {
     new LstInputListing(18, 23, '''../../examples/0.8/lib/neio/stdlib/chem/StructureNLHandler.no''');
 }
@@ -1404,11 +1403,11 @@ All of this code is then transformed into a TeX string that is understood by the
 
 # Implementation
 Next to designing a language, a compiler to be able to actually use the language had to be build.
-How we implemented the compiler, as well as some lower level concepts used in Neio classes, will be explained 
+How we implemented the compiler, as well as some lower level concepts used in Neio classes, is explained 
 in this chapter.
 
 ## Used libraries and frameworks
-To be able to build the compiler, we made few of a few open-source libraries and frameworks. They will be 
+To be able to build the compiler, we made few of a few open-source libraries and frameworks. They are 
 explained in this section. The number of libraries or framework that we used is rather limited, only three 
 of them were used.
 
@@ -1442,7 +1441,7 @@ This part is the back end of the compiler.
 
 Jnome can read entire Java projects at once, in our compiler for example, it loads the entire Java library.
 This is needed because our objects use Java objects, such as `String`s.
-It will read all of the source files and libraries that are specified in a file called `project.xml`.
+It reads all of the source files and libraries that are specified in a file called `project.xml`.
 This file was mentioned earlier in {umlChap.ref()}.
 This same file is used to read Neio projects in our compiler. The `project.xml` for the Neio compiler is shown below.
 {
@@ -1463,18 +1462,18 @@ from Neio source up to to the final {lat} file.
 First of the Java and Neio library (the Neio class files) are read by the front end of the Neio compiler and translated into an AST.
 Then Neio documents are read by the front end and it is also transformed in an AST.
 The latter AST is past to the middle end of the compiler and is transformed to an object model that can be output to valid Java.
-Then the transformed AST and the ASTs for the Neio library are passed to the compiler back end which will generate the final Java code.
-This final Java code will then be compiled and executed again.
+Then the transformed AST and the ASTs for the Neio library are passed to the compiler back end which generates the final Java code.
+This final Java code is then be compiled and executed again.
 During the execution, resources might be created, if so, they can be used in the next step.
 This next step is the building of the document to a final representation.
 The way it always happens at is the time is as follows.
-The `TexFileWriter` is invoked with the root of the AST of the Neio document, this will call `preTex` and `toTex` 
+The `TexFileWriter` is invoked with the root of the AST of the Neio document, this then calls `preTex` and `toTex` 
 on this root.
 `preTex` allows a document to prepare itself for being printed to {lat}. A common preparation is to add a package that is uses to the root document.
 `toTex` does what is says and just creates a {lat} representation of the object.
-Once that is completed, it will write out this TeX string to a file named the same as the Neio document
-but with the TeX extension. Finally the path to this new TeX file is passed to the `TexToPDFBuilder` which will 
-compile the LaTeX code.
+Once that is completed, it writes out this TeX string to a file named the same as the Neio document
+but with the TeX extension. Finally the path to this new TeX file is passed to the `TexToPDFBuilder` which 
+compiles the LaTeX code.
 The code for these two files is shown below.
 {
     new LstInputListing('''../../examples/0.8/lib/neio/io/TexFileWriter.no''');
@@ -1512,7 +1511,7 @@ The latter ContextType represents the Context at that point as we saw in {ctxTyp
 
 When a lookup reaches a `ContextType` and asks us what our inherited members are (the members you normally receive from super classes), 
 we return the members of all our inheritance relations. We only have two inheritance relations, the actual type and 
-the ContextType. If what we are looking for was somewhere we could see, we will now have returned it and we are able to make use of it.
+the ContextType. If what we are looking for was somewhere we could see, we return it and we are able to make use of it.
 Lookups are provided by Chameleon and explaining how exactly they work is out of the scope of this Thesis.
 
 We also hold a Stack of all the variables that have already been declared. When a lookup for a method, described above, succeeds, 
@@ -1541,13 +1540,13 @@ new Document()
 }
 
 Note that the middle end has created three functions. The first one is the main function, it allows the document to be executed as a whole.
-It initialises the document class and then calls `createDocument` which actually creates an object model that will represent the document.
-Finally `finishDocument` will compile the document to TeX and create a PDF of of it.
+It initialises the document class and then calls `createDocument` which actually creates an object model that represents the document.
+Finally `finishDocument` compiles the document to TeX and create a PDF of of it.
 
 The reason we split up this process is so that we can call the creation of the document separately.
 This allows us to include a document into another document by just calling the `createDocument` method with an appropriate argument.
 
-The middle end also imported every namespace in the Neio library as well as the `java.util` namespace as it is possible that those will be needed.
+The middle end also imported every namespace in the Neio library as well as the `java.util` namespace as those might be needed.
 The name of the Java class that is generated is the same as the name of the Neio document.
 
 It is important to note that we only split up the methods chains created in Text mode.
@@ -1561,7 +1560,7 @@ overrides the `\#` method, we also have to override the nested `\#` method in `C
 an instance of the special `Chapter`.
 
 This is a problem that is normally solved by using factories.
-When you know your object will create instances of other objects, in our example a `Document` creates `Chapter`s, 
+When you know your object can create instances of other objects, in our example a `Document` creates `Chapter`s, 
 that might be changed with more specialized forms of that object, you create a factory.
 This factory however would have to be generic enough to be able to be used almost anywhere.
 Even if we are able to do this, the writer of the specialized object would still have to create a new factory.
@@ -1595,7 +1594,7 @@ Take the following example.
 }
 
 We added a mapping from `Enumerate.class` to `FibEnumerate.class` in the root `Document`.
-When we now call `getInstance(Enumerate.class, ...)`, this will be called on `Chapter`, not on `Document`.
+When we now call `getInstance(Enumerate.class, ...)`, the root of the call is `Chapter`, not `Document`.
 But fear not, class mappings are looked up recursively. In the `getInstance` method we first check if we have 
 a mapping for the class we are trying to instantiate. If we do the value of the mapping is used, if not we recursively 
 check the mappings of our parents. If no mapping has been found after this, we just instantiate the class that has been given 
@@ -1660,7 +1659,7 @@ lead to unexpected side effects, thus just translating it this way seemed like t
 # Future work
 {Chapter fut = (Chapter) parent()}
 As mentioned before in {considerations.ref()} there are still a few things that could be done in the future.
-There are however a lot more things that could be done and we will discuss them in the rest of this chapter.
+There are however a lot more things that could be done and we discuss them in the rest of this chapter.
 
 ## Automatisation
 #### Automatic StringBuilder
