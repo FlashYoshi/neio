@@ -1,4 +1,4 @@
 [Document]
 
 # Chapter 1
-This is some text in the first Paragraph.
+This is the first paragraph.

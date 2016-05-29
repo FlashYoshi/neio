@@ -12,10 +12,10 @@ class TextContainer extends Container;
 /**
  * Handles newlines
  *
- * @return Returns a new ContainerNLHandler
+ * @return Returns a new NLHandler
  */
-ContainerNLHandler newline() {
-    return new ContainerNLHandler(this);
+NLHandler newline() {
+    return new NLHandler(this);
 }
 
 /**

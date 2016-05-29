@@ -18,11 +18,11 @@ TableNLHandler(TableRow parent) {
 }
 
 /**
- * Returns the ContainerNLHandler contained in our grandparent
+ * Returns the NLHandler contained in our grandparent
  *
- * @return The ContainerNLHandler that should be the NewlineHandler of our grandparent
+ * @return The NLHandler that should be the NewlineHandler of our grandparent
  */
-ContainerNLHandler newline() {
+NLHandler newline() {
     // parent should always have a parent
     return (TextContainer)(parent().parent().parent()).newline();
 }

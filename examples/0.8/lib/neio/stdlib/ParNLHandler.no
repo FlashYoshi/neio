@@ -9,11 +9,26 @@ ParNLHandler(Paragraph parent) {
     super(parent);
 }
 
-ContainerNLHandler newline() {
-    // parent should always have a parent
-    return (TextContainer)(parent().parent()).newline();
+/**
+ * Calls the newline method of the parent of the existing Paragraph
+ * Newline is only called in text mode thus Paragraph certainly has a TextContainer parent
+ *
+ * @return The NLHandler of the TextContainer that is parent of the existing Paragraph
+ */
+NLHandler newline() {
+    return (TextContainer) (parent().parent()).newline();
 }
 
+Paragraph parent() {
+    return (Paragraph) (super.parent());
+}
+
+/**
+ * Appends some Text to an existing Paragraph
+ *
+ * @param text The Text to add
+ * @return The existing Paragraph with {@code text} appended to it
+ */
 Paragraph text(Text text) {
-    return ((Paragraph) parent()).appendLine(text);
+    return parent().appendLine(text);
 }

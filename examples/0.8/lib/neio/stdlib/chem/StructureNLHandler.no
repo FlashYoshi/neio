@@ -1,7 +1,7 @@
 namespace neio.stdlib.chem;
 
 import neio.lang.Text;
-import neio.stdlib.ContainerNLHandler;
+import neio.stdlib.NLHandler;
 import neio.stdlib.NLHandler;
 import neio.stdlib.TextContainer;
 
@@ -11,7 +11,7 @@ StructureNLHandler(Structure parent) {
     super(parent);
 }
 
-ContainerNLHandler newline() {
+NLHandler newline() {
     return (TextContainer) (parent().parent()).newline();
 }
 

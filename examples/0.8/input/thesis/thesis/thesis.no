@@ -461,7 +461,7 @@ Based on our state-of-the-art analysis, we chose a {md}-like syntax for Neio doc
 
 To illustrate some of the basic concepts we present an example Neio document.
 {
-    LstListing neioEx = new LstListing('''
+    LstListing neioEx = new LstListing("A simple Neio document", '''
 // This is a Neio document
 [Document]
 
@@ -469,9 +469,9 @@ To illustrate some of the basic concepts we present an example Neio document.
  * and a paragraph.
  */
 # Chapter 1
-This is some text in the first Paragraph.
+This is the first paragraph.
 ''');
-    Image neioExImage = neioEx.leftOf(image("The rendered document", '''simpleDocument'''));
+    Image neioExImage = neioEx.leftOf(image("The rendered document", '''simpleDocument''').scale(80));
 }
 
 Even if you are not familiar with {md}, you can immediately tell what this document represents.
@@ -504,38 +504,44 @@ As we see in the next section, code files are used to build a Neio document.
 ## Call chain
 A problem with {md} is that the semantics for the syntax are hard-coded in the language, a `\#` always represents a chapter for example.
 But if you are creating a slide show for example, you want `\#` to create a new slide instead of a chapter.
-For this reason, Neio has no set semantic for the text mode syntax.
+For this reason, text mode in Neio has no hard-coded semantics.
 
 Instead, the semantics of the syntax are defined in code files.
-For example the `\#` in a `Document` is defined as follows:
+For example, the `\#` in a `Document` is defined as follows:
 {
     LstInputListing docChapter = new LstInputListing(30, 41, '''../../examples/0.8/lib/neio/stdlib/Document.no''');
     return docChapter;
 }
 
 Now we can see that a Neio document is actually a sequence of method calls.
-This is referred to as the call chain.
+This is referred to as the `call chain`.
 An example of a document and its call chain is shown below.
 {
     LstListing methodChain = new LstListing('''
 [Document]
 
 # Chapter 1
-This is some text in the first Paragraph.
-''')
+This is the first paragraph.
+''');
+    return methodChain;
 }
 {{
     new LstListing('''
 new Document()
     .#("Chapter 1")
-    .text("This is some text in the first Paragraph");
+    .text("This is the first paragraph.");
     ''').rightOf(methodChain)
 }}
 
 Note that the call chain is not code that the user has to write, its just a representation of a Neio document.
 
-The user is thus actually creating an object model, which is visualised and configured later on.
-He is programming without noticing it.
+The user is thus actually creating an object model.
+The object model for the previous document is shown below.
+// TODO: show object model
+
+This object model is separated as much as possible from the visualisation, which happens later on.
+We say \`\`as much as possible'' because it is not 100\% separated.
+For example, sometimes it is specified that two elements should be placed next to each other in the object model.
 
 To be able to do customise the semantics of the syntax in text mode, the Java syntax in code files has been modified to allow for special method identifiers.
 These are discussed in the next section.
@@ -547,10 +553,10 @@ These are called symbol methods.
 All the symbols that can be used as method names are `\#, \-, \*, \_, \$, \|, \=, \^, \``. // `
 
 
-These methods always have either no arguments or a `Text` argument.
+These methods have either no arguments or a `Text` argument.
 This is done to keep the method calls invisible for the user as more or different arguments would have to passed explicitly.
 The `Text` that is passed to the method is the text following the call in text mode.
-An example of both, and its call chain, is shown below.
+An example of both, and the call chain, is shown below.
 {
     LstListing symMethods = new LstListing('''
 [Document]
@@ -593,13 +599,14 @@ For example the following lists do not have the same meaning.
 ''');
     return twoLists;
 }
-{
-LstListing oneList = new LstListing("One list", '''
+{{
+    LstListing oneList = new LstListing("One list", '''
 * Item 1
 * Item 2
 * Item 3
-''').rightOf(twoLists)
-}
+''');
+    oneList.rightOf(twoLists)
+}}
 
 In {twoLists.ref()} there are two lists while in {oneList.ref()} there is only one list.
 The same is done to separate paragraphs.
@@ -639,54 +646,87 @@ new Document()
 ''').rightOf(newlineEx)
 }}
 
-The superclass `TextContainer` of `Document` and `Chapter` defines the following method.
+This example shows that we never explicitly create a paragraph, this is done depending on the context.
+We explain the example step-by-step to understand how the document is build.
+
+The first `newline()` is defined in `TextContainer`, the super class of `Document`, and creates an intermediate object that is an instance of `NlHandler`.
+The code for this method is shown below.
 {
-    new LstListing('''
-/**
- * Handles newlines
- *
- * @return returns a new ContainerNLHandler
- */
-ContainerNLHandler newline() {
-    return new ContainerNLHandler(this);
-}''');
+    new LstInputListing(12, 19, '''../../examples/0.8/lib/neio/stdlib/TextContainer.no''')
 }
 
-The `ContainerNLHandler` then handles the flow of the document.
-The code for `ContainerNLHandler` and `NLHandler` are added below.
+`NLHandler` defines the `text` method (shown below), which creates a paragraph and adds it to the parent, in this case the `Document`.
 {
-    new LstInputListing('''../../examples/0.8/lib/neio/stdlib/ContainerNLHandler.no''');
+    new LstInputListing(29, 48, '''../../examples/0.8/lib/neio/stdlib/NLHandler.no''')
 }
 
+The second `newline()` is defined in Paragraph. It creates a new `ParNLHandler` which also defines a `text` method.
+This `text` method (shown below) however does not create a new `Paragraph` but appends to the existing one.
 {
-    new LstInputListing('''../../examples/0.8/lib/neio/stdlib/NLHandler.no''');
+    new LstInputListing(26, 34, '''../../examples/0.8/lib/neio/stdlib/ParNLHandler.no''')
 }
 
-Our earlier example now translates to the following:
+Next there are two `newline()` calls. As we saw the first one creates a new `ParNLHandler`, but `ParNLHandler` also defines a `newline` method (given below).
+This method returns the `NLHandler` defined by the parent (in this case `Document`) of the existing `Paragraph`.
 {
-    new LstListing('''
-new Document()
-    .newline()
-    .newline()
-    .#("Chapter 1")
-    .newline()
-    .text("This is some text in the first Paragraph");
+    new LstInputListing(12, 20, '''../../examples/0.8/lib/neio/stdlib/ParNLHandler.no''')
+}
+
+The next `text()` is thus called on an instance of `NLHandler` and as said before, creates a new `Paragraph`.
+The following `newline()` and `text()` append some `Text` to the new `Paragraph` using a `ParNLHandler`, as seen before.
+
+By introducing these special method identifiers we actually extended fluent interfaces {cite('''fluent''')}.
+Because of this, the user is actually programming without noticing it.
+
+In Chapter 3 we will see that we can for example create tables as the one below.
+{
+    LstListing tableEx = new LstListing("A table created using a DSL.", '''
+|      Student club      | Rounds | Seconds/Round | Dist (km) | Speed km/h | 
+----------------------------------------------------------------------------- 
+| HILOK                  |  1030  |      42       |   298,70  |   24,89    | 
+| VTK                    |  1028  |      42       |   298.12  |   24.84    | 
+| VLK                    |   841  |      51       |   243.89  |   20.32    | 
+| Wetenschappen and VLAK |   819  |      53       |   237,51  |   19.79    | 
+| VGK                    |   810  |      53       |   234.90  |   19.58    | 
+| Hermes and LILA        |   793  |      54       |   229.97  |   19.16    | 
+| HK                     |   771  |      56       |   223.59  |   18.63    | 
+| VRG                    |   764  |      57       |   221.56  |   18.46    | 
+| VEK                    |   757  |      57       |   219.53  |   18.29    | 
+| VPPK                   |   689  |      63       |   199.81  |   16.65    | 
+| SK                     |   647  |      67       |   187.63  |   15.64    | 
+| Zeus WPI               |   567  |      76       |   164.43  |   13.70    | 
+| VBK                    |   344  |     126       |    99.76  |    8.31    | 
     ''');
+    return tableEx;
 }
 
-We needed to do this because a newline in a plain text document has meaning, depending on the context it can mean something else entirely.
-For example, a single newline in a paragraph should append the next sentence to the paragraph.
-But on the other hand when we separate two text blocks with an empty line (thus two newlines), the blocks of text are seen as two different paragraphs.
+|      Student club      | Rounds | Seconds/Round | Dist (km) | Speed km/h | 
+---------------------------------------------------------------------------- 
+| HILOK                  |  1030  |      42       |   298,70  |   24,89    | 
+| VTK                    |  1028  |      42       |   298.12  |   24.84    | 
+| VLK                    |   841  |      51       |   243.89  |   20.32    | 
+| Wetenschappen and VLAK |   819  |      53       |   237,51  |   19.79    | 
+| VGK                    |   810  |      53       |   234.90  |   19.58    | 
+| Hermes and LILA        |   793  |      54       |   229.97  |   19.16    | 
+| HK                     |   771  |      56       |   223.59  |   18.63    | 
+| VRG                    |   764  |      57       |   221.56  |   18.46    | 
+| VEK                    |   757  |      57       |   219.53  |   18.29    | 
+| VPPK                   |   689  |      63       |   199.81  |   16.65    | 
+| SK                     |   647  |      67       |   187.63  |   15.64    | 
+| Zeus WPI               |   567  |      76       |   164.43  |   13.70    | 
+| VBK                    |   344  |     126       |    99.76  |    8.31    | 
 
-It should also be noted that any text written in a Neio document gets translated to the `text` call as seen in the example above.
-An implementation of the text method is seen `NLHandler`.
-The reason for this becomes clear later on.
 
-We see more advanced examples using newline in Chapter 3 that further expose its benefits.
+This table is not an image that was included, but is actually created as shown in {tableEx.ref()}.
+We do not need to create a special reader or to add new syntax to be able to implement this table.
+Instead we create a Domain Specific Language (DSL) to build tables using the features we have shown so far.
+
 To avoid clutter, the `newline` method is not shown in the further examples unless it is needed to understand the example.
 
 ## Context types
 {Chapter ctxTypes = (Chapter) parent()}
+The methods in the call chains in previous examples always return an object
+Context types exist because we do not want to explicitly write the object of a method call in text mode.
 
 // TODO: fit it in
 For this to work every one of these method calls has to return an object.
