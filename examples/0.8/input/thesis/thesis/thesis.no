@@ -471,7 +471,7 @@ To illustrate some of the basic concepts we present an example Neio document.
 # Chapter 1
 This is the first paragraph.
 ''');
-    Image neioExImage = neioEx.leftOf(image("The rendered document", '''simpleDocument''').scale(80));
+    Image neioExImage = neioEx.leftOf(image("The rendered document", '''simpleDocument''').scale(20));
 }
 
 Even if you are not familiar with {md}, you can immediately tell what this document represents.
@@ -540,7 +540,7 @@ The object model for the previous document is shown below.
 // TODO: show object model
 
 This object model is separated as much as possible from the visualisation, which happens later on.
-We say \`\`as much as possible'' because it is not 100\% separated.
+We say \`\`as much as possible'' because it is not completely separated.
 For example, sometimes it is specified that two elements should be placed next to each other in the object model.
 
 To be able to do customise the semantics of the syntax in text mode, the Java syntax in code files has been modified to allow for special method identifiers.
@@ -548,8 +548,8 @@ These are discussed in the next section.
 
 ## Special method identifiers
 ### Symbol methods
-In {docChapter.ref()} we saw that the code file, used a symbol \(`\#`\) as a method name.
-These are called symbol methods.
+In {docChapter.ref()} we saw that the code file, used a hash symbol as a method name.
+These methods are called `symbol methods`.
 All the symbols that can be used as method names are `\#, \-, \*, \_, \$, \|, \=, \^, \``. // `
 
 
@@ -599,14 +599,14 @@ For example the following lists do not have the same meaning.
 ''');
     return twoLists;
 }
-{{
+{
     LstListing oneList = new LstListing("One list", '''
 * Item 1
 * Item 2
 * Item 3
 ''');
-    oneList.rightOf(twoLists)
-}}
+    LstListing dump = oneList.rightOf(twoLists)
+}
 
 In {twoLists.ref()} there are two lists while in {oneList.ref()} there is only one list.
 The same is done to separate paragraphs.
@@ -649,7 +649,7 @@ new Document()
 This example shows that we never explicitly create a paragraph, this is done depending on the context.
 We explain the example step-by-step to understand how the document is build.
 
-The first `newline()` is defined in `TextContainer`, the super class of `Document`, and creates an intermediate object that is an instance of `NlHandler`.
+The first `newline()` is defined in `TextContainer`, the super class of `Document`, and creates an intermediate object that is an instance of `NLHandler`.
 The code for this method is shown below.
 {
     new LstInputListing(12, 19, '''../../examples/0.8/lib/neio/stdlib/TextContainer.no''')
@@ -667,7 +667,7 @@ This `text` method (shown below) however does not create a new `Paragraph` but a
 }
 
 Next there are two `newline()` calls. As we saw the first one creates a new `ParNLHandler`, but `ParNLHandler` also defines a `newline` method (given below).
-This method returns the `NLHandler` defined by the parent (in this case `Document`) of the existing `Paragraph`.
+This method returns the `NLHandler` defined by the parent (in this case `Document`\) of the existing `Paragraph`.
 {
     new LstInputListing(12, 20, '''../../examples/0.8/lib/neio/stdlib/ParNLHandler.no''')
 }
@@ -725,67 +725,152 @@ To avoid clutter, the `newline` method is not shown in the further examples unle
 
 ## Context types
 {Chapter ctxTypes = (Chapter) parent()}
-The methods in the call chains in previous examples always return an object
-Context types exist because we do not want to explicitly write the object of a method call in text mode.
+Every method in the call chain returns an object, on which the rest of call chain is called.
+However, we do not want to define the same symbol methods for all of these objects, for example defining `\#` in a `Document`, a `Chapter`, a `Paragraph` and so on.
+We also do not want to specify on what object every method in the call chain is called.
 
-// TODO: fit it in
-For this to work every one of these method calls has to return an object.
-In fact, all of these methods returns an object that is a subtype of the `Content` class, as anything in a Neio document that can be shown is a subtype of `Content`.
-The `Content` class is the base class in Neio documents, like `Object` is the base class in Java.
+For this reason context types were developed.
+They use the object model that has been built so far to find out which object roots the next method call.
 
-As said before, everything is a method call, but to be able to just chain any method to any other method, regular methods do not suffice.
-We want to be able to call methods of different code files whilst constructing our document, but we do not want to specify what object we are calling the method on.
-This is something that should be clear from the current structure of the file, a previously created object should have a method with the correct signature.
-
-To be able to call the right methods, we need to introduce something called ContextTypes.
-A ContextType combines an object, the actual type, with its context.
 We illustrate this using an example.
-
 {
-    LstListing context = new LstListing('''\n[Document]\n''');
-    return context;
+    LstListing ctx1 = new LstListing('''
+[Document]
+# Chapter 1
+This is the first paragraph.
+# Chapter 2
+    ''');
+    return ctx1;
+}
+{{
+    new LstListing('''
+new Document()
+    .newline()
+    .#("Chapter 1")
+    .newline()
+    .text("This is the first paragraph.")
+    .newline()
+    .#("Chapter 2")
+    ''').rightOf(ctx1)
+}}
+
+As we saw before, `Document` creates a `NLHandler` through the `newline` method.
+However, `NLHandler` does not have a `\#` method.
+`\#` in this example is called on `Document` instead and creates a `Chapter`.
+
+`Chapter` also creates a `NLHandler` when `newline` is called on it and as we saw `NLHandler` defines `text`, which creates a `Paragraph`.
+
+`Paragraph` creates a `ParNLHandler` when `newline` is called on it, but `ParNLHandler` has no `\#` method.
+The last `\#` is again called on `Document`.
+The object model for this example is shown below and the calls that create every object are shown on the vertices.
+{{
+    image("The object model of {ctx1.ref().toTex()}", '''ctxObjectDiagram''')
+}}
+
+Sometimes the new method is called on the previous object, sometimes its called on an object that was made a lot earlier.
+Context types are used to find the object that roots the next method call.
+To understand how they do this, we go over the example step-by-step .
+
+A context type is created every time a new method call (in the chain call) returns.
+It has a context, which is the context type in which the root object of the method call was found, and an actual type.
+The latter is the object that was returned by the new method call.
+
+When we encounter `new Document()`, the first context type, called `ct0`, is created.
+There are no context types yet, so there is no context and the actual type is `Document`.
+The context type is shown below.
+{{
+    image("The first context type: ct0", '''ct0''').scale(100)
+}}
+
+When we now encounter `newline()` we have to do a `context lookup`.
+This lookup recursively searches through previous context types for the object that roots the method call.
+
+The context lookup starts by checking if the actual type of the previous context type, `ct0`, defines a method `newline`.
+As it does, we do not have to check the context of `ct0`.
+
+The context of the new context type, `ct1`, is `ct0` and because `newline()` creates a `NLHandler` the actual type is `NLHandler`.
+The object model, with context types, now looks as follows.
+{{
+    image("The object model of ct0 and ct1", '''ct1''').scale(100)
+}}
+
+The next call is `\#("Chapter 1")` and the previous context type is `ct1`.
+To know on what to call `\#` we first check if the actual type of `ct1` defines a `\#` method.
+It does not, thus we check if the context of `ct1` does so instead.
+
+The context of `ct1` is `ct0`, thus we first check if the actual type of `ct0` defines `\#`.
+The actual type is `Document` and this defines `\#`.
+The new context type, `ct2`, is thus created with `ct0` as context.
+Because the `\#` in `Document` returns a `Chapter`, the actual type is `Chapter`.
+The object model is shown below.
+{{
+    image("The object model of ct0 up to ct2", '''ct2''').scale(100)
+}}
+
+The following call is `newline()`, we check the actual type of `ct2`, `Chapter`, and we know that it defines `newline`.
+We thus create `ct3` with `ct2` as context and `NLHandler` as actual type.
+`ct4` and `ct5` are created with respectively `ct3` and `ct4` as context and respectively `Paragraph` and `ParNLHandler` as actual type.
+The object model up to `ct5` is shown below.
+{{
+    image("The object model of ct0 up to ct5", '''ct5''')
+}}
+
+Finally, `\#("Chapter 2")` is called.
+For this call we recursively search back up to `ct0` as it is the first context type in which `\#` is defined.
+`(Par)NLHandler, Paragraph` and `Chapter` have no definition of `\#`.
+The last context type is thus build with ct0 as context and `Chapter` as a actual type.
+The final object model is shown below.
+{{
+    image("The object model of ct0 up to ct6", '''ct6''')
+}}
+
+It is important to note that we do not carry the entire context along for the entire document.
+In the last step of the previous example, we did a `context reset`.
+After a context reset a part of the object model becomes inaccessible for future method calls in the chain call.
+This is needed to correctly create the object model.
+
+To show why context resets are important we give another example:
+{
+    LstListing ctxEx2 = new LstListing("An example for context resets", '''
+[Document]
+* Item 1
+* Item 2
+Paragraph 1
+* Item 3
+    ''');
+    return ctxEx2;
+}
+{{
+    new LstListing('''
+new Document()
+    .*("Item 1")
+    .*("Item 2")
+    .text("Paragraph 1")
+    .*("Item 3")
+    ''').rightOf(ctxEx2)
+}}
+
+The example has the following object model.
+The methods that cause a context reset have been coloured red.
+{
+    image("The object model of {ctxEx2.ref().toTex()}", '''ctxEx2OM''').scale(80)
 }
 
-As we saw before this translates to the new call `new Document()`.
-This is actually a ContextType of the newly created `Document` and `null` as there is nothing else yet.
-We call this ContextType `ct1`.
-
-Lets add a chapter to it, when there are two elements, there should be some kind of context.
+The `\*` is defined in `Document` creates `Itemize i1`.
+The `\*` defined in `Itemize` creates `ItemizeItem`s.
+Because of context resets, the last `\*` is called on `Document`.
+This document thus contains an itemize of two items, a paragraph and an itemize of one item.
+The correct context lookup for the last `\*` is visualised on the chain call below, the arrows depict one step in the context lookup.
 {
-    Text ct2Caption = "In the image above we find ourselves at the *X*. We follow the red arrow upwards and find ourselves in Document. As Document contains the \# method, we call \# on Document and a Chapter is added to the Document , as represented by the green arrow.";
-    LstListing context2 = image(ct2Caption, '''ct1''').rightOf(context.append('''\n#Chapter 1'''));
+    image("Correct context lookup for {ctxEx2.ref().toTex()}", '''timeline1''')
 }
 
-By adding this call our document translates to the following`new Document().\#("Chapter 1")`.
-The addition of a second element allows us to see a ContextType in action.
-
-To know where to find the \# method, we recursively iterate over our context.
-First we check the actual type of `ct1`, if we could not find the method there, we recursively proceed to check the context of `ct1`.
-As you can see above in the source code of `Document`, there is indeed a method \# in there, so there is no need to look any further.
-The current document translates to ContextType `ct2`, which contains the newly created Chapter and has `ct1` as context.
-
-We continue by adding one more Chapter.
+If there were no context resets and the entire context was thus kept in every step, `Item 3` would find the `\*` defined in `Item 2` before it reached `Document`.
+This means that there would only be one list, that contains all three items, instead of two lists as was meant in the document.
+This wrong context lookup for the last `\*` is visualised on the chain call below.
 {
-    LstListing context3 = image('''ct2''').rightOf(context2.append('''\n#Chapter 2'''));
+    image("Wrong context lookup for {ctxEx2.ref().toTex()}", '''timeline2''')
 }
-
-Now when we look for the \# method in `ct2` we first have to check Chapter, but Chapter does not have this method.
-We thus recursively check the context of `ct2`, which is `ct1`.
-The actual type of `ct1` is Document, of which we know that it has a \# method.
-As we have found the method we were looking for, \# is called on the Document in `ct1`.
-The ContextType that is created for this call is `ct3` that has the newly created Chapter as the actual type, but that has *ct1* as context.
-This is because we have had to skip over `Chapter 1`, which shows us that `ct2` is not useful any more for the continued creation of the document.
-
-Lastly we add a paragraph to the document.
-{
-    LstListing context4 = image('''ct3''').rightOf(context3.append('''\nThis is a paragraph.'''));
-}
-
-We check the actual type of `ct3` and immediately have a matching method, we thus call the method on `Chapter 2`.
-The newly created ContextType `ct4`, contains the `Paragraph` as actual type and `ct3` as context.
-
-The following structure is what we are left with.
-{ image("The final structure built in the example", '''ct4''').scale(100) }
 
 ## Nested methods
 Documents often have recursive elements such as sections or enumerations, as in Neio, everything is a method every one of these levels would have to be defined as a separate method.
@@ -1930,3 +2015,9 @@ While it can also be as powerful and diverse as {lat} whilst remaining quite leg
 A lot of work can still be done, and should still be done to allow the widespread use of Neio, as is shown in {fut.ref()}, but we think that good basis has been provided.
 The completion of this book and the diverse examples in {examples.ref()} should be enough proof of this.
 
+
+/* TODO: fit it in
+For this to work every one of these method calls has to return an object.
+In fact, all of these methods returns an object that is a subtype of the `Content` class, as anything in a Neio document that can be shown is a subtype of `Content`.
+The `Content` class is the base class in Neio documents, like `Object` is the base class in Java.
+*/

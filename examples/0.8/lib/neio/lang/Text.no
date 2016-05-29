@@ -183,7 +183,7 @@ String thisToTex() {
         me = me.replaceAll(BS + "([^#$%&~\\^_{}" + BS + "])", "$1");
         me = me.replaceAll(ESC, BS);
         me = me.replaceAll(BS + "~", BS + "textasciitilde{}");
-        me = me.replaceAll(BS + "^", BS + "textasciicircum{}");
+        me = me.replaceAll(BS + "\\^", BS + "textasciicircum{}");
     } else {
         me = text.toTex();
     }
