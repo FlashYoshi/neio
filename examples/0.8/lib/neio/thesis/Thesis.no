@@ -96,7 +96,7 @@ String preamble() {
     .append("\\lstset{\n")
     .append("belowcaptionskip=1\\baselineskip,\n")
     .append("breaklines=true,\n")
-    .append("frame=l,\n")
+    .append("frame=single,\n")
     .append("comment=[l]{//},\n")
     .append("morecomment=[s]{/**}{*/},\n")
     .append("commentstyle=\\color{comments},\n")
@@ -108,6 +108,7 @@ String preamble() {
     .append("numbers=left,\n")
     .append("numbersep=7pt,\n")
     .append("numberstyle=\\tiny,\n")
+    .append("rulecolor=\\color{black},\n")
     .append("lineskip={-1.5pt}\n")
     .append("}\n");
 

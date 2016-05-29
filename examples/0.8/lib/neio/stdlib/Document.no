@@ -31,7 +31,7 @@ Document() {
  * Creates a Chapter and adds it to this
  *
  * @param title The title to use for the new Chapter
- * @return        The newly created Chapter
+ * @return The newly created Chapter
  */
 Chapter #(Text title) {
     Chapter chapter = new Chapter(title, 1);
@@ -53,7 +53,7 @@ Packages packages() {
  * Adds a LaTeX package
  *
  * @param pkg The package to add
- * @return        The list of currently included packages
+ * @return The list of currently included packages
  */
 Packages addPackage(String pkg) {
     return packages.add(pkg);
@@ -64,7 +64,7 @@ Packages addPackage(String pkg) {
  *
  * @param options The options for the package
  * @param pkg     The package to add
- * @return        The list of currently included packages
+ * @return The list of currently included packages
  */
 Packages addPackage(List<String> options, String pkg) {
     return packages.add(options, pkg);
@@ -84,7 +84,7 @@ void addBibtex(String name) {
  * Returns a Cite that is linked to {@code key}
  *
  * @param key The key to access the citation
- * @return        The Cite corresponding to {@code key}
+ * @return The Cite corresponding to {@code key}
  */
 Citation cite(String key) {
     if (bibtex != null) {

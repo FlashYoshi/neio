@@ -87,8 +87,8 @@ fragment UNDERSCORE : '_';
 fragment DOLLAR : '$';
 fragment CHAR : LETTER | DIGIT | UNDERSCORE | DOLLAR;
 
+Double : DIGIT DOT DIGIT+;
 Integer : DIGIT+;
-Double : DIGIT DOT DIGIT;
 Identifier : CHAR+;
 
 MethodIdentifier : ~[!\[\]()\r\n \t;.,:<>]+;

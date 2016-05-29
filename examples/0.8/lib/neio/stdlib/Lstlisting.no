@@ -45,6 +45,7 @@ String toTex() {
         result.append("\n");
     }
 
+    // Replace double backslashes with singles
     String output = input.replaceAll("\\\\\\\\", "\\\\");
     result.append(output);
     if (oneline) {
