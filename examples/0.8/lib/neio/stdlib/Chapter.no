@@ -30,11 +30,11 @@ Chapter(Text title, Integer level) {
 }
 
 /**
- * Creates a new Chapter and adds it to this or
- * or to the nearest other TextContainer above this if
- * the level of the new Chapter and this are is lower or equal
- * to the level of this.
- * This is a nested call thus only ##+ will match
+ * Creates a new Chapter and adds it to this.
+ * If the level of the new Chapter is lower or equal 
+ * to the level of this, the new Chapter is added to
+ * the nearest TextContainer above this.
+ * This is a nested call thus only ##+ will match.
  *
  * @param title  The title of the new Chapter
  * @param level The level of nesting of the new Chapter

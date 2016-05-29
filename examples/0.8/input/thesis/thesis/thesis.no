@@ -546,8 +546,13 @@ For example, sometimes it is specified that two elements should be placed next t
 To be able to do customise the semantics of the syntax in text mode, the Java syntax in code files has been modified to allow for special method identifiers.
 These are discussed in the next section.
 
-## Special method identifiers
+## Method modifications
+To be able to write the Neio documents we have seen so far, the regular Java methods used in code files had to be modified slightly.
+We also had to reserve two method names that are not reserved in Java.
+The modifications and the reasons for the modifications are given below.
+
 ### Symbol methods
+{Chapter symbolChap = (Chapter) parent()}
 In {docChapter.ref()} we saw that the code file, used a hash symbol as a method name.
 These methods are called `symbol methods`.
 All the symbols that can be used as method names are `\#, \-, \*, \_, \$, \|, \=, \^, \``. // `
@@ -573,23 +578,84 @@ new Document()
     ''').rightOf(symMethods)
 }}
 
-Next to symbols, there are two other special method identifiers, the first of them is `text`.
+Next to symbols, there are two method names that have been reserved.
+The first of them is `text` and is explained in the next section.
 
 ### Text
+{Chapter textChap = (Chapter) parent()}
 Whenever text in a Neio document is encountered on its own, for example a paragraph but not the text behind a `\#` symbol,
 the `text` method is called with the text as an argument.
 It is a separate method to allow continuation of the call chain and because not every block of text is necessarily a paragraph,
 it can for example be a quote.
 
 The reason we use `Text` instead of just a Java `String` is because text can be marked up.
-`Text` can for example be a piece of bold text, which a `String` can not represent.
+How this can be done is explained in the next section.
 
-The last special method identifier is the newline.
+### Surround methods
+Like in {md}, we want to be able to markup text by placing it between a pair of characters.
+For example, putting text in bold by surrounding it with a pair of `star` characters.
+With the features that we have seen so far this is not yet possible.
+
+To achieve this surround methods were developed.
+A surround method is a method that is annotated with the `surround` modifier.
+When text in text mode is surrounded with a pair of symbols, then a surround method is called.
+A few examples of such methods are given below.
+{
+    new LstInputListing(131, 159, '''../../examples/0.8/lib/neio/lang/Text.no''');
+}
+
+The text `This is \*bold\* text` is thus transformed into the following call chain `text("This is ").text(\*("bold")).text(" text")`.
+Throughout the text the surround method `\`` is used a lot, it shows the text in a monospaced font. // `
+
+
+As said in {symbolChap.ref()}, the argument of symbol methods is a Text, this means we can use surround methods in a symbol method.
+A more extensive example of surround methods is shown below.
+{{
+    LstInputListing l = new LstInputListing('''surroundEx.input''');
+    image("The rendered version of the document to the left", '''surroundEx''').rightOf(l);
+}}
+
+To not confuse surround methods with the symbol methods, the first and last characters inside a surround call can not be a space.
+The text after a symbol method on the other hand, is always separated from the symbol by at least one space.
+
+## Nested methods
+Documents often have recursive elements such as sections or enumerations.
+With what we have seen thus far, we would have to create a new method for every level of recursion.
+For example, to create sections, subsections and subsubsections, we have to create the following methods: `\#, \#\#, \#\#\#`.
+
+This is of course very cumbersome and even impossible if there is no limit on the recursion.
+The behaviour of such recursive elements is also very similar.
+Usually, only one property, such as the numbering and indentation in an enumeration, is affected by the level of recursion.
+This is why nested methods were developed.
+
+A method can be annotated with the `nested` modifier.
+Such a method implicitly takes an extra argument, an `Integer` that reflects the depth of this recursive method.
+The depth of this recursive method is the number of times the symbol has been used.
+If we have a look at the `Chapter` class, we see that it defines a nested method `\#`.
+{
+    new LstInputListing(32, 55, '''../../examples/0.8/lib/neio/stdlib/Chapter.no''');
+}
+
+If we now call `chapter.\#\#("Chapter 1.1")` for example, it translates to the following call: `chapter.\#("Chapter 1.1", 2)`.
+
+A nested method only matches with at least two symbols, the single symbol has to be defined separately.
+The first reason for this is because the first level often requires some initialisation.
+A second reason will be given once context types have been discussed.
+An example of such initialisation is shown below.
+{
+    new LstInputListing(21, 35, '''../../examples/0.8/lib/neio/stdlib/TextContainer.no''');
+}
+
+When a `\*` call is encountered for the first time, an `Itemize` has to be created
+The following `\*` calls will then simply add an `ItemizeItem` to it.
+
+The last method name that was reserved is `newline`.
+It is explained in the next section.
 
 ### Newlines
 {Chapter newlines = (Chapter) parent()}
 Users often use varying amount of newlines to express different structures.
-For example the following lists do not have the same meaning.
+For example, the following two examples do not have the same meaning.
 {
     LstListing twoLists = new LstListing("Two lists", '''
 * Item 1
@@ -853,7 +919,7 @@ new Document()
 The example has the following object model.
 The methods that cause a context reset have been coloured red.
 {
-    image("The object model of {ctxEx2.ref().toTex()}", '''ctxEx2OM''').scale(80)
+    image("The object model of {ctxEx2.ref()}", '''ctxEx2OM''').scale(75)
 }
 
 The `\*` is defined in `Document` creates `Itemize i1`.
@@ -862,67 +928,49 @@ Because of context resets, the last `\*` is called on `Document`.
 This document thus contains an itemize of two items, a paragraph and an itemize of one item.
 The correct context lookup for the last `\*` is visualised on the chain call below, the arrows depict one step in the context lookup.
 {
-    image("Correct context lookup for {ctxEx2.ref().toTex()}", '''timeline1''')
+    image("Correct context lookup for {ctxEx2.ref()}", '''timeline1''')
 }
 
 If there were no context resets and the entire context was thus kept in every step, `Item 3` would find the `\*` defined in `Item 2` before it reached `Document`.
 This means that there would only be one list, that contains all three items, instead of two lists as was meant in the document.
 This wrong context lookup for the last `\*` is visualised on the chain call below.
 {
-    image("Wrong context lookup for {ctxEx2.ref().toTex()}", '''timeline2''')
+    image("Wrong context lookup for {ctxEx2.ref()}", '''timeline2''')
 }
 
-## Nested methods
-Documents often have recursive elements such as sections or enumerations, as in Neio, everything is a method every one of these levels would have to be defined as a separate method.
-That means creating a method for \#, \#\#, \#\#\#,... .
-This is of course very cumbersome, even impossible at times, and we would like to only define it once as the behaviour should be mostly the same no matter how many symbols we use.
-Usually only one property, such as font size, is effected by the number of symbols used in such a method call.
-This is why nested methods were invented.
-A method can be annotated with a `nested` modifier which means that this method implicitly takes an extra argument, an `Integer` that reflects the depth of this recursive method.
-The depth of this recursive method is just the number of times the symbol has been used.
-If we have a look at the `Chapter` class, we see that it has a nested method \#.
+#### Nested methods
+Now that we know how context types work, we can explain why the first level of a nested method is separated from the rest.
+We explain why this is needed using the following example:
 {
-    new LstInputListing(1, 53, '''../../examples/0.8/lib/neio/stdlib/Chapter.no''');
-}
-
-If we would now call `chapter.\#\#("Chapter 1.1")` for example, it would translate to the following call: `chapter.\#("Chapter 1.1", 2)`.
-
-An important thing to note is, that the regex matching a nested function, is `..+` where `.` is the symbol that is being used as a method name.
-This means that the method that contains a single symbol, the method that defines the first level for example `\#(String name)`, should be defined elsewhere.
-This has been done because the first level is usually special.
-In case of an Enumerate for example, when we create the first EnumerateItem, not only an EnumerateItem but also an Enumerate has to be added.
-Usually the object created by this method should also be added in a different place than the other objects.
-Let us take the following example:
-
-{
-    new LstListing('''
+    LstListing singleNested = new LstListing('''
 [Document]
 # Chapter 1
 ## Chapter 1.1
 # Chapter 2
     ''');
+    return singleNested;
 }
-
 {
-    Image nestedCorrect = image("The correct ContextType representation", '''NestedCorrect''').floating();
-    Image nestedWrong = image("The wrong ContextType representation", '''NestedWrong''').floating();
+    LstListing nestedTrans = new LstListing('''
+new Document()
+    .#("Chapter 1")
+    .#("Chapter 1.1", 2)
+    .#("Chapter 2")
+    ''').rightOf(singleNested);
 }
 
-We would want *Chapter 1* and *Chapter 2* to be children of Document, while *Chapter 1.1* should be a child of *Chapter 1*. The ContextType representation of the document is shown in {nestedCorrect.ref()}.
-If we now say that the nested modifier works on any level, including the first level, then the aforementioned structure would still be achieved, *but* the ContextType representation would be different.
-The ContextType representation of this document would be as shown in {nestedWrong.ref()}.
-This is because `\# Chapter 2` is now a method call on `ct1` instead of on `ct0` as the `nested Chapter \#(String name, Integer level)` method in Chapter would be the function that resulted from our lookup.
-
-## Surround methods
-A method could also be annotated with a `surround` modifier. This means that the method name surrounds a piece of text, this can be used to for example create bold text by surrounding it with stars.
-This is needed to be able to easily annotate text and it also looks very natural.
-
-Examples of surround methods are the ones available in Text.no.
+We want `Chapter 1` and `Chapter 2` to be children of `Document` and `Chapter 1.1` should be a child of `Chapter 1`.
 {
-    new LstInputListing('''../../examples/0.8/lib/neio/lang/Text.no''');
+    Image nestedCorrect = image("The correct ContextType representation", '''NestedCorrect''');
 }
+The context type representation of the document is shown in {nestedCorrect.ref()}.
 
-The text `This is \*bold\* text` is then transformed into the following chain `text("This is ").text(\*("bold")).text(" text")`.
+If we did not separate the first level, the aforementioned structure is still built correctly, *but* the ContextType representation is different.
+This is because we did not reset to the same point, the context reset jumped up to `Chapter 1` instead of `Document`.
+{
+    Image nestedWrong = image("The wrong ContextType representation", '''NestedWrong''');
+}
+The context type representation of this document is shown in {nestedWrong.ref()}.
 
 ## Code blocks
 {Chapter codeBlocks = (Chapter) parent()}
@@ -1132,6 +1180,7 @@ The code for the image function is shown below.
 }
 
 ### Inline code
+{Chapter inlineCodeChap = (Chapter) parent()}
 Inline code is the last type of code blocks and is very like non-scoped code.
 The difference is that it only allows one statement, and the opening and closing brackets should be placed on the same line.
 As the name implies, this is code that is meant to be used inline. A few examples of this are shown below.
@@ -1164,42 +1213,43 @@ this.text("It is called ").text(c1.title().toString()).text(" and it cost me ").
     ''')
 }
 
-## Text
-Something that has not been noted yet, is that most of the time, we do not actually use Java `String`s.
-What is used most of the time is Neio Text. Neio Text (in Code mode, not in code files) is created like Java `String`s, by enclosing some text with a pair of doubles quotes \(`\"`\).
-A Java String is still sometimes needed and can be created using a pair of triple, single-quotes \(`\'\'\'`\).
-We use three quotes, as a pair of single quotes still represents a Java Character, while two quotes would be very confusing when used in combination with double quotes in a non-monospace font.
-The inspiration of using three quotes came from the multi-line String literal in Python.
-The difference is that Neio text can contain anything you would type in Text mode, which includes code blocks, you can thus effectively endlessly nest Text and Code mode.
-The reason we use Neio text for most things instead of Java `String`s (just have a look at a few of the methods in the UML shown below), is because Neio text can be marked up, by using surround methods for example.
-{
-    List<String> showTC = new ArrayList<String>();
-    showTC.add('''neio.stdlib.TextContainer''');
-    new Uml('''./project.xml''', '''neio''').show(showTC).scale(100);
-}
+## Text in code mode
+`Text` can be written in code mode by enclosing text with a pair of doubles quotes \(`\"`\).
+A Java `String` is still sometimes needed and can be created using a pair of triple, single-quotes \(`\'\'\'`\).
+One of the most prominent reason for using `String` instead of `Text` is when you have to pass a path for example to pass code to a code listings.
 
-We could for example create a bold Chapter using the following code `new Chapter\(\*Bold chapter\*\)`.
+The inspiration of using three quotes came from the multi-line String literal in Python.
+The reason we use three single quotes, instead of only, is because a pair of single quotes still represents a Java `Character`.
+We do not use two quotes because that that would be very confusing when used in combination with double quotes in a non-monospace font.
+
+As we saw in {inlineCodeChap.ref()}, you can use code blocks in text mode.
+Since we can also use text mode in code mode, this means we can endlessly nest text and code mode.
 
 ## Considerations
 {Chapter considerations = (Chapter) parent()}
-Whilst constructing the language a few other things were considered but not implemented, they are discussed below.
-#### Static typing
-The language has been designed using static typing.
-The reason for this is, that while we are writing a Neio document in Code mode, or we are writing a Neio class, we can be notified of possible type mismatches.
-This decreases the time spent debugging and spend waiting on the compiler as you weed out one type mismatch after another.
-It also allows you to create a safer program as type errors might be caught at compile time when using static typing.
-On the other hand when using dynamic typing, type errors only show up at runtime.
-With the help of an IDE, we also do not really have that much more typing to do than when we would be using dynamic typing.
-The language has been designed with static typing in mind, and types have been incorporated into the compiler, but the necessary checks are not yet in place.
-At this point in time, when a type error appears in the code, we get a `LookupException` when we are looking for that method or variable.
-In the future, checks should be placed and appropriate errors should be thrown that make clear where exactly the error occurs.
+Whilst constructing Neio, a few other things were considered but not implemented. They are discussed below.
 
-#### Security
-Another issue that we have considered is security. As it is possible to directly execute Java code, security is an issue.
-However, security is also an issue in {lat} as has been shown in several articles {cite('''checkoway2010text''')} {cite('''checkoway2011don''')}.
-Since our language is more readable than {lat} it might be easier to spot for people who understand code, that the document or library contains malicious code, than it is to spot malicious code in a {lat} document.
+### Static typing
+Neio has been designed to use static typing.
+The reason for this is, that while we are writing a Neio document in Code mode, or we are writing a Neio class, we can be notified of possible type mismatches.
+This decreases the time spent debugging and spent waiting on the compiler as you weed out one type mismatch after another.
+
+It also allows you to create a safer program, as type errors are caught at compile time.
+On the other hand when using dynamic typing, type errors only show up at runtime.
+Using auto-completion in an IDE, we also do not have that much more typing to do than when we would be using dynamic typing.
+
+The types have been incorporated into the Neio compiler, but the necessary checks to create comprehensive error messages are not yet in place.
+In the current compiler, a `LookupException` is thrown whenever there is a type mismatch, undefined variable,... as the method or variable that we are looking for can not be found.
+
+### Security
+Another issue that we have considered is security.
+This is an issue because it is possible to directly execute Java code from the Neio document.
+However, security is also an issue in {lat}, as has been shown in several articles {cite('''checkoway2010text''')} {cite('''checkoway2011don''')}.
+
+Since Neio is more readable than {lat}, malicious code can be found more easily than in {lat}.
+
 Adding a layer of security on top of Neio would require a lot of effort and research and is not in scope of this thesis.
-Thus we conclude by saying that we known there is a security risk, but dismissing it should be seen as future work.
+Thus we conclude by saying that we known there is a security risk, but dismissing is seen as future work.
 
 # Supported document types and libraries
 {Chapter examples = (Chapter) parent()}

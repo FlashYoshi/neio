@@ -155,8 +155,11 @@ public class NeioToJava8Translator extends IncrementalTranslator<Neio, Java7> {
         Block newBlock = oFactory.createBlock();
 
         // Get the Constructor at the root of the document
-        List<ConstructorInvocation> descendants = ((StatementExpression) block.statement(0)).getExpression().descendants(ConstructorInvocation.class);
-        startArgument = descendants.get(descendants.size() - 1);
+        MethodInvocation mi = (MethodInvocation) block.statement(0).children().get(0);
+        while (mi.getTarget() != null && (mi.getTarget() instanceof MethodInvocation)) {
+            mi = (MethodInvocation) mi.getTarget();
+        }
+        startArgument = (ConstructorInvocation) mi;
 
         // Create a variable from it
         LocalVariableDeclarator varDecl = new LocalVariableDeclarator(((ConstructorInvocation) startArgument.clone()).getTypeReference());
