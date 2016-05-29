@@ -537,7 +537,10 @@ Note that the call chain is not code that the user has to write, its just a repr
 
 The user is thus actually creating an object model.
 The object model for the previous document is shown below.
-// TODO: show object model
+The calls that create every object are shown on the edges.
+{
+    image("The object model of the previous document.", '''simpleDocOM''').scale(80)
+}
 
 This object model is separated as much as possible from the visualisation, which happens later on.
 We say \`\`as much as possible'' because it is not completely separated.
@@ -828,9 +831,9 @@ However, `NLHandler` does not have a `\#` method.
 
 `Paragraph` creates a `ParNLHandler` when `newline` is called on it, but `ParNLHandler` has no `\#` method.
 The last `\#` is again called on `Document`.
-The object model for this example is shown below and the calls that create every object are shown on the vertices.
+The object model for this example is shown below.
 {{
-    image("The object model of {ctx1.ref().toTex()}", '''ctxObjectDiagram''')
+    image("The object model of the previous example.", '''ctxObjectDiagram''')
 }}
 
 Sometimes the new method is called on the previous object, sometimes its called on an object that was made a lot earlier.
@@ -845,7 +848,7 @@ When we encounter `new Document()`, the first context type, called `ct0`, is cre
 There are no context types yet, so there is no context and the actual type is `Document`.
 The context type is shown below.
 {{
-    image("The first context type: ct0", '''ct0''').scale(100)
+    image("The first context type: ct0.", '''ct0''').scale(100)
 }}
 
 When we now encounter `newline()` we have to do a `context lookup`.
@@ -857,7 +860,7 @@ As it does, we do not have to check the context of `ct0`.
 The context of the new context type, `ct1`, is `ct0` and because `newline()` creates a `NLHandler` the actual type is `NLHandler`.
 The object model, with context types, now looks as follows.
 {{
-    image("The object model of ct0 and ct1", '''ct1''').scale(100)
+    image("The object model of ct0 and ct1.", '''ct1''').scale(100)
 }}
 
 The next call is `\#("Chapter 1")` and the previous context type is `ct1`.
@@ -870,7 +873,7 @@ The new context type, `ct2`, is thus created with `ct0` as context.
 Because the `\#` in `Document` returns a `Chapter`, the actual type is `Chapter`.
 The object model is shown below.
 {{
-    image("The object model of ct0 up to ct2", '''ct2''').scale(100)
+    image("The object model of ct0 up to ct2.", '''ct2''').scale(100)
 }}
 
 The following call is `newline()`, we check the actual type of `ct2`, `Chapter`, and we know that it defines `newline`.
@@ -878,7 +881,7 @@ We thus create `ct3` with `ct2` as context and `NLHandler` as actual type.
 `ct4` and `ct5` are created with respectively `ct3` and `ct4` as context and respectively `Paragraph` and `ParNLHandler` as actual type.
 The object model up to `ct5` is shown below.
 {{
-    image("The object model of ct0 up to ct5", '''ct5''')
+    image("The object model of ct0 up to ct5.", '''ct5''')
 }}
 
 Finally, `\#("Chapter 2")` is called.
@@ -887,7 +890,7 @@ For this call we recursively search back up to `ct0` as it is the first context 
 The last context type is thus build with ct0 as context and `Chapter` as a actual type.
 The final object model is shown below.
 {{
-    image("The object model of ct0 up to ct6", '''ct6''')
+    image("The object model of ct0 up to ct6.", '''ct6''')
 }}
 
 It is important to note that we do not carry the entire context along for the entire document.
@@ -919,7 +922,7 @@ new Document()
 The example has the following object model.
 The methods that cause a context reset have been coloured red.
 {
-    image("The object model of {ctxEx2.ref()}", '''ctxEx2OM''').scale(75)
+    image("The object model of the previous example.", '''ctxEx2OM''').scale(70)
 }
 
 The `\*` is defined in `Document` creates `Itemize i1`.
@@ -928,14 +931,14 @@ Because of context resets, the last `\*` is called on `Document`.
 This document thus contains an itemize of two items, a paragraph and an itemize of one item.
 The correct context lookup for the last `\*` is visualised on the chain call below, the arrows depict one step in the context lookup.
 {
-    image("Correct context lookup for {ctxEx2.ref()}", '''timeline1''')
+    image("Correct context lookup for \*", '''timeline1''')
 }
 
 If there were no context resets and the entire context was thus kept in every step, `Item 3` would find the `\*` defined in `Item 2` before it reached `Document`.
 This means that there would only be one list, that contains all three items, instead of two lists as was meant in the document.
 This wrong context lookup for the last `\*` is visualised on the chain call below.
 {
-    image("Wrong context lookup for {ctxEx2.ref()}", '''timeline2''')
+    image("Wrong context lookup for \*", '''timeline2''')
 }
 
 #### Nested methods
@@ -960,17 +963,17 @@ new Document()
 }
 
 We want `Chapter 1` and `Chapter 2` to be children of `Document` and `Chapter 1.1` should be a child of `Chapter 1`.
-{
-    Image nestedCorrect = image("The correct ContextType representation", '''NestedCorrect''');
-}
-The context type representation of the document is shown in {nestedCorrect.ref()}.
+The context type representation of the document is shown below.
+{{
+    image("The correct ContextType representation", '''NestedCorrect''');
+}}
 
 If we did not separate the first level, the aforementioned structure is still built correctly, *but* the ContextType representation is different.
 This is because we did not reset to the same point, the context reset jumped up to `Chapter 1` instead of `Document`.
+The context type representation of this document is shown below.
 {
     Image nestedWrong = image("The wrong ContextType representation", '''NestedWrong''');
 }
-The context type representation of this document is shown in {nestedWrong.ref()}.
 
 ## Code blocks
 {Chapter codeBlocks = (Chapter) parent()}
