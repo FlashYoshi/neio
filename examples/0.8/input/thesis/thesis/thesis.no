@@ -457,11 +457,11 @@ We explain how our decisions were reached and how they were affected by the stat
 
 ## Neio document
 The typical files that a user writes are called Neio documents; these have to be as simple as possible.
-Based on our state-of-the-art analysis, we chose to base Neio documents on {md}.
+Based on our state-of-the-art analysis, we chose a {md}-like syntax for Neio documents.
 
-To illustrate some of the basic concepts we now present an example Neio document.
+To illustrate some of the basic concepts we present an example Neio document.
 {
-    String simpleDocument = '''
+    LstListing neioEx = new LstListing('''
 // This is a Neio document
 [Document]
 
@@ -470,10 +470,8 @@ To illustrate some of the basic concepts we now present an example Neio document
  */
 # Chapter 1
 This is some text in the first Paragraph.
-''';
-    LstListing neioEx = new LstListing(simpleDocument);
+''');
     Image neioExImage = neioEx.leftOf(image("The rendered document", '''simpleDocument'''));
-    
 }
 
 Even if you are not familiar with {md}, you can immediately tell what this document represents.
@@ -495,53 +493,152 @@ As means of an introduction we have a look at the `Paragraph` class that is used
 
 Except for some variations on the syntax, such as using `namespace` instead of `package`, and the lack of access level modifiers (which can be specified), this is valid Java code.
 The absent access level modifiers are automatically set to `private` for members and `public` for methods.
-They do not have to be written explicitly as the default value is usually what the developer wants and it makes the class file just a little clearer and more concise.
+They do not have to be written explicitly as the default value is usually what the developer wants and it makes the code file just a little clearer and more concise.
 
-To keep code mode simple and to maximize reusability (as well as making the parsing somewhat easier) some functionality from the Java language was dropped.
+To keep code files simple and to maximize reusability (as well as making the parsing somewhat easier), some functionality from the Java language was dropped.
 It is for example not possible to create anonymous classes as these are not reusable and do not provide any new functionality.
 It is also not possible to create multiple classes in a single file.
 
-## Method chains
-There is however a significant difference between {md} and Neio document.
-In {md} the semantics for the syntax are hard-coded in the language, a \# always represents a chapter for example.
-Neio however has no knowledge of what \# means.
+As we see in the next section, code files are used to build a Neio document.
 
-Neio does not know any of the semantics because everything is a method call, chained together to form an object model that represents the document.
-The reason for doing so is simple, we want to be able to customise our documents!
-For example, when you are creating a slide show, you want \# to create a new slide instead of a chapter.
+## Call chain
+A problem with {md} is that the semantics for the syntax are hard-coded in the language, a `\#` always represents a chapter for example.
+But if you are creating a slide show for example, you want `\#` to create a new slide instead of a chapter.
+For this reason, Neio has no set semantic for the text mode syntax.
 
-Knowing this, we can now represent the document as a chain of method calls as follows:
+Instead, the semantics of the syntax are defined in code files.
+For example the `\#` in a `Document` is defined as follows:
 {
+    LstInputListing docChapter = new LstInputListing(30, 41, '''../../examples/0.8/lib/neio/stdlib/Document.no''');
+    return docChapter;
+}
+
+Now we can see that a Neio document is actually a sequence of method calls.
+This is referred to as the call chain.
+An example of a document and its call chain is shown below.
+{
+    LstListing methodChain = new LstListing('''
+[Document]
+
+# Chapter 1
+This is some text in the first Paragraph.
+''')
+}
+{{
     new LstListing('''
 new Document()
     .#("Chapter 1")
     .text("This is some text in the first Paragraph");
+    ''').rightOf(methodChain)
+}}
+
+Note that the call chain is not code that the user has to write, its just a representation of a Neio document.
+
+The user is thus actually creating an object model, which is visualised and configured later on.
+He is programming without noticing it.
+
+To be able to do customise the semantics of the syntax in text mode, the Java syntax in code files has been modified to allow for special method identifiers.
+These are discussed in the next section.
+
+## Special method identifiers
+### Symbol methods
+In {docChapter.ref()} we saw that the code file, used a symbol \(`\#`\) as a method name.
+These are called symbol methods.
+All the symbols that can be used as method names are `\#, \-, \*, \_, \$, \|, \=, \^, \``. // `
+
+
+These methods always have either no arguments or a `Text` argument.
+This is done to keep the method calls invisible for the user as more or different arguments would have to passed explicitly.
+The `Text` that is passed to the method is the text following the call in text mode.
+An example of both, and its call chain, is shown below.
+{
+    LstListing symMethods = new LstListing('''
+[Document]
+# Chapter 1
+#
     ''');
+    return symMethods;
+}
+{{
+    new LstListing('''
+new Document()
+    .#("Chapter 1")
+    .#()
+    ''').rightOf(symMethods)
+}}
+
+Next to symbols, there are two other special method identifiers, the first of them is `text`.
+
+### Text
+Whenever text in a Neio document is encountered on its own, for example a paragraph but not the text behind a `\#` symbol,
+the `text` method is called with the text as an argument.
+It is a separate method to allow continuation of the call chain and because not every block of text is necessarily a paragraph,
+it can for example be a quote.
+
+The reason we use `Text` instead of just a Java `String` is because text can be marked up.
+`Text` can for example be a piece of bold text, which a `String` can not represent.
+
+The last special method identifier is the newline.
+
+### Newlines
+{Chapter newlines = (Chapter) parent()}
+Users often use varying amount of newlines to express different structures.
+For example the following lists do not have the same meaning.
+{
+    LstListing twoLists = new LstListing("Two lists", '''
+* Item 1
+* Item 2
+
+* Item 3
+''');
+    return twoLists;
+}
+{
+LstListing oneList = new LstListing("One list", '''
+* Item 1
+* Item 2
+* Item 3
+''').rightOf(twoLists)
 }
 
-// TODO: fit this in here
-Code files are the thriving force behind the Neio documents, they define all the object and methods that are used in a Neio document.
-They are extremely important to the design of the language as they allow us to represent everything in the document with an object structure.
-This object structure is extensively used in Neio and examples of this are shown further on.
+In {twoLists.ref()} there are two lists while in {oneList.ref()} there is only one list.
+The same is done to separate paragraphs.
 
-For this to work of course, every one of these method calls has to return an object.
-In fact, all of these methods returns an object that is a subtype of the `Content` class, as anything in a Neio document that can be shown is a subtype of `Content`.
-The `Content` class is the base class in Neio documents, like `Object` is the base class in Java.
+Because of this, and to include as much information as possible in the call chain, even the newline character is a method.
+The newline character is defined by the following W3C Extended Backus-Naur Form (EBNF) {cite('''ebnf''')}:
+{
+    new LstListing('''
+newline ::= "\\r?\\n"
+    ''')
+}
 
-// TODO: fit this in here
-This would be valid Java code if not for the \# method.
-In Neio code files, you are allowed to use symbols as a method name.
-This is a feature that is necessary to allow a Neio document to be represented as a chain of method calls as otherwise you would have to actually write out a document as series of method calls,
-or you would not be able to use symbols as syntactic shorthand.
-All the symbols you can use for method names at this time are `\#, \-, \*, \_, \$, \|, \=, \^`, the backtick and the newline.
-The newline character is recognised by the following regex `\\n\\r?`.
-By using all of these symbols we are able to create Domain Specific Languages (DSL) for some things such as tables or structural formulas. This is illustrated in Chapter 3.
+An example of a document and its call chain including the newline method is shown below.
+{
+    LstListing newlineEx = new LstListing('''
+[Document]
+The first line
+of the first paragraph.
 
-## Newlines
-{Chapter newlines = (Chapter) parent()}
-// TODO: extension of fluid API
-// TODO: text()
-Neio is newline sensitive, in the sense that newlines too are methods.
+The first line
+of the second paragraph.
+    ''');
+    return newlineEx;
+}
+{{
+    new LstListing('''
+new Document()
+    .newline()
+    .text("The first line")
+    .newline()
+    .text("of the first paragraph.")
+    .newline()
+    .newline()
+    .text("The first line")
+    .newline()
+    .text("of the second paragraph.")
+''').rightOf(newlineEx)
+}}
+
 The superclass `TextContainer` of `Document` and `Chapter` defines the following method.
 {
     new LstListing('''
@@ -590,6 +687,12 @@ To avoid clutter, the `newline` method is not shown in the further examples unle
 
 ## Context types
 {Chapter ctxTypes = (Chapter) parent()}
+
+// TODO: fit it in
+For this to work every one of these method calls has to return an object.
+In fact, all of these methods returns an object that is a subtype of the `Content` class, as anything in a Neio document that can be shown is a subtype of `Content`.
+The `Content` class is the base class in Neio documents, like `Object` is the base class in Java.
+
 As said before, everything is a method call, but to be able to just chain any method to any other method, regular methods do not suffice.
 We want to be able to call methods of different code files whilst constructing our document, but we do not want to specify what object we are calling the method on.
 This is something that should be clear from the current structure of the file, a previously created object should have a method with the correct signature.
