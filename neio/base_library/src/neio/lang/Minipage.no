@@ -1,0 +1,32 @@
+namespace neio.lang;
+
+class Minipage extends Content;
+
+// The number of siblings
+Integer siblings;
+
+Minipage(Integer siblings) {
+    this.siblings = siblings;
+}
+
+void incrementSiblings() {
+    siblings = siblings + 1;
+}
+
+Integer siblings() {
+    return siblings;
+}
+
+String toTex() {
+    StringBuilder result = new StringBuilder();
+    if (siblings <= 0) {
+        result.append("\n");
+    }
+    result.append("\\begin{minipage}{")
+        .append(new Double(1) / (siblings + 1))
+        .append("\\linewidth}")
+        .append(super.toTex())
+        .append("\n\\end{minipage}\n\\qquad");
+
+    return result.toString();
+}

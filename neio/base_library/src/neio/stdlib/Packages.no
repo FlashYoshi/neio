@@ -1,0 +1,33 @@
+namespace neio.stdlib;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import neio.lang.Texable;
+
+class Packages extends ArrayList<Package> implements Texable;
+
+List<String> options;
+String name;
+
+Packages add(String name) {
+    super.add(new Package(name));
+    return this;
+}
+
+Packages add(List<String> options, String name) {
+    super.add(new Package(options, name));
+    return this;
+}
+
+void preTex() {
+}
+
+String toTex() {
+    StringBuilder result = new StringBuilder();
+    for (int i = 0; i < size(); i = i + 1) {
+        result.append(get(i).toTex()).append("\n");
+    }
+    
+    return result.toString();
+}

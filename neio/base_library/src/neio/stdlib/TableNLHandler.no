@@ -1,0 +1,57 @@
+namespace neio.stdlib;
+
+import neio.lang.Content;
+import neio.lang.Text;
+
+/**
+ * Handles newlines for a Table
+ */
+class TableNLHandler extends NLHandler;
+
+/**
+ * Initialises the TableNLHandler
+ *
+ * @param parent The TableRow that created us
+ */
+TableNLHandler(TableRow parent) {
+    super(parent);
+}
+
+/**
+ * Returns the NLHandler contained in our grandparent
+ *
+ * @return The NLHandler that should be the NewlineHandler of our grandparent
+ */
+NLHandler newline() {
+    // parent should always have a parent
+    return (TextContainer)(parent().parent().parent()).newline();
+}
+
+/**
+ * Creates a horizontal line and appends it to our parent
+ *
+ * @param level The level of this nested operator, it is ignored
+ * @return The appended Hline
+ */
+nested Hline -(Integer level) {
+    return parent().appendHline();
+}
+
+/**
+ * Returns the TableRow that created us
+ *
+ * @return Our parent
+ */
+TableRow parent() {
+    return (TableRow) (super.parent());
+}
+
+/**
+ * Creates a new TableRow and appends it to our parent
+ *
+ * @param text The text to be used in the first element of the new TableRow
+ * @return The new TableRow under construction
+ */
+TableRow |(Text text) {
+    return parent().appendRow(new TableRow(text));
+}

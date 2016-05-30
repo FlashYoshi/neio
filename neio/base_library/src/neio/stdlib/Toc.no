@@ -1,0 +1,9 @@
+namespace neio.stdlib;
+
+import neio.lang.Content;
+
+class Toc extends Content;
+
+String toTex() {
+    return "\\newpage\n\\pagestyle{fancy}\n\\tableofcontents\n";
+}

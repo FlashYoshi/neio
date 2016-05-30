@@ -1,0 +1,59 @@
+namespace neio.stdlib;
+
+import java.util.List;
+import java.util.ArrayList;
+
+import neio.lang.BoldText;
+import neio.lang.Content;
+import neio.lang.Text;
+
+/**
+ * Represents an element in a Table
+ */
+class TableElement extends Content;
+
+protected String header;
+Text text;
+
+/*
+ * Initialises the TableElement and alligns it to the left
+ */
+TableElement() {
+    header = "l";
+}
+
+/*
+ * Initialises the TableElement with a given value
+ *
+ * @param text The text to be used as value of this element
+ */
+TableElement(Text text) {
+    this();
+    this.text = text;
+}
+
+/**
+ * Enables the bold property, if this is set the element will be
+ * printed in bold
+ */
+void setBold() {
+    text = new BoldText(text);
+}
+
+/**
+ * Returns this element should be aligned
+ *
+ * @return A string representing how this element should be aligned
+ */
+String header() {
+    return header;
+}
+
+/**
+ * Build the TeX representation of this
+ *
+ * @return The TeX representation of this
+ */
+String toTex() {
+    return text.toTex();
+}

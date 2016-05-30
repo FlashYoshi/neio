@@ -1,0 +1,166 @@
+namespace neio.stdlib.graph;
+
+import neio.lang.Texable;
+
+class RedBlackNode implements Texable;
+ 
+public static final Integer RED = 1;
+public static final Integer BLACK = 0;
+ 
+Integer color;
+Integer value;
+RedBlackNode left;
+RedBlackNode right;
+RedBlackNode parent;
+ 
+RedBlackNode(Integer color, Integer value) {
+    this.color = color;
+    this.value = value;
+    this.left = null;
+    this.right = null;
+    this.parent = null;
+}
+
+void setColor(Integer color) {
+    this.color = color;
+}
+
+void setParent(RedBlackNode parent) {
+    this.parent = parent;
+}
+
+void setRight(RedBlackNode right) {
+    this.right = right;
+    if (right != null) {
+        right.setParent(this);
+    }
+}
+
+void setLeft(RedBlackNode left) {
+    this.left = left;
+    if (left != null) {
+        left.setParent(this);
+    }
+}
+
+RedBlackNode cloneSelf() {
+    RedBlackNode rbn = new RedBlackNode(color, value);
+    if (hasLeft()) {
+        rbn.setLeft(left.cloneSelf());
+    }
+    if (hasRight()) {
+        rbn.setRight(right.cloneSelf());
+    }
+    
+    return rbn;
+}
+
+RedBlackNode grandparent() {
+    if (parent != null) {
+        return parent.parent();
+    } else {
+        return null;
+    }
+}
+
+RedBlackNode uncle() {
+    RedBlackNode gp = grandparent();
+    if (gp == null) {
+        return null;
+    } else if (gp.left() == parent) {
+        return gp.right();
+    } else {
+        return gp.left();
+    }
+}
+
+Integer color() {
+    return color;
+}
+
+Integer value() {
+    return value;
+}
+
+Boolean isLeaf() {
+    return ! hasLeft() && ! hasRight();
+}
+
+Boolean isRed() {
+    return color.equals(RED);
+}
+
+Boolean isBlack() {
+    return ! isRed();
+}
+
+RedBlackNode left() {
+    return left;
+}
+
+RedBlackNode right() {
+    return right;
+}
+
+RedBlackNode parent() {
+    return parent;
+}
+
+Boolean hasLeft() {
+    return left != null;
+}
+
+Boolean hasRight() {
+    return right != null;
+}
+
+Boolean isRoot() {
+    return parent == null;
+}
+
+void preTex() {
+}
+
+/**
+ * Recursively creates the Text representation of the tree.
+ *
+ * @return The TeX representation of the tree
+ */
+String toTex() {
+    StringBuilder result = new StringBuilder();
+    if (isRoot()) {
+        result.append("\\node [arn_");
+    } else {
+        result.append("child { node [arn_");
+    }    
+    
+    if (isBlack()) {
+        result.append("n]");
+    } else {
+        result.append("r]");
+    }
+    
+    result.append(" {").append(value.toString()).append("}\n");
+    // If we don't have two empty leaves
+    if (!(!hasLeft() && !hasRight())) {
+        if (!hasLeft()){
+            result.append("child { node [arn_x] {}}\n");
+        } else {
+            result.append(left.toTex());
+        }
+        if (!hasRight()) {
+            result.append("child { node [arn_x] {}}\n");
+        } else {
+            result.append(right.toTex());
+        }
+    }
+    
+    if (!isRoot()) {
+        result.append("\n}\n");
+    } else {
+        result.append(";\n");
+    }
+    
+    // Remove empty newline, it breaks the tikzpicture
+    return result.toString().replaceAll("(\n)\\1+","$1");
+}

@@ -37,7 +37,7 @@ public class ContextType extends RegularJavaType {
     }
 
     @Override
-    protected <D extends Member> List<SelectionResult<D>> inheritedMembers(DeclarationSelector selector, List<SelectionResult<D>> result) throws LookupException {
+    protected <D extends Member> List<SelectionResult<D>> inheritedMembers(DeclarationSelector<D> selector, List<SelectionResult<D>> result) throws LookupException {
         for (InheritanceRelation rel : inheritanceRelations()) {
             result = rel.accumulateInheritedMembers(selector, result);
             if (!result.isEmpty()) {

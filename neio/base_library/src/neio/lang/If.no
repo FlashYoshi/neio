@@ -1,0 +1,8 @@
+namespace neio.lang;
+
+// This class returns the result of a ternary operator, needed to have valid statements
+class If;
+
+public static <T> T ifcall(T result) {
+    return result;
+}
