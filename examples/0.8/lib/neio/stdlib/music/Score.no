@@ -47,6 +47,12 @@ Score(Score s, Note note) {
     notes.add(note);
 }
 
+/**
+ * Copies this Score and shifts every node up or down by {@code shift}
+ *
+ * @param shift The amount to shift the nodes by
+ * @return A new Score where every node is shifted by {@code shift}
+ */
 Score shift(Integer shift) {
     Score s = new Score(this);
     List<Note> n = s.notes();
@@ -57,6 +63,11 @@ Score shift(Integer shift) {
     return s;
 }
 
+/**
+ * Creates a copy of this Score with the notes in reverse order
+ *
+ * @return A new Scope with the notes of this Score in reverse order
+ */
 Score reverse() {
     Score s = new Score(this);
     Collections.reverse(s.notes());
@@ -75,6 +86,13 @@ Score add(Integer note) {
     return add(note, 0);
 }
 
+/**
+ * Copies this Score and adds a new note to the copy
+ *
+ * @param note   The note to add
+ * @param octave The octave of the note
+ * @return A copy of this Score with a new note added to it
+ */
 Score add(Integer note, Integer octave) {
     return new Score(this, new Note(note, octave, this));
 }
@@ -112,6 +130,12 @@ Score c() {
     return add(C);
 }
 
+/**
+ * Adds the c node to a new Score
+ *
+ * @param octave The octave of this c
+ * @return A new Score containing a new c
+ */
 Score c(Integer octave) {
     return add(C, octave);
 }

@@ -39,9 +39,9 @@ This is not always possible, when using a binary format, like the ones used by d
 As a matter of fact, we created a Word document and flipped one bit in a random byte using a hex editor.
 We then tried to open the document and received the following sequence of errors and were unable to retrieve the contents of the file.
 {{
-    image("The detection of an error", '''wordCorruption''').scale(80);
-    image("The warning before trying to repair the error", '''wordCorruption2''');
-    image("The inability to repair the error", '''wordCorruption3''').scale(80);
+    image("The detection of an error.", '''wordCorruption''').scale(80);
+    image("The warning before trying to repair the error.", '''wordCorruption2''');
+    image("The inability to repair the error.", '''wordCorruption3''').scale(80);
 }}
 
 A regular user, without technical expertise, is not be able to repair this error as the source code is not human-readable.
@@ -66,7 +66,7 @@ Using one of these packets, it is also easy to insert slides, tables or another 
 These are then be editable with the specialized program for it (like Excel), but you do not have to leave the document.
 In the example below an Excel chart has been inserted into a Word document.
 {
-    image("An Excel chart in a Word document", '''excelInWord''')
+    image("An Excel chart in a Word document.", '''excelInWord''')
 }
 
 Collaboration is also made easy by using online versions of these solutions, such as \`Microsoft Word Online' or \`Google Docs'.
@@ -204,7 +204,7 @@ For example, to create a title you underline it with `minus` or `equals` charact
 To create an enumeration, you use `star` characters as bullet points.
 An example {md} document is shown below:
 {{
-    Image i = image("The document rendered as HTML by the official {md} conversion tool", '''document''').scale(40);
+    Image i = image("The document rendered as HTML by the official {md} conversion tool.", '''document''').scale(40);
     i.rightOf(new LstInputListing('''document.md'''));
 }}
 
@@ -322,7 +322,7 @@ is that the caption does not move together with the image.
 In the example below an image is inserted and a caption is (by right-clicking the image and pressing `Add caption`\) added.
 The image is then dragged to the end of the file and we see that the caption remains in place.
 {
-    Image wordCaption = image("Caption below the image", '''wordCaption''');
+    Image wordCaption = image("Caption below the image.", '''wordCaption''');
     return wordCaption;
 }
 {{
@@ -376,7 +376,7 @@ There is no programming model that can provide the customisability.
 
 As an example, we use HTML to create a table, as these are not a part of default {md} (though there are variations that have syntax for them, like GitHub Flavored {md} {cite('''ghfmd''')}).
 {{
-    Image i = image("The table document rendered as HTML by the official {md} conversion tool", '''htmltable''');
+    Image i = image("The table document rendered as HTML by the official {md} conversion tool.", '''htmltable''');
     i.rightOf(new LstListing('''
 Below you can find an HTML table
 <table border="1">
@@ -461,7 +461,7 @@ Based on our state-of-the-art analysis, we chose a {md}-like syntax for Neio doc
 
 To illustrate some of the basic concepts we present an example Neio document.
 {
-    LstListing neioEx = new LstListing("A simple Neio document", '''
+    LstListing neioEx = new LstListing("A simple Neio document.", '''
 // This is a Neio document
 [Document]
 
@@ -471,7 +471,7 @@ To illustrate some of the basic concepts we present an example Neio document.
 # Chapter 1
 This is the first paragraph.
 ''');
-    Image neioExImage = neioEx.leftOf(image("The rendered document", '''simpleDocument''').scale(20));
+    Image neioExImage = neioEx.leftOf(image("The rendered form of the document to the left.", '''simpleDocument''').scale(20));
 }
 
 Even if you are not familiar with {md}, you can immediately tell what this document represents.
@@ -620,7 +620,7 @@ As said in {symbolChap.ref()}, the argument of symbol methods is a Text, this me
 A more extensive example of surround methods is shown below.
 {{
     LstInputListing l = new LstInputListing('''surroundEx.input''');
-    image("The rendered version of the document to the left", '''surroundEx''').rightOf(l);
+    image("The rendered version of the document to the left.", '''surroundEx''').rightOf(l);
 }}
 
 To not confuse surround methods with the symbol methods, the first and last characters inside a surround call can not be a space.
@@ -905,7 +905,7 @@ This is needed to correctly create the object model.
 
 To show why context resets are important we give another example:
 {
-    LstListing ctxEx2 = new LstListing("An example for context resets", '''
+    LstListing ctxEx2 = new LstListing("An example for context resets.", '''
 [Document]
 * Item 1
 * Item 2
@@ -936,14 +936,14 @@ Because of context resets, the last `\*` is called on `Document`.
 This document thus contains an itemize of two items, a paragraph and an itemize of one item.
 The correct context lookup for the last `\*` is visualised on the call chain below, the arrows depict one step in the context lookup.
 {
-    image("Correct context lookup for \*", '''timeline1''')
+    image("Correct context lookup for \*.", '''timeline1''')
 }
 
 If there were no context resets and the entire context was thus kept in every step, `Item 3` would find the `\*` defined in `Item 2` before it reached `Document`.
 This means that there would only be one list, that contains all three items, instead of two lists as was meant in the document.
 This wrong context lookup for the last `\*` is visualised on the call chain below.
 {
-    image("Wrong context lookup for \*", '''timeline2''')
+    image("Wrong context lookup for \*.", '''timeline2''')
 }
 
 #### Nested methods
@@ -970,14 +970,14 @@ new Document()
 We want `Chapter 1` and `Chapter 2` to be children of `Document` and `Chapter 1.1` should be a child of `Chapter 1`.
 The context type representation of the document is shown below.
 {{
-    image("The correct ContextType representation", '''NestedCorrect''');
+    image("The correct context type representation.", '''NestedCorrect''');
 }}
 
 If we did not separate the first level, the aforementioned structure is still built correctly, *but* the ContextType representation is different.
 This is because we did not reset to the same point, the context reset jumped up to `Chapter 1` instead of `Document`.
 The context type representation of this document is shown below.
 {
-    Image nestedWrong = image("The wrong ContextType representation", '''NestedWrong''');
+    Image nestedWrong = image("The wrong context type representation.", '''NestedWrong''');
 }
 
 ## Code blocks
@@ -1038,7 +1038,7 @@ If the last statement in a non-scoped code block returns an object, this object 
 We can thus also use a return statement as last statement to add an object to the document.
 These two possibilities are shown below.
 {
-    LstListing nsCodeEx2 = new LstListing("Automatic return from code block", '''
+    LstListing nsCodeEx2 = new LstListing("Automatic return from code block.", '''
 [Document]
 # Chapter 1
 {
@@ -1048,7 +1048,7 @@ These two possibilities are shown below.
     return nsCodeEx2;
 }
 {{
-    new LstListing("Manual return from code block", '''
+    new LstListing("Manual return from code block.", '''
 [Document]
 # Chapter 1
 {
@@ -1481,7 +1481,7 @@ Continuing the example, it is also possible to explicitly create an equation, in
     eq().nonu().sqrt("{base}", "{arg}");
     eq().^("{base}", "{arg}").=().v("{Math.pow(base, arg)}");
 }}
-    ''').leftOf(image("The rendered form of the example to the left", '''mathExample'''))
+    ''').leftOf(image("The rendered form of the example to the left.", '''mathExample'''))
 }
 
 The code above creates two `Equation`, on the first one it disable numbering through the `nonu` method and calls sqrt on the equation, as shown before.
@@ -1522,7 +1522,7 @@ In the table below you can see the results of the 33rd 12urenloop of the Univers
 }
 
 {{
-    image("The rendered form of the table given above", '''tableExample''')
+    image("The rendered form of the table given above.", '''tableExample''')
 }}
 
 First of all, we note that it does not matter how many spaces are placed in side the elements of the table.
@@ -1569,7 +1569,7 @@ We show an example of the red black trees in use.
     new LstInputListing('''../../examples/0.8/input/testInput/rbtDocument/rbtDocument.no''');
 }
 {
-    Image rbtExample = image("The rendered form of the above example", '''rbtExample''').scale(40)
+    Image rbtExample = image("The rendered form of the example above.", '''rbtExample''').scale(40)
 }
 
 The rendered document is shown in {rbtExample.ref()}. As we can see it is very easy to create and show
@@ -1666,8 +1666,8 @@ arrows) and only draws inheritance arrows for what is shown. This is done to avo
 // TODO: talk about DOT
 
 ### Chemfig
-In this example we approach a different domain, the domain of Biology and Chemistry.
-For it, we created a library and DSL to create structural formulas.
+In this example we approach a different domain, the domain of biology and chemistry.
+For this domain, we created a library and DSL to create structural formulas.
 An example of the structural formula for glucose is given below.
 {
     new LstListing('''
@@ -1692,80 +1692,125 @@ $ C * 6 _ OH ^ - C _ ^ OH - O - C _ ^ CH2OH - C _ HO ^ - C _ ^ OH -
 
 The first thing we see, is that we create a new `Structure`.
 This provides a newline handler that allows us to instantiate structure formulas using the `\$` method and captions for them using the `\|` method.
-The '\$' method shown below, creates an atom and adds it to the structure, the rest of the structural formula is then be build by chaining atoms together.
+The `\$` method shown below, creates an atom and adds it to the structure, the rest of the structural formula is then build by chaining atoms together.
 {
     new LstInputListing(18, 23, '''../../examples/0.8/lib/neio/stdlib/chem/StructureNLHandler.no''');
 }
 
-The `\*` method, followed by a number, defines that the formula is a ring, the number defines the number of edges of this ring.
+The `\*` method, followed by a number, defines that the formula is a ring. The number defines the number of edges of this ring.
 The `\-` method creates a single link from the previous atom to the next, `\=` creates a double link.
-The `\^` method define that the next atom is above the previous one, while `\_` puts the next atom below the previous one.
+Finally, the `\^` method defines that the next atom is above the previous one, while `\_` puts the next atom below the previous one.
 The code for one of these is found below.
 {
     new LstInputListing(79, 88, '''../../examples/0.8/lib/neio/stdlib/chem/Atom.no''');
 }
 
-All of this code is then transformed into a TeX string that is understood by the {lat} package `chemfig` {cite('''chemfig''')}.
+The `toTex` method returns a {lat} representation of the structure that is understood by the {lat} package `chemfig` {cite('''chemfig''')}.
 
 ### Lilypond
 {Chapter lily = (Chapter) parent()}
+For the last example we will be creating sheet music.
+An example musical score is shown below.
+{
+    LstListing lilyEx1 = new LstListing("An example musical score.", '''
+[Document]
+{
+    Score s = new Score().a().b().c(1).d(1).e(1).f(1)
+        .g(1).f(1).e(1).d(1).c(1).b().a()
+        .g().f().e().d().c().b(- 1).a(- 1);
+    return s;
+}
+''');
+    return lilyEx1;
+}
+{
+    Score s = new Score().a().b().c(1).d(1).e(1).f(1)
+        .g(1).f(1).e(1).d(1).c(1).b().a()
+        .g().f().e().d().c().b(- 1).a(- 1);
+    return s;
+}
+
+Note that the score above is not an image but was actually created using the syntax in {lilyEx1.ref()}.
+
+In this DSL, a class has been made to represent a note and a method is available to create every note.
+For example, to create the note `C`, you call the method `c()`.
+The integer that can be passed to a note, lower or heightens the octave of the note.
+
+Every operation that would modify the current `Score`, first copies the `Score` to make sure that we do not edit any of the already placed scores.
+
+The code to add the `C` note to a `Score` is given below.
+{
+    Ranges lilyRanges = new Ranges().add(15, 15).add(89, 98).add(133, 141);
+    new LstInputListing(lilyRanges, '''../../examples/0.8/lib/neio/stdlib/music/Score.no''');
+}
+
+We can now query the notes of this score, for example `\{s.get(8)\}` gives us the eighth note.
+Doing this for our example tells us that the eighth node is {s.get(8)}.
+
+It is also possible to reverse a score or shift it up or down using the `reverse` and `shift` methods respectively.
+The sequence of notes can also be printed using the `print` method.
+These methods are demonstrated in the example below.
+{
+    Score ss = new Score().c().d().e().f().g().a().b();
+    return ss;
+}
+
+This score is read as {ss.print()}.
+{
+    Score sss = ss.shift(1);
+    return sss;
+}
+
+We can shift every note by one, doing so yields the following notes: {sss.print()}.
+{
+    Score s4 = ss.reverse();
+    return s4;
+}
+
+Reversing the score results in the following sequence of nodes: {s4.print()}
+
+The code for this example as well as the implementation of the `reverse` and `shift` methods is given below.
+{
+    LstInputListing lilyEx2 = new LstInputListing(50, 75, '''../../examples/0.8/lib/neio/stdlib/music/Score.no''');
+    return lilyEx2;
+}
+
+{{
+    new LstListing("The code of the example.", '''
+{
+    Score ss = new Score().c().d().e().f().g().a().b();
+    return ss;
+}
+
+This score is read as {ss.print()}.
+{
+    Score sss = ss.shift(1);
+    return sss;
+}
+
+We can shift every note by one, doing so yields the following notes: {sss.print()}.
+{
+    Score s4 = ss.reverse();
+    return s4;
+}
+
+Reversing the score results in the following sequence of nodes: {s4.print()}
+    ''').rightOf(lilyEx2);
+}}
+
+To typeset these music sheets, the object model is written out in a format that is understood by `LilyPond` {cite('''lilypond''')}.
+This is written to a file and the file is passed to the `lilypond` command line tool.
+This tool generates a PDF that is then inserted as an image in the document.
 
 # Implementation
 {Chapter implementation = (Chapter) parent()}
-Next to designing a language, a compiler to be able to actually use the language had to be build.
-How we implemented the compiler, as well as some lower level concepts used in Neio classes, is explained 
-in this chapter.
-
-## Used libraries and frameworks
-To be able to build the compiler, we made few of a few open-source libraries and frameworks. They are 
-explained in this section. The number of libraries or framework that we used is rather limited, only three 
-of them were used.
-
-### ANTLR4
-{Chapter antlr4C = (Chapter) parent()}
-The ANTLR4 {cite('''antlr4''')} library is an open-source parser generator released under the BSD license.
-It is used to parse all of the Neio files, the Neio documents and the Neio classes.
-We used ANTLR4 in the following way.
-First we created two grammars, consisting of a parser and a lexer, for the Neio documents and classes, thus four files in total.
-These are written using the ANTLR4 DSL.
-These grammars are then fed to the `antlr4` command line tool, this tool generates Java classes using the grammars 
-you defined.
-The ANTLR4 Java classes provide us with an interface that makes use of the Visitor pattern.
-Using the visitor pattern, we visit every rule and terminal for a given file.
-Whilst visiting these, we build an Abstract Syntax Tree (AST) of a given file which we can then manipulate further on.
-The ANTLR4 grammars and visitor classes thus form the front end of our compiler.
-The objects that are used in this AST, are objects defined in Jnome and Chameleon.
-
-### Chameleon and Jnome
-Chameleon and Jnome are both projects that were developed by professor van Dooren and released under the MIT license.
-Chameleon {cite('''chameleon''')} is a framework that allows you to model a programming language, or as we have 
-shown in this Thesis, a markup language. It does so by providing a lot of objects that represent concepts that are 
-commonly used in programming languages. A few examples of such objects are the following:
-`Expression, VariableDeclaration, Type, MethodInvocation, InfixOperatorInvocation,...`.
-
-Jnome {cite('''jnome''')} uses Chameleon and implements the front end and back end of a compiler specifically for the Java language.
-It can read Java and build an AST from it (using ANTLR3), thus it is a front end for the Java language.
-To be able to do this it extends the object model available in Chameleon with Java specific objects.
-It is also able to write out Java code, given an AST built from Jnome and Chameleon objects.
-This part is the back end of the compiler.
-
-Jnome can read entire Java projects at once, in our compiler for example, it loads the entire Java library.
-This is needed because our objects use Java objects, such as `String`s.
-It reads all of the source files and libraries that are specified in a file called `project.xml`.
-This file was mentioned earlier in {umlChap.ref()}.
-This same file is used to read Neio projects in our compiler. The `project.xml` for the Neio compiler is shown below.
-{
-    new LstInputListing('''project.xml''');
-}
-
-Having obtained an AST in {antlr4C.ref()}, we now manipulate it in the middle end of our compiler.
-After the manipulations have been completed, we write it out using the Jnome back end.
+To be able to use Neio, we also had to build a compiler.
+How we implemented it, as well as some lower level concepts used in Neio code files, is explained in this chapter.
 
 ## Compile flow
-Now that all parts of the compiler have been introduced, we show a diagram that depicts the flow a source file 
-from Neio source up to to the final {lat} file.
+We start out by showing a diagram that depicts the flow a source file from Neio source up to to the final {lat} file.
 {
-    Image compileFlow = image("Illustration of how a Neio document is compiled. Neio code files translate to Java classes, Neio script files to a Java file with a main method. This then gets output to TeX using the Neio standard library", '''CompileFlow''');
+    Image compileFlow = image("Illustration of how a Neio document is compiled. Neio code files translate to Java classes, Neio script files to a Java file with a main method. This then gets output to TeX using the Neio standard library.", '''CompileFlow''');
     return compileFlow;
 }
 
@@ -1791,6 +1836,56 @@ The code for these two files is shown below.
 {
     new LstInputListing('''../../examples/0.8/lib/neio/io/TexToPDFBuilder.no''');
 }
+
+## Used libraries and frameworks
+To be able to build the compiler, we made use of three open-source libraries and frameworks. They are 
+explained in the subsections below.
+
+### ANTLR4
+{Chapter antlr4C = (Chapter) parent()}
+The ANTLR4 {cite('''antlr4''')} library is an open-source parser generator released under the BSD license.
+It is used to parse all of the Neio files, the Neio documents and the Neio code files.
+
+We used ANTLR4 in the following way.
+First we created two grammars, consisting of a lexer and a parser, for the Neio documents and classes, thus four files in total.
+These are written using the ANTLR4 DSL.
+These grammars are then fed to the `antlr4` command line tool.
+
+This tool generates Java classes using the grammars you defined.
+These classes allow us to visit the Concrete Syntax Tree of a file using the visitor pattern.
+
+Whilst visiting every rule and terminal, we build an Abstract Syntax Tree (AST) for the given file.
+This can then be manipulate in later stages.
+
+The objects that are used in the AST are objects defined in Jnome and Chameleon.
+These object, in combination with the ANTLR4 grammars and visitor classes, thus form the front end of our compiler.
+
+### Chameleon and Jnome
+Chameleon and Jnome are both projects that were developed by professor van Dooren and released under the MIT license.
+
+Chameleon {cite('''chameleon''')} is a framework that allows you to model a programming language, or as we have 
+shown in this thesis, a markup language. It does so by providing objects that represent concepts commonly used concepts of programming languages.
+A few examples of such objects are the following:
+`Expression, VariableDeclaration, Type, MethodInvocation, InfixOperatorInvocation,...`.
+
+Jnome {cite('''jnome''')} uses Chameleon and implements the front end and back end of a compiler specifically for the Java language.
+It is a front end for the Java language because it can read Java and build an AST from it (using ANTLR3).
+To be able to do this it extends the object model available in Chameleon with Java specific objects.
+
+It is also able to output Java code, given an AST built out of Jnome and Chameleon objects.
+This part is the back end of the Neio compiler.
+
+Jnome can read entire Java projects at once, in our compiler for example, it loads the entire Java library.
+This is needed because our objects use Java objects, such as `String`s.
+It reads all of the source files and libraries that are specified in a file called `project.xml`.
+This file was mentioned earlier in {umlChap.ref()}.
+This same file is used to read Neio projects in our compiler. The `project.xml` for the Neio compiler is shown below.
+{
+    new LstInputListing('''project.xml''');
+}
+
+Having obtained an AST in {antlr4C.ref()}, we now manipulate it in the middle end of our compiler.
+The transformed AST is then output to Java using the Jnome back end.
 
 ## Translation
 ### Reasons for choosing Java
