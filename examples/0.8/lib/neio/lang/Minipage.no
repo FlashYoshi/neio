@@ -26,7 +26,7 @@ String toTex() {
         .append(new Double(1) / (siblings + 1))
         .append("\\linewidth}")
         .append(super.toTex())
-        .append("\n\\end{minipage}");
+        .append("\n\\end{minipage}\n\\qquad");
 
     return result.toString();
 }

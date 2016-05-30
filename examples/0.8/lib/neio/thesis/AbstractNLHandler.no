@@ -1,10 +1,10 @@
 namespace neio.thesis;
 
 import neio.lang.Text;
-import neio.stdlib.ContainerNLHandler;
+import neio.stdlib.NLHandler;
 import neio.stdlib.TextContainer;
 
-class AbstractNLHandler extends ContainerNLHandler;
+class AbstractNLHandler extends NLHandler;
 
 AbstractNLHandler(Abstract a) {
     super(a);
@@ -45,6 +45,6 @@ Abstract |(Text text) {
     return parent();
 }
 
-ContainerNLHandler newline() {
+NLHandler newline() {
     return ((TextContainer) (parent().parent())).newline();
 }

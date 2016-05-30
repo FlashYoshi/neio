@@ -12,10 +12,10 @@ class TextContainer extends Container;
 /**
  * Handles newlines
  *
- * @return Returns a new ContainerNLHandler
+ * @return Returns a new NLHandler
  */
-ContainerNLHandler newline() {
-    return new ContainerNLHandler(this);
+NLHandler newline() {
+    return new NLHandler(this);
 }
 
 /**
@@ -61,17 +61,17 @@ Image image(String imageName) {
 }
 
 /**
- * Creates a new Image and adds it to this.
+ * Creates a new Image with a caption and adds it to this.
  *
  * @param caption   The caption to use for the Image
  * @param imageName The name of the Image
  * @return The created Image
  */
 Image image(Text caption, String imageName) {
-    new Image(caption, imageName) neioImage;
-    addContent(neioImage);
+    Image image = new Image(caption, imageName);
+    addContent(image);
     
-    return neioImage;
+    return image;
 }
 
 /**
