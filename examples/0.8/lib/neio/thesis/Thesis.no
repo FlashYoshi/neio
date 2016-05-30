@@ -114,3 +114,11 @@ String preamble() {
 
     return preamble.toString();
 }
+
+/**
+ * Adds the required blank page at the end of the thesis
+ */
+void preTex() {
+    super.preTex();
+    addContent(new BlankPage());
+}
