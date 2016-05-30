@@ -20,13 +20,6 @@ Paragraph(Text text) {
 }
 
 /**
- * Initialises an empty Paragraph
- */
-Paragraph() {
-    this(null);
-}
-
-/**
  * Appends some text on a new line within the same paragraph
  *
  * @param t The text to add after the newline

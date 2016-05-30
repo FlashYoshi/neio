@@ -1,25 +1,18 @@
 [Document]
-
-// RETURNS NOTHING
 {
-    Text address = "Sint-pietersnieuwstraat 7";
-    Text city = "Ghent";
-    Text name = "Titouan Vervack";
     Text addressee = "Thomas Vanhaskel";
     Text help = "my math class";
-    Text helpSubject = "test";
+    Text helpSubject = "math test";
     Text closings = "Kind regards,";
+    Text name = "Titouan Vervack";
 }
 
-// Calls append content on the Text("Dear")
 Dear {addressee},
 
 Thank you for helping me out with {help}.
 
 I was able to do great at the {helpSubject} thanks to you.
 
-// Have to explicitly create the content, the compiler cannot determine what to do otherwise
-{ new Paragraph(closings) }
+{closings}
 
-{ new Paragraph(name) }
-
+{name}

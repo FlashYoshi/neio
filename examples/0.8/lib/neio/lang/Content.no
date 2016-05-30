@@ -315,7 +315,7 @@ protected List<Content> descendants(List<Content> input) {
 }
 
 /**
- * Returns all direct descendants (the ones right beneath me) of
+ * Returns all direct descendants (the ones right beneath this) of
  * class {@code k}
  *
  * @param k The class of the descendants we are looking for

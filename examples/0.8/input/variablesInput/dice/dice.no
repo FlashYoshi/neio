@@ -1,0 +1,18 @@
+[Document]
+
+We roll the dice!
+
+{
+    Random rng = new Random();
+    Integer limit = 12;
+    Integer random = rng.nextInt() % limit;
+    if(random > (limit / 2)) {
+        "Ouch, we lost {random - (limit / 2)}€!"
+    } else {
+        if (random == (limit / 2)) {
+            "Oof, we broke even!"
+        } else {
+            "Great! We won {(limit / 2) - random}€!"
+        }
+    }
+}
