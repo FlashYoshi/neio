@@ -1285,8 +1285,8 @@ Thus we conclude by saying that we known there is a security risk, but dismissin
 
 # Supported document types and libraries
 {Chapter examples = (Chapter) parent()}
-This chapter goes into some more details about what document types can be handled by Neio, and how to specifically build these kind of documents.
-We also discuss which libraries have been recreated in Neio to allow for a wide use of the language.
+This chapter goes into more detail about what document types can be handled by Neio and how to specifically build these kind of documents.
+We also show the flexibility of Neio by discussing some libraries that have been developed.
 
 ## Document classes
 It is important to note that to create complete document classes would require a lot more work than was available for this thesis.
@@ -1294,7 +1294,7 @@ If we just have a look at the user guides of Memoir {cite('''memoir''')} or KOMA
 This is not something we could hope to reproduce in the scope of this thesis.
 
 The simplest of documents can be created using the `Document` class.
-It provides syntax to create anything that {md} can create, and on top of that, it allows you to create tables, {lat} math, uml,...
+It provides syntax to create anything that {md} can create, and on top of that, it allows you to create tables, {lat} math, uml,... .
 It also allows you to use the code blocks defined in { codeBlocks.ref() }, to customise your document.
 For example, it is possible to place two `Content`s next to each other by using the `leftOf` and `rightOf` methods that are defined in the `Content` class.
 The code of these methods is shown below.
@@ -1367,9 +1367,6 @@ The advantage of this last step is that the structure of the letter is well spli
 Forgetting to define the `Author` should be immediately noticeable as the method to create the `Addressee` should not be known yet without creating the `Author` first.
 On the other hand this is also more prune to error as people tend to forget things all the time.
 // TODO: implement at least one of these
-
-### Slides
-// TODO: What do we do with slides?
 
 ## Libraries
 {Chapter libraries = (Chapter) parent()}

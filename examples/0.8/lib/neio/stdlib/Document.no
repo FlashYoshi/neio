@@ -132,6 +132,16 @@ void addToPreamble(String s) {
 }
 
 /**
+ * Adds the bibliography to this
+ */
+void preTex() {
+    super.preTex();
+    if(bibtex != (null)) {
+        addContent(bibtex);
+    }
+}
+
+/**
  * Creates a TeX representation of this object and its children
  *
  * @return The TeX representation of this object and its children
@@ -139,9 +149,6 @@ void addToPreamble(String s) {
 String toTex() {
     StringBuilder result = new StringBuilder(preamble()).append("\\begin{document}\n")
     .append(super.toTex());
-    if (bibtex != null) {
-        result.append(bibtex.toTex());
-    }
     
     result.append("\n\\end{document}\n");
     
