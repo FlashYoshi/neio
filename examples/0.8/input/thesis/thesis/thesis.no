@@ -1969,7 +1969,7 @@ shown in this thesis, a markup language. It does so by providing objects for com
 A few examples of such objects are the following:
 `Expression, VariableDeclaration, Type, MethodInvocation, InfixOperatorInvocation,...`.
 
-Jnome {cite('''jnome''')} extends the objects that are available in Chameleon with Java specific objects.
+Jnome {cite('''jnome''')} extends the objects that are available in Chameleon with Java-specific objects.
 It is a front end for the Java language because it can read Java and build an AST from it (using ANTLR3).
 It is also able to output Java code for a given an AST consisting of Jnome and Chameleon objects.
 This part is the back end of the Neio compiler.
@@ -2304,7 +2304,10 @@ It should be possible to easily pass parameters of an object through symbol meth
 
 #### Conclusion
 In the end, we showed that is possible to create a healthy mix between user-friendliness and a powerful programming model.
-We showed that the language can be as easy to read, write and learn as {md}.
-While it can also be as powerful and diverse as {lat} whilst remaining quite legible.
+We showed that the language can be easy to read, write and learn. This was achieved by extending fluent interfaces and basing text mode on {md} which is already easy to read, write and learn.
+
+We also showed that it can be as powerful and diverse as {lat} whilst remaining quite legible. This was achieved by basing code mode on Java.
+The popularity of Java {cite('''ieeejava'''} assures that there are a lot of libraries that can be used directly, and it gives us a large user base that can read and understand code mode.
+The diverse examples showed in Chapter 3, and the completion of this book demonstrate this.
 
 A lot of work can still be done, and should still be done to allow the widespread use of Neio, as is shown in {fut.ref()}, but we think that good basis has been provided.
