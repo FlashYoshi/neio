@@ -13,7 +13,6 @@ import java.nio.charset.StandardCharsets;
 
 import org.aikodi.chameleon.core.document.Document;
 import org.aikodi.chameleon.core.element.Element;
-import org.aikodi.chameleon.core.lookup.LookupException;
 import org.aikodi.chameleon.core.modifier.Modifier;
 import org.aikodi.chameleon.core.namespace.NamespaceReference;
 import org.aikodi.chameleon.core.namespacedeclaration.Import;
@@ -34,6 +33,7 @@ import org.aikodi.chameleon.oo.method.MethodHeader;
 import org.aikodi.chameleon.oo.plugin.ObjectOrientedFactory;
 import org.aikodi.chameleon.oo.statement.Block;
 import org.aikodi.chameleon.oo.statement.Statement;
+import org.aikodi.chameleon.oo.type.ClassWithBody;
 import org.aikodi.chameleon.oo.type.Type;
 import org.aikodi.chameleon.oo.type.TypeReference;
 import org.aikodi.chameleon.oo.type.generics.FormalTypeParameter;
@@ -41,7 +41,6 @@ import org.aikodi.chameleon.oo.type.generics.TypeArgument;
 import org.aikodi.chameleon.oo.type.generics.TypeParameter;
 import org.aikodi.chameleon.oo.type.inheritance.SubtypeRelation;
 import org.aikodi.chameleon.oo.variable.FormalParameter;
-import org.aikodi.chameleon.oo.variable.RegularVariable;
 import org.aikodi.chameleon.support.expression.AssignmentExpression;
 import org.aikodi.chameleon.support.expression.ClassCastExpression;
 import org.aikodi.chameleon.support.expression.SuperTarget;
@@ -282,23 +281,28 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     @Override
     public NamespaceDeclaration visitNamespace(@NotNull NamespaceContext ctx) {
+    	NamespaceDeclaration result = null;
         if (ctx != null) {
             NamespaceReference namespaceReference = visitNamespaceReference(ctx.namespaceReference());
             if(namespaceReference != null) {
-              return ooFactory().createNamespaceDeclaration(namespaceReference);
+              result = ooFactory().createNamespaceDeclaration(namespaceReference);
+              setAll(result,ctx);
+              setKeyword(result,ctx.NAMESPACE().getSymbol());
             }
         }
-        return null;
+        return result;
     }
 
     @Override
     public NamespaceReference visitNamespaceReference(@NotNull NamespaceReferenceContext ctx) {
+    	NamespaceReference result = null;
     	if(ctx != null) {
         NeioFactory ooFactory = ooFactory();
-				return ooFactory.createNamespaceReference(ctx.getText());
-    	} else {
-    		return null;
+				result = ooFactory.createNamespaceReference(ctx.getText());
+				setAll(result,ctx);
+				setCrossReference(result, ctx);
     	}
+    	return result;
     }
 
     @Override
@@ -372,6 +376,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         for (MethodExpressionContext method : ctx.methodExpression()) {
             klass.add(visitMethodExpression(method));
         }
+        setAll(((ClassWithBody)klass).body(), ctx);
     }
 
 
@@ -616,7 +621,10 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     @Override
     public NameExpression visitIdentifierExpression(@NotNull IdentifierExpressionContext ctx) {
-        return eFactory().createNameExpression(contextType, ctx.Identifier().getText());
+        NameExpression result = eFactory().createNameExpression(contextType, ctx.Identifier().getText());
+        setAll(result, ctx);
+        setCrossReference(result, ctx);
+				return result;
     }
 
     @Override
@@ -939,7 +947,10 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     @Override
     public ClassLiteral visitClassLiteral(@NotNull ClassLiteralContext ctx) {
-        return ooFactory().createClassLiteral(ctx.Identifier().getText());
+        ClassLiteral result = ooFactory().createClassLiteral(ctx.Identifier().getText());
+        setAll(result.target(),ctx.Identifier().getSymbol(), ctx.Identifier().getSymbol());
+        setCrossReference(result.target(),ctx.Identifier().getSymbol(), ctx.Identifier().getSymbol());
+				return result;
     }
 
     @Override
