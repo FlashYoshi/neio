@@ -15,7 +15,7 @@
 {Chapter intro = (Chapter) parent()}
 In this thesis we introduce a new markup language that improves upon a few others, namely {lat} and {md}, whilst still holding on to their advantages.
 
-The language has been used to write this entire book with the exclusion of the title page (which is auto-generated), the extended abstract and a few images.
+The language has been used to write this entire book with the exclusion of the title page (which is auto-generated) and a few images.
 The source code of the book is available on the {href("UGent GitHub", '''https://github.ugent.be/tivervac/neio/blob/master/examples/0.8/input/thesis/thesis/thesis.no''')} {cite('''neiosrc''')}.
 In the same repository you also find the {href("Neio library", '''https://github.ugent.be/tivervac/neio/tree/master/examples/0.8/lib/neio''')} {cite('''neiolib''')} and source code for 
 the {href("Neio compiler", '''https://github.ugent.be/tivervac/neio/tree/master/neio''')} {cite('''neiocompiler''')}.
@@ -1330,7 +1330,7 @@ Because of this it is good practice to choose the most generic document class th
 
 ### Document
 The simplest of documents can be created using the `Document` document class.
-It provides the syntax to create anything that {md} can create, and on top of that it allows you to create tables, {lat} math, UML,... .
+It provides the syntax to create anything that {md} can create, and on top of that it allows you to create tables, {lat} math, UML diagrams,... .
 
 Like every Neio document, it can also use the code blocks defined in { codeBlocks.ref() } to customise your document.
 For example, it is possible to place two `Content`s next to each other by using the `leftOf` and `rightOf` methods that are defined in the `Content` class.
@@ -1340,7 +1340,7 @@ The code of these methods is shown below.
 }
 
 This code takes the parent of one of the two `Content`s, the base, and links the other Content to the base.
-The implementation creates a root {lat} `Minipage` {cite('''minipage''')} if none of these object is already next to another object.
+The implementation creates a root {lat} `Minipage` {cite('''minipage''')} if none of these objects is already next to another object.
 Otherwise it just wraps the two `Content`s in a `Minipage`.
 The root `Minipage` takes up the total width, while the `Minipage`s that wrap the content take up (1/children) of the width.
 
@@ -1398,6 +1398,7 @@ The code for the `\-` and `\|` methods is shown below.
     new LstInputListing(22, 58, '''../../examples/0.8/lib/neio/thesis/AbstractNLHandler.no''')
 }
 
+// TODO: explain why this is bad
 The implementation of `\|` is not perfect and the way to handle such scenarios should be changed in the future.
 
 We could also have set the parameters using a code block and calling setters defined in `Abstract`.
@@ -1440,7 +1441,7 @@ This is how we cite something {cite(\u0027''key\u0027'')}.
     ''')
 }
 
-`key` is a Java String as it is used to do a lookup on the BibTeX entries, it is thus not allowed to be marked up.
+The argument `key` is a Java String, as it is used to do a lookup on the BibTeX entries. It is thus not allowed to be marked up.
 
 ### References
 The way references have been implemented is quite straightforward.
@@ -1481,10 +1482,10 @@ To do this in Neio, we would have to hold of creating the reference until the do
 
 ### {lat} math and amsmath
 {Chapter mathChap = (Chapter) parent()}
-{lat} is very good at typesetting mathematical formulas, as such we could not forget about it.
+{lat} is very good at typesetting mathematical formulas. As such we could not forget about it.
 
 Two ways to make use of the {lat} math and the amsmath package have been created.
-The UML below shows the most important classes in the Neio math library.
+The UML diagram below shows the most important classes in the Neio math library.
 {
     List<String> umlMath = new ArrayList<String>();
     umlMath.add('''neio.stdlib.math.Eq''');
@@ -1494,8 +1495,8 @@ The UML below shows the most important classes in the Neio math library.
 }
 
 An inline math formula in {lat} is created by surrounding a formula with a pair of `\ $`'s.
-In Neio we can create inline math using an inline code block.
-We can also wrap the code block with a `\$` surround method, that does nothing, to make it look like inline math in {lat}.
+In Neio, we can create inline math using an inline code block.
+We can also wrap the code block with a `\$` surround method that does nothing, to make it look like inline math in {lat}.
 However, this does not offer any new functionality and it is thus not done in this example.
 
 The only method that has been implemented for this class is `sqrt`, so we show how we can create an inline square root.
@@ -1510,7 +1511,7 @@ The square root of {arg} is {ieq().sqrt("{base}", "{arg}")}.
 }
 
 The `ieq` method, defined in `Document`, creates an `InlineEq`.
-On this object we call the `sqrt` method.
+On this object, we call the `sqrt` method.
 However, the `sqrt` method has `Text` arguments.
 To transform the `Integer` variables to `Text`, we enter text mode and open an inline code block that returns the variable.
 A solution to this problem is proposed in Chapter 5.3.
@@ -1535,10 +1536,10 @@ To be clear, everything except for the `Math.pow()` typesets something, but comp
 This can be clearly seen in {mathExample.ref()}.
 
 ### {lat} tables
-Tables are one of the main things missing in {md} and is one of the things people have the most problems with in {lat}.
+Tables are one of the main things missing in {md}, and are one of the things people have the most problems with in {lat}.
 In this section we explain how the table shown in {newlines.ref()} was built.
 
-To create tables we created a DSL that is readable in text mode and that allows you to easily edit values in the table later on.
+To create tables, we created a DSL that is readable in text mode and that allows you to easily edit values in the table later on.
 The latter is important because customising table elements inline, as is done in {lat}, makes a table hard to read.
 
 The table is created as an ASCII table, with pipes, spaces, dashes and values for the elements of the table.
@@ -1580,7 +1581,7 @@ The example shown in {newlines.ref()} is repeated below.
 | Zeus WPI               |   567  |      76       |   164.43  |   13.70    | 
 | VBK                    |   344  |     126       |    99.76  |    8.31    | 
 
-Note that the table above is created using the syntax in {tableExDSL.ref()} and is not an image that was included in the document.
+Note that the table above is created using the syntax in {tableExDSL.ref()}, and is not an image that was included in the document.
 In fact, all of the examples shown from here on out, until the end of this chapter, are created using the DSLs demonstrated in said examples.
 
 First of all, we note that it does not matter how many spaces are placed inside the elements of the table.
@@ -1593,11 +1594,11 @@ It is shown below
 }
 
 The `TableRow` that is returned form the the `\|` method is a row that is still under construction.
-By continuously calling `\|` we are able to construct the entire row.
+By continuously calling `\|`, we are able to construct the entire row.
 This is the reason why we mentioned that symbol methods could be called after another symbol method in {symbolChap.ref()}.
 
-The `\|` method that builds the `TableRow` is defined in `TableRow` and shown below.
-We also show the `\|` method that has no arguments, it defines the end of a row.
+The `\|` method that builds the `TableRow` is defined in `TableRow`, and is shown below.
+We also show the `\|` method without arguments. It defines the end of a row.
 {
     new LstInputListing(26, 34, '''../../examples/0.8/lib/neio/stdlib/TableRow.no''');
 }
@@ -1622,8 +1623,7 @@ The libraries that are discussed in the next sections are domain specific and sh
 {Chapter rbtChap = (Chapter) parent()}
 Red black trees are trees that are constantly update according to a defined algorithm.
 When we want to show a red black tree in {lat}, we can typeset an instance of such a tree using for example `TikZ`.
-We could also create it in a third party program and include an image of the instance in our document,
-this solution also works for {md}.
+We could also create it in a third party program and include an image of the instance in our document. This solution also works for {md}.
 
 However, since an algorithm is used, and we have a programming model, could not we just build the tree and then display it?
 Yes we can! All we have to do is take some code that can generate red black trees and add a display method to it.
@@ -1671,11 +1671,11 @@ Add 51
 }
 
 This code allows us to very easily create and show red black trees.
-Of course, we are not limited to red black trees. This can be done for any tree or graph as long as we have code for it and write a method
+Of course, we are not limited to red black trees. This can be done for any tree or graph, as long as we have code for it and write a method
 that can display it.
 
 To compare our method to typesetting every instance of the tree in {lat}, we show the {lat} code for the first instance of the tree.
-This code is not that easy to read, hard to write and prune to syntax errors.
+This code is not that easy to read, hard to write and prone to syntax errors.
 For example, this code is newline sensitive, placing empty newlines between the entries throws a syntax error at compilation.
 The code for the next instance of the tree is very similar, but it is hard to reuse this code.
 {
@@ -1698,10 +1698,10 @@ Every UML diagram in this document is created using the UML library discussed in
 It is also a little different from the other libraries we have seen thus far as it does not directly translate
 into {lat}. Instead we are making use of MetaUML {cite('''metauml''')}.
 How this works exactly is shown in Chapter 4.
-For now it is enough to know that the object model build by this library is output as a string that is understood
+For now, it is enough to know that the object model build by this library is output as a string that is understood
 by `MetaUML`. `MetaUML` then creates a MetaPost file {cite('''metapost''')} which is included in the document.
 
-In this section a high-level overview of how we create UML diagrams is given.
+In this section, we give a high-level overview of how we create UML diagrams.
 We start out with an example.
 {
     new LstListing('''
@@ -1715,11 +1715,12 @@ We start out with an example.
     new Uml('''./project.xml''','''neio.stdlib.graph''')
 }
 
-This code reads the `project.xml` file, that tells it what project we want to create an UML diagram for.
+This code reads the `project.xml` file that tells it what project we want to create an UML diagram for.
 The second parameter is the namespace the UML diagram should be created for.
 This means that the UML diagram in this example is created from the *actual* classes that make up this document.
 
-When the document is compiled, the neio code files are read and 
+When the document is compiled, the Neio code files are read and an object model of said files is created.
+This model is then used to visualise the files as the UML diagram seen above.
 
 It is also possible to only show a few classes, or to also show private and protected members.
 This is shown in the example beneath.
@@ -1735,13 +1736,13 @@ This is shown in the example beneath.
     ''')
 }
 {
-    List<String> list = new ArrayList<String>();
-    list.add('''neio.stdlib.uml.Uml''');
-    list.add('''neio.stdlib.uml.UmlClass''');
-    new Uml('''./project.xml''','''neio.stdlib.uml''').scale(80).show(list).showAll();
+    List<String> firstList = new ArrayList<String>();
+    firstList.add('''neio.stdlib.uml.Uml''');
+    firstList.add('''neio.stdlib.uml.UmlClass''');
+    new Uml('''./project.xml''','''neio.stdlib.uml''').scale(80).show(firstList).showAll();
 }
 
-In this example the UML diagram shows two of the *actual* classes that were used to create this UML diagram.
+In this example, the UML diagram shows two of the *actual* classes that were used to create this UML diagram.
 The code to create these UML diagrams thus reads and displays itself.
 How this works exactly is explained in Chapter 4.
 
@@ -1750,7 +1751,7 @@ As the code for this library is over 600 lines long, we do not show all of the c
 The problem with the MetaUML tool is that positioning is not done automatically.
 The way we implemented positioning is like a tree.
 
-We build a tree of levels, the first level contains all the classes that have no super class to be shown as well as the highest level classes.
+We build a tree of levels. The first level contains all the classes that have no super class to be shown as well as the highest level classes.
 Subclasses are shown on the level beneath their super class.
 
 For example, `ThesisChapter` is a subclass of `Chapter`, which is a subclass of `TextContainer`.
@@ -1758,7 +1759,7 @@ If we now show these three classes, they are displayed one under the other becau
 three levels.
 
 To visualize how the levels are being used, we show this example below and also add the Bibtex class 
-to the UML diagram, to show what happens to classes that have no connection to the other classes.
+to the UML diagram to show what happens to classes that have no connection to the other classes.
 {
     List<String> list2 = new ArrayList<String>();
     list2.add('''neio.thesis.ThesisChapter''');
@@ -1773,7 +1774,7 @@ arrows) and only draws inheritance arrows for what is shown. These arrows are on
 This is done to avoid clutter.
 
 ### Chemfig
-In this example we approach a different domain, the domain of biology and chemistry.
+In this example, we approach a different domain, the domain of biology and chemistry.
 For this domain, we created a library and DSL to create structural formulas.
 An example of the structural formula for glucose is given below.
 {
@@ -1804,7 +1805,7 @@ The `\$` method shown below, creates an atom and adds it to the structure, the r
     new LstInputListing(18, 23, '''../../examples/0.8/lib/neio/stdlib/chem/StructureNLHandler.no''');
 }
 
-The `\*` method, followed by a number, defines that the formula is a ring. The number defines the number of edges of this ring.
+The `\*` method call, followed by a number, defines that the formula is a ring. The number defines the number of edges of this ring.
 The `\-` method creates a single link from the previous atom to the next, `\=` creates a double link.
 Finally, the `\^` method defines that the next atom is above the previous one, while `\_` puts the next atom below the previous one.
 The code for one of these is found below.
@@ -1816,7 +1817,7 @@ The `toTex` method returns a {lat} representation of the structure that is under
 
 ### Lilypond
 {Chapter lily = (Chapter) parent()}
-For the last example we create sheet music.
+For the last example, we create sheet music.
 An example musical score is shown below.
 {
     LstListing lilyEx1 = new LstListing("An example musical score.", '''
@@ -1994,7 +1995,7 @@ Which libraries to read exactly is shown in `project.xml` as is shown in {projec
 Then the Java code is generated and executed.
 
 During this execution, the `Uml` class uses the code in the Neio compiler to repeat the process of reading these libraries.
-It can now create UML representation of anything it read in the previous step.
+It can now create a UML representation of anything it read in the previous step.
 
 The libraries can be read using the following two lines.
 {
@@ -2104,7 +2105,7 @@ Finally `finishDocument` compiles the document to {lat} and compiles that to a P
 The reason we split up this process is so that we can call the creation of the document separately which allows us to include documents.
 To do this we call the `createDocument` method with an appropriate argument, we saw this in action in {abstractChap.ref()}.
 
-The middle end also imported every namespace in the Neio library as well as the `java.util` namespace as those will likely be needed.
+The middle end also imported every namespace in the Neio library as well as the `java.util` namespace as those usually needed.
 The name of the Java class that is generated is the same as the name of the Neio document.
 
 ### Reflection
@@ -2118,7 +2119,7 @@ Every `Content` has a class mapping that is initialised as an empty map.
 To use a specialized version of a class, you add a mapping from the generic class to the specialized class.
 
 The middle end of the compiler swaps out every new call to a `Content` in a `Content` by a call to `getInstance`.
-This method will check if there is a mapping for the generic class in this `Content`, or any of its parents.
+This method checks if there is a mapping for the generic class in this `Content`, or any of its parents.
 If there is, then an instance of specialized class is created. If not, an instance of the generic class is generated.
 The instances are created through reflection.
 The code for `getInstance` and the class mappings is shown below.
