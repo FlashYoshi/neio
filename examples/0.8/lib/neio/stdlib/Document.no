@@ -148,7 +148,7 @@ void preTex() {
  * @return The TeX representation of this object and its children
  */
 String toTex() {
-    StringBuilder result = new StringBuilder(preamble().append(extraPreamble)).append("\\begin{document}\n")
+    StringBuilder result = new StringBuilder(preamble()).append(extraPreamble).append("\\begin{document}\n")
     .append(super.toTex());
     
     result.append("\n\\end{document}\n");
