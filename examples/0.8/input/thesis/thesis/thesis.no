@@ -2047,7 +2047,7 @@ We chose to do this as it imposes less boilerplate code (less variable declarati
 Instead of passing a ton of arguments to one method, we split it up in multiple methods and build a single object.
 
 ### Outputting
-Neio makes use of Context Types, which are not something that exists in other languages as of yet.
+Neio makes use of context types, which are not something that exists in other languages as of yet.
 This means we had to create a custom translation for it.
 The way we choose to translate it, is by breaking up the method chains created in the Text mode of a Neio document at every method call.
 A variable is then assigned to the output of this method call.
