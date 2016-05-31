@@ -1311,7 +1311,7 @@ This is not something we could hope to reproduce in the scope of this thesis.
 ### Document class definition
 The document class to be used in a Neio document is defined by placing `\[DocumentClass\]` at the top of the file.
 With this line you are specifying what the first object in a Neio document has to be.
-This object is be the root of the call chain.
+This object is the root of the call chain.
 
 However, a document class definition is actually an expression that returns an object of this type.
 For example, when you write `\[Document\]`,
