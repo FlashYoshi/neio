@@ -755,7 +755,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         MethodHeader methodHeader = visitMethodHeader(ctx.methodHeader());
         Method method = ooFactory().createMethod(methodHeader);
 
-        if (ctx.methodHeader().rtype == null ) {
+        if (ctx.methodHeader().rtype == null && ctx.methodHeader().vd == null) {
             method.addModifier(new Constructor());
         }
 
