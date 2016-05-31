@@ -3,6 +3,7 @@
     preface.createDocument((Document) parent());
     permission.createDocument((Document) parent());
     overview.createDocument(parent().addContent(new Abstract()));
+    addContent(new Pdf('''ExtendedAbstract'''));
     addBibtex('''references''');
     Text lat = new LaTeX();
     String md = '''Markdown''';
@@ -14,7 +15,7 @@
 {Chapter intro = (Chapter) parent()}
 In this thesis we introduce a new markup language that improves upon a few others, namely {lat} and {md}, whilst still holding on to their advantages.
 
-The language has been used to write this entire book with the exclusion of the title page and a few images.
+The language has been used to write this entire book with the exclusion of the title page (which is auto-generated), the extended abstract and a few images.
 The source code of the book is available on the {href("UGent GitHub", '''https://github.ugent.be/tivervac/neio/blob/master/examples/0.8/input/thesis/thesis/thesis.no''')} {cite('''neiosrc''')}.
 In the same repository you also find the {href("Neio library", '''https://github.ugent.be/tivervac/neio/tree/master/examples/0.8/lib/neio''')} {cite('''neiolib''')} and source code for 
 the {href("Neio compiler", '''https://github.ugent.be/tivervac/neio/tree/master/neio''')} {cite('''neiocompiler''')}.
@@ -1964,15 +1965,13 @@ These object, in combination with the ANTLR4 grammars and visitor classes, thus 
 Chameleon and Jnome are both projects that were developed by professor van Dooren and released under the MIT license.
 
 Chameleon {cite('''chameleon''')} is a framework that allows you to model a programming language, or as we have 
-shown in this thesis, a markup language. It does so by providing objects that represent concepts commonly used concepts of programming languages.
+shown in this thesis, a markup language. It does so by providing objects for commonly used concepts of programming languages.
 A few examples of such objects are the following:
 `Expression, VariableDeclaration, Type, MethodInvocation, InfixOperatorInvocation,...`.
 
-Jnome {cite('''jnome''')} uses Chameleon and implements the front end and back end of a compiler specifically for the Java language.
+Jnome {cite('''jnome''')} extends the objects that are available in Chameleon with Java specific objects.
 It is a front end for the Java language because it can read Java and build an AST from it (using ANTLR3).
-To do this it extends the object model available in Chameleon with Java specific objects.
-
-It is also able to output Java code, given an AST built out of Jnome and Chameleon objects.
+It is also able to output Java code for a given an AST consisting of Jnome and Chameleon objects.
 This part is the back end of the Neio compiler.
 
 Jnome can read entire Java projects at once, in our compiler for example, it loads the entire Java library.

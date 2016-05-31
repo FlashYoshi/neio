@@ -12,19 +12,19 @@
 # Abstract
 A lot of solutions exist for document creation.
 These are split up into What You See Is What You Get (WYSIWYG) editors and markup languages.
-Both of these provide a lot of advantages as well as disadvantages.
 
 WYSIWYG editors immediately show the final document and help the user by providing a GUI for all the features.
 Markup languages put greater emphasis on letting the user structure a document properly, by providing specialised syntax for certain structural elements for example.
-Because of this some solutions are easy to read and write while others offer a lot of customisability, usually through some programming model.
+Because of this, some solutions are easy to read and write while others offer a lot of customisability, usually through some programming model.
 However, a good combination of both is hard to find.
 
-As such the goal of this thesis is to design a markup language that is easy-to-read and write as well as providing a modern programming model to allow for full customisation of the document.
-An introduction to the state-of-the-art solutions for document production is given (Chapter 1) in which the (dis)advantages of said solutions are discussed.
+As such, the goal of this thesis is to design a markup language that is easy-to-read and write.
+It also has to provide a modern programming model to allow for full customisation of the document.
+The state-of-the-art solutions for document production are researched (Chapter 1) and there (dis)advantages of are discussed.
 This is followed by an introduction to the new markup language, its features and the design decisions that were made (Chapter 2).
 Then several proofs of concept for document types and libraries build with the language are presented (Chapter 3).
-The development of the compiler for the language, its features and the faced challenges are then discussed (Chapter 4).
-The text concludes with possible future work on this work (Chapter 5), as well as a short reflection and summary on the work (Chapter 6).
+Then the development of the compiler for the language, its features and the faced challenges are discussed (Chapter 4).
+The text concludes with possible future work on the thesis (Chapter 5), as well as a short reflection and summary of it (Chapter 6).
 
 # Keywords
 Markup, Object-oriented, LaTeX, Markdown

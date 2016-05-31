@@ -11,5 +11,5 @@ Pdf(String name) {
 }
 
 String toTex() {
-    return "\\includepdf{" + name + "}\n";
+    return "\\includepdf[pages={1-}]{" + name + "}\n";
 }
