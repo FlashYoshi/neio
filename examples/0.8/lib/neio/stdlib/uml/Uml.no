@@ -83,6 +83,13 @@ void preTex() {
     super.preTex();
 }
 
+/**
+ * Creates a string in the MetaUML format, writes it to a file
+ * and passes this file to the mpost command. The command creates
+ * an image that represents this UML diagram.
+ *
+ * @return The LaTeX representation of this UML diagram
+ */
 String toTex() {
     String metaUML = toMetaUML();
     MetaUMLWriter writer = new MetaUMLWriter(metaUML);
