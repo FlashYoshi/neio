@@ -962,6 +962,9 @@ This wrong context lookup for the last `\*` is visualised on the call chain belo
     image("Wrong context lookup for \*.", '''timeline2''')
 }
 
+Finally, context types are only used for text mode, or when `this` is used in code mode.
+// TODO: why not?
+
 #### Nested methods
 Now that we know how context types work, we can explain why the first level of a nested method is separated from the rest.
 We explain why this is needed using the following example:
@@ -1349,6 +1352,7 @@ The `Document` document class can thus be used to write simple documents, such a
 Another document class that is complexer and requires some configuration, is shown below.
 
 ### Book
+{Chapter bookChapter = (Chapter) parent()}
 To write a book, such as this thesis, we need a more complex document class.
 To write this thesis we created a new document class that represents the {lat} template for a thesis.
 
@@ -1375,7 +1379,7 @@ It is a separate method to allow us to easily add content, such as an abstract, 
 ### Abstract
 {Chapter abstractChap = (Chapter) parent()}
 The abstract used in this thesis is written in a separate Neio document \(`overview.no`).
-It uses the `Abstract` document class and as such we import it into this document as follows.
+It uses the `Abstract` document class and is included in this document by the following line.
 {
     new LstInputListing(5, 5, '''../../examples/0.8/input/thesis/thesis/thesis.no''')
 }
@@ -1909,6 +1913,7 @@ To use Neio, we also had to build a compiler.
 How we implemented it, as well as some lower level concepts used in Neio code files, is explained in this chapter.
 
 ## Compile process
+{Chapter compProcess = (Chapter) parent()}
 We start out by showing a diagram that depicts the process a source file goes through Neio source code up to the final {lat} file.
 {
     Image compileFlow = image("The process of compiling Neio source code to LaTeX.", '''CompileFlow''');
@@ -2002,11 +2007,11 @@ JavaView view = (JavaView) (projectBuilder.build(projectXml));
 The `projectBuilder` does some initialisation and loads the `project.xml`.
 The `view` contains all of the namespaces, classes,... that were read.
 
-// TODO: Extra lijn code!
 Chameleon also provides IDE support for the code mode (syntax errors and highlighting, project outline, dependency analysis,...) as is shown below.
 {{
-    image("A code file containing a syntax error.", '''eclipseSyntaxError''').rightOf(new Image("A code file and its dependencies.", '''eclipseDependencies'''))
+    image("A code file with syntax highlighting, a syntax error and a dependency view.", '''ide''')
 }}
+
 This support is enabled through the few lines of code shown below.
 {
 new LstListing('''
@@ -2014,6 +2019,7 @@ public class Bootstrapper extends EclipseBootstrapper {
     public Language createLanguage() throws ProjectException {
         Neio result = new NeioLanguageFactory().create();
         result.setPlugin(EclipseEditorExtension.class, new JavaEditorExtension());
+        result.setPlugin(DependencyOptionsFactory.class, new JavaDependencyOptionsFactory());
         return result;
     }
 }''')
@@ -2048,31 +2054,29 @@ In the design of the language we did this by using method chains, but we also tr
 We chose to do this as it imposes less boilerplate code (less variable declarations) and because it is clearer to read what we are building.
 Instead of passing a ton of arguments to one method, we split it up in multiple methods and build a single object.
 
-### Outputting
-Neio makes use of context types, which are not something that exists in other languages as of yet.
+### Translation to Java
+Neio makes use of context types, which is a new concept.
 This means we had to create a custom translation for it.
-The way we choose to translate it, is by breaking up the method chains created in the Text mode of a Neio document at every method call.
+The way we choose to translate this, is by breaking up the method chains created in the Text mode of a Neio document at every method call.
 A variable is then assigned to the output of this method call.
 
-// TODO: make clearer
-To know what to call our method on, `ContextType`s were implemented as an extension of `RegularJavaType`s in Jnome.
+To know what to call our method on, `ContextType` was implemented as a subclass of the `RegularJavaType` class in Jnome.
 A `RegularJavaType` is what we know as a Java class.
-This `ContextType` adds a virtual inheritance relation between itself and the actual type of the method, and 
-one between itself and the ContextType of this method.
-The latter ContextType represents the Context at that point as we saw in {ctxTypes.ref()}.
 
-When a lookup reaches a `ContextType` and asks us what our inherited members are (the members you normally receive from super classes), 
-we return the members of all our inheritance relations. We only have two inheritance relations, the actual type and 
-the ContextType. If what we are looking for was somewhere we could see, we return it and we are able to make use of it.
+We also created a `NeioMethodInvocation` which creates a `ContextType` when its type is queried.
+The constructor of `ContextType` takes two `Type`s as arguments. The first one is the actual return type of the method, the second one is the context of the the method.
+The `ContextType` then adds the two `Type`s as super classes. so that it can access there methods.
+
+When a lookup is done on a `ContextType` it first checks the actual type and then the context.
 Lookups are provided by Chameleon and explaining how exactly they work is out of the scope of this Thesis.
 
-We also hold a Stack of all the variables that have already been declared. When a lookup for a method, described above, succeeds, 
-we check what type is returned by this method and look for the first variable in our stack of that type, popping everything on the way there.
-We then know what to call our method on.
+The lookup on a `NeioMethodInvocation` now returns the correct type, but we still have to find which variable corresponds to this type.
+To implement this we add every variable that is declared to a stack. To find the correct variable we iteratively pop the stack until a variable with the correct type is found.
 
-Lastly, we also have to translate `this`. The translation is analogue to the previous step, where we searched what to call the method on.
-To have a starting point, we just replace `this` with the last defined variable and let the `ContextType`s do their job.
-A translation for the very first example we looked at in this document is shown below.
+Lastly, we also have to translate `this` as we saw in {thisCode.ref()}.
+All we have to do for this, is replace `this` with the last defined variable and go through the above process again.
+
+The complete translation to Java is shown below.
 {
     LstInputListing ctxExample = new LstInputListing('''../../examples/0.8/input/testInput/testInput/testInput.no''');
     return ctxExample;
@@ -2088,41 +2092,36 @@ new Document()
     '''))
 }}
 {
-    new LstInputListing('''testInput/testInput.java''')
+    LstInputListing compTrans = new LstInputListing('''testInput/testInput.java''');
+    return compTrans;
 }
 
-Note that the middle end has created three methods. The first one is the main method, it allows the document to be executed as a whole.
-It initialises the document class and then calls `createDocument` which actually creates an object model that represents the document.
-Finally `finishDocument` compiles the document to TeX and create a PDF of of it.
+The complete translation is given in {compTrans.ref()}.
+The middle end has created three methods. The first one is the main method, it allows the document to be executed as a whole.
+It initialises the document class and then calls `createDocument` which actually creates the object model that represents the document.
+Finally `finishDocument` compiles the document to {lat} and compiles that to a PDF.
 
-The reason we split up this process is so that we can call the creation of the document separately.
-This allows us to include a document into another document by just calling the `createDocument` method with an appropriate argument.
+The reason we split up this process is so that we can call the creation of the document separately which allows us to include documents.
+To do this we call the `createDocument` method with an appropriate argument, we saw this in action in {abstractChap.ref()}.
 
-The middle end also imported every namespace in the Neio library as well as the `java.util` namespace as those might be needed.
+The middle end also imported every namespace in the Neio library as well as the `java.util` namespace as those will likely be needed.
 The name of the Java class that is generated is the same as the name of the Neio document.
 
-It is important to note that we only split up the methods chains created in Text mode.
-The code written in code mode is kept as is, only occurrences of `this` are replaced.
-
 ### Reflection
-In {nsCode.ref()} we touched on `addClassMapping` and said that the class mapping was comparable to a factory.
-This is true and the need for it appeared when we wanted to create drop in replacements for objects that are created in Neio Text mode.
-For example, if we want to use a special kind of `Chapter` in the `Document` document class, we would have to create a new document class that 
-overrides the `\#` method, we also have to override the nested `\#` method in `Chapter` because otherwise only the first `Chapter` would be 
-an instance of the special `Chapter`.
+In {bookChapter.ref()} we used `addClassMapping` and to tell the document class to create `ThesisChapter`s instead of `Chapter`s.
+This method is used to tell a `Content` to create specialized versions of a certain `Content`.
+It thus solves the same problems that factories solve.
+The reason we did not use actual factories is because we did not want the user to write them.
+Factories are usually straightforward and similar to each other, yet not reusable.
 
-This is a problem that is normally solved by using factories.
-When you know your object can create instances of other objects, in our example a `Document` creates `Chapter`s, 
-that might be changed with more specialized forms of that object, you create a factory.
-This factory however would have to be generic enough to be used almost anywhere.
-Even if we are able to do this, the writer of the specialized object would still have to create a new factory.
-Factories usually are also very similar to each other, yet the code can not be reused.
+Every `Content` has a class mapping that is initialised as an empty map.
+To use a specialized version of a class, you add a mapping from the generic class to the specialized class.
 
-For this reason we chose to swap out new calls with calls that use reflection to initialize the object.
-This is a process that is executed in the middle end of the compiler.
-Only the new calls of objects extending `Content` have been replaced as those should be the only thing a user wants to replace.
-Every new call gets replaced by the `getInstance` call in the `Content` class.
-The code needed to understand this process, as well as an example call is given below.
+The middle end of the compiler swaps out every new call to a `Content` in a `Content` by a call to `getInstance`.
+This method will check if there is a mapping for the generic class in this `Content`, or any of its parents.
+If there is, then an instance of specialized class is created. If not, an instance of the generic class is generated.
+The instances are created through reflection.
+The code for `getInstance` and the class mappings is shown below.
 {
     Ranges reflectionRanges = new Ranges().add(17, 18).add(336, 398);
     new LstInputListing(reflectionRanges, '''../../examples/0.8/lib/neio/lang/Content.no''');
@@ -2131,10 +2130,7 @@ The code needed to understand this process, as well as an example call is given 
     new LstListing('''Chapter chapter = getInstance(Chapter.class, new Class[]{Text.class, Integer.class}, new Object[]{title, 1});''');
 }
 
-If you already understood the code from the comments, this paragraph can be skipped.
-Every instance of content has a mapping from `Class` to `Class`, by default this mapping is empty.
-When we want to use a specialized form of an object we call `addClassMapping`, as we did in {nsCode.ref()}.
-Take the following example.
+We explain this again using the example below.
 {
     new LstListing('''
 [Document]
@@ -2147,35 +2143,41 @@ Take the following example.
 
 We added a mapping from `Enumerate.class` to `FibEnumerate.class` in the root `Document`.
 When we now call `getInstance(Enumerate.class, ...)`, the root of the call is `Chapter`, not `Document`.
-But fear not, class mappings are looked up recursively. In the `getInstance` method we first check if we have 
-a mapping for the class we are trying to instantiate. If we do the value of the mapping is used, if not we recursively 
-check the mappings of our parents. If no mapping has been found after this, we just instantiate the class that has been given 
-as argument to `getInstance`.
+But as said before, `getInstance` also checks the parents for class mappings. We first check if a mapping is available in `Chapter`.
+As there is none, we recursively check the mappings of our parents. The mapping is found in the first parent, `Document`, and thus we create an instance of `FibEnumerate` one of `Enumerate`.
 
 ### Escaping
 A Neio document is parsed and converted a number of times. First, it is parsed by the Neio compiler, then 
 it is transformed into Java code that is then converted into {lat} code (in most cases).
-This means that we have to handle escaping of characters in three different languages. Escaping in Neio is easy, 
-just add a `\\` before the character you want to escape and it is escaped. Of course `\\\[ntr\]` hold on to their 
-special meaning. However `\\\[bfu\]` have not been included in Neio as they are not yet needed. In the future it might 
-prove useful to include these special characters to.
+This means that we have to handle escaping of characters in three different languages. Escaping in text mode is easy,
+just add a `\\` before the character you want to escape and it is escaped. Of course, `\\\[nutr\]` hold on to their 
+special meaning. However `\\\[bf\]` have not been included in Neio as they are not yet needed. In the future it might 
+prove useful to include these special characters too.
 
-Moving on, we can not just translate these characters straight to Java as we have no special meaning for `\\\[bfu\]`.
-For this reason the middle end transforms every backslash into two backslashes, and transforms a double backslash (used to denote an 
+We can not just translate these characters straight to Java as we have no special meaning for `\\\[bf\]`.
+For this reason, the middle end transforms every backslash into two backslashes, and transforms a double backslash (denotes an 
 escaped single backslash in Neio) to four backslashes in Java as this is how you represent an escaped backslash in a Java String.
-We then do some further translation in the Text class to assure that we are able to create valid latex.
+
+We then do some further translation in the Text class to assure that it creates valid {lat}.
 {lat} only has ten special characters thus replacing is quite easy. The code to do the replacing is shown below.
+`ESC` is an escape sequence that is used to prevent use from adjusting our changes, of the first replace, in the second replace.
 {
-    new LstInputListing(170, 191, '''../../examples/0.8/lib/neio/lang/Text.no''')
+    new LstInputListing(170, 192, '''../../examples/0.8/lib/neio/lang/Text.no''')
 }
 
 ## Resource usage and creation
 {Chapter rsc = (Chapter) parent()}
-// TODO: don't forget this
 // TODO: MetaUML and commands
 
+A document usually uses resources such as images or other documents.
+To include these resources in the final {lat} document, the resources have to be available in the same folder as the {lat} source code.
+We make sure that these resources are available by copying every file that does not use the `.no` extension from the source folder to the output folder.
+
+As mentioned in {compProcess.ref()}, it is also possible to create resources at compile time of the auto-generated Java code.
+We use the UML library to explain this process.
+
 ## Limitations
-Whilst development of the compiler a few limitations were discovered, they are discussed in this section.
+During the development of the compiler we encountered a few limitations. They are discussed in this section.
 
 ### Java
 // TODO: 64KiB
