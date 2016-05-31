@@ -76,7 +76,9 @@ Packages addPackage(List<String> options, String pkg) {
  * @param The name of the BibTeX file
  */
 void addBibtex(String name) {
-    this.bibtex = new Bibtex(name);
+    if (name != null) {
+        this.bibtex = new Bibtex(name);
+    }
 }
 
 /**
@@ -87,10 +89,10 @@ void addBibtex(String name) {
  * @return The Cite corresponding to {@code key}
  */
 Citation cite(String key) {
-    if (bibtex != null) {
+    if ((bibtex != null) && (key != null)) {
         return bibtex.cite(key);
     } else {
-        return null;
+        return new Citation("");
     }
 }
 
@@ -106,9 +108,8 @@ String preamble() {
     }
     
     tex.append("\\setlength{\\parindent}{0em}\n")
-         .append("\\setlength{\\parskip}{1em}\n")
-         .append(extraPreamble);
-         
+         .append("\\setlength{\\parskip}{1em}\n");
+
      return tex.toString();
 }
 
@@ -147,7 +148,7 @@ void preTex() {
  * @return The TeX representation of this object and its children
  */
 String toTex() {
-    StringBuilder result = new StringBuilder(preamble()).append("\\begin{document}\n")
+    StringBuilder result = new StringBuilder(preamble().append(extraPreamble)).append("\\begin{document}\n")
     .append(super.toTex());
     
     result.append("\n\\end{document}\n");

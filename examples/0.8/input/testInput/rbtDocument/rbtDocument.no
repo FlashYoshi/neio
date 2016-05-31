@@ -1,5 +1,4 @@
 [Document]
-
 {
     List<Integer> tree = new ArrayList<Integer>();
     tree.add(33);
@@ -17,7 +16,6 @@
     for (int i = 1; i < tree.size(); i = i + 1) {
         numbers = numbers + ''', ''' + tree.get(i);
     }
-    Integer a = 5;
 }
 
 Given the red black tree of {numbers}
@@ -26,9 +24,9 @@ Given the red black tree of {numbers}
     return rbt;
 }
 
-Add 49
+Add 37
 {
-    RedBlackTree rbt2 = rbt.insert(49);
+    RedBlackTree rbt2 = rbt.insert(37);
     return rbt2;
 }
 

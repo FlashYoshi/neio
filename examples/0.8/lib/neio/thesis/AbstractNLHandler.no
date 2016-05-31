@@ -19,11 +19,23 @@ Abstract *(Text text) {
     return parent();
 }
 
+/**
+ * Adds a counsellor to the Abstract
+ *
+ * @param text The counsellor to add
+ * @return The Abstract that created this NLHandler
+ */
 Abstract -(Text text) {
     parent().counsellor(text.realText());
     return parent();
 }
 
+/**
+ * Fills in a new parameter depending on what has been filled in already
+ *
+ * @param text The value of the parameter
+ * @return The Abstract that created this NLHandler
+ */
 Abstract |(Text text) {
     Abstract a = parent();
     if (a.title() == null) {

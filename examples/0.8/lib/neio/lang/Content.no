@@ -123,6 +123,9 @@ Content() {
  * @return The Content to our right
  */
 <T extends Content> T leftOf(T c) {
+    if (c == null) {
+        return c;
+    }
     Minipage mp = prepareParent(this, c);
     Integer siblings = ((Minipage) (mp.content(0))).siblings();
     Minipage mp2 = new Minipage(siblings);
