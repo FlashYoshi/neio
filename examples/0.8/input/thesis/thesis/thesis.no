@@ -2005,7 +2005,7 @@ The `view` contains all of the namespaces, classes,... that were read.
 // TODO: Extra lijn code!
 Chameleon also provides IDE support for the code mode (syntax errors and highlighting, project outline, dependency analysis,...) as is shown below.
 {{
-    image("A code file containing a syntax error.", '''eclipseSyntaxHighlighting''').rightOf(new Image("A code file and its dependencies.", '''eclipseDepensencies'''))
+    image("A code file containing a syntax error.", '''eclipseSyntaxError''').rightOf(new Image("A code file and its dependencies.", '''eclipseDependencies'''))
 }}
 This support is enabled through the few lines of code shown below.
 {
@@ -2036,9 +2036,11 @@ for Java thus this saved us a lot of time.
 
 A second reason is because Java is platform independent which does not restrict us to a single operating system.
 Java is also very popular in the computer science world {cite('''ieeejava''')}, which is why we chose to base our code mode on it.
-This popularity is very important as it gives us a large user base that can read and understand code mode, but we are able to reuse Java library.
+This popularity is very important as it gives us a large user base that can read and understand code mode, but we are also able to reuse Java libraries.
 Because of said popularity, a lot of libraries already exist, which dramatically improves the possibilities of Neio.
 For example, it is possible to use a library that tests your network connection, and directly include the results in a Neio document.
+In TeX this is also possible, but because it is so hard to use the programming model and because there are only so little TeX developers,
+almost no libraries of this kind are available.
 
 ### Fluent interface
 We tried to make use of fluent interfaces as much as possible.

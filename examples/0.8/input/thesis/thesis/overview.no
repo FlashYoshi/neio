@@ -17,14 +17,18 @@ WYSIWYG editors immediately show the final document and help the user by providi
 Markup languages put greater emphasis on letting the user structure a document properly, by providing specialised syntax for certain structural elements for example.
 Because of this, some solutions are easy to read and write while others offer a lot of customisability, usually through some programming model.
 However, a good combination of both is hard to find.
+As such, the goal of this thesis is to design a markup language that provides a powerful programming model, and that is easy-to-read and write.
+The developed language is named Neio.
 
-As such, the goal of this thesis is to design a markup language that is easy-to-read and write.
-It also has to provide a modern programming model to allow for full customisation of the document.
-The state-of-the-art solutions for document production are researched (Chapter 1) and there (dis)advantages of are discussed.
-This is followed by an introduction to the new markup language, its features and the design decisions that were made (Chapter 2).
-Then several proofs of concept for document types and libraries build with the language are presented (Chapter 3).
-Then the development of the compiler for the language, its features and the faced challenges are discussed (Chapter 4).
-The text concludes with possible future work on the thesis (Chapter 5), as well as a short reflection and summary of it (Chapter 6).
+Neio provides two syntaxes named text mode and code mode. Text mode is what most users write most of the time.
+For this reason it is based on Markdown as the state-of-the-art analysis proved that it was easy to read, write and learn.
+Code mode is almost a pure copy of Java. This provides Neio with a big user base that can read and understand code mode.
+It also allows us to reuse existing Java libraries.
 
-# Keywords
+To use Neio a compiler was created, and a few libraries were implemented to demonstrate the strength and versatility of Neio.
+IDE support for Code mode was also provided.
+
+A lot of future work can still be done on Neio, but we believe that a good basis was provided.
+
+*Keywords*
 Markup, Object-oriented, LaTeX, Markdown
