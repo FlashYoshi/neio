@@ -18,6 +18,7 @@ import org.aikodi.chameleon.oo.plugin.ObjectOrientedFactory;
 import org.aikodi.chameleon.oo.statement.Block;
 import org.aikodi.chameleon.oo.statement.Statement;
 import org.aikodi.chameleon.support.member.simplename.method.RegularMethodInvocation;
+import org.aikodi.chameleon.util.Util;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Lexer;
@@ -368,7 +369,7 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
         arguments.add(str);
 
         // Create the most basic type of content, a piece of text
-        return expressionFactory().createConstructorInvocation(TEXT, null, arguments);
+        return expressionFactory().createConstructorInvocation(Util.getLastPart(TEXT), null, arguments);
     }
 
     @Override

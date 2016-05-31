@@ -38,15 +38,6 @@ nested Hline -(Integer level) {
 }
 
 /**
- * Returns the TableRow that created us
- *
- * @return Our parent
- */
-TableRow parent() {
-    return (TableRow) (super.parent());
-}
-
-/**
  * Creates a new TableRow and appends it to our parent
  *
  * @param text The text to be used in the first element of the new TableRow
@@ -54,4 +45,13 @@ TableRow parent() {
  */
 TableRow |(Text text) {
     return parent().appendRow(new TableRow(text));
+}
+
+/**
+ * Returns the TableRow that created us
+ *
+ * @return Our parent
+ */
+TableRow parent() {
+    return (TableRow) (super.parent());
 }

@@ -5,7 +5,7 @@
     Integer arg = 10;
 }
 # Math chapter
-Here you have an inline sqrt ${ieq().sqrt("{base}", "{arg}")}$
+The square root of {arg} with base {base} is written as {ieq().sqrt("{base}", "{arg}")}.
 
 A few example equations:
 

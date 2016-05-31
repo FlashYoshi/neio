@@ -3,12 +3,13 @@
 # Preface and acknowledgement
 In the first place I thank my promotor, professor Marko van Dooren, for all of the guidance, encouragement and feedback he provided to me during the completion of this thesis.
 The thesis would not have reached the current state without our weekly meetings.
+
 My thanks also go out to my counselor, Benoit Desouter, for proofreading the final work on such short notice.
 
 I also thank Stijn Seghers for providing feedback on my work and for listening to my rambling about said work.
 
 Lastly, I thank my family and friends for their support during this year.
-In particular I thank my close family, Marino, Nathalie, Valentin and Amaury, for all the encouragement and guidance they have given me throughout my studies.
+In particular I thank my close family, Marino, Nathalie, Valentin and Amaury, for all the encouragement and support they have given me throughout my studies.
 
 Titouan Vervack, June 2016
 

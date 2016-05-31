@@ -8,5 +8,7 @@
     </sourcepath>
     <binarypath>
         <jar file="../build/libs/chameleon.jar" />
+        <jar file="../build/libs/jnome.jar" />
+        <jar file="../build/libs/neio.jar" />
     </binarypath>
 </project>
