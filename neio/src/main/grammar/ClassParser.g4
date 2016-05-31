@@ -72,8 +72,8 @@ expression : literal                            #literalExpression
            | THIS                               #selfExpression
            | THIS arguments                     #thisDelegation
            | Identifier                         #identifierExpression
-		   | constructorCall	                #newExpression
-		   | neioNewCall                        #neioNewExpression
+           | constructorCall                    #newExpression
+           | neioNewCall                        #neioNewExpression
            | expression DOT Identifier          #chainExpression
            | L_BRACE expression R_BRACE         #parExpression
            | expression DOT name=(Identifier | NAMESPACE | MethodIdentifier | STAR| MINUS | EQUALS | HAT) args=arguments #qualifiedCallExpression

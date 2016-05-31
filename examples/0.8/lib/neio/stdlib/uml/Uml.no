@@ -24,21 +24,6 @@ List<UmlClass> classes;
 Map<Integer, List<UmlClass> > levels;
 Integer scale;
 
-/*Uml() {
-    Config.setCaching(true);
-    LanguageRepository repo = new LanguageRepository();
-    Workspace workspace = new Workspace(repo);
-
-    // CALLING THIS JAVA WILL CAUSE A LOOKUPEXCEPTION
-    Java7 arst = new Java7LanguageFactory().create();
-    repo.add(arst);
-
-    File configFile = new File("project.xml");
-    XMLProjectLoader config = new XMLProjectLoader(workspace);
-    Project project = config.project(configFile, null);
-    View view = project.views().get(0);
-}*/
-
 Uml(String projectXml, String ns) {
     NeioProjectBuilder projectBuilder = new NeioProjectBuilder();
     this.view = (JavaView) (projectBuilder.build(projectXml));
