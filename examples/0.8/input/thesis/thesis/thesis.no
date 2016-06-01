@@ -1937,10 +1937,11 @@ This tool generates a PDF that is then inserted as an image in the document.
 {Chapter implementation = (Chapter) parent()}
 To use Neio, we also had to build a compiler.
 How we implemented it, as well as some lower level concepts used in Neio code files, is explained in this chapter.
+The compiler was built using the Java programming language.
 
 ## Compile process
 {Chapter compProcess = (Chapter) parent()}
-We start out by showing a diagram that depicts the process a source file goes through Neio source code up to the final {lat} file.
+We start out by showing a diagram that depicts the process a source file goes through from Neio source code up to the final {lat} file.
 {
     Image compileFlow = image("The process of compiling Neio source code to LaTeX.", '''CompileFlow''');
     return compileFlow;
@@ -1960,7 +1961,7 @@ The last step uses the Neio library to create a {lat} file of the created object
 
 ## Used libraries and frameworks
 In the previous section we mentioned three libraries/frameworks that were used to successfully compile the document.
-They are discussed in more detail in this chapter.
+They are discussed in more detail in this section.
 
 ### ANTLR4
 {Chapter antlr4C = (Chapter) parent()}
@@ -1987,11 +1988,15 @@ These classes are compiled and then used to visit the Concrete Syntax Tree of a 
 Whilst visiting every rule and terminal, we build an Abstract Syntax Tree (AST) for the given file.
 This tree can then be manipulated in later stages.
 
-The UML diagram for the auto-generated java classes \(`ClassParserBaseVisitor` and `DocumentParserBaseVisitor`\) and our visitor implementations \(`ClassConverter` and `DocumentConverter`\) are illustrated below.
+The UML diagram for the auto-generated java classes and our visitor implementations are illustrated below.
 Note that this is a shortened version, not all the methods are shown.
 {
     image('''visitor.1''')
 }
+
+The generated classes are `ClassParserBaseVisitor` and `DocumentParserBaseVisitor`.
+
+Our implementations are  `ClassConverter` and `DocumentConverter`.
 
 The code to visit an inheritance relation is shown below as an example.
 {
@@ -2009,7 +2014,7 @@ public SubtypeRelation visitInheritance(InheritanceContext ctx) {
 }
 
 The objects that are used in the AST are objects defined in Jnome and Chameleon.
-These object, in combination with the ANTLR4 grammars and visitor classes, thus form the front end of our compiler.
+These objects, in combination with the ANTLR4 grammars and visitor classes, thus form the front end of our compiler.
 
 ### Chameleon and Jnome
 {Chapter chamJnome = (Chapter) parent()}
@@ -2041,7 +2046,8 @@ The same file is used to read Neio projects in our compiler. The `project.xml` f
     return projectXml;
 }
 
-In {umlChap.ref()} the following is happening.
+In {umlChap.ref()}, the following is happening.
+
 First, the Neio compiler reads the Java library as well as the code of the Neio standard library, Neio compiler, Chameleon and Jnome.
 Which libraries to read exactly is shown in `project.xml` as is shown in {projectXml.ref()}.
 Then the Java code is generated and executed.
@@ -2083,24 +2089,25 @@ public class Bootstrapper extends EclipseBootstrapper {
 Next to this code, we also have to add a few configuration files: `plugin.xml`, `build.properties` and `META-INF/MANIFEST.MF`.
 We also have to add an `xml` directory which is used for syntax highlighting.
 These files can be reused for another language as well.
-This only requires us to fill in the name of the plugin and the extension of the language in these files.
+This only requires us to fill in the name of the plugin, and the file extension used by the language in these files.
 
 Of course the compiler also has to fill in position information, but this is needed to create comprehensive error messages anyway.
 
 Having obtained an AST in {antlr4C.ref()}, we now manipulate it in the middle end of our compiler.
-The transformed AST is then output to Java using the Jnome back end.
+The transformed AST is then outputted to Java using the Jnome back end.
 
 ## Translation
 ### Reasons for choosing Java
-The reason we chose for Java was multi-fold. First and foremost, we already had a front and back end available
-for Java thus this saved us a lot of time.
+The reason we chose Java was multi-fold. First and foremost, we already had a front and back end available
+for Java, thus this saved us a lot of time.
 
 A second reason is because Java is platform independent which does not restrict us to a single operating system.
 Java is also very popular in the computer science world {cite('''ieeejava''')}, which is why we chose to base our code mode on it.
 This popularity is very important as it gives us a large user base that can read and understand code mode, but we are also able to reuse Java libraries.
+
 Because of said popularity, a lot of libraries already exist, which dramatically improves the possibilities of Neio.
 For example, it is possible to use a library that tests your network connection, and directly include the results in a Neio document.
-In TeX this is also possible, but because it is so hard to use the programming model and because there are only so little TeX developers,
+In TeX this is also possible, but because it is so hard to use the programming model and because there are so few TeX developers,
 almost no libraries of this kind are available.
 
 ### Fluent interface
@@ -2113,7 +2120,7 @@ Instead of passing a ton of arguments to one method, we split it up in multiple 
 {Chapter javaTrans = (Chapter) parent()}
 Neio makes use of context types, which is a new concept.
 This means we had to create a custom translation for it.
-The way we choose to translate this, is by breaking up the method chains created in the Text mode of a Neio document at every method call.
+The way we chose to translate this, is by breaking up the method chains, created in the Text mode of a Neio document, at every method call.
 A variable is then assigned to the output of this method call.
 
 To know what to call our method on, `ContextType` was implemented as a subclass of the `RegularJavaType` class in Jnome.
@@ -2121,18 +2128,18 @@ A `RegularJavaType` is what we know as a Java class.
 
 We also created a `NeioMethodInvocation` which creates a `ContextType` when its type is queried.
 The constructor of `ContextType` takes two `Type`s as arguments. The first one is the actual return type of the method, the second one is the context of the the method.
-The `ContextType` then adds the two `Type`s as super classes. so that it can access there methods.
+The `ContextType` then adds the two `Type`s as super classes, so that it can access there methods.
 
 When a lookup is done on a `ContextType` it first checks the actual type and then the context.
-Lookups are provided by Chameleon and explaining how exactly they work is out of the scope of this Thesis.
+Lookups are provided by Chameleon and explaining how exactly they work is out of the scope of this thesis.
 
 The lookup on a `NeioMethodInvocation` now returns the correct type, but we still have to find which variable corresponds to this type.
-To implement this we add every variable that is declared to a stack. To find the correct variable we iteratively pop the stack until a variable with the correct type is found.
+To implement this, we add every variable that is declared to a stack. To find the correct variable we iteratively pop the stack until a variable of the correct type is found.
 
 Lastly, we also have to translate `this` as we saw in {thisCode.ref()}.
 All we have to do for this, is replace `this` with the last defined variable and go through the above process again.
 
-The complete translation to Java is shown below.
+An example of a complete translation to Java is shown below.
 {
     LstInputListing ctxExample = new LstInputListing('''../../examples/0.8/input/testInput/testInput/testInput.no''');
     return ctxExample;
@@ -2155,12 +2162,12 @@ new Document()
 The complete translation is given in {compTrans.ref()}.
 The middle end has created three methods. The first one is the main method, it allows the document to be executed as a whole.
 It initialises the document class and then calls `createDocument` which actually creates the object model that represents the document.
-Finally `finishDocument` compiles the document to {lat} and compiles that to a PDF.
+Finally, `finishDocument` compiles the document to {lat}, and compiles that to a PDF.
 
 The reason we split up this process is so that we can call the creation of the document separately which allows us to include documents.
-To do this we call the `createDocument` method with an appropriate argument, we saw this in action in {abstractChap.ref()}.
+To do this we call the `createDocument` method with an appropriate argument. We saw this in action in {abstractChap.ref()}.
 
-The middle end also imported every namespace in the Neio library as well as the `java.util` namespace as those usually needed.
+The middle end also imported every namespace in the Neio library as well as the `java.util` namespace, as those usually needed.
 The name of the Java class that is generated is the same as the name of the Neio document.
 
 ### Reflection
@@ -2168,13 +2175,13 @@ The name of the Java class that is generated is the same as the name of the Neio
 In {bookChapter.ref()}, we used `addClassMapping` to tell the document class to create `ThesisChapter`s instead of `Chapter`s.
 This method is used to tell a `Content` to create specialized versions of a certain `Content`.
 It solves the same problems that factories solve.
-The reason we did not use actual factories is because we did not want the user to write them.
+We we did not use actual factories because we did not want the user to write them.
 Factories are usually straightforward and similar to each other, yet not reusable.
 
 Every `Content` has a class mapping that is initialised as an empty map.
 To use a specialized version of a class, you add a mapping from the generic class to the specialized class.
 
-The middle end of the compiler swaps out every new call to a `Content` in a `Content` by a call to `getInstance`.
+The middle end of the compiler swaps out every new call to a `Content`, in a `Content`, by a call to `getInstance`.
 This method checks if there is a mapping for the generic class in this `Content`, or any of its parents.
 If there is, then an instance of specialized class is created. If not, an instance of the generic class is generated.
 The instances are created through reflection.
@@ -2199,13 +2206,16 @@ We explain this again using the example below.
 }
 
 We added a mapping from `Enumerate.class` to `FibEnumerate.class` in the root `Document`.
-When we now call `getInstance(Enumerate.class, ...)`, the root of the call is `Chapter`, not `Document`.
+When we now call `getInstance(Enumerate.class, ...)`,
+the root of the call is `Chapter`,
+not `Document`.
+
 But as said before, `getInstance` also checks the parents for class mappings. We first check if a mapping is available in `Chapter`.
-As there is none, we recursively check the mappings of our parents. The mapping is found in the first parent, `Document`, and thus we create an instance of `FibEnumerate` one of `Enumerate`.
+As there is none, we recursively check the mappings of our parents. The mapping is found in the first parent, `Document`, and thus we create an instance of `FibEnumerate`, instead of one of `Enumerate`.
 
 ### Escaping
 A Neio document is parsed and converted a number of times. First, it is parsed by the Neio compiler, then 
-it is transformed into Java code that is then converted into {lat} code (in most cases).
+it is transformed into Java code that is then converted into {lat} code.
 This means that we have to handle escaping of characters in three different languages.
 
 In code mode, the same escaping rules as in Java are applied.
@@ -2213,14 +2223,14 @@ In text mode, escaping is easy. Adding a `\\` before a character escapes it. Of 
 special meaning. However, `\\\[bf\]` have not been included in Neio as they are not yet needed. In the future it might 
 prove useful to include them too.
 
-We can not just translate these characters straight to Java as we have no special meaning for `\\\[bf\]`.
+We can not just translate our characters straight to Java, as we have no special meaning for `\\\[bf\]`.
 For this reason, the middle end transforms every backslash into two backslashes, and transforms a double backslash (denotes an 
 escaped single backslash in Neio) to four backslashes in Java (this is how you represent an escaped backslash in a Java String).
 
 We then do some further translation in the `Text` class to assure that it creates valid {lat}.
 {lat} only has ten special characters thus translation is quite easy. This translation code is shown below.
 {
-    new LstInputListing(170, 192, '''../../examples/0.8/lib/neio/lang/Text.no''')
+    new LstInputListing(171, 192, '''../../examples/0.8/lib/neio/lang/Text.no''')
 }
 
 `ESC` is an escape sequence. It is used to prevent the second replace from adjusting the changes made in the first replace.
@@ -2239,9 +2249,9 @@ Extra arguments for the builder or writer can be passed through their constructo
 
 A writer and builder are also used to create the {lat} source code of an object model and compile it to the final PDF.
 The `TexFileWriter` class takes the {lat} string that was created by calling `toTex()` on the root object of document, and writes it to a file.
-The name of the {lat} sources file is equals that of the Neio document.
+The name of the {lat} sources file equals that of the Neio document.
 
-The `TexToPDFBuilder` class takes the name of the created {lat} file and compiles it to a PDF.
+The `TexToPDFBuilder` class takes the name of the created {lat} file as an argument, and compiles it to a PDF.
 It also cleans up all the unnecessary files that were created during the compilation of the {lat} source file.
 To compile the {lat} source code, we use the `latexmk` command.
 We chose this command because it automatically compiles the file multiple times if this is needed (for example for references).
@@ -2285,7 +2295,7 @@ try {
     Files.write(path, lines);
 }
 catch (Exception e) {
-    throw new NeioRuntimeException("Exception encountered: " + e);
+    throw new NeioRuntimeException("Exception encountered: " + e.getMessage());
 }
     ''')
 }
@@ -2294,7 +2304,7 @@ catch (Exception e) {
 As shown in the previous section, we use the `toTex` method to create the {lat} representation of an object.
 However, this is bad as it adds a dependency towards {lat} on every file.
 
-For example, imagine that we want to create an HTML representation of the objects.
+Imagine that we want to create an HTML representation of the objects.
 With the current setup, we have to add a `toHTML` method to every object.
 
 For this reason, it would be better to create an external visualiser to output the object model.
@@ -2328,7 +2338,7 @@ The fact that we have to worry about different platforms on a cross-platform lan
 In Java, methods can only contain letters, numbers, `\$` or `\_`. This means we have to translate symbol methods to valid Java identifiers.
 This is done in a very straightforward manner.
 
-Using the following mapping, we replace all occurrences of a key in a method or method invocation with the value.
+Using the following mapping, we replace all occurrences of a key in a method, or method invocation, with the value.
 {
     new LstListing('''
 "#" -> "hash"
