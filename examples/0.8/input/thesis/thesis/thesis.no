@@ -13,27 +13,27 @@
 
 # Introduction
 {Chapter intro = (Chapter) parent()}
-In this thesis we introduce a new markup language that improves upon a few others, namely {lat} and {md}, whilst still holding on to their advantages.
+In this thesis, we introduce a new markup language that improves upon a few others, namely {lat} and {md}, whilst still holding on to their advantages.
 
 The language has been used to write this entire book with the exclusion of the title page (which is auto-generated) and a few images.
 The source code of the book is available on the {href("UGent GitHub", '''https://github.ugent.be/tivervac/neio/blob/master/examples/0.8/input/thesis/thesis/thesis.no''')} {cite('''neiosrc''')}.
 In the same repository you also find the {href("Neio library", '''https://github.ugent.be/tivervac/neio/tree/master/examples/0.8/lib/neio''')} {cite('''neiolib''')} and source code for 
 the {href("Neio compiler", '''https://github.ugent.be/tivervac/neio/tree/master/neio''')} {cite('''neiocompiler''')}.
 
-Before we get into the details of this new language it is necessary to introduce some of the most used markup languages and word processors.
+Before we get into the details of this new language, it is necessary to introduce some of the most used markup languages and word processors.
 
 ## State-of-the-art
 Before we discuss the state-of-the-art, we first discuss the difference between saving a document in a human-readable or a binary format.
 
 {md}, {lat} and {pan} use a human-readable format that can be opened in any editor, is quite robust to file corruptions and is well suited for Version Control Systems (VCS) such as Git and Mercury.
 It is robust in the sense that a if a single bit of the document gets flipped, the document can still be repaired by the user.
-The user can find the error on his own, or he can use the variety of editors to find help him as every editor can handle errors differently.
+The user can find the error on his own, or he can use the variety of editors to help him find it, as every editor can handle errors differently.
 
 When the syntax gets more extensive and less human-readable, the chances to encounter a problem upon compilation increase.
 This is both good and bad, if a part of the syntax got corrupted, the compiler tells you and you know that the document has been corrupted.
 Had it not warned the user, the document would be in a corrupt state without the user noticing so.
-On the other hand the corruption can prevent the document from successfully compiling, forcing the user to find out what happened to the document.
-In any case however, the error can still be tracked down and repaired.
+On the other hand, the corruption can prevent the document from successfully compiling, forcing the user to find out what happened to the document.
+However, the error can still be tracked down and repaired.
 
 This is not always possible, when using a binary format, like the ones used by default in What You See Is What You Get (WYSIWYG) editors for example.
 As a matter of fact, we created a Word document and flipped one bit in a random byte using a hex editor.
@@ -44,16 +44,16 @@ We then tried to open the document and received the following sequence of errors
     image("The inability to repair the error.", '''wordCorruption3''').scale(80);
 }}
 
-A regular user, without technical expertise, is not be able to repair this error as the source code is not human-readable.
+A regular user, without technical expertise, is not able to repair this error as the format is not human-readable.
 There are also almost no other tools to help the user as the binary format can only be interpreted correctly by a few editors.
 
-It is to be noted that the error handling depends on what exactly was corrupted, in some cases the corruption can be automatically repaired.
+It is to be noted that the error handling depends on what exactly was corrupted. In some cases the corruption can be automatically repaired.
 
 ### Word processors
 {Chapter goodWord = (Chapter) parent()}
 The best-known solution for creating documents, are so called WYSIWYG editors, examples include \`Microsoft Word' and \`Pages'.
 They are called as such because you immediately, without compiling, see what your final document is going to look like.
-Because of this, the complexity of the tool is significantly decreased allowing anyone to use the tool.
+Because of this, the complexity of the tool is significantly decreased, allowing anyone to use the tool.
 It is less complex because you do not have to type in commands and wait for a preview to change.
 Instead you select the property from a drop-down list or click a button and the document is updated instantly.
 The GUI essentially hides the complexity.
@@ -61,9 +61,9 @@ The GUI essentially hides the complexity.
 A WYSIWYG editor gives the author freedom, for example it is very easy to change a font or change the font size of a certain part of the text
 and you can easily add an image and drag-and-drop it around.
 
-A lot of these editors are grouped into packets, such as Office or LibreOffice.
+A lot of these editors are grouped into packets, such as Microsoft Office or LibreOffice.
 Using one of these packets, it is also easy to insert slides, tables or another document {cite('''ole''')}.
-These are then be editable with the specialized program for it (like Excel), but you do not have to leave the document.
+These are then editable with the specialized program for it (such as Excel), but you do not have to leave the document.
 In the example below an Excel chart has been inserted into a Word document.
 {
     image("An Excel chart in a Word document.", '''excelInWord''')
@@ -74,7 +74,7 @@ These make documents cross-platform and allow multiple people to work on them at
 It is also possible to add comments or suggestions on (online) documents.
 These changes can then be resolved in just one click by an authorized editor.
 
-Some documents are however more complex and have need for a more powerful tool such as {lat}.
+However, some documents are more complex and need a more powerful tool such as {lat}.
 
 ### {lat}
 {Chapter latexAdv = (Chapter) parent()}
@@ -82,19 +82,19 @@ Some documents are however more complex and have need for a more powerful tool s
 It provides a set of extra macros that can be used on top of the TeX macros.
 
 {lat} provides rich customisability through the Turing complete programming model provided by TeX.
-The model is different from modern programming models, it does not use regular variables or functions, instead it uses macros.
+The model is different from modern programming models, it does not use regular variables or functions, but instead it uses macros.
 A macro or command looks like the following: `\\cmdname\[opt-arg\]\{req-arg\}`.
 Here `cmdname` is the name of the command, `opt-arg` are the optional arguments and `req-arg` are the required arguments.
 To show how commands work, we show the process involved in processing some input that includes a command.
 
-In {lat}, every character and command in the input is a token, `a` is a token but `\\command` is also a token.
+In TeX, every character and command in the input is a token, `a` is a token but `\\command` is also a token.
 The input is transformed into a list of tokens and is then processed token after token.
 When a command is encountered, it is expanded.
 
 Expansion removes the current token from the list and adds every expandable item in its body to the token list recursively.
 This is best shown using an example.
 
-We define two commands using `\\newcommand` and call the `\\y` command.
+We define two commands using `\\newcommand` and call the `y` command.
 {
     new LstListing('''
 \\newcommand{\x}{a command}
@@ -104,14 +104,14 @@ We define two commands using `\\newcommand` and call the `\\y` command.
 
 The output is `This is a command`.
 The step-by-step expansion is given below:
-- {lat} encounters the token `\\y` without arguments and expands it.
+- Tex encounters the token `\\y` without arguments and expands it.
 - `\\y` is removed from the token list and `This is \\x` is added to it.
 - `This is` is read and `\\x` is encountered, `\\x` gets expanded.
 - `\\x` is removed from the token list and `a command` is added.
 
 We can also pass arguments to a command by specifying the amount of arguments as an optional argument.
 We can then access the arguments by using the `hash` symbol followed by a number.
-For example, the output of code beneath is: `This is an argument`.
+For example, the output of the code below is: `This is an argument`.
 {
     new LstListing('''
 \\newcommand{\command}[1]{This is #1}
@@ -119,7 +119,7 @@ For example, the output of code beneath is: `This is an argument`.
 ''')
 }
 
-The braces around the first required argument are optional, thus we can also write this as follows:
+The braces around the first required argument are optional, thus we can also write this as follows.
 {
     new LstListing('''
 \\newcommand\command[1]{This is #1}
@@ -127,6 +127,7 @@ The braces around the first required argument are optional, thus we can also wri
 }
 
 To elaborate further on expansion, we have a look at another example.
+
 We have the string `Hello` saved in a command and want to concatenate a string to it so that it prints out `Hello world`.
 To do this, we have to redefine the command, this can be done using `\\renewcommand`.
 We thus get the following:
@@ -139,7 +140,7 @@ We thus get the following:
 
 The `\{\}` at the end of `\\example` is used as a delimiter, to know when the `\\example` command ends, such that the space behind it does not disappear.
 This example does not work however as `\\example` is recursively calling the new definition instead of calling the old one once.
-To counter this, `\\example` in the new definition should be expanded first, we can to that using `\\expandafter` as shown below.
+To counter this, `\\example` in the new definition should be expanded first. We can do that using `\\expandafter` as shown below.
 {
     LstListing latExample = new LstListing('''
 \\newcommand{\example}{Hello}
@@ -149,25 +150,25 @@ To counter this, `\\example` in the new definition should be expanded first, we 
     return latExample;
 }
 
-`\\expandafter` removes the first two tokens behind itself from the token list, expands the second token and then adds the expanded token and the first token back to the token list.
+`\\expandafter` removes the first two tokens behind itself from the token list, expands the second token and then adds the first token and the expanded token back to the token list.
 
 The step-by-step expansion for the previous example is given below:
 - `\\example` is defined for the first time.
 - The second definition begins.
-- `\\expandafter` removes `\\renewcommand` and `\\expandafter` and expands the latter.
-- The second `\\expandafter` removes `\\example` and `\\expandafter` and expands the latter.
-- The third `\\expandafter` removes `\{` and `\\example` and expands the latter to `Hello`.
+- `\\expandafter` removes `\\renewcommand` and `\\expandafter`, and expands the latter.
+- The second `\\expandafter` removes `\\example` and `\\expandafter`, and expands the latter.
+- The third `\\expandafter` removes `\{` and `\\example`, and expands the latter to `Hello`.
 - `\\renewcommand`, `\\example`, `\{` and `Hello` are placed back on the token list.
-- The token list \(`\\renewcommand\example\{Hello world\}`\) is now expanded normally.
+- The token list \(`\\renewcommand\\example\{Hello world\}`\) is now expanded normally.
 
-Using this programming model, libraries, called packages can be created.
+Using this programming model, libraries, called packages, can be created.
 Over the course of the past 31 years (the initial {lat} release was in 1985), a lot of them have been created.
-They offer all kinds of functionalities, ranging from the creation of sheet music and slide shows {cite('''beamer''')} to providing the base to write letters and books.
+They offer all kinds of functionalities, ranging from the creation of sheet music and slide shows {cite('''beamer''')} to providing the base for writing letters and books.
 This is one of the reasons why {lat} is often used for long and complex documents such as books, scientific papers and syllabi.
 
 The goal of {lat} {cite('''latintro''')} is for the user to focus on the structure and content of the document and to let designers worry about the design of the document.
 To make sure the document looks good afterwards, it is important to structure it using elements such as sections and paragraphs.
-Because of the freedom given in WYSIWYG word processor, it is often forgotten to use styles, headers and so on.
+Because of the freedom given in WYSIWYG word processors, it is often forgotten to use styles, headers and so on.
 This can cause inconsistencies to appear as the document grows.
 
 Designers can use the very sophisticated typesetting of {lat} to create designs for well structured {lat} documents.
@@ -185,25 +186,26 @@ These are reference management programs that are very robust and make certain th
 They allow you to create the references outside of your main document, decreasing the amount of clutter in the document.
 
 Whilst on the topic of including other files in your document, in {lat} you can split up your document into multiple smaller documents, allowing for easier management.
-A common use of this function is to write every chapter, for example in a book, in a separate document and than all the chapters are imported into the main document.
+A common use of this function, is to write every chapter, for example in a book, in a separate document and then import all these chapters in the main document.
 This allows to easily remove or switch out different parts of a document. This is also possible in {pan} (as you can inline {lat}\) and the WYSIWYG editors {cite('''ole''')}.
 
-Finally, {lat} employs a free and open source model, which is a big reason why it is so popular in the open source community.
-As a result of this model, combined with its popularity and good scientific support, LaTeX has been integrated in many other applications.
+Finally, {lat} employs a free and open-source model, which is a big reason why it is so popular in the open-source community.
+As a result of this model, combined with its popularity and good scientific support, {lat} has been integrated in many other applications.
 A few examples are:
 * MediaWiki {cite('''mwikilat''')} {cite('''mediawiki''')}: a free and open-source software package that powers sites as Wikipedia {cite('''wikipedia''')} and Wiktionary {cite('''wiktionary''')}.
 * Stack Exchange {cite('''stackexchange''')}: a network of Q\&A web sites
-* JMathTex {cite('''jmathtex''')}: a Java library adds functionality to display mathematical formulas in a Java application
+* JMathTex {cite('''jmathtex''')}: a Java library that adds functionality to display mathematical formulas in a Java application
 
-{lat} is powerful but it is also complex and has a steep learning curve, because of this, simpler alternatives such as {md} have been created.
+{lat} is powerful but it is also complex and has a steep learning curve. because of this, simpler alternatives such as {md} have been created.
 
 ### {md}
-The goal of {md} {cite('''markdown''')} is to be easy-to-write and read as a plain text document and as such is actually based on plain text emails.
-Its appeal lies in its simplicity as it allows to for example easily create a simple document, such as a short report or a blog post.
+The goal of {md} {cite('''markdown''')} is to be easy to write and read as a plain text document and as such is actually based on plain text emails.
+Its appeal lies in its simplicity. It is for example easy to create a simple document, such as a short report or a blog post.
 
 It achieves this simplicity, by introducing a small and simple syntax {cite('''mdsyntax''')} that feels natural.
 For example, to create a title you underline it with `minus` or `equals` characters.
 To create an enumeration, you use `star` characters as bullet points.
+
 An example {md} document is shown below:
 {{
     Image i = image("The document rendered as HTML by the official {md} conversion tool.", '''document''').scale(40);
@@ -232,7 +234,7 @@ However, outside of the {lat} one, {pan} does not really have a programming mode
 A document in {pan} can be read and transformed into an Abstract Syntax Tree (AST).
 The AST is read in a filter, then transformed and passed on to the next filter.
 
-Filters can be written in a multitude of languages such as Haskell, Python, Perl,... .
+Filters can be written in a multitude of languages such as Haskell, Python and Perl.
 They are then passed as a command line argument to the conversion command.
 We illustrate this using an example from the {pan} tutorial on scripting {cite('''panexample''')}.
 {
@@ -243,11 +245,15 @@ We illustrate this using an example from the {pan} tutorial on scripting {cite('
 (Pandoc, 2016)
 
 The example above shows a filter written in Haskell.
-It replaces all the headers of level 2 or more in a {md} file by paragraphs with the text in italics (hence the `Emph` in the code).
+It replaces all the headers of level 2 or more in a {md} file, by paragraphs with the text in italics (hence the `Emph` in the code).
 The `toJSONfilter` function constructs a JSON representation of the AST.
 Using this, we find the headers of level of 2 or more and create a new paragraph.
-The document can be created using the following command `pandoc -f SOURCEFORMAT -t TARGETFORMAT --filter ./behead2.hs`.
-
+The document can be created using the following command.
+{
+    new LstListing('''
+pandoc -f SOURCEFORMAT -t TARGETFORMAT --filter ./behead2.hs
+    ''')
+}
 This example shows the power of {pan}: it can do its work directly on the AST.
 This means that the source document does not have to be a {md} document, it could also use HTML or any other supported input format.
 
@@ -268,7 +274,7 @@ echo "Hello world! I am " $(whoami)
 }}
 
 Using {pan}, you can also declare templates that allow you to use variables.
-The value of the variables is predefined (such as `\$body\$`\) or passed in through the command line.
+The values of the variables are predefined (such as `\$body\$`\), or passed in through the command line.
 These can then also be used in conditionals or loops in this template.
 You can see an example below.
 {
@@ -292,7 +298,7 @@ We discuss the most common ones for every solution underneath and afterwards we 
 
 ### Word processors
 The UI in WYSIWYG editors allows you to customise the document, you can insert other documents, tables, figures,... and adjust a lot of properties.
-It is also possible to use macros using for example Visual Basic for Applications in Word to automate some tasks.
+It is also possible to use macros, using for example Visual Basic for Applications in Word, to automate some tasks.
 It can for example be used to remove leading tab characters from paragraphs.
 
 However, it has trouble with inserting variables.
@@ -307,18 +313,18 @@ In there you create a new module in which you define your new variables as follo
     ''')
 }
 
-The result variable can then be inserted by selecting `Quick parts` in the `Insert` tab, selecting `Field`, then selecting `DocVariable` and finally typing in `result`.
-This inserts the `result` variable into the document, but the variable is not automatically update.
-To achieve that you have to right-click it and click `Update field`.
+The `result` variable can then be inserted by selecting `Quick parts` in the `Insert` tab, selecting `Field`, then selecting `DocVariable`, and finally typing in: result.
+This inserts the `result` variable into the document, but the variable is not automatically updated.
+To achieve that, you have to right-click it and click `Update field`.
 
-In word processors small changes can also have big side effects on the document.
-For example, you placed an image exactly where you wanted and later on, you add a newline somewhere higher up.
+In word processors, small changes can also have big side effects on the document.
+For example, you placed an image exactly where you wanted it and later on, you add a newline somewhere above it.
 The reflowing of the text underneath it shifts the precisely placed image out of place.
 These changes are not always immediately clear, which creates inconsistencies in the document.
 
-Another problem that occurs with images (thought it is not an inherent problem of WYSIWYG editors, rather a bad implementation), 
+Another problem that occurs with images (though it is not an inherent problem of WYSIWYG editors, rather a bad implementation), 
 is that the caption does not move together with the image.
-In the example below an image is inserted and a caption is (by right-clicking the image and pressing `Add caption`\) added.
+In the example below, an image is inserted and a caption is (by right-clicking the image and pressing `Add caption`\) added.
 The image is then dragged to the end of the file and we see that the caption remains in place.
 {
     Image wordCaption = image("Caption below the image.", '''wordCaption''');
@@ -332,7 +338,8 @@ The image is then dragged to the end of the file and we see that the caption rem
 Even though {lat} offers customisability through the programming model of TeX, it is not perfect.
 The programming model is hard to use and read, creating a steep learning curve.
 It also makes {lat} seem complex, scaring away a lot of potential users.
-A way to counter this complex look, is LyX {cite('''lyx''')}. This is a GUI around {lat} offering some of the most common WYSIWYG features, while still utilizing the strength of {lat}.
+
+A way to counter this complex look, is LyX {cite('''lyx''')}. It is a GUI around {lat} offering some of the most common WYSIWYG features, while still utilizing the strength of {lat}.
 Even though the complexity can be hidden under a GUI, it is still there and error messages are as bad as they were before, as is discussed beneath.
 
 Having a cumbersome programming model, TeX makes it easy to create syntax errors.
@@ -352,26 +359,30 @@ line 5: You can't use `\eqno' in math mode.\endequation ->\eqno\hbox {\@eqnnum }
 line 6: Missing $ inserted.<inserted text>$ \end{equation}
 '''));
 }}
-The message means that `\$` is not allowed inside of an equation, but that is not clear from the error message.
+This message means that `\$` is not allowed inside of an equation, but that is not clear from the error message.
 
-As mentioned in {latexAdv.ref()}, the macro model does not work as we are used to in imperative and functional languages, we have to think about the order of expansions.
+As mentioned in {latexAdv.ref()}, the macro model does not work as we are used to in imperative and functional languages. We have to think about the order of expansions.
 Keeping up with these expansions is confusing and requires a lot of work.
-For example, if you want to use higher-order programming in TeX, you have to make sure that the function that is passed is not expanded immediately.
+For example, if you want to use higher-order programming in TeX, you have to make sure that the function that is passed, is not expanded immediately.
 
 Next to this, we also have to watch out for name clashes, because in TeX, and {lat}, most of the macro definitions end up in the root namespace.
-The `newcommand` we saw in {latexAdv.ref()}, requires that the command has not been defined earlier, if it was, an error is thrown.
-`renewcommand` requires that the command was defined earlier, it overwrites the previous command and it crashes if the command was not yet defined.
-Lastly, `providecommand` acts as `newcommand` if the command was not yet defined and does nothing if it was already defined, leaving the old definition intact.
-For example, we can not define a command called `name` using `newcommand` as this command already exists, we have to use `renewcommand` to this.
+
+The `newcommand` we saw in {latexAdv.ref()}, requires that the command has not been defined earlier. If it was, an error is thrown.
+
+`renewcommand` requires that the command was defined earlier. It overwrites the previous command and it crashes if the command was not yet defined.
+
+Lastly, `providecommand` acts as `newcommand` if the command was not yet defined, and does nothing if it was already defined, leaving the old definition intact.
+
+For example, we can not define a command called `name` using `newcommand` as this command already exists. We have to use `renewcommand` to achieve this.
 This should be used with care however, as every command that uses `name` now uses the newly defined `name`.
 
-Lastly, {lat} does not use a static type system while this could provide us with information needed for refactoring and auto-completion based on the context.
+Lastly, {lat} does not use a static type system. This could provide us with information needed for refactoring and auto-completion based on the context.
 
 ### {md}
-{md} is simple but pays a hefty price for it.
-All of the syntax elements have been hard-coded into the language meaning there is no room for customisability.
+{md} is simple, but pays a hefty price for it.
+All of the syntax elements have been hard-coded into the language meaning that there is no room for customisability.
 The only way to customise {md} is by embedding inline HTML.
-This allows to create a solid structured model but it still does not allow for very much customisability.
+This allows users to create a solid structured model, but it still does not allow for very much customisability.
 There is no programming model that can provide the customisability.
 
 As an example, we use HTML to create a table, as these are not a part of default {md} (though there are variations that have syntax for them, like GitHub Flavored {md} {cite('''ghfmd''')}).
@@ -398,29 +409,30 @@ Finally, HTML reintroduces the possibility of syntax errors and thus slows down 
 
 ### {pan}
 {pan} allows you to execute exterior programs through the PanPipe filter, but the only result is the stdout and stderr of the program.
-These do not allow you to change the output afterwards because you have no more structure.
+These do not allow you to change the output afterwards because the structure is lost.
 The structural elements such as sections and paragraphs have disappeared.
+
 For example, you create a binary tree using a 3rd party application.
 Then you want to insert a new value into this tree, which requires it to be rebalanced.
-However this is impossible as you lost all of the structure of the tree, it is only represented as a string.
+However, this is impossible as you lost all of the structure of the tree. It is only represented as a string.
 You thus have to redraw every instance of the tree instead of creating it once, programmatically transforming it and redisplaying the transformed tree.
 
 To access the structure of the document, the AST can be used.
 Transforming an AST afterwards however, does not allow for precise control either.
 In {behead2.ref()} we saw how we could replace all of the headers of a level higher than 2, but changing it for only a few would require us to find them.
-If we could have done this inline or if we could redefine the meaning of the `\#` symbol, the problem would be avoided.
+If we could have done this inline, or if we could redefine the meaning of the `\#` symbol, the problem would be avoided.
 
 Finally, the variables used in {pan} have some limitations.
-They can not be defined inline, only through the command line and they can only be used in templates.
+They can not be defined inline, only through the command line, and they can only be used in templates.
 This means that you can not easily embed variables and execute simple expressions such as `x + y`.
 
 ## Proposed solution: Neio
 {Chapter goals = (Chapter) parent()}
-To counter the problems occurring in the state-of-the-art solutions whilst retaining their advantages, we created a new markup language called `Neio` (read as neo).
+To counter the problems occurring in the state-of-the-art, whilst retaining their advantages, we created a new markup language called `Neio` (read as neo).
 The name `Neio` was chosen because `neo` means new and we are developing a new language.
-The spelling however, came from the Colemak keyboard layout {cite('''colemak''')}, the letters on the home row, beneath the right hand, spell `n-e-i-o`.
+The spelling however, came from the Colemak keyboard layout {cite('''colemak''')}. In this layout, the letters on the home row, beneath the right hand, spell `n-e-i-o`.
 
-Based on these solutions, the following goals were created for the Neio markup language:
+Based on the state-of-the-art, the following goals were created for the Neio markup language:
 - It has to be user-friendly and easy to get started with the language;
 - It has to use a modern programming paradigm;
 - It has to be highly customisable.
@@ -428,8 +440,8 @@ Based on these solutions, the following goals were created for the Neio markup l
 The first goal is achieved by using a syntax like {md} for the documents.
 
 To achieve the second goal we note that a document has a strong structure consisting of a lot of elements like chapters, sections, paragraphs and so on.
-An object-oriented model, like the one in Java, is able to represent this structure well by using an object for each element and
-inheritance allows us to easily specialize an element, for example change the numbering of an enumeration.
+An object-oriented model, like the one in Java, is able to represent this structure well by using an object for each element.
+Inheritance then allows us to easily specialize an element, for example change the numbering of an enumeration.
 We also chose this model because it is well known and as seen in {latexAdv.ref()} and {panAdv.ref()}, working with macro expansions or filters is not ideal.
 
 Because it offers a powerful programming model that we can translate to, we chose to translate to {lat}.
@@ -437,7 +449,7 @@ It has also been used successively for decades and has proven that it can delive
 Later on more back ends, such as HTML, could be implemented, but that is outside of scope of this thesis.
 
 ### Target group
-Neio targets anyone that is currently using {md} but wants to customise their document further.
+Neio targets anyone who is currently using {md} but wants to customise their document further.
 For example, using Neio you can create citations and references, which is not possible in {md}.
 
 By offering a simpler syntax than used in {lat}, we target {lat} users.
@@ -445,12 +457,12 @@ Finally, we target developers by offering a well-known, modern programming model
 
 # Design of the Neio markup language
 {Chapter design = (Chapter) parent()}
-In {intro.ref()} the state-of-the-art concerning document creation has been discussed and we concluded that improvements can be made.
-In this chapter the Neio language is presented.
+In {intro.ref()}, the state-of-the-art concerning document creation has been discussed and we concluded that improvements can be made.
+In this chapter, the Neio language is presented.
 We explain how our decisions were reached and how they were affected by the state-of-the-art.
 
 ## Neio document
-The typical files that a user writes are called Neio documents; they have to be as simple as possible.
+The typical file that a user writes, is called a Neio document. It has to be as simple as possible.
 These files use the `.no` extension.
 Based on our state-of-the-art analysis, we chose a {md}-like syntax for Neio documents.
 
@@ -476,8 +488,8 @@ A difference with {md}, but a resemblance with {lat}, is that every Neio documen
 It tells us what kind of document we are building.
 This is done to improve customisability and to support multiple kinds of documents.
 
-In Neio there are two sets of syntax called text- and code mode.
-{neioEx.ref()} is written in text mode, the code files in next section are written in code mode.
+In Neio, there are two sets of syntaxes called text- and code mode.
+{neioEx.ref()} is written in text mode. The code files in the next section are written in code mode.
 
 ## Code files
 Code files are very similar to class files in Java.
@@ -494,7 +506,7 @@ To introduce code files, we take a look at the `Paragraph` class that is used to
 
 Except for some variations on the syntax, such as using `namespace` instead of `package`, and the lack of access level modifiers (which can be specified), this is valid Java code.
 The absent access level modifiers are automatically set to `private` for members and `public` for methods.
-They do not have to be written explicitly as the default value is usually what the developer wants and it makes the code file just a little clearer and more concise.
+They do not have to be written explicitly as the default value is usually what the developer wants, and it makes the code file just a little clearer and more concise.
 
 To keep code files simple and to maximize reusability (as well as making the parsing somewhat easier), some functionality from the Java language was dropped.
 It is for example not possible to create anonymous classes as these are not reusable and do not provide any new functionality.
@@ -550,7 +562,7 @@ For example, sometimes it is specified that two elements should be placed next t
 Every element that is visualised in the final document is a `Content`.
 `Content` is the base class of Neio, it is like `Object` in Java.
 
-To customise the semantics of the syntax in text mode, the Java syntax in code files has been modified to allow for special method identifiers.
+To customise the semantics of the text mode, the Java syntax in code files has been modified to allow for special method identifiers.
 These are discussed in the next section.
 
 ## Method modifications
@@ -561,13 +573,13 @@ The modifications and the reasons for the modifications are given below.
 
 ### Symbol methods
 {Chapter symbolChap = (Chapter) parent()}
-In {docChapter.ref()} we saw that the code file, used a hash symbol as a method name.
+In {docChapter.ref()}, we saw that the code file used a hash symbol as a method name.
 These methods are called `symbol methods`.
 All the symbols that can be used as method names are `\#, \-, \*, \_, \$, \|, \=, \^, \``. // `
 
 
 These methods have either no arguments or a `Text` argument.
-This is done to keep the method calls invisible for the user as more or different arguments would have to passed explicitly.
+This is done to keep the method calls invisible for the user, as more or different arguments would have to be passed explicitly.
 The `Text` that is passed to the method is the text following the call in text mode.
 An example of both, and the call chain, is shown below.
 {
@@ -596,18 +608,18 @@ The first of them is `text` and is explained in the next section.
 {Chapter textChap = (Chapter) parent()}
 Whenever text in a Neio document is encountered on its own, for example a paragraph but not the text behind a `\#` symbol,
 the `text` method is called with the text as an argument.
-`text` is a separate method to allow continuation of the call chain and because not every block of text is necessarily a paragraph.
+The `text` method is a separate method to allow continuation of the call chain and because not every block of text is necessarily a paragraph.
 It can for example be a quote.
 
-We use `Text` instead of just a Java `String` because `Text` can be marked up.
+We use `Text` instead of a Java `String` because `Text` can be marked up.
 How this can be done is explained in the next section.
 
 ### Surround methods
 Like in {md}, we want to markup text by placing it between a pair of characters.
 For example, putting text in bold by surrounding it with a pair of `star` characters.
-With the features that we have seen so far this is not yet possible.
+With the features that we have seen so far, this is not yet possible.
 
-To achieve this surround methods were developed.
+To achieve this, surround methods were developed.
 A surround method is a method that is annotated with the `surround` modifier.
 When text in text mode is surrounded with a pair of symbols, then a surround method is called.
 A few examples of such methods are given below.
@@ -651,14 +663,14 @@ If we have a look at the `Chapter` class, we see that it defines a nested method
 If we now call `chapter.\#\#("Chapter 1.1")` for example, it translates to the following call: `chapter.\#("Chapter 1.1", 2)`.
 
 A nested method only matches with at least two symbols, the single symbol has to be defined separately.
-The first reason for this is because the first level often requires some initialisation.
+The first reason for this is that the first level often requires some initialisation.
 A second reason is given once context types have been discussed.
 An example of such initialisation is shown below.
 {
     new LstInputListing(21, 35, '''../../examples/0.8/lib/neio/stdlib/TextContainer.no''');
 }
 
-When a `\*` call is encountered for the first time, an `Itemize` has to be created
+When a `\*` call is encountered for the first time, an `Itemize` has to be created.
 The following `\*` calls then simply add an `ItemizeItem` to it.
 
 The last method name that was reserved is `newline`.
@@ -666,7 +678,7 @@ It is explained in the next section.
 
 ### Newlines
 {Chapter newlines = (Chapter) parent()}
-Users often use varying amount of newlines to express different structures.
+Users often use a varying amount of newlines to express different structures.
 For example, the following two examples do not have the same meaning.
 {
     LstListing twoLists = new LstListing("Two lists", '''
@@ -697,7 +709,7 @@ newline ::= "\\r?\\n"
     ''')
 }
 
-An example of a document and its call chain including the newline method is shown below.
+An example of a document, and its call chain, that includes a call to the newline method is shown below.
 {
     LstListing newlineEx = new LstListing('''
 [Document]
@@ -724,7 +736,7 @@ new Document()
 ''').rightOf(newlineEx)
 }}
 
-This example shows that we never explicitly create a paragraph, this is done depending on the context.
+This example shows that we never explicitly create a paragraph. This is done depending on the context.
 We explain the example step-by-step to understand how the document is build.
 
 The first `newline()` is defined in `TextContainer`, the super class of `Document`, and creates an intermediate object that is an instance of `NLHandler`.
@@ -739,12 +751,12 @@ The code for this method is shown below.
 }
 
 The second `newline()` is defined in Paragraph. It creates a new `ParNLHandler` which also defines a `text` method.
-This `text` method (shown below) however does not create a new `Paragraph` but appends to the existing one.
+This `text` method (shown below) however, does not create a new `Paragraph` but appends to the existing one.
 {
     new LstInputListing(26, 34, '''../../examples/0.8/lib/neio/stdlib/ParNLHandler.no''')
 }
 
-Next there are two `newline()` calls. As we saw the first one creates a new `ParNLHandler`, but `ParNLHandler` also defines a `newline` method (given below).
+Next there are two `newline()` calls. As we saw, the first one creates a new `ParNLHandler`, but `ParNLHandler` also defines a `newline` method (given below).
 This method returns the `NLHandler` defined by the parent (in this case `Document`\) of the existing `Paragraph`.
 {
     new LstInputListing(12, 20, '''../../examples/0.8/lib/neio/stdlib/ParNLHandler.no''')
@@ -756,7 +768,7 @@ The following `newline()` and `text()` append some `Text` to the new `Paragraph`
 By introducing these special method identifiers we actually extended fluent interfaces {cite('''fluent''')}.
 Because of this, the user is actually programming without noticing it.
 
-In Chapter 3 we see that we can for example create tables as the one below.
+In Chapter 3, we see that we can for example create tables as the one below.
 {
     LstListing tableEx = new LstListing("A table created using a DSL.", '''
 |      Student club      | Rounds | Seconds/Round | Dist (km) | Speed km/h | 
@@ -796,8 +808,8 @@ In Chapter 3 we see that we can for example create tables as the one below.
 
 
 This table is not an image that was included, but is actually created as shown in {tableEx.ref()}.
-We do not need to create a special reader or to add new syntax to implement this table.
-Instead we create a Domain Specific Language (DSL) to build tables using the features we have shown so far.
+We do not need to create a special reader or add new syntax to implement this table.
+Instead, we create a Domain Specific Language (DSL) to build tables using the features we have shown so far.
 
 To avoid clutter, the `newline` method is not shown in the further examples unless it is needed to understand the example.
 
@@ -809,7 +821,7 @@ We also do not want to specify on what object every method in the call chain is 
 For this reason context types were developed.
 
 A method call in text mode is not always called on the previously returned object.
-It can be called also be called on an another object which was defined earlier.
+It can also be called on another object which was defined earlier.
 Context types use the object model, that has been built so far, to find out which object roots the next method call.
 
 We illustrate this using an example.
@@ -836,7 +848,7 @@ new Document()
 
 As we saw before, `Document` creates a `NLHandler` through the `newline` method.
 However, `NLHandler` does not have a `\#` method.
-`\#` in this example is called on `Document` instead and creates a `Chapter`.
+The `\#` in this example is called on `Document` instead, and creates a `Chapter`.
 
 `Chapter` also creates a `NLHandler` when `newline` is called on it and as we saw `NLHandler` defines `text`, which creates a `Paragraph`.
 
@@ -857,14 +869,15 @@ If the previous context type defines the method of your method call, but the act
 
 To understand how context types find the object on which a method is called, we go over the previous example step-by-step .
 
-When we encounter `new Document()`, the first context type, called `ct0`, is created.
+When we encounter `new Document()`,
+the first context type, called `ct0`, is created.
 There are no context types yet, so there is no context and the actual type is `Document`.
 The context type is shown below.
 {{
     image("The first context type: ct0.", '''ct0''').scale(100)
 }}
 
-When we now encounter `newline()` we have to do a `context lookup`.
+When we now encounter `newline()`, we have to do a `context lookup`.
 This lookup recursively searches through previous context types for the object that roots the method call.
 
 The context lookup starts by checking if the actual type of the previous context type, `ct0`, defines a method `newline`.
@@ -889,7 +902,7 @@ The tree representation is shown below.
     image("The context types ct0 through ct2.", '''ct2''').scale(100)
 }}
 
-The following call is `newline()`, we check the actual type of `ct2`, `Chapter`, and we know that it defines `newline`.
+The following call is `newline()`. We check the actual type of `ct2`, `Chapter`, and we know that it defines `newline`.
 We thus create `ct3` with `ct2` as context and `NLHandler` as actual type.
 `ct4` and `ct5` are created with respectively `ct3` and `ct4` as context and respectively `Paragraph` and `ParNLHandler` as actual type.
 The tree representation of `ct0` through `ct5` is shown below.
@@ -898,7 +911,7 @@ The tree representation of `ct0` through `ct5` is shown below.
 }}
 
 Finally, `\#("Chapter 2")` is called.
-For this call we recursively search back up to `ct0` as it is the first context type in which `\#` is defined.
+For this call we recursively search up to `ct0`, as it is the first context type in which `\#` is defined.
 `(Par)NLHandler, Paragraph` and `Chapter` have no definition of `\#`, only `Document` has such a definition.
 The last context type is thus built with ct0 as context and `Chapter` as a actual type.
 The final tree representation is shown below.
@@ -908,7 +921,7 @@ The final tree representation is shown below.
 
 It is important to note that we do not carry the entire context along for the entire document.
 In the last step of the previous example, a `context reset` happened as part of the lookup procedure.
-After a context reset a part of the object model becomes inaccessible for future method calls in the call chain.
+After a context reset, a part of the object model becomes inaccessible for future method calls in the call chain.
 This is needed to correctly create the object model.
 
 To show why context resets are important we give another example:
@@ -944,7 +957,7 @@ The `\*` is defined in `Document` and creates `Itemize i1`.
 The `\*` defined in `Itemize` creates `ItemizeItem`s and adds them to the `Itemize`.
 Because of context resets, the last `\*` is called on `Document`.
 This document thus contains an itemize of two items, a paragraph and an itemize of one item.
-The correct context lookup for the last `\*` is visualised on the call chain below, the arrows depict one step in the context lookup.
+The correct context lookup for the last `\*` is visualised on the call chain below. The arrows depict one step in the context lookup.
 {
     image("Correct context lookup for \*.", '''timeline1''')
 }
@@ -955,10 +968,6 @@ This wrong context lookup for the last `\*` is visualised on the call chain belo
 {
     image("Wrong context lookup for \*.", '''timeline2''')
 }
-
-Finally, context types are only used for text mode, or when `this` is used in code mode.
-This is because we want code mode to do exactly what the user instructed it to.
-If we incorporate context types in the code mode, then the meaning of the code can change by making changes to the text above it.
 
 #### Nested methods
 Now that we know how context types work, we can explain why the first level of a nested method is separated from the rest.
@@ -989,7 +998,7 @@ The context type representation of the document is shown below.
 
 If we did not separate the first level, the aforementioned structure is still built correctly, *but* the ContextType representation is different.
 This is because we did not reset to the same point, the context reset jumped up to `Chapter 1` instead of `Document`.
-The context type representation of this document is shown below.
+The wrong context type representation of this document is shown below.
 {
     Image nestedWrong = image("The wrong context type representation.", '''NestedWrong''');
 }
@@ -998,7 +1007,7 @@ The context type representation of this document is shown below.
 {Chapter codeBlocks = (Chapter) parent()}
 We have seen that we can use code in code files and customise our document this way.
 But this does not allow us to do everything we want to.
-We want to define variables and execute short expressions such as `x + y`
+We want to define variables and execute short expressions such as `x + y`.
 We do not want to create a new document class every time we want to do something out of the ordinary.
 
 We want to change properties of content in a Neio document without touching code files.
@@ -1011,7 +1020,7 @@ The three different kinds of code blocks are explained below.
 
 ### Non-scoped code
 {Chapter nsCode = (Chapter) parent()}
-The first kind of code blocks is the non-scoped code block.
+The first kind of code blocks, is the non-scoped code block.
 We show how it is used with an example.
 {
     LstListing nsCodeEx = new LstListing('''
@@ -1031,12 +1040,12 @@ Chapter chapter2 = new Chapter("Chapter 2");
     ''').rightOf(nsCodeEx)
 }}
 
-In the example above a code block is opened and a new `Chapter` is created.
+In the example above, a code block is opened and a new `Chapter` is created.
 A non-scoped code block is defined by the following EBNF:
 {
     new LstListing('''
 nl ::= "\\r?\\n"
-non-scopedCodeBlock ::= "{" nl (statement ";" nl*)* nl* statement nl* ";"? nl* "}" "nl"
+nonScopedCodeBlock ::= "{" nl (statement ";" nl*)* nl* statement nl* ";"? nl* "}" "nl"
     ''')
 }
 
@@ -1052,7 +1061,7 @@ If the last statement in a non-scoped code block returns an object, this object 
 We can thus also use a return statement as last statement to add an object to the document.
 These two possibilities are shown below.
 {
-    LstListing nsCodeEx2 = new LstListing("Automatic return from code block.", '''
+    LstListing nsCodeEx2 = new LstListing("Automatic return in a code block.", '''
 [Document]
 # Chapter 1
 {
@@ -1062,7 +1071,7 @@ These two possibilities are shown below.
     return nsCodeEx2;
 }
 {{
-    new LstListing("Manual return from code block.", '''
+    new LstListing("Manual return in a code block.", '''
 [Document]
 # Chapter 1
 {
@@ -1072,7 +1081,7 @@ These two possibilities are shown below.
     ''').rightOf(nsCodeEx2)
 }}
 
-The object returned in the last statement is added to the document and it becomes part of the context.
+The object returned in the last statement, is added to the document and it becomes part of the context.
 It is added to the document by calling `appendContent` on `this`.
 To further explain code blocks we explain `this` in the next section.
 
@@ -1088,14 +1097,14 @@ The example in {nsCodeEx2.ref()} can be seen as the following call chain.
     new LstListing('''
 new Document()
     .#("Chapter 1");
-Chapter chapter 2 = new Chapter("Chapter 2")
-this.appendContent(chapter 2);
+Chapter chapter2 = new Chapter("Chapter 2")
+this.appendContent(chapter2);
     ''')
 }
 
 A separate statement is created for the call chain before a code block.
 The object returned from the code block is placed in a variable and passed to the `appendContent` method call.
-When {nsCodeEx2.ref()} is actually translated, `this` is be filled in and it produces the following code:
+When {nsCodeEx2.ref()} is actually translated, `this` is filled in and it produces the following code:
 {
     new LstListing('''
 Document $var0 = new Document();
@@ -1105,7 +1114,7 @@ $var1.appendContent($var2);
     ''')
 }
 
-`this` is filled in with the last object that was returned in the call chain before the code block.
+The `this` is filled in with the last object that was returned in the call chain before the code block.
 To do this the compiler has knowledge of the `appendContent` method.
 
 We show another example to show how context types and `this` work together.
@@ -1128,12 +1137,12 @@ Chapter chapter2 = this.#("Chapter 2");
     ''').rightOf(nsCodeEx3)
 }}
 
-In this example we create a chapter as we do in text mode, by using the `\#` method.
-`Chapter` has no `\#` method, but has `Document` does.
+In this example, we create a chapter by using the `\#` method.
+`Chapter` has no `\#` method, but `Document` does.
 The method already adds the created `Chapter` to the `Document`.
 Thus we assign a value to the result of the `\#` method to prevent it from being automatically appended like it was in the previous examples.
 
-Because of context types `this` is be filled in by the variable that holds `Document` instead of the last object that was returned in text mode.
+Because of context types `this` is filled in by the variable that holds `Document` instead of the last object that was returned in text mode.
 The final translation is given below.
 {
     new LstListing('''
@@ -1142,6 +1151,10 @@ Chapter $var1 = $var0.#("Chapter 1");
 Chapter chapter2 = $var0.#("Chapter 2");
     ''')
 }
+
+Now that context types, code blocks and `this` have been introduced, we can say that context types are only used for text mode, or when `this` is used in code mode.
+This is because we want code mode to do exactly what the user instructed it to.
+If we incorporate context types in the code mode, then the meaning of the code can change by making changes to the text above it.
 
 ### Scoped code
 Sometimes all we want to do is execute some arbitrary code without corrupting the namespace.
@@ -1191,7 +1204,7 @@ Scoped blocks have been used frequently while creating this document.
 One of its prominent uses has been to add images.
 This is because `TextContainer` defines an `image` method that already adds the image to the document.
 As we do not want to add the object twice, we use scoped code blocks to call this method.
-The image method and and example of how images are typically included is shown below.
+The image method and an example of how images are typically included is shown below.
 {
     LstListing scopedCodeEx = new LstListing('''
 [Document]
@@ -1200,6 +1213,7 @@ The image method and and example of how images are typically included is shown b
     image("image1")
 }}
     ''');
+    return scopedCodeEx;
 }
 {{
     new LstInputListing(53, 75, '''../../examples/0.8/lib/neio/stdlib/TextContainer.no''').leftOf(scopedCodeEx)
@@ -1207,12 +1221,12 @@ The image method and and example of how images are typically included is shown b
 
 ### Inline code
 {Chapter inlineCodeChap = (Chapter) parent()}
-The the last type of code blocks are inline code blocks.
+The last type of code blocks are inline code blocks.
 As the name implies, this is code that is meant to be used inline.
 As such it can only contain one statement and the opening and closing bracket have to be on the same line.
 
 Inline code blocks can be used anywhere that text can be used.
-In the example below we show how inline code blocks can be used in combination with a non-scoped code blocks to create a template for a letter.
+In the example below we show how inline code blocks can be used in combination with non-scoped code blocks to create a template for a letter.
 {{
     image("The rendered form of the example to the left.", '''inlineCode''')
     .rightOf(new LstInputListing('''../../examples/0.8/input/variablesInput/template/template.no'''))
@@ -1221,21 +1235,21 @@ In the example below we show how inline code blocks can be used in combination w
 An inline code block returns a text and is appended to the rest of the document by calling the `text` method on `this`.
 
 ## Text in code mode
-In the previous sections we created objects such as `Chapter`s as follows `new Chapter("Chapter 1")`.
+In the previous sections we created objects such as `Chapter`s as follows: `new Chapter("Chapter 1")`.
 However, `"Chapter 1"` is not a Java `String` it is a `Text`.
 `Text` can thus be written in code mode by enclosing text with a pair of doubles quotes \(`\"`\).
 
-A Java `String` is can still needed and can therefore be created using a pair of triple, single-quotes \(`\'\'\'`\).
-One of the most prominent reason for using `String` instead of `Text` is when you have to pass a path for example to pass code to a code listings.
+A Java `String` can still be needed and can therefore be created using a pair of triple, single-quotes \(`\'\'\'`\).
+One of the most prominent reasons for using `String` instead of `Text` is when you have to pass a path, for example to pass code to a code listing.
 
 The inspiration for using three quotes came from the multi-line String literal in Python.
-The reason we use three single quotes, instead of only, is because a pair of single quotes still represents a Java `Character`.
-We do not use two quotes because that that would be very confusing when used in combination with double quotes in a non-monospace font.
+The reason we use three single quotes, instead of only one, is because a pair of single quotes still represents a Java `Character`.
+We do not use two quotes because that would be very confusing when used in combination with double quotes in a non-monospace font.
 
 As we saw in {inlineCodeChap.ref()}, you can use code blocks in text mode.
 Since we can also use text mode in code mode, this means we can endlessly nest text and code mode.
 
-An example demonstrating the strength of this nesting is shown below.
+An example demonstrating the strength of this nesting, is shown below.
 {{
     image("The rendered form of the example to the left.", '''dice''')
     .rightOf(new LstInputListing('''../../examples/0.8/input/variablesInput/dice/dice.no'''))
@@ -1246,14 +1260,14 @@ In case we roll more than half of the total possible amount (12 in this case), w
 
 In every case of the if statement, a piece of `Text` is found.
 As we saw in {textChap.ref()}, this is translated to a `text` call.
-Since we placed and empty newline before the code block, this `text` is called on a `NLHandler` and a new paragraph containing the results of the game is created.
+Since we placed an empty newline before the code block, this `text` is called on a `NLHandler` and a new paragraph containing the results of the game is created.
 
 ## Navigating through the lexical structure
 We have discussed all the features of Neio and we know how the object models are build.
 The lexical structure represented by the object model can now be navigated using a few methods in `Content`.
 
 For example, we can use the `nearestAncestor` and `directDescendants` methods to count the number of top-level chapters in a document.
-An example of this is shown below as well as the code for the two methods.
+An example of this, as well as the code for the two methods, is shown below.
 {{
     LstListing lexEx = new LstListing('''
 [Document]
@@ -1267,7 +1281,7 @@ This document contains {nearestAncestor(Document.class).directDescendants(Chapte
 }}
 
 {
-    Ranges lexRanges = new Ranges().add(258, 271).add(317, 334);
+    Ranges lexRanges = new Ranges().add(261, 274).add(320, 337);
     new LstInputListing(lexRanges, '''../../examples/0.8/lib/neio/lang/Content.no''')
 }
 
@@ -1275,36 +1289,36 @@ This document contains {nearestAncestor(Document.class).directDescendants(Chapte
 {Chapter considerations = (Chapter) parent()}
 Whilst constructing Neio, a few other things were considered but not implemented. They are discussed below.
 
-## Customisation
-We want to easily customise simple properties of the content.
+### Customisation
+We want to be able to easily customise simple properties of the content.
 For example, we want to easily say that we want to create a new chapter with a different font colour.
 The only way to do so at this time is by opening a code block and calling methods on the content we want to change.
 
 It might be better to provide some kind of syntax for this.
-That way we can provide customisation in the same line as the content definition.
+That way we can provide customisations in the same line as the content definition.
 In {lat} for example, this is done by passing optional arguments as key-value pairs to the macro.
 
 ### Static typing
 Neio has been designed to use static typing.
-The reason for this is, that while we are writing a Neio document in Code mode, or we are writing a Neio class, we can be notified of possible type mismatches.
+The reason for this is, that while we are writing a Neio document in code mode, or we are writing a Neio class, we can be notified of possible type mismatches.
 This decreases the time spent debugging and spent waiting on the compiler as you weed out one type mismatch after another.
 
-It also allows you to create a safer program, as type errors are caught at compile time.
-On the other hand when using dynamic typing, type errors only show up at runtime.
+It also creates a safer program, as type errors are caught at compile time.
+On the other hand, when using dynamic typing, type errors only show up at runtime.
 Using auto-completion in an IDE, we also do not have that much more typing to do than when we would be using dynamic typing.
 
 The types have been incorporated into the Neio compiler, but the necessary checks to create comprehensive error messages are not yet in place.
 In the current compiler, a `LookupException` is thrown whenever there is a type mismatch, undefined variable,... as the method or variable that we are looking for can not be found.
 
 ### Security
-Another issue that we have considered is security.
+Another issue that we have considered, is security.
 This is an issue because it is possible to directly execute Java code from the Neio document.
 However, security is also an issue in {lat}, as has been shown in several articles {cite('''checkoway2010text''')} {cite('''checkoway2011don''')}.
 
 Since Neio is more readable than {lat}, malicious code can be found more easily than in {lat}.
 
 Adding a layer of security on top of Neio would require a lot of effort and research and is not in scope of this thesis.
-Thus we conclude by saying that we known there is a security risk, but dismissing it is seen as future work.
+Thus, we conclude by saying that we know that there is a security risk, but dismissing it is seen as future work.
 
 # Supported document types and libraries
 {Chapter examples = (Chapter) parent()}
