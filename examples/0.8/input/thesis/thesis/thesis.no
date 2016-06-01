@@ -1433,7 +1433,7 @@ To demonstrate the strength and flexibility of Neio, a few libraries were create
 All of the currently available libraries in Neio are explained below.
 
 Note that none of these libraries are complete and it would require a lot more effort to reach a state of completion.
-For example, if we have a look at the manual of a popular library such as TikZ{cite('''tikzman''')}, we see that more time is needed to write such a library than there is available for this thesis.
+For example, if we have a look at the manual of a popular library such as TikZ {cite('''tikzman''')}, we see that more time is needed to write such a library than there is available for this thesis.
 
 ### BibTeX
 The library created for BibTeX is one of the easiest ones created using Neio.
@@ -1988,7 +1988,7 @@ These classes are compiled and then used to visit the Concrete Syntax Tree of a 
 Whilst visiting every rule and terminal, we build an Abstract Syntax Tree (AST) for the given file.
 This tree can then be manipulated in later stages.
 
-The UML diagram for the auto-generated java classes and our visitor implementations are illustrated below.
+The UML diagram for the auto-generated Java classes and our visitor implementations are illustrated below.
 Note that this is a shortened version, not all the methods are shown.
 {
     image('''visitor.1''')
@@ -2387,9 +2387,9 @@ The final automation solves the problem we saw in {mathChap.ref()}. The problem 
 This can be prevented by automatically converting `Content`, or maybe even `Object`, in a generic way.
 In Java, this is done through the `toString` method while in Python the `repr` and `str` methods are used for this.
 
-However, if we were to implement in such a naive manner, we would lose any kind of static typing when a `Text` is expected as an argument.
+However, if we were to implement this in such a naive manner, we would lose any kind of static typing when a `Text` is expected as an argument.
 This does not seem like a good thing, especially when you consider that not every object might have a real textual representation.
-The latter means that automatically transforming an object to text might often not even create a sensible result.
+The latter means that automatically transforming an object to `Text` might often not even create a sensible result.
 
 A better way might be to define an interface, `Representable`, that has a `repr` method. Any class that implements this class, and the native types such as `String` and `Integer`, 
 could than be transformed into a `Text` using this `repr` method.
@@ -2401,38 +2401,39 @@ The language does not enforce placed content to be static.
 Because of this, it is the responsibility of the library developer and the user of those libraries.
 Instead, Neio could enforce this behaviour and take care of the implementation of the clone.
 
-A way that this might be implemented, is by copying objects that are going to be changed through serialization.
+A way to implement this, is by copying objects through serialization.
 This is an expensive operation and thus the performance loss would have to be investigated.
 
 ## Remove ambiguity in symbol methods
 Symbol methods can use the `\-` and `\=` method and are thus ambiguous with those operators in Java.
-To avoid this ambiguity, we could force the user provide an alias for the symbol methods.
+To avoid this ambiguity, we could force the user to provide an alias for the symbol methods.
 In code mode, we would then only be able to use this alias.
 This would also make the code more readable as `addChapter` is more informative than `\#`.
 
 ## Use
 In {reflection.ref()}, we saw that we could specialize what `Content` is made.
 However, this is not perfect. It specializes the `Content` for the entire lifetime of the parent, even for instances that were created before we instructed the specialization.
+
 What we actually want to say is: "From here on, use `SpecializedContent` instead of `GenericContent`.".
 The use of this `SpecializedContent` would then last from there until the end of the scope of the parent.
 It could also be explicitly instructed to stop.
 
 As an example, imagine that we want to use an enumerate that uses the Fibonacci sequence to number its items.
 We want to start using it in the middle of a chapter, without it effecting anything that was created earlier.
-We also want that anything that is inserted (using code mode) from that point on uses the new enumerate, while anything inserted before it should use the generic enumerate.
+We also want that all the enumerations that are inserted (using code mode) from that point on, to use the new enumerate. Anything inserted before it should use the generic enumerate.
 {
     new LstListing('''
 [Document]
 # Chapter 1
-* Item 1 // This is a generic Enumerate
-* Item 2
+- Item 1 // This is a generic Enumerate
+- Item 2
 
 {
     use(FibEnumerate.class, Enumerate.class);
 }
 
-* Item 1 // This is a FibEnumerate
-* Item 2
+- Item 1 // This is a FibEnumerate
+- Item 2
 
 // End of scope for the first chapter
 # Chapter 2 
@@ -2444,7 +2445,7 @@ We also want that anything that is inserted (using code mode) from that point on
 Had we used `addClassMapping` to do this, the first `Enumerate` would also be a `FibEnumerate`.
 
 It is possible to implement this as "from now on", but it is not that easy to implement it as "from here on".
-Say that after this `use`, we insert an enumerate, using code mode, at the front of the chapter.
+If after this `use`, we insert an enumerate (using code mode) at the front of the chapter.
 The `getInstance` method that initialises the object does not know where the object is going to be placed.
 The method that calls `getInstance` can place the initialised object anywhere.
 At the time that the initialisation of the object occurs it is thus not known what object should be created.
@@ -2452,11 +2453,11 @@ At the time that the initialisation of the object occurs it is thus not known wh
 ## Packages
 #### Package support
 No package system was provided in this thesis, but in the future it would be beneficial to do so.
-It would allow users without a lot of technical expertise to import new functionality easily..
+It would allow users with little to no technical expertise to import new functionality easily.
 
 The way packaging is handled right now, is straight through {lat} packages and Java packages.
 We allow you to add {lat} packages through the `addPackage` method in `Document` and we allow you to import Java classes 
-through the regular `import namespace;` statements.
+through the regular `import namespace` statements.
 
 To actually include a Neio library in the document, the source code for the library
 has to be put into a folder next to the rest of the standard Neio library. In the future we should be able to download (manually or automatically) packaged libraries 
@@ -2469,13 +2470,13 @@ In comparison to what Java and {lat} offer, we also did not create a lot of them
 In the future, a lot of work has to be put into writing complete libraries and porting libraries from other available languages such as {lat}.
 This can however be done by the community, as is done in Java and {lat}.
 
-We note again, that we can already make use of any of the already existing Java libraries though.
+We note again, that we can already make use of any of the already existing Java libraries.
 
 ## Compiler improvement
 #### Efficiency
 The compiler is fast enough for small documents, but for a large document, like this thesis, the compile time starts to ramp up.
 The thesis takes about 30 seconds to a minute to compile, depending on the computing power of your computer.
-This is on top of `latexmk` and the other commands that have to run afterwards, and that also takes quite a while.
+This is on top of `latexmk` and the other commands that have to run afterwards. These also takes quite a while.
 
 However, no attention was paid to the efficiency of the compiler in this thesis.
 It is thus likely that there are a lot of optimisations that can be performed.
@@ -2494,15 +2495,15 @@ In {chamJnome.ref()}, we saw that Chameleon provides support for the Eclipse IDE
 This support has been implemented for code mode, but in the future it would also have to be implemented for text mode.
 
 #### Syntax highlighting
-Syntax highlighting is one of the base requirements to work with a language..
+Syntax highlighting is one of the base requirements to work with a language.
 However, the Chameleon implementation was not made for syntax like the text mode, where we represent a document as a series of method chains.
 At this moment, the Eclipse integration treats the entire method chain as a whole instead of every method call separately.
-This is problematic because a paragraph that contains inline-code would not be coloured uniformly for example.
+This is problematic because for example a paragraph would not be seen as a block of text but as a sequence of lines.
 
 #### Auto-completion
 A second useful feature that Chameleon offers, is auto-completion.
 This works well in code mode, however it is harder to utilize in text mode.
-This is because, it hs to know when to auto-complete and when it should just let us write.
+This is because, it has to know when to auto-complete and when it should just let us write.
 
 It might be best to hide the auto complete behind a hotkey while in text mode.
 This still allows the user to get a list of methods he could use at a certain time, but would remove the annoyance of having an auto-completion pop-up at every written word.
@@ -2511,13 +2512,13 @@ This still allows the user to get a list of methods he could use at a certain ti
 The outline offered through Chameleon was implemented for code mode.
 However, it is not very useless for text mode. This is because an outline shows the defined members, and in text mode no members are defined.
 
-It would be better if instead we showed the most important elements of the text, such as chapters and images. We could also show the variables that were defined in non-scoped code blocks.
+Showing the most important elements of the text, such as chapters and images, would be better. We could also show the variables that were defined in non-scoped code blocks.
 
 #### IDE with preview
 The last thing that would be a nice to have for a markup language like this, is an IDE that previews the document.
 This is not something that is supported by Chameleon, and would thus require quite a bit more work.
 
-The compiler in its current state is also not ready for this. As said before it gets quite slow on large documents.
+The compiler in its current state is also not ready for this. As said before, it gets quite slow on large documents.
 As it would have to be constantly running in the background, it would use a lot of energy (which is problematic for laptops), and would be too slow to actually produce results in real time.
 
 # Conclusion and reflection
@@ -2525,9 +2526,9 @@ As it would have to be constantly running in the background, it would use a lot 
 In this thesis we researched the current state-of-the-art concerning document creation. From this research we concluded that a good combination of user-friendliness and customisability was hard to find.
 To achieve such a combination we created a new markup language, called Neio, that uses a modern, object-oriented programming model.
 
-Two syntaxes were introduced, text mode and code mode. The former is a simple syntax that is used for document creation. The latter allows for customisation of the text mode syntax.
-To easily customise this syntax, we developed symbol, nested and surround methods.
-Lastly, we extended fluent interfaces to make a user program without him noticing it. The extension is made available through the developed context types.
+Two syntaxes were introduced, text mode and code mode. The former is a simple syntax that is used for document creation. The latter allows us to customise the text mode.
+To easily customise text mode, we developed symbol, nested and surround methods.
+Lastly, we extended fluent interfaces to make a user program without him noticing it. This extension is made available through the developed context types.
 
 To prototype Neio, we created a compiler and a standard library. Libraries for different domains were implemented to show the versatility of Neio.
 Amongst others, we created a library to create UML diagrams, structural formulas and music sheets.
@@ -2535,7 +2536,7 @@ Amongst others, we created a library to create UML diagrams, structural formulas
 Finally, we discussed the work that can and should still be done on Neio in the future.
 
 #### Reflection
-We used the language for four months (the rest of the time was spent developing it), wrote a Thesis in it and wrote a complete compiler for it.
+We used the language for four months (the rest of the time was spent developing it), wrote a thesis in it and wrote a complete compiler for it.
 After all of this, we found that it might have been better to use almost pure Java syntax for the code mode.
 We changed a few things, such as adding syntactic sugar for new calls and renaming `package` to `namespace`.
 The latter was done because in our eyes, `namespace` is a more general term that better explains what this keyword represents.
@@ -2544,10 +2545,10 @@ However, by choosing different keywords we ended up with name conflicts. At some
 This did not work as the parser did not know how to parse a package name containing a keyword.
 By changing the syntax as much as we did, it also became impossible to run Javadoc on our code files without making major changes to them.
 
-Disallowing a substantial part of Java (anonymous classes, shorthand operators such as `++` and `+=`,...) also hurts the 
-adoption rate of the language as you usually have to invest some time converting a Java file into a Neio file.
+Disallowing a substantial part of Java (anonymous classes, shorthand operators such as `++` and `+=`, ...) also hurts the 
+adoption rate of the language as you usually have to invest some time converting a Java file into a Neio code file.
 
-We think that it would have been better to have just used Java syntax, with the modifications defined in {methodMods.ref()} for the code mode.
+We think that it would have been better to just use Java syntax, with the modifications defined in {methodMods.ref()} for the code mode.
 In the future, we might then also add the proposition made in {autoRet.ref()}.
 
 In text mode, it is annoying that we can not use more than one character as a symbol method.
