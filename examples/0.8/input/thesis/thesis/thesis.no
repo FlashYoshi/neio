@@ -2437,8 +2437,8 @@ We also want that all the enumerations that are inserted (using code mode) from 
 
 // End of scope for the first chapter
 # Chapter 2 
-* Item 1 // This is a generic Enumerate
-* Item 2
+- Item 1 // This is a generic Enumerate
+- Item 2
     ''')
 }
 
