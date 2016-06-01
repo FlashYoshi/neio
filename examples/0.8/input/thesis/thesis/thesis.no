@@ -1326,12 +1326,11 @@ This chapter goes into more detail about what document types can be handled by N
 We also show the flexibility of Neio by discussing some libraries that have been developed.
 
 ## Document classes
-Before we discuss the developed document classes it is important to note that there is still a lot more work has to be done on them.
-If we just have a look Memoir {cite('''memoir''')} or KOMA-Script {cite('''komascript''')}, we see that they consist of 609 and 419 pages respectively.
+Before we discuss the developed document classes it is important to note that there is still a lot more work to be done on them.
+If we just have a look at the user manuals of Memoir {cite('''memoir''')} or KOMA-Script {cite('''komascript''')}, we see that they consist of 609 and 419 pages respectively.
 This is not something we could hope to reproduce in the scope of this thesis.
 Memoir introduces a new document class that integrates some often used design-related packages with the book class.
 KOMA-Script is a bundle of several classes and packages.
-
 
 ### Document class definition
 The document class to be used in a Neio document is defined by placing `\[DocumentClass\]` at the top of the file.
@@ -1343,11 +1342,11 @@ For example, when you write `\[Document\]`,
 what you get as root of the call chain might be a `Document`.
 It might also be an instance of the `Thesis` document class, discussed in the next section, as `Thesis` is a subclass of `Document`.
 
-The reason that this could be also be a subclass is because documents can also be included in another document.
+The reason for this is that documents can also be included in another document.
 To include a document we can pass the main document to the included document.
 The included document then uses the main document as root of its call chain.
 
-Because of this it is good practice to choose the most generic document class that is available for your document.
+Because of this, it is good practice to choose the most generic document class that is available for your document.
 
 ### Document
 The simplest of documents can be created using the `Document` document class.
@@ -1360,17 +1359,17 @@ The code of these methods is shown below.
     new LstInputListing(117, 185, '''../../examples/0.8/lib/neio/lang/Content.no''')
 }
 
-This code takes the parent of one of the two `Content`s, the base, and links the other Content to the base.
+This code takes the parent of one of the two `Content`s, the base, and links the other `Content` to the base.
 The implementation creates a root {lat} `Minipage` {cite('''minipage''')} if none of these objects is already next to another object.
 Otherwise it just wraps the two `Content`s in a `Minipage`.
 The root `Minipage` takes up the total width, while the `Minipage`s that wrap the content take up (1/children) of the width.
 
 Another way of implementing this, that would probably have worked better, was through `TikZ` pictures.
 It would have been better because it allows you to easily set any two things next to or above/beneath each other.
-`Minipage`s require a lot more manual work and they might also split at a page-end which is not what wanted.
+`Minipage`s require a lot more manual work and they might also split at a page-end, which is not wanted.
 
 The `Document` document class can thus be used to write simple documents, such as small reports.
-Another document class that is complexer and requires some configuration, is shown below.
+Another document class that is complexer, and requires some configuration, is shown below.
 
 ### Book
 {Chapter bookChapter = (Chapter) parent()}
@@ -1382,7 +1381,7 @@ To reuse as much functionality as possible, it extends the `Document` class.
 It adds its own packages and required elements, such as a title page, and it creates its own {lat} preamble.
 The code for this is shown below, the preamble is not shown entirely as it is very long.
 {
-    Ranges bookRanges = new Ranges().add(19, 42).add(53, 69).add(114, 115);
+    Ranges bookRanges = new Ranges().add(19, 42).add(53, 69).add(115, 116);
     new LstInputListing(bookRanges, '''../../examples/0.8/lib/neio/thesis/Thesis.no''')
 }
 
@@ -1393,13 +1392,13 @@ This is done through the following line.
     new LstListing('''addClassMapping(Chapter.class, ThesisChapter.class);''')
 }
 
-The document class also provides a method that initialises the main matter, which contains a Table of Contents (ToC) using the following line.
+The document class also provides a method that initialises the main matter, which for example contains a Table of Contents (ToC).
 This is a method that has to be called in the Neio document when the main matter begins.
 It is a separate method to allow us to easily add content, such as an abstract, before the main matter.
 
 ### Abstract
 {Chapter abstractChap = (Chapter) parent()}
-The abstract used in this thesis is written in a separate Neio document \(`overview.no`).
+The abstract used in this thesis, is written in a separate Neio document \(`overview.no`).
 It uses the `Abstract` document class and is included in this document by the following line.
 {
     new LstInputListing(5, 5, '''../../examples/0.8/input/thesis/thesis/thesis.no''')
@@ -1422,15 +1421,15 @@ The code for the `\-` and `\|` methods is shown below.
 The implementation of `\|` is not perfect and the way to handle such scenarios should be changed in the future.
 Is is not perfect as the user has to use if statements to check what parameter should be filled in.
 If the user forgets a parameter the layout will be wrong, but no exception or warning is given.
-Finally, all of the parameters are passed as `Text`. When a we enter a name for example, we do not know what part is the first-, middle- or surname.
+Finally, all of the parameters are passed as `Text`. When we enter a name for example, we do not know what part is the first-, middle- or surname.
 However, this information might be important. For example, often only the first letter of a first name is displayed.
 
 We could also have set the parameters using a code block and calling setters defined in `Abstract`.
-However, this seemed like a more elegant way.
+However, the method we use made the text mode look more elegant.
 
 ## Libraries
 {Chapter libraries = (Chapter) parent()}
-To demonstrate what the strength and flexibility of Neio a few libraries were created or reimplemented.
+To demonstrate the strength and flexibility of Neio, a few libraries were created or reimplemented.
 All of the currently available libraries in Neio are explained below.
 
 Note that none of these libraries are complete and it would require a lot more effort to reach a state of completion.
@@ -1457,7 +1456,7 @@ These methods are both implemented in `Document` and are shown below.
     new LstInputListing(73, 97, '''../../examples/0.8/lib/neio/stdlib/Document.no''');
 }
 
-The `Citation` class is a subclass of `Text` as we call it through an inline code block. This is shown below.
+The `Citation` class is a subclass of `Text`, as we call it through an inline code block. This is shown below.
 {
     new LstListing('''
 [Document]
@@ -1488,8 +1487,8 @@ The `newline` method of a `Chapter` is defined in `TextContainer` (the super cla
 The `parent` method in the example thus returns a `TextContainer`, hence the cast to `Chapter`.
 
 To reference an object, {lat} needs a unique label.
-We use the hashcode of an object for this as it is unique and easy to retrieve at any time.
-The `ref` method defined in `Chapter` and the `Referable` interface are shown below.
+We use the hashcode of an object for this, as it is unique and easy to retrieve at any time.
+The `Referable` interface and the `ref` method, defined in `Chapter`, are shown below.
 {
     LstInputListing refEx = new LstInputListing(117, 134, '''../../examples/0.8/lib/neio/stdlib/Chapter.no''');
     return refEx;
@@ -1502,7 +1501,7 @@ As we need a variable to reference something, this means that the object we want
 This means that we can not refer to things that are defined later on in the project, which {lat} can do.
 
 {lat} is able to do this because it compiles more than once and is able to gather the information needed to create a reference in one of the earlier runs.
-To do this in Neio, we would have to hold of creating the reference until the document is completed.
+To do this in Neio, we would have to hold of creating the references until the document is completed.
 
 ### {lat} math and amsmath
 {Chapter mathChap = (Chapter) parent()}
@@ -1518,7 +1517,7 @@ The UML diagram below shows the most important classes in the Neio math library.
     new Uml('''./project.xml''','''neio.stdlib.math''').show(umlMath)
 }
 
-An inline math formula in {lat} is created by surrounding a formula with a pair of `\ $`'s.
+An inline math formula in {lat} is created by surrounding a formula with a pair of `\$`'s.
 In Neio, we can create inline math using an inline code block.
 We can also wrap the code block with a `\$` surround method that does nothing, to make it look like inline math in {lat}.
 However, this does not offer any new functionality and it is thus not done in this example.
@@ -1552,7 +1551,7 @@ An example of how to create this in Neio is shown below.
 }
 
 The code above creates two `Equation`s.
-We disabled numbering on the first one through the `nonu` method and called sqrt on it.
+We disabled numbering on the first one through the `nonu` method and called `sqrt` on it.
 
 In the second equation we use the `\^` method to create an exponentiation and use the `\=` method to create an equation.
 The `v` method creates a `Value` and calculates the actual value of what has been typeset before it.
@@ -1609,15 +1608,15 @@ Note that the table above is created using the syntax in {tableExDSL.ref()}, and
 In fact, all of the examples shown from here on out, until the end of this chapter, are created using the DSLs demonstrated in said examples.
 
 First of all, we note that it does not matter how many spaces are placed inside the elements of the table.
-The DSL for this table uses of the symbol method `\|`, a nested method `\-` and a new `NLHandler`.
+The DSL for this table uses the symbol method `\|`, a nested method `\-` and a new `NLHandler`.
 
 The first `\|` method is defined in `TextContainer`, so that it can be used in `Chapter`s as well as `Document`s (they are both subclasses of `TextContainer`).
-It is shown below
+It is shown below.
 {
     new LstInputListing(107, 120, '''../../examples/0.8/lib/neio/stdlib/TextContainer.no''');
 }
 
-The `TableRow` that is returned form the the `\|` method is a row that is still under construction.
+The `TableRow` that is returned from the the `\|` method is a row that is still under construction.
 By continuously calling `\|`, we are able to construct the entire row.
 This is the reason why we mentioned that symbol methods could be called after another symbol method in {symbolChap.ref()}.
 
@@ -1634,7 +1633,7 @@ The former creates a horizontal line in the document and disregards the nesting 
 This level could however be used to determine the width of the table for example.
 The latter is used to start the construction of a new `TableRow`.
 
-The code for the `\-` and `\|` methods defined in `TableNLHandler` is shown below.
+The code for the `\-` and `\|` methods, defined in `TableNLHandler`, is shown below.
 {
     new LstInputListing(30, 48, '''../../examples/0.8/lib/neio/stdlib/TableNLHandler.no''');
 }
@@ -1645,11 +1644,11 @@ The libraries that are discussed in the next sections are domain specific and sh
 
 ### Red black trees
 {Chapter rbtChap = (Chapter) parent()}
-Red black trees are trees that are constantly update according to a defined algorithm.
+Red black trees are trees that are constantly updated according to a defined algorithm.
 When we want to show a red black tree in {lat}, we can typeset an instance of such a tree using for example `TikZ`.
 We could also create it in a third party program and include an image of the instance in our document. This solution also works for {md}.
 
-However, since an algorithm is used, and we have a programming model, could not we just build the tree and then display it?
+However, since an algorithm is used, and we have a programming model, could we not build the tree and then display it?
 Yes we can! All we have to do is take some code that can generate red black trees, and add a display method to it.
 We show an example of the red black trees in use below.
 {
@@ -1710,7 +1709,7 @@ Note that this tree is not implemented optimally, when we append a new value to 
 completely clone the tree and add a new node to this new tree. The red black tree in this example also
 only works for integers.
 
-The reason we clone the tree every time we insert a new value is because otherwise the three trees would be
+The reason we clone the tree every time we insert a new value, is because otherwise the three trees would be
 represented by the same object. They would thus all show the latest version of the tree.
 This problem is discussed in Chapter 5.
 
@@ -1719,7 +1718,7 @@ This problem is discussed in Chapter 5.
 The next example has already been used in {mathChap.ref()}.
 Every UML diagram in this document is created using the UML library discussed in this section.
 
-It is also a little different from the other libraries we have seen thus far as it does not directly translate into {lat}. Instead we are making use of MetaUML {cite('''metauml''')}.
+It is also a little different from the other libraries we have seen thus far, as it does not directly translate into {lat}. Instead, we are making use of MetaUML {cite('''metauml''')}.
 How this works exactly is shown in Chapter 4. For now, it is enough to know that the object model build by this library is output as a string that is understood
 by `MetaUML`. `MetaUML` then creates a MetaPost file {cite('''metapost''')} which is included in the document.
 
@@ -1826,7 +1825,7 @@ $ C * 6 _ OH ^ - C _ ^ OH - O - C _ ^ CH2OH - C _ HO ^ - C _ ^ OH -
 
 The first thing we see, is that we create a new `Structure`.
 This provides a newline handler that allows us to instantiate structure formulas using the `\$` method and captions for them using the `\|` method.
-The `\$` method shown below, creates an atom and adds it to the structure, the rest of the structural formula is then build by chaining atoms together.
+The `\$` method shown below, creates an atom and adds it to the structure. The rest of the structural formula is then build by chaining atoms together.
 {
     new LstInputListing(18, 23, '''../../examples/0.8/lib/neio/stdlib/chem/StructureNLHandler.no''');
 }
@@ -1851,7 +1850,7 @@ An example musical score is shown below.
 {
     Score s = new Score().a().b().c(1).d(1).e(1).f(1)
         .g(1).f(1).e(1).d(1).c(1).b().a()
-        .g().f().e().d().c().b(- 1).a(- 1);
+        .g().f().e().d().c().b(-1).a(-1);
     return s;
 }
 ''');
@@ -1864,7 +1863,7 @@ An example musical score is shown below.
     return s;
 }
 
-In this DSL, a class has been made to represent a note and a method is available to create every note.
+In this DSL, a class has been made to represent a note, and a method is available to create every note.
 For example, to create the note `C`, you call the method `c()`.
 The integer that can be passed to a note, lower or heightens the octave of the note.
 
