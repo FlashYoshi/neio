@@ -358,8 +358,8 @@ public final <T> void addClassMapping(Class<T> oldClass, Class<? extends T> newC
 
 /**
  * Used instead of a new call. This allows to create more specific objects than originally
- * specified. e.g. this allows to create SpecialChapter's instead of Chapter's
- * <p>
+ * specified. e.g. this allows to create SpecialChapters instead of Chapters
+ * 
  * It will create an instance of {@code klass} in case the class mapping has not been overridden.
  * If the mapping was overridden, an instance of the overriding class will be created.
  *

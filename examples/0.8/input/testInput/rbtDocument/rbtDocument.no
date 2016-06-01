@@ -1,37 +1,37 @@
 [Document]
 {
-    List<Integer> tree = new ArrayList<Integer>();
-    tree.add(33);
-    tree.add(15);
-    tree.add(10);
-    tree.add(5);
-    tree.add(20);
-    tree.add(18);
-    tree.add(47);
-    tree.add(38);
-    tree.add(36);
-    tree.add(39);
+    List<Integer> list = new ArrayList<Integer>();
+    list.add(33);
+    list.add(15);
+    list.add(10);
+    list.add(5);
+    list.add(20);
+    list.add(18);
+    list.add(47);
+    list.add(38);
+    list.add(36);
+    list.add(39);
 
-    String numbers = '''''' + tree.get(0);
-    for (int i = 1; i < tree.size(); i = i + 1) {
-        numbers = numbers + ''', ''' + tree.get(i);
+    String numbers = '''''' + list.get(0);
+    for (int i = 1; i < list.size(); i = i + 1) {
+        numbers = numbers + ''', ''' + list.get(i);
     }
 }
 
 Given the red black tree of {numbers}
 {
-    RedBlackTree rbt = new RedBlackTree().insert(tree);
-    return rbt;
+    RedBlackTree tree1 = new RedBlackTree().insert(list);
+    return tree1;
 }
 
 Add 37
 {
-    RedBlackTree rbt2 = rbt.insert(37);
-    return rbt2;
+    RedBlackTree tree2 = tree1.insert(37);
+    return tree2;
 }
 
 Add 51
 {
-    RedBlackTree rbt3 = rbt2.insert(51);
-    return rbt3;
+    RedBlackTree tree3 = tree2.insert(51);
+    return tree3;
 }
