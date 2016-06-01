@@ -23,7 +23,6 @@ import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.TokenStream;
-import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.neio.antlr.ClassLexer;
 import org.neio.antlr.ClassParser;
@@ -103,13 +102,13 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
     }
 
     @Override
-    public Object visitLonecodeC(@NotNull LonecodeCContext ctx) {
+    public Object visitLonecodeC(LonecodeCContext ctx) {
         processCodeBlock(ctx.lonecode());
         return null;
     }
 
     @Override
-    public Object visitScodeC(@NotNull ScodeCContext ctx) {
+    public Object visitScodeC(ScodeCContext ctx) {
         processCodeBlock(ctx.scode());
         return null;
     }
@@ -123,21 +122,21 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
     }
 
     @Override
-    public Object visitPrefixC(@NotNull PrefixCContext ctx) {
+    public Object visitPrefixC(PrefixCContext ctx) {
         fixPreviousExpression();
         previousExpression = visitPrefixCall(ctx.prefixCall());
         return null;
     }
 
     @Override
-    public Object visitTextC(@NotNull TextCContext ctx) {
+    public Object visitTextC(TextCContext ctx) {
         fixPreviousExpression();
         previousExpression = visitText(ctx.text());
         return null;
     }
 
     @Override
-    public Object visitNlC(@NotNull NlCContext ctx) {
+    public Object visitNlC(NlCContext ctx) {
         fixPreviousExpression();
         previousExpression = visitNl(ctx.nl());
         return null;
@@ -222,7 +221,7 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
     }
 
     @Override
-    public Expression visitSurroundCall(@NotNull SurroundCallContext ctx) {
+    public Expression visitSurroundCall(SurroundCallContext ctx) {
         String name = Constants.SURROUND + ctx.left.getText();
         Expression result;
 
@@ -263,7 +262,7 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
     }
 
     @Override
-    public Expression visitText(@NotNull TextContext ctx) {
+    public Expression visitText(TextContext ctx) {
         Expression txt = visitTxt(ctx.txt());
         if (append) {
             return appendText(previousExpression, txt);
@@ -273,7 +272,7 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
     }
 
     @Override
-    public Expression visitTxt(@NotNull TxtContext ctx) {
+    public Expression visitTxt(TxtContext ctx) {
         Expression result;
         argumentExpression.push(null);
 
@@ -301,7 +300,7 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
     }
 
     @Override
-    public String visitTextWSpaces(@NotNull TextWSpacesContext ctx) {
+    public String visitTextWSpaces(TextWSpacesContext ctx) {
         return ctx.getText();
     }
 
@@ -323,7 +322,7 @@ public class DocumentConverter extends DocumentParserBaseVisitor<Object> {
     }
 
     @Override
-    public Expression visitInlinecode(@NotNull InlinecodeContext ctx) {
+    public Expression visitInlinecode(InlinecodeContext ctx) {
         Block b = visitCode(ctx.getText(), "{".length(), false);
         if (b.nbStatements() != 1) {
             throw new ChameleonProgrammerException("Inline code can only have 1 statement");

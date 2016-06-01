@@ -1,0 +1,12 @@
+[Document]
+In the table below you can see the results of the 33rd 12urenloop of the University of Ghent:
+
+|   Student club  | Rounds | Seconds/Round | 
+-------------------------------------------- 
+| HILOK           |  1030  |      42       | 
+| VTK             |  1028  |      42       | 
+| SK              |   647  |      67       | 
+| Zeus WPI        |   567  |      76       | 
+| VBK             |   344  |     126       | 
+
+Congratulations to all of the teams!

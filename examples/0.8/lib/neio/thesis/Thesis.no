@@ -28,6 +28,7 @@ Thesis() {
     .add("tocloft")
     .add("color")
     .add("pdfpages")
+    .add("epstopdf")
     .add("hyperref");
 
     List<String> options = new ArrayList<String>();

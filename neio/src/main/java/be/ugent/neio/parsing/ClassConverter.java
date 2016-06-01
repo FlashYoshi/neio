@@ -50,8 +50,6 @@ import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.TokenStream;
-import org.antlr.v4.runtime.misc.NotNull;
-import org.antlr.v4.runtime.tree.TerminalNode;
 import org.neio.antlr.ClassParser.*;
 import org.neio.antlr.ClassParserBaseVisitor;
 import org.neio.antlr.DocumentLexer;
@@ -127,7 +125,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     @Override
-    public NamespaceDeclaration visitNamespace(@NotNull NamespaceContext ctx) {
+    public NamespaceDeclaration visitNamespace(NamespaceContext ctx) {
         if (ctx != null) {
             NamespaceReference namespaceReference = visitNamespaceReference(ctx.namespaceReference());
             return ooFactory().createNamespaceDeclaration(namespaceReference);
@@ -137,12 +135,12 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     @Override
-    public NamespaceReference visitNamespaceReference(@NotNull NamespaceReferenceContext ctx) {
+    public NamespaceReference visitNamespaceReference(NamespaceReferenceContext ctx) {
         return ooFactory().createNamespaceReference(ctx.getText());
     }
 
     @Override
-    public Import visitImportDeclaration(@NotNull ImportDeclarationContext ctx) {
+    public Import visitImportDeclaration(ImportDeclarationContext ctx) {
         if (ctx.STAR() != null) {
             return ooFactory().createDemandImport(ctx.type().getText());
         } else {
@@ -151,7 +149,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     @Override
-    public Type visitClassDef(@NotNull ClassDefContext ctx) {
+    public Type visitClassDef(ClassDefContext ctx) {
         Type type = ooFactory().createRegularType(ctx.Identifier().getText());
         // Every class is allowed to be public for now
         type.addModifier(new Public());
@@ -168,7 +166,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     @Override
-    public SubtypeRelation visitInheritance(@NotNull InheritanceContext ctx) {
+    public SubtypeRelation visitInheritance(InheritanceContext ctx) {
         SubtypeRelation relation = ooFactory().createSubtypeRelation(visitType(ctx.type()));
         if (ctx.IMPLEMENTS() != null) {
             relation.addModifier(new Implements());
@@ -201,7 +199,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
 
     @Override
-    public MemberVariableDeclarator visitFieldDecl(@NotNull FieldDeclContext ctx) {
+    public MemberVariableDeclarator visitFieldDecl(FieldDeclContext ctx) {
         MemberVariableDeclarator declarator = ooFactory().createMemberVariableDeclarator(ctx.Identifier().getText(), visitType(ctx.type()));
         for (ModifierContext modifier : ctx.modifier()) {
             declarator.addModifier(visitModifier(modifier));
@@ -216,7 +214,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     @Override
-    public LocalVariableDeclarator visitVariableDeclaration(@NotNull VariableDeclarationContext ctx) {
+    public LocalVariableDeclarator visitVariableDeclaration(VariableDeclarationContext ctx) {
         if (ctx.neioNewCall() != null) {
             ConstructorInvocation ci = visitNeioNewCall(ctx.neioNewCall());
             return ooFactory().createLocalVariable(ci.name(), ctx.neioNewCall().Identifier().getText(), ci);
@@ -226,7 +224,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     @Override
-    public MemberVariableDeclarator visitFieldAssignmentExpression(@NotNull FieldAssignmentExpressionContext ctx) {
+    public MemberVariableDeclarator visitFieldAssignmentExpression(FieldAssignmentExpressionContext ctx) {
         MemberVariableDeclarator varDecl = visitFieldDecl(ctx.var);
         // visitFieldDecl should have filled in exactly one variable
         try {
@@ -243,12 +241,12 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     @Override
-    public AssignmentExpression visitAssignmentExpression(@NotNull AssignmentExpressionContext ctx) {
+    public AssignmentExpression visitAssignmentExpression(AssignmentExpressionContext ctx) {
         return eFactory().createAssignmentExpression((Expression) visit(ctx.var), (Expression) visit(ctx.val));
     }
 
     @Override
-    public Method visitMethod(@NotNull MethodContext ctx) {
+    public Method visitMethod(MethodContext ctx) {
         Method method = visitMethodExpression(ctx.methodExpression());
         method.setImplementation(ooFactory().createImplementation(visitBlock(ctx.block())));
 
@@ -256,7 +254,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     @Override
-    public Block visitBlock(@NotNull BlockContext ctx) {
+    public Block visitBlock(BlockContext ctx) {
         if (ctx == null) {
             return null;
         }
@@ -272,19 +270,19 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     @Override
-    public Statement visitAssignmentStatement(@NotNull AssignmentStatementContext ctx) {
+    public Statement visitAssignmentStatement(AssignmentStatementContext ctx) {
         Statement statement = ooFactory().createStatement(visitAssignmentExpression(ctx.assignmentExpression()));
         statement.setMetadata(new TagImpl(), ASSIGNMENT);
         return statement;
     }
 
     @Override
-    public Statement visitExpressionStatement(@NotNull ExpressionStatementContext ctx) {
+    public Statement visitExpressionStatement(ExpressionStatementContext ctx) {
         return ooFactory().createStatement((Expression) visit(ctx.expression()));
     }
 
     @Override
-    public Statement visitReturnStatement(@NotNull ReturnStatementContext ctx) {
+    public Statement visitReturnStatement(ReturnStatementContext ctx) {
         Expression e = null;
         if (ctx.expression() != null && !ctx.expression().isEmpty()) {
             e = (Expression) visit(ctx.expression());
@@ -294,19 +292,19 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     @Override
-    public Statement visitVariableDeclarationStatement(@NotNull VariableDeclarationStatementContext ctx) {
+    public Statement visitVariableDeclarationStatement(VariableDeclarationStatementContext ctx) {
         LocalVariableDeclarator lvd = visitVariableDeclaration(ctx.variableDeclaration());
         lvd.setMetadata(new TagImpl(), ASSIGNMENT);
         return lvd;
     }
 
     @Override
-    public ClassCastExpression visitCastExpression(@NotNull CastExpressionContext ctx) {
+    public ClassCastExpression visitCastExpression(CastExpressionContext ctx) {
         return eFactory().createClassCastExpression(visitType(ctx.type()), (Expression) visit(ctx.expression()));
     }
 
     @Override
-    public WhileStatement visitWhileLoop(@NotNull WhileLoopContext ctx) {
+    public WhileStatement visitWhileLoop(WhileLoopContext ctx) {
         Statement statement = null;
         if (ctx.block() != null && !ctx.block().isEmpty()) {
             statement = visitBlock(ctx.block());
@@ -316,7 +314,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     @Override
-    public ForStatement visitForLoop(@NotNull ForLoopContext ctx) {
+    public ForStatement visitForLoop(ForLoopContext ctx) {
         LocalVariableDeclarator init = visitVariableDeclaration(ctx.init);
 
         AssignmentExpression update = visitAssignmentExpression(ctx.update);
@@ -328,14 +326,14 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     @Override
-    public Statement visitIfStatement(@NotNull IfStatementContext ctx) {
+    public Statement visitIfStatement(IfStatementContext ctx) {
         Statement statement = visitIfteStatement(ctx.ifteStatement());
         statement.setMetadata(new TagImpl(), ASSIGNMENT);
         return statement;
     }
 
     @Override
-    public Statement visitIfteStatement(@NotNull IfteStatementContext ctx) {
+    public Statement visitIfteStatement(IfteStatementContext ctx) {
         Expression condition = (Expression) visit(ctx.ifCondition);
         Statement elseStatement = null;
         if (ctx.elseBlock != null) {
@@ -369,32 +367,32 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     @Override
-    public Expression visitLiteralExpression(@NotNull LiteralExpressionContext ctx) {
+    public Expression visitLiteralExpression(LiteralExpressionContext ctx) {
         return (Expression) visit(ctx.literal());
     }
 
     @Override
-    public Expression visitNewExpression(@NotNull NewExpressionContext ctx) {
+    public Expression visitNewExpression(NewExpressionContext ctx) {
         return visitConstructorCall(ctx.constructorCall());
     }
 
     @Override
-    public Object visitNeioNewExpression(@NotNull NeioNewExpressionContext ctx) {
+    public Object visitNeioNewExpression(NeioNewExpressionContext ctx) {
         return visitNeioNewCall(ctx.neioNewCall());
     }
 
     @Override
-    public ParExpression visitParExpression(@NotNull ParExpressionContext ctx) {
+    public ParExpression visitParExpression(ParExpressionContext ctx) {
         return eFactory().createParExpression((Expression) visit(ctx.expression()));
     }
 
     @Override
-    public CrossReferenceTarget visitSuperExpression(@NotNull SuperExpressionContext ctx) {
+    public CrossReferenceTarget visitSuperExpression(SuperExpressionContext ctx) {
         return ooFactory().createSuper();
     }
 
     @Override
-    public SuperConstructorDelegation visitSuperDelegation(@NotNull SuperDelegationContext ctx) {
+    public SuperConstructorDelegation visitSuperDelegation(SuperDelegationContext ctx) {
         SuperConstructorDelegation delegation = ooFactory().createSuperDelegation();
         List<Expression> arguments = ((List<Expression>) visit(ctx.arguments()));
         delegation.addAllArguments(arguments);
@@ -403,12 +401,12 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     @Override
-    public Literal visitSelfExpression(@NotNull SelfExpressionContext ctx) {
+    public Literal visitSelfExpression(SelfExpressionContext ctx) {
         return ooFactory().createThisLiteral();
     }
 
     @Override
-    public ThisConstructorDelegation visitThisDelegation(@NotNull ThisDelegationContext ctx) {
+    public ThisConstructorDelegation visitThisDelegation(ThisDelegationContext ctx) {
         ThisConstructorDelegation delegation = ooFactory().createThisDelegation();
         List<Expression> arguments = ((List<Expression>) visit(ctx.arguments()));
         delegation.addAllArguments(arguments);
@@ -417,22 +415,22 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     @Override
-    public NameExpression visitIdentifierExpression(@NotNull IdentifierExpressionContext ctx) {
+    public NameExpression visitIdentifierExpression(IdentifierExpressionContext ctx) {
         return eFactory().createNameExpression(contextType, ctx.Identifier().getText());
     }
 
     @Override
-    public NameExpression visitChainExpression(@NotNull ChainExpressionContext ctx) {
+    public NameExpression visitChainExpression(ChainExpressionContext ctx) {
         return eFactory().createNameExpression(ctx.Identifier().getText(), (CrossReferenceTarget) visit(ctx.expression()));
     }
 
     @Override
-    public MethodInvocation visitSelfCallExpression(@NotNull SelfCallExpressionContext ctx) {
+    public MethodInvocation visitSelfCallExpression(SelfCallExpressionContext ctx) {
         return eFactory().createMethodInvocation(contextType, ctx.name.getText(), ooFactory().createThisLiteral(), (List<Expression>) visit(ctx.arguments()));
     }
 
     @Override
-    public Expression visitQualifiedCallExpression(@NotNull QualifiedCallExpressionContext ctx) {
+    public Expression visitQualifiedCallExpression(QualifiedCallExpressionContext ctx) {
         CrossReferenceTarget target = (CrossReferenceTarget) visit(ctx.expression());
         Expression result;
         if (ctx.args != null) {
@@ -488,34 +486,34 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     @Override
-    public Expression visitNotExpression(@NotNull NotExpressionContext ctx) {
+    public Expression visitNotExpression(NotExpressionContext ctx) {
         return eFactory().createPrefixOperatorInvocation(ctx.op.getText(), (Expression) visit(ctx.right));
     }
 
     @Override
-    public Expression visitPostfixCrementExpression(@NotNull PostfixCrementExpressionContext ctx) {
+    public Expression visitPostfixCrementExpression(PostfixCrementExpressionContext ctx) {
         return eFactory().createPostfixOperatorInvocation(ctx.op.getText(), (Expression) visit(ctx.left));
     }
 
     @Override
-    public Expression visitPrefixCrementExpression(@NotNull PrefixCrementExpressionContext ctx) {
+    public Expression visitPrefixCrementExpression(PrefixCrementExpressionContext ctx) {
         return eFactory().createPrefixOperatorInvocation(ctx.op.getText(), (Expression) visit(ctx.right));
     }
 
     @Override
-    public Object visitPrefixExpression(@NotNull PrefixExpressionContext ctx) {
+    public Object visitPrefixExpression(PrefixExpressionContext ctx) {
         return eFactory().createPrefixOperatorInvocation(ctx.op.getText(), (Expression) visit(ctx.right));
     }
 
     @Override
-    public Expression visitAmpersandExpression(@NotNull AmpersandExpressionContext ctx) {
+    public Expression visitAmpersandExpression(AmpersandExpressionContext ctx) {
         MethodInvocation result = eFactory().createInfixOperatorInvocation(ctx.op.getText(), (Expression) visit(ctx.left));
         result.addArgument((Expression) visit(ctx.right));
         return result;
     }
 
     @Override
-    public Expression visitPipeExpression(@NotNull PipeExpressionContext ctx) {
+    public Expression visitPipeExpression(PipeExpressionContext ctx) {
         MethodInvocation result = eFactory().createInfixOperatorInvocation(ctx.op.getText(), (Expression) visit(ctx.left));
         result.addArgument((Expression) visit(ctx.right));
         return result;
@@ -536,19 +534,19 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     @Override
-    public ConstructorInvocation visitConstructorCall(@NotNull ConstructorCallContext ctx) {
+    public ConstructorInvocation visitConstructorCall(ConstructorCallContext ctx) {
         BasicJavaTypeReference type = (BasicJavaTypeReference) visitType(ctx.type());
         return eFactory().createConstructorInvocation(type, null, (List<Expression>) visit(ctx.arguments()));
     }
 
     @Override
-    public ConstructorInvocation visitNeioNewCall(@NotNull NeioNewCallContext ctx) {
+    public ConstructorInvocation visitNeioNewCall(NeioNewCallContext ctx) {
         BasicJavaTypeReference type = (BasicJavaTypeReference) visitType(ctx.type());
         return eFactory().createConstructorInvocation(type, null, (List<Expression>) visit(ctx.arguments()));
     }
 
     @Override
-    public Method visitMethodExpression(@NotNull MethodExpressionContext ctx) {
+    public Method visitMethodExpression(MethodExpressionContext ctx) {
         MethodHeader methodHeader = visitMethodHeader(ctx.methodHeader());
         Method method = ooFactory().createMethod(methodHeader);
 
@@ -580,7 +578,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     @Override
-    public MethodHeader visitMethodHeader(@NotNull MethodHeaderContext ctx) {
+    public MethodHeader visitMethodHeader(MethodHeaderContext ctx) {
         List<TypeParameter> typeParameters = new ArrayList<>();
         if (ctx.typeParameterList() != null) {
             typeParameters = (List<TypeParameter>) visit(ctx.typeParameterList());
@@ -597,7 +595,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     @Override
-    public Modifier visitModifier(@NotNull ModifierContext ctx) {
+    public Modifier visitModifier(ModifierContext ctx) {
         if (ctx.ABSTRACT() != null) {
             return new Abstract();
         } else if (ctx.PRIVATE() != null) {
@@ -620,22 +618,22 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     @Override
-    public List<FormalParameter> visitParameters(@NotNull ParametersContext ctx) {
+    public List<FormalParameter> visitParameters(ParametersContext ctx) {
         return ctx.parameter().stream().map(this::visitParameter).collect(Collectors.toList());
     }
 
     @Override
-    public FormalParameter visitParameter(@NotNull ParameterContext ctx) {
+    public FormalParameter visitParameter(ParameterContext ctx) {
         return ooFactory().createParameter(ctx.Identifier().getText(), visitType(ctx.type()));
     }
 
     @Override
-    public List<FormalParameter> visitEmptyArguments(@NotNull EmptyArgumentsContext ctx) {
+    public List<FormalParameter> visitEmptyArguments(EmptyArgumentsContext ctx) {
         return new ArrayList<>();
     }
 
     @Override
-    public List<Expression> visitSomeArguments(@NotNull SomeArgumentsContext ctx) {
+    public List<Expression> visitSomeArguments(SomeArgumentsContext ctx) {
         if (ctx == null) {
             return null;
         }
@@ -644,9 +642,9 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     @Override
-    public JavaTypeReference visitType(@NotNull TypeContext ctx) {
+    public TypeReference visitType(TypeContext ctx) {
         String name = visitIdentifiers(ctx.identifier());
-        JavaTypeReference type;
+        TypeReference type;
         List<TypeArgument> typeArguments = new ArrayList<>();
         if (ctx.typeArgumentList() != null) {
             typeArguments = (List<TypeArgument>) visit(ctx.typeArgumentList());
@@ -662,7 +660,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     @Override
-    public List<TypeParameter> visitTypeParameters(@NotNull TypeParametersContext ctx) {
+    public List<TypeParameter> visitTypeParameters(TypeParametersContext ctx) {
         List<TypeParameter> typeParams = new ArrayList<>();
 
         if (ctx != null) {
@@ -674,7 +672,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     @Override
-    public List<TypeParameter> visitTypeParameter(@NotNull TypeParameterContext ctx) {
+    public List<TypeParameter> visitTypeParameter(TypeParameterContext ctx) {
         List<TypeParameter> typeParams = new ArrayList<>();
         typeParams.add(ooFactory().createTypeParameter(((BasicJavaTypeReference) visitType(ctx.type())).name()));
 
@@ -682,7 +680,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     @Override
-    public List<FormalTypeParameter> visitBoundedTypeParameter(@NotNull BoundedTypeParameterContext ctx) {
+    public List<FormalTypeParameter> visitBoundedTypeParameter(BoundedTypeParameterContext ctx) {
         List<FormalTypeParameter> list = new ArrayList<>();
         FormalTypeParameter parameter = ooFactory().createFormalTypeParameter(ctx.Identifier().getText());
         parameter.addConstraint(ooFactory().createExtendsConstraint(visitType(ctx.bound)));
@@ -692,7 +690,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     @Override
-    public List<TypeArgument> visitTypeArguments(@NotNull TypeArgumentsContext ctx) {
+    public List<TypeArgument> visitTypeArguments(TypeArgumentsContext ctx) {
         List<TypeArgument> typeArguments = new ArrayList<>();
 
         if (ctx != null) {
@@ -708,7 +706,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
      * Has to return a list, see {@link #visitTypeArguments(TypeArgumentsContext)}
      */
     @Override
-    public List<TypeArgument> visitTypeArgument(@NotNull TypeArgumentContext ctx) {
+    public List<TypeArgument> visitTypeArgument(TypeArgumentContext ctx) {
         List<TypeArgument> arguments = new ArrayList<>();
 
         arguments.add(ooFactory().createTypeArgument(((BasicJavaTypeReference) visitType(ctx.type())).name()));
@@ -717,7 +715,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     @Override
-    public Object visitBoundedTypeArgument(@NotNull BoundedTypeArgumentContext ctx) {
+    public Object visitBoundedTypeArgument(BoundedTypeArgumentContext ctx) {
         List<TypeArgument> arguments = new ArrayList<>();
         if (ctx.Q_MARK() != null) {
             TypeReference type = visitType(ctx.bound);
@@ -728,12 +726,12 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     @Override
-    public ClassLiteral visitClassLiteral(@NotNull ClassLiteralContext ctx) {
+    public ClassLiteral visitClassLiteral(ClassLiteralContext ctx) {
         return ooFactory().createClassLiteral(ctx.Identifier().getText());
     }
 
     @Override
-    public Expression visitStringLiteral(@NotNull StringLiteralContext ctx) {
+    public Expression visitStringLiteral(StringLiteralContext ctx) {
         if (isStringMain) {
             return visitString(ctx.getText());
         } else {
@@ -757,12 +755,12 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     @Override
-    public Statement visitTextModeStatement(@NotNull TextModeStatementContext ctx) {
+    public Statement visitTextModeStatement(TextModeStatementContext ctx) {
         return visitTextMode(getText(ctx.getText(), "\"".length()), true);
     }
 
     @Override
-    public Expression visitTextMode(@NotNull TextModeContext ctx) {
+    public Expression visitTextMode(TextModeContext ctx) {
         if (isStringMain) {
             DocumentConverter converter = new DocumentConverter(document, view);
             DocumentParser parser = getParser(getText(ctx.getText(), "'''".length()));
@@ -774,27 +772,27 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     @Override
-    public Literal visitDoubleLiteral(@NotNull DoubleLiteralContext ctx) {
+    public Literal visitDoubleLiteral(DoubleLiteralContext ctx) {
         return ooFactory().createDoubleLiteral(ctx.getText());
     }
 
     @Override
-    public Literal visitBoolLiteral(@NotNull BoolLiteralContext ctx) {
+    public Literal visitBoolLiteral(BoolLiteralContext ctx) {
         return ooFactory().createBooleanLiteral(ctx.getText());
     }
 
     @Override
-    public Literal visitNullLiteral(@NotNull NullLiteralContext ctx) {
+    public Literal visitNullLiteral(NullLiteralContext ctx) {
         return ooFactory().createNullLiteral();
     }
 
     @Override
-    public Literal visitIntLiteral(@NotNull IntLiteralContext ctx) {
+    public Literal visitIntLiteral(IntLiteralContext ctx) {
         return ooFactory().createIntegerLiteral(ctx.Integer().getText());
     }
 
     @Override
-    public Literal visitCharLiteral(@NotNull CharLiteralContext ctx) {
+    public Literal visitCharLiteral(CharLiteralContext ctx) {
         return ooFactory().createCharLiteral(ctx.CharLiteral().getText());
     }
 

@@ -22,7 +22,6 @@ the {href("Neio compiler", '''https://github.ugent.be/tivervac/neio/tree/master/
 
 Before we get into the details of this new language it is necessary to introduce some of the most used markup languages and word processors.
 
-// TODO desktop publishing programs: InDesign, Scribus
 ## State-of-the-art
 Before we discuss the state-of-the-art, we first discuss the difference between saving a document in a human-readable or a binary format.
 
@@ -74,7 +73,6 @@ Collaboration is also made easy by using online versions of these solutions, suc
 These make documents cross-platform and allow multiple people to work on them at the same time.
 It is also possible to add comments or suggestions on (online) documents.
 These changes can then be resolved in just one click by an authorized editor.
-// TODO: auto-save?
 
 Some documents are however more complex and have need for a more powerful tool such as {lat}.
 
@@ -293,9 +291,6 @@ We can see that these solutions all have their advantages, but there are also qu
 We discuss the most common ones for every solution underneath and afterwards we introduce the problem statement.
 
 ### Word processors
-// TODO
-// Another problem with word processors is that their format often changes over the years.
-// This means that your document might not show up the same, or at all, a few years after you wrote it.
 The UI in WYSIWYG editors allows you to customise the document, you can insert other documents, tables, figures,... and adjust a lot of properties.
 It is also possible to use macros using for example Visual Basic for Applications in Word to automate some tasks.
 It can for example be used to remove leading tab characters from paragraphs.
@@ -426,14 +421,12 @@ The name `Neio` was chosen because `neo` means new and we are developing a new l
 The spelling however, came from the Colemak keyboard layout {cite('''colemak''')}, the letters on the home row, beneath the right hand, spell `n-e-i-o`.
 
 Based on these solutions, the following goals were created for the Neio markup language:
-// TODO: what is user-friendly
 - It has to be user-friendly and easy to get started with the language;
 - It has to use a modern programming paradigm;
 - It has to be highly customisable.
 
 The first goal is achieved by using a syntax like {md} for the documents.
 
-// TODO: Inheritance
 To achieve the second goal we note that a document has a strong structure consisting of a lot of elements like chapters, sections, paragraphs and so on.
 An object-oriented model, like the one in Java, is able to represent this structure well by using an object for each element and
 inheritance allows us to easily specialize an element, for example change the numbering of an enumeration.
@@ -449,9 +442,6 @@ For example, using Neio you can create citations and references, which is not po
 
 By offering a simpler syntax than used in {lat}, we target {lat} users.
 Finally, we target developers by offering a well-known, modern programming model that is more conventional than the macro model in TeX.
-// TODO
-//It can also be used by people without technical expertise if templates are provided.
-//For example, given a template for a letter, even a non-technical person is able to quickly write down the contents of the letter and fill in the template variables.
 
 # Design of the Neio markup language
 {Chapter design = (Chapter) parent()}
@@ -492,6 +482,10 @@ In Neio there are two sets of syntax called text- and code mode.
 ## Code files
 Code files are very similar to class files in Java.
 They also use the `.no` extension.
+
+Code files are fully compatible with Java.
+This means that any Java code can be called from within a code file. This is very important because the Java ecosystem is enormous, a lot bigger than the one of TeX, and we can make use of it all.
+
 To introduce code files, we take a look at the `Paragraph` class that is used to represent the paragraph in {neioEx.ref()}.
 {
     Ranges parRanges = new Ranges().add(1, 52).add(62, 84);
@@ -963,7 +957,8 @@ This wrong context lookup for the last `\*` is visualised on the call chain belo
 }
 
 Finally, context types are only used for text mode, or when `this` is used in code mode.
-// TODO: why not?
+This is because we want code mode to do exactly what the user instructed it to.
+If we incorporate context types in the code mode, then the meaning of the code can change by making changes to the text above it.
 
 #### Nested methods
 Now that we know how context types work, we can explain why the first level of a nested method is separated from the rest.
@@ -1280,6 +1275,15 @@ This document contains {nearestAncestor(Document.class).directDescendants(Chapte
 {Chapter considerations = (Chapter) parent()}
 Whilst constructing Neio, a few other things were considered but not implemented. They are discussed below.
 
+## Customisation
+We want to easily customise simple properties of the content.
+For example, we want to easily say that we want to create a new chapter with a different font colour.
+The only way to do so at this time is by opening a code block and calling methods on the content we want to change.
+
+It might be better to provide some kind of syntax for this.
+That way we can provide customisation in the same line as the content definition.
+In {lat} for example, this is done by passing optional arguments as key-value pairs to the macro.
+
 ### Static typing
 Neio has been designed to use static typing.
 The reason for this is, that while we are writing a Neio document in Code mode, or we are writing a Neio class, we can be notified of possible type mismatches.
@@ -1309,8 +1313,11 @@ We also show the flexibility of Neio by discussing some libraries that have been
 
 ## Document classes
 Before we discuss the developed document classes it is important to note that there is still a lot more work has to be done on them.
-If we just have a look at the user guides of Memoir {cite('''memoir''')} or KOMA-Script {cite('''komascript''')}, two popular document classes in {lat}, we see that they consist of 609 and 419 pages respectively.
+If we just have a look Memoir {cite('''memoir''')} or KOMA-Script {cite('''komascript''')}, we see that they consist of 609 and 419 pages respectively.
 This is not something we could hope to reproduce in the scope of this thesis.
+Memoir introduces a new document class that integrates some often used design-related packages with the book class.
+KOMA-Script is a bundle of several classes and packages.
+
 
 ### Document class definition
 The document class to be used in a Neio document is defined by placing `\[DocumentClass\]` at the top of the file.
@@ -1398,8 +1405,11 @@ The code for the `\-` and `\|` methods is shown below.
     new LstInputListing(22, 58, '''../../examples/0.8/lib/neio/thesis/AbstractNLHandler.no''')
 }
 
-// TODO: explain why this is bad
 The implementation of `\|` is not perfect and the way to handle such scenarios should be changed in the future.
+Is is not perfect as the user has to use if statements to check what parameter should be filled in.
+If the user forgets a parameter the layout will be wrong, but no exception or warning is given.
+Finally, all of the parameters are passed as `Text`. When a we enter a name for example, we do not know what part is the first-, middle- or surname.
+However, this information might be important. For example, often only the first letter of a first name is displayed.
 
 We could also have set the parameters using a code block and calling setters defined in `Abstract`.
 However, this seemed like a more elegant way.
@@ -1626,7 +1636,7 @@ When we want to show a red black tree in {lat}, we can typeset an instance of su
 We could also create it in a third party program and include an image of the instance in our document. This solution also works for {md}.
 
 However, since an algorithm is used, and we have a programming model, could not we just build the tree and then display it?
-Yes we can! All we have to do is take some code that can generate red black trees and add a display method to it.
+Yes we can! All we have to do is take some code that can generate red black trees, and add a display method to it.
 We show an example of the red black trees in use below.
 {
     new LstInputListing('''../../examples/0.8/input/testInput/rbtDocument/rbtDocument.no''');
@@ -1695,14 +1705,11 @@ This problem is discussed in Chapter 5.
 The next example has already been used in {mathChap.ref()}.
 Every UML diagram in this document is created using the UML library discussed in this section.
 
-It is also a little different from the other libraries we have seen thus far as it does not directly translate
-into {lat}. Instead we are making use of MetaUML {cite('''metauml''')}.
-How this works exactly is shown in Chapter 4.
-For now, it is enough to know that the object model build by this library is output as a string that is understood
+It is also a little different from the other libraries we have seen thus far as it does not directly translate into {lat}. Instead we are making use of MetaUML {cite('''metauml''')}.
+How this works exactly is shown in Chapter 4. For now, it is enough to know that the object model build by this library is output as a string that is understood
 by `MetaUML`. `MetaUML` then creates a MetaPost file {cite('''metapost''')} which is included in the document.
 
-In this section, we give a high-level overview of how we create UML diagrams.
-We start out with an example.
+In this section, we give a high-level overview of how we create UML diagrams. We start out with an example.
 {
     new LstListing('''
 [Document]
@@ -1743,7 +1750,12 @@ This is shown in the example beneath.
 }
 
 In this example, the UML diagram shows two of the *actual* classes that were used to create this UML diagram.
-The code to create these UML diagrams thus reads and displays itself.
+
+Because Neio is compatible with Java, we can use any Java code in a document. In this case, we reuse a class created for the Neio compiler from within a
+Neio document to create an object model of Neio source code. Once the object model is created, we can query and modify it. 
+Because of this object model, we can query the model without having to know the language semantics of Neio. The architecture of Chameleon thus allows 
+the same UML library to be used to generate diagrams for any object-oriented language that is developed using Chameleon.
+
 How this works exactly is explained in Chapter 4.
 
 As the code for this library is over 600 lines long, we do not show all of the code.
@@ -1962,6 +1974,27 @@ These classes are compiled and then used to visit the Concrete Syntax Tree of a 
 Whilst visiting every rule and terminal, we build an Abstract Syntax Tree (AST) for the given file.
 This tree can then be manipulated in later stages.
 
+The UML diagram for the auto-generated java classes \(`ClassParserBaseVisitor` and `DocumentParserBaseVisitor`\) and our visitor implementations \(`ClassConverter` and `DocumentConverter`\) are illustrated below.
+Note that this is a shortened version, not all the methods are shown.
+{
+    image('''visitor.1''')
+}
+
+The code to visit an inheritance relation is shown below as an example.
+{
+    new LstListing('''
+@Override
+public SubtypeRelation visitInheritance(InheritanceContext ctx) {
+    SubtypeRelation relation = ooFactory().createSubtypeRelation(visitType(ctx.type()));
+    if (ctx.IMPLEMENTS() != null) {
+        relation.addModifier(new Implements());
+    }
+
+    return relation;
+}
+    ''')
+}
+
 The objects that are used in the AST are objects defined in Jnome and Chameleon.
 These object, in combination with the ANTLR4 grammars and visitor classes, thus form the front end of our compiler.
 
@@ -1971,14 +2004,19 @@ Chameleon and Jnome are both projects that were developed by professor van Doore
 
 Chameleon {cite('''chameleon''')} {cite('''chameleonPaper''')} is a framework for defining abstract ASTs of software languages. It enables
 the reuse of generic language constructs and the construction of language-independent development tools.
-It does so by providing objects for commonly used concepts in software languages.
-A few examples of such objects are the following:
-`Expression, VariableDeclaration, Type, MethodInvocation, InfixOperatorInvocation,...`.
+It does so by defining language-independent objects \(`Element`, `CrossReference`,...\)
+as well as paradigm-specific ones \(`Type`, `Statement`, `Expression`,... for Object-Oriented Programming).
 
 Jnome {cite('''jnome''')} is a Chameleon module for Java 7. It extends the objects available in Chameleon with Java-specific objects.
 It is a front end for the Java language because it can read Java code and build an AST from it (using ANTLR3).
 It is also able to output Java code for a given an AST consisting of Jnome and Chameleon objects.
 This part is the back end of the Neio compiler.
+
+The Chameleon architecture is shown below.
+The UML editor shown in the diagram is the one explained in {umlChap.ref()}.
+{
+    Image chamArch = image("The Chameleon architecture.", '''architecture''');
+}
 
 Jnome can read entire Java projects at once, in our compiler for example, it loads the entire Java library.
 This is needed because our objects use Java objects, such as `String`s.
@@ -1991,11 +2029,12 @@ The same file is used to read Neio projects in our compiler. The `project.xml` f
 }
 
 In {umlChap.ref()} the following is happening.
-First, the Neio compiler reads the Java library as well as the Neio standard library, Neio compiler, Chameleon and Jnome.
+First, the Neio compiler reads the Java library as well as the code of the Neio standard library, Neio compiler, Chameleon and Jnome.
 Which libraries to read exactly is shown in `project.xml` as is shown in {projectXml.ref()}.
 Then the Java code is generated and executed.
 
-During this execution, the `Uml` class uses the code in the Neio compiler to repeat the process of reading these libraries.
+During this execution, the `Uml` class reuses code from the Neio compiler to repeat the process of reading these libraries.
+This is possible because of the Java compatibility of Neio.
 It can now create a UML representation of anything it read in the previous step.
 
 The libraries can be read using the following two lines.
@@ -2014,7 +2053,8 @@ Chameleon also provides IDE support for the code mode (syntax errors and highlig
     image("A code file with syntax highlighting, a syntax error and a dependency view.", '''ide''')
 }}
 
-This support is enabled through the few lines of code shown below.
+This support is enabled through only a few lines of code (shown below).
+This is because the IDE support is language-independent, as can be seen in {chamArch.ref()}.
 {
 new LstListing('''
 public class Bootstrapper extends EclipseBootstrapper {
@@ -2027,8 +2067,8 @@ public class Bootstrapper extends EclipseBootstrapper {
 }''')
 }
 
-Next to this code, we also have to add a few configuration files: plugin.xml, build.properties and META-INF/MANIFEST.MF.
-We also have to add an xml/ directory which is used for syntax highlighting.
+Next to this code, we also have to add a few configuration files: `plugin.xml`, `build.properties` and `META-INF/MANIFEST.MF`.
+We also have to add an `xml` directory which is used for syntax highlighting.
 These files can be reused for another language as well.
 This only requires us to fill in the name of the plugin and the extension of the language in these files.
 
@@ -2111,9 +2151,10 @@ The middle end also imported every namespace in the Neio library as well as the 
 The name of the Java class that is generated is the same as the name of the Neio document.
 
 ### Reflection
-In {bookChapter.ref()} we used `addClassMapping` and to tell the document class to create `ThesisChapter`s instead of `Chapter`s.
+{Chapter reflection = (Chapter) parent()}
+In {bookChapter.ref()}, we used `addClassMapping` to tell the document class to create `ThesisChapter`s instead of `Chapter`s.
 This method is used to tell a `Content` to create specialized versions of a certain `Content`.
-It thus solves the same problems that factories solve.
+It solves the same problems that factories solve.
 The reason we did not use actual factories is because we did not want the user to write them.
 Factories are usually straightforward and similar to each other, yet not reusable.
 
@@ -2152,43 +2193,46 @@ As there is none, we recursively check the mappings of our parents. The mapping 
 ### Escaping
 A Neio document is parsed and converted a number of times. First, it is parsed by the Neio compiler, then 
 it is transformed into Java code that is then converted into {lat} code (in most cases).
-This means that we have to handle escaping of characters in three different languages. Escaping in text mode is easy,
-just add a `\\` before the character you want to escape and it is escaped. Of course, `\\\[nutr\]` hold on to their 
-special meaning. However `\\\[bf\]` have not been included in Neio as they are not yet needed. In the future it might 
-prove useful to include these special characters too.
+This means that we have to handle escaping of characters in three different languages.
+
+In code mode, the same escaping rules as in Java are applied.
+In text mode, escaping is easy. Adding a `\\` before a character escapes it. Of course, `\\\[nutr\]` hold on to their 
+special meaning. However, `\\\[bf\]` have not been included in Neio as they are not yet needed. In the future it might 
+prove useful to include them too.
 
 We can not just translate these characters straight to Java as we have no special meaning for `\\\[bf\]`.
 For this reason, the middle end transforms every backslash into two backslashes, and transforms a double backslash (denotes an 
-escaped single backslash in Neio) to four backslashes in Java as this is how you represent an escaped backslash in a Java String.
+escaped single backslash in Neio) to four backslashes in Java (this is how you represent an escaped backslash in a Java String).
 
-We then do some further translation in the Text class to assure that it creates valid {lat}.
-{lat} only has ten special characters thus replacing is quite easy. The code to do the replacing is shown below.
-`ESC` is an escape sequence that is used to prevent use from adjusting our changes, of the first replace, in the second replace.
+We then do some further translation in the `Text` class to assure that it creates valid {lat}.
+{lat} only has ten special characters thus translation is quite easy. This translation code is shown below.
 {
     new LstInputListing(170, 192, '''../../examples/0.8/lib/neio/lang/Text.no''')
 }
 
+`ESC` is an escape sequence. It is used to prevent the second replace from adjusting the changes made in the first replace.
+
 ## Resource usage and creation
 {Chapter rsc = (Chapter) parent()}
-A document usually uses resources such as images or other documents.
-To include these resources in the final {lat} document, the resources have to be available in the same folder as the {lat} source code.
+A document often uses resources such as images or other documents.
+To include them in the final {lat} document, they have to be available in the same folder as the {lat} source code.
 We make sure that these resources are available by copying every file that does not use the `.no` extension from the source folder to the output folder.
 
 As mentioned in {compProcess.ref()}, it is also possible to create resources at compile time of the auto-generated Java code.
 To create resources we can use writers and builders.
 A writer writes a string to some sort of output, such as a file or stdout.
-A builder takes a filename and executes a command on this file.
+A builder takes a filename and executes a command on the file.
 Extra arguments for the builder or writer can be passed through their constructor.
 
 A writer and builder are also used to create the {lat} source code of an object model and compile it to the final PDF.
-`TexFileWriter` takes the {lat} string that was created by calling `toTex()` on the root object of document, and writes it to a file.
-The name of the file is the same as the name of the Neio document, but of course it uses the `.tex` extension instead of the `.no` extension.
+The `TexFileWriter` class takes the {lat} string that was created by calling `toTex()` on the root object of document, and writes it to a file.
+The name of the {lat} sources file is equals that of the Neio document.
 
 The `TexToPDFBuilder` class takes the name of the created {lat} file and compiles it to a PDF.
 It also cleans up all the unnecessary files that were created during the compilation of the {lat} source file.
 To compile the {lat} source code, we use the `latexmk` command.
 We chose this command because it automatically compiles the file multiple times if this is needed (for example for references).
-The code to build {lat} source is shown below.
+The code to build {lat} files is shown below.
 {
     new LstInputListing(12, 47, '''../../examples/0.8/lib/neio/io/TexToPdfBuilder.no''')
 }
@@ -2196,23 +2240,48 @@ The code to build {lat} source is shown below.
 A builder and writer are also used to create the UML diagram in the UML library.
 In the `toTex` method of the `Uml` class we first create a string that can be understood by `MetaUML` (by calling the `toMetaUML` method).
 This string is then passed to the `MetaUMLWriter` which writes it to a file with the `.mp` extension.
-As filename, we use a timestamp.
+As filename we use a timestamp.
 
-This filename is passed to the `MetaUMLBuilder` which then passes it to the `mpost` command.
+This filename is passed to the `MetaUMLBuilder` which passes it to the `mpost` command.
 This command creates an image.
+
 We represent this image using an `Image` object, and call `toTex` on it.
-The {lat} that is generated by this `Image` will represent the UML diagram and as such is returned as result of the `toTex` method in the `Uml` class.
+The {lat} representation of this `Image` represents the UML diagram.
+It is thus returned as result of the `toTex` method in the `Uml` class.
 
 The `toTex` method of the `Uml` class is shown below.
 {
     new LstInputListing(86, 112, '''../../examples/0.8/lib/neio/stdlib/uml/Uml.no''')
 }
 
+### Automatic exception handling
+To be able to easily make use of IO, or any other code that throws exceptions, the Neio compiler handles exceptions for the user.
+When a statement that throws exceptions is found, the compiler wraps it in a try-catch. The body of the catch throws a new `NeioRuntimeException` to make sure that actual exceptions do not go unnoticed.
+The automatic catching keeps the code clean, but we have to be careful as it is now less clear that exceptions might occur.
+
+An example is shown below.
+{
+    new LstListing("A statement in code mode that throws an exception.", '''
+Files.write(path, lines);
+    ''')
+}
+
+{
+    new LstListing("The wrapped version of the exception throwing statement.", '''
+try {
+    Files.write(path, lines);
+}
+catch (Exception e) {
+    throw new NeioRuntimeException("Exception encountered: " + e);
+}
+    ''')
+}
+
 ## Translation to {lat}
 As shown in the previous section, we use the `toTex` method to create the {lat} representation of an object.
-However, this is bad. It adds a dependency towards {lat} on every file.
+However, this is bad as it adds a dependency towards {lat} on every file.
 
-For example, imagine that we wanted to create an HTML representation of the objects.
+For example, imagine that we want to create an HTML representation of the objects.
 With the current setup, we have to add a `toHTML` method to every object.
 
 For this reason, it would be better to create an external visualiser to output the object model.
@@ -2223,7 +2292,7 @@ During the development of the compiler we encountered a few limitations. They ar
 ### Java
 A limitation that we encountered quite late in the development, was one in Java.
 In {javaTrans.ref()}, we mentioned that the creation of the document is realised in the `createDocument` method.
-However, a the bytecode of a Java function can only be 64 KiB large {cite('''codelength''')}.
+However, the bytecode of a Java function can only be 64 KiB large {cite('''codelength''')}.
 As the thesis grew quite long, this limit was exceeded.
 
 To solve this problem `createDocument` would have to split up in smaller methods.
@@ -2231,25 +2300,22 @@ However, this is not straightforward as users can create variables in code block
 Statements in a different method might need these variables.
 
 ### Windows
-In {rsc.ref()}, we saw that commands are sometimes executed.
+In {rsc.ref()}, we saw that commands can be executed.
 However, executing commands using the Java `Process` class came with some issues that were not immediately visible.
 
-When developing on Linux, executing shell commands from Java worked without any problem.
-However, on Windows some of the processes would hang.
-Some always hanged, others hanged only once in a while.
+When developing on Linux, executing shell commands from Java worked flawlessly.
+However, on Windows some of the processes would hang. Some always hanged, others hanged only once in a while.
 
 The reason for this, is that Windows offers only a limited buffer size for the input and output streams of a process.
-The process deadlocks if the input is not written or read.
-After closer inspection of the Javadoc {cite('''javaprocess''')} this became apparent, but since the API for the Process class is so simple it was a surprise nevertheless.
-The fact that we have to worry about different platforms on a cross-platform language as Java also came as a suprise.
+Because of this, the process deadlocks if the input is not written or read.
+This became apparent after closer inspection of the Javadoc {cite('''javaprocess''')}, but since the API for the Process class is so simple, it was a surprise nevertheless.
+The fact that we have to worry about different platforms on a cross-platform language also came as a surprise.
 
 ### Back end
-About every back end has some limitations on how we can translate our Neio document. This is because Neio can use symbols as methods.
-In Java, methods can only contain letters, numbers, `\$` or `\_`.
-This means we have to translate symbol methods to valid Java identifiers.
+In Java, methods can only contain letters, numbers, `\$` or `\_`. This means we have to translate symbol methods to valid Java identifiers.
 This is done in a very straightforward manner.
 
-We use the following mapping and just replace any occurrence of a key in a method or method invocation with the value.
+Using the following mapping, we replace all occurrences of a key in a method or method invocation with the value.
 {
     new LstListing('''
 "#" -> "hash"
@@ -2277,52 +2343,93 @@ An example is found in almost every `toTex` method. We show the one defined in `
     new LstInputListing(416, 430, '''../../examples/0.8/lib/neio/lang/Content.no''')
 }
 
-In fact, we use it so much that in the future it might be better to just replace `String`s by `StringBuilder`s at all times.
+In fact, we use it so much that it might be better to just replace `String`s by `StringBuilder`s at all times.
 This would allow us to use `+` instead of append, making the syntax more concise.
-The performance gain, or loss of this would have to be investigated though.
+The performance gain (or loss) of this would have to be investigated though.
 
 #### Automatic return of the object itself
 {Chapter autoRet = (Chapter) parent()}
-Another pattern that is often encountered is that we often return the same object even when we have not changed it.
-This is to make use of fluent interfaces, as said before. An example from the `InlineEq` class is shown below.
+Another pattern that is used often, is that we let methods return the object itself.
+As said before, this is to make use of fluent interfaces. An example from the `InlineEq` class is shown below.
 {
     new LstInputListing(17, 27, '''../../examples/0.8/lib/neio/stdlib/math/InlineEq.no''')
 }
 
 We actually already have a solution for this, constructors.
-Constructors do not tell us in their signature what they are going to return, but we do know what they are going to return.
-No explicit return is needed either. Implementing this for other methods would allow us to lower the amount of boilerplate code that has to be written.
+Constructors do not explicitly tell us what they are going to return, but we know that they return the object itself.
+No explicit return statement is needed either. Implementing this for other methods allows us to lower the amount of boilerplate code that has to be written.
 
 #### Automatic Text conversion
-The final automation is needed to counter what we saw with the math library. There we had to open an inline 
-code block just to open Text mode because that creates a `Text`. A way to prevent this would be to automatically convert `Content`, or maybe even `Object` 
-in a generic way. In Java this is done through the `toString` method while in python the `repr` and `str` methods are used for this.
-However if we were to implement it as naively as this, we would lose any kind of static typing when a Text is expected as an argument.
+The final automation solves the problem we saw in {mathChap.ref()}. The problem was that we had to open an inline code block in text mode to transform a variable to `Text`.
+This can be prevented by automatically converting `Content`, or maybe even `Object`, in a generic way.
+In Java, this is done through the `toString` method while in Python the `repr` and `str` methods are used for this.
+
+However, if we were to implement in such a naive manner, we would lose any kind of static typing when a `Text` is expected as an argument.
 This does not seem like a good thing, especially when you consider that not every object might have a real textual representation.
-This means that automatically transforming an object to text might in a lot of cases not even create a sensible result.
+The latter means that automatically transforming an object to text might often not even create a sensible result.
 
-A better way might be to define an interface, `Representable`, that has a `repr` method. Any class that implements this class, and the native types such as String and Integer, 
-could than be transformed into a Text using this `repr` method.
+A better way might be to define an interface, `Representable`, that has a `repr` method. Any class that implements this class, and the native types such as `String` and `Integer`, 
+could than be transformed into a `Text` using this `repr` method.
 
-## Moving content
-When we assign content to a variable, and apply small changes to it later on, it is possible that the content moves or that both the original and the new content are changed.
-This is because the language does not enforce every placed content to be static and in turn this is the responsibility of the library developer and the user of those libraries.
-We showed that we had to make sure that we cloned our objects when making changes to them before in {rbtChap.ref()} and {lily.ref()}.
-It would be a very nice feature if Neio could enforce this behaviour by itself and take care of the implementation of clone by itself.
-A way that this might be implemented is by copying objects that are going to be changed through reflection.
-// TODO: is this correct?
+## Static content
+In {rbtChap.ref()} and {lily.ref()}, we mentioned that we always had to clone the tree when making changes to it. This is to make sure we are not editing the original tree.
+
+The language does not enforce placed content to be static.
+Because of this, it is the responsibility of the library developer and the user of those libraries.
+Instead, Neio could enforce this behaviour and take care of the implementation of the clone.
+
+A way that this might be implemented, is by copying objects that are going to be changed through serialization.
+This is an expensive operation and thus the performance loss would have to be investigated.
 
 ## Remove ambiguity in symbol methods
 Symbol methods can use the `\-` and `\=` method and are thus ambiguous with those operators in Java.
 To avoid this ambiguity, we could force the user provide an alias for the symbol methods.
-In code mode we would then only be able to use this alias.
-This would also make the code more readable as `addChapter` is a lot more informative than `\#`.
+In code mode, we would then only be able to use this alias.
+This would also make the code more readable as `addChapter` is more informative than `\#`.
 
 ## Use
+In {reflection.ref()}, we saw that we could specialize what `Content` is made.
+However, this is not perfect. It specializes the `Content` for the entire lifetime of the parent, even for instances that were created before we instructed the specialization.
+What we actually want to say is: "From here on, use `SpecializedContent` instead of `GenericContent`.".
+The use of this `SpecializedContent` would then last from there until the end of the scope of the parent.
+It could also be explicitly instructed to stop.
+
+As an example, imagine that we want to use an enumerate that uses the Fibonacci sequence to number its items.
+We want to start using it in the middle of a chapter, without it effecting anything that was created earlier.
+We also want that anything that is inserted (using code mode) from that point on uses the new enumerate, while anything inserted before it should use the generic enumerate.
+{
+    new LstListing('''
+[Document]
+# Chapter 1
+* Item 1 // This is a generic Enumerate
+* Item 2
+
+{
+    use(FibEnumerate.class, Enumerate.class);
+}
+
+* Item 1 // This is a FibEnumerate
+* Item 2
+
+// End of scope for the first chapter
+# Chapter 2 
+* Item 1 // This is a generic Enumerate
+* Item 2
+    ''')
+}
+
+Had we used `addClassMapping` to do this, the first `Enumerate` would also be a `FibEnumerate`.
+
+It is possible to implement this as "from now on", but it is not that easy to implement it as "from here on".
+Say that after this `use`, we insert an enumerate, using code mode, at the front of the chapter.
+The `getInstance` method that initialises the object does not know where the object is going to be placed.
+The method that calls `getInstance` can place the initialised object anywhere.
+At the time that the initialisation of the object occurs it is thus not known what object should be created.
+
 ## Packages
 #### Package support
 No package system was provided in this thesis, but in the future it would be beneficial to do so.
-It would allow users without a lot of technical expertise to import new functionality easily.
+It would allow users without a lot of technical expertise to import new functionality easily..
 
 The way packaging is handled right now, is straight through {lat} packages and Java packages.
 We allow you to add {lat} packages through the `addPackage` method in `Document` and we allow you to import Java classes 
@@ -2334,12 +2441,12 @@ and have them be stored somewhere else.
 
 #### Implementation of packages
 As we said before, non of the document classes or libraries created in this thesis are complete.
-In comparison to what Java and {lat} offer, we also did not create too many of them.
+In comparison to what Java and {lat} offer, we also did not create a lot of them.
 
-In the future a lot of work has to be put into writing complete libraries and porting libraries from other available languages such as {lat}.
-This can however be done by the community for a big part, as is what happens for Java and {lat}.
+In the future, a lot of work has to be put into writing complete libraries and porting libraries from other available languages such as {lat}.
+This can however be done by the community, as is done in Java and {lat}.
 
-However, we note again that we can already make use of any of the already existing Java libraries.
+We note again, that we can already make use of any of the already existing Java libraries though.
 
 ## Compiler improvement
 #### Efficiency
@@ -2347,72 +2454,80 @@ The compiler is fast enough for small documents, but for a large document, like 
 The thesis takes about 30 seconds to a minute to compile, depending on the computing power of your computer.
 This is on top of `latexmk` and the other commands that have to run afterwards, and that also takes quite a while.
 
-However no attention was paid to the efficiency of the compiler in this thesis.
+However, no attention was paid to the efficiency of the compiler in this thesis.
 It is thus likely that there are a lot of optimisations that can be performed.
 
 #### Other front- and back ends
 Another compiler improvement that can be implemented in the future, is that we can create different front and back ends.
-We do not have to output to Java. If someone were to write a back end for python for example, we could make use of that back end.
+We do not have to output to Java. If someone were to write a back end for Python for example, we could make use of that back end.
 
 The same thing is possible for the front end. The syntax of Neio documents and code files can be changed, as long as the fundamental 
 design decisions of the language are kept the same. The context types and nested methods come to mind.
-As long as the front end can parse the Neio document to the same AST as is used at this moment, it is possible to change the currently used syntax.
+As long as the front end can parse the Neio document to the same AST that is used at this moment, it is possible to change the currently used syntax.
 
 ## Tool improvement
 To effectively be able to use Neio, we need some improvements to the tools available right now.
 In {chamJnome.ref()}, we saw that Chameleon provides support for the Eclipse IDE.
-The support has been implemented for the code mode, but in the future it would also have to be implemented for the textmode.
+This support has been implemented for code mode, but in the future it would also have to be implemented for text mode.
 
 #### Syntax highlighting
-One of the base requirements to work with a language is syntax highlighting.
-This can be achieved through as seen before.
-
-However, it was not made for syntax like the text mode, where we represent a document as a series of method chains.
+Syntax highlighting is one of the base requirements to work with a language..
+However, the Chameleon implementation was not made for syntax like the text mode, where we represent a document as a series of method chains.
 At this moment, the Eclipse integration treats the entire method chain as a whole instead of every method call separately.
-This is problematic because a chapter that contains inline-code would not be coloured uniformly for example.
+This is problematic because a paragraph that contains inline-code would not be coloured uniformly for example.
 
-#### Auto completion
-A second useful feature that Chameleon offers, is auto completion.
+#### Auto-completion
+A second useful feature that Chameleon offers, is auto-completion.
 This works well in code mode, however it is harder to utilize in text mode.
-This is because it would have to know when to auto complete and when it should just let us write.
-It might be best to hide the auto complete behind a hotkey while in Text mode.
-This still allows the user to get a list of methods he could use at a certain time, but would remove the annoyance of having a pop-up 
-for auto completion come up at every word that is written.
+This is because, it hs to know when to auto-complete and when it should just let us write.
+
+It might be best to hide the auto complete behind a hotkey while in text mode.
+This still allows the user to get a list of methods he could use at a certain time, but would remove the annoyance of having an auto-completion pop-up at every written word.
+
+#### Outline
+The outline offered through Chameleon was implemented for code mode.
+However, it is not very useless for text mode. This is because an outline shows the defined members, and in text mode no members are defined.
+
+It would be better if instead we showed the most important elements of the text, such as chapters and images. We could also show the variables that were defined in non-scoped code blocks.
 
 #### IDE with preview
 The last thing that would be a nice to have for a markup language like this, is an IDE that previews the document.
 This is not something that is supported by Chameleon, and would thus require quite a bit more work.
 
 The compiler in its current state is also not ready for this. As said before it gets quite slow on large documents.
-As it would have to be constantly running in the background, it would use a lot of energy (which is problematic for laptops), and would be too slow to actually produce results in time.
+As it would have to be constantly running in the background, it would use a lot of energy (which is problematic for laptops), and would be too slow to actually produce results in real time.
 
 # Conclusion and reflection
 #### Summary
-In this thesis we researched the current state-of-the-art concerning document creation.
-From this research we concluded that a good combination of user-friendliness and customisability was hard to find.
+In this thesis we researched the current state-of-the-art concerning document creation. From this research we concluded that a good combination of user-friendliness and customisability was hard to find.
 To achieve such a combination we created a new markup language, called Neio, that uses a modern, object-oriented programming model.
 
-We decided on the features that Neio needed to achieve its goals and used them to create a few examples in.
-To prototype Neio, we created a compiler and a standard library.
+Two syntaxes were introduced, text mode and code mode. The former is a simple syntax that is used for document creation. The latter allows for customisation of the text mode syntax.
+To easily customise this syntax, we developed symbol, nested and surround methods.
+Lastly, we extended fluent interfaces to make a user program without him noticing it. The extension is made available through the developed context types.
+
+To prototype Neio, we created a compiler and a standard library. Libraries for different domains were implemented to show the versatility of Neio.
+Amongst others, we created a library to create UML diagrams, structural formulas and music sheets.
+
 Finally, we discussed the work that can and should still be done on Neio in the future.
 
 #### Reflection
 We used the language for four months (the rest of the time was spent developing it), wrote a Thesis in it and wrote a complete compiler for it.
-After all of this we found that it might have been better to just use almost pure Java syntax for the code mode.
-We changed a few things, such as adding syntactic sugar for new calls and calling packages, namespaces.
-The latter was done because in our eyes, namespace is a more general term, that better explains what this keyword does.
+After all of this, we found that it might have been better to use almost pure Java syntax for the code mode.
+We changed a few things, such as adding syntactic sugar for new calls and renaming `package` to `namespace`.
+The latter was done because in our eyes, `namespace` is a more general term that better explains what this keyword represents.
 
-But by choosing different keywords, we ended up with name conflicts. At some point in the development we wanted to make use of a class in a package called `namespace`.
-Of course this did not work out well as the parser did not know how to parse a package name containing a keyword.
+However, by choosing different keywords we ended up with name conflicts. At some point in the development we wanted to make use of a class in a package called `namespace`.
+This did not work as the parser did not know how to parse a package name containing a keyword.
 By changing the syntax as much as we did, it also became impossible to run Javadoc on our code files without making major changes to them.
 
 Disallowing a substantial part of Java (anonymous classes, shorthand operators such as `++` and `+=`,...) also hurts the 
-adoption rate of the language as you almost always to invest some time converting a Java file into a Neio file.
+adoption rate of the language as you usually have to invest some time converting a Java file into a Neio file.
 
-We think that it would have been better to have just used Java syntax, with the modifications defined in {methodMods.ref()}, for the code mode.
-In the future we might then also add the proposition made in {autoRet.ref()}.
+We think that it would have been better to have just used Java syntax, with the modifications defined in {methodMods.ref()} for the code mode.
+In the future, we might then also add the proposition made in {autoRet.ref()}.
 
-In text mode it is annoying that we can not use more than one character as a symbol method.
+In text mode, it is annoying that we can not use more than one character as a symbol method.
 For example, it is not possible to use meaningful symbols such as `->` as a method.
 
 As shown in {abstractChap.ref()}, some work should also be put into making symbol methods more flexible.
@@ -2420,10 +2535,11 @@ It should be possible to easily pass parameters of an object through symbol meth
 
 #### Conclusion
 In the end, we showed that is possible to create a healthy mix between user-friendliness and a powerful programming model.
-We showed that the language can be easy to read, write and learn. This was achieved by extending fluent interfaces and basing text mode on {md} which is already easy to read, write and learn.
+We showed that the language can be easy to read, write and learn. This was achieved by extending fluent interfaces and basing text mode on {md}, which is already easy to read, write and learn.
 
 We also showed that it can be as powerful and diverse as {lat} whilst remaining quite legible. This was achieved by basing code mode on Java.
-The popularity of Java {cite('''ieeejava''')} assures that there are a lot of libraries that can be used directly, and it gives us a large user base that can read and understand code mode.
-The diverse examples showed in Chapter 3, and the completion of this book demonstrate this.
+The popularity of Java {cite('''ieeejava''')} gives us a large user base that can read and understand code mode.
+Because code files are fully compatible with Java, we can also call any Java code from them. We thus have the extra advantage of being able to make use of the enormous Java ecosystem.
+The diverse examples showed in {examples.ref()}, and the completion of this book demonstrate the power and diversity of Neio.
 
 A lot of work can still be done, and should still be done to allow the widespread use of Neio, as is shown in {fut.ref()}, but we think that good basis has been provided.
