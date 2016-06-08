@@ -1,0 +1,27 @@
+namespace neio.stdlib.math;
+
+import neio.lang.Content;
+
+class Sqrt extends Content;
+
+Content root;
+Content arg;
+
+Sqrt(Content arg) {
+    this(null, arg);
+}
+
+Sqrt(Content root, Content arg) {
+    this.root = root;
+    this.arg = arg;
+}
+
+String toTex() {
+    StringBuilder result = new StringBuilder("\\sqrt");
+    if (root != null) {
+        result.append("[").append(root.toTex()).append("]");
+    }
+    result.append("{").append(arg.toTex()).append("}");
+    
+    return result.toString();
+}

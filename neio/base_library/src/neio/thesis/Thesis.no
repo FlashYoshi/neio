@@ -1,0 +1,116 @@
+namespace neio.thesis;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import neio.stdlib.BlankPage;
+import neio.stdlib.Chapter;
+import neio.stdlib.Document;
+import neio.stdlib.FiguresList;
+import neio.stdlib.ListingsList;
+import neio.stdlib.Packages;
+import neio.stdlib.Pdf;
+import neio.stdlib.Toc;
+
+/**
+ * A document class to be used in for a Thesis
+ */
+class Thesis extends Document;
+
+/**
+ * Intialises the document class, adding the required packages and adding a ToC
+ */
+Thesis() {
+    addPackage("graphicx")
+    .add("fancyhdr")
+    .add("amsmath")
+    .add("float")
+    .add("listings")
+    .add("tocloft")
+    .add("color")
+    .add("pdfpages")
+    .add("hyperref");
+
+    List<String> options = new ArrayList<String>();
+    options.add("english");
+    addPackage(options, "babel");
+
+    addClassMapping(Chapter.class, ThesisChapter.class);
+    addContent(new Pdf("TitlePage"));
+    addContent(new BlankPage());
+    addContent(new Pdf("TitlePage"));
+    addContent(new FrontMatter());
+}
+
+/**
+ * Sets up the main matter
+ */
+void mainMatter() {
+    addContent(new Toc());
+    addContent(new FiguresList());
+    addContent(new ListingsList());
+    addContent(new MainMatter());
+}
+
+/**
+ * Builds the preamble for this document class
+ *
+ * @return The preamble for this document class
+ */
+String preamble() {
+    StringBuilder preamble = new StringBuilder("\\documentclass[11pt,a4paper,oneside,notitlepage]{book}\n")
+    .append("\\setlength{\\topmargin}{2cm}\n")
+    .append("\\setlength{\\headheight}{14.49998pt}\n")
+    .append("\\setlength{\\headsep}{1cm}\n")
+    .append("\\setlength{\\oddsidemargin}{2.5cm}\n")
+    .append("\\setlength{\\evensidemargin}{2.5cm}\n")
+    .append("\\setlength{\\textwidth}{16cm}\n")
+    .append("\\setlength{\\textheight}{23.3cm}\n")
+    .append("\\setlength{\\footskip}{1.5cm}\n")
+    .append(packages().toTex())
+    .append("\\DeclareGraphicsRule{*}{mps}{*}{}")
+    .append("\\pagestyle{fancy}\n")
+    .append("\\renewcommand{\\chaptermark}[1]{\\markright{\\MakeUppercase{#1}}}\n")
+    .append("\\renewcommand{\\sectionmark}[1]{\\markright{\\thesection~#1}}\n")
+    .append("\\newcommand{\\headerfmt}[1]{\\textsl{\\textsf{#1}}}\n")
+    .append("\\newcommand{\\headerfmtpage}[1]{\\textsf{#1}}\n")
+    .append("\\fancyhf{}\n")
+    .append("\\fancyhead[LE,RO]{\\headerfmtpage{\\thepage}}\n")
+    .append("\\fancyhead[LO]{\\headerfmt{\\rightmark}}\n")
+    .append("\\fancyhead[RE]{\\headerfmt{\\leftmark}}\n")
+    .append("\\renewcommand{\\headrulewidth}{0.5pt}\n")
+    .append("\\renewcommand{\\footrulewidth}{0pt}\n")
+    .append("\\fancypagestyle{plain}{\n")
+    .append("\\fancyhf{}\n")
+    .append("\\fancyhead[LE,RO]{\\headerfmtpage{\\thepage}}\n")
+    .append("\\fancyhead[LO]{\\headerfmt{\\rightmark}}\n")
+    .append("\\fancyhead[RE]{\\headerfmt{\\leftmark}}\n")
+    .append("\\renewcommand{\\headrulewidth}{0.5pt}\n")
+    .append("\\renewcommand{\\footrulewidth}{0pt}\n")
+    .append("}\n")
+    .append("\\renewcommand{\\baselinestretch}{1.5}\n")
+    .append("\\hyphenation{ditmagnooitgesplitstworden dit-woord-splitst-hier}\n")
+    .append("\\setlength{\\parindent}{0em}\n")
+    .append("\\setlength{\\parskip}{1em}\n")
+    .append("\\definecolor{comments}{RGB}{98, 151, 85}\n")
+    .append("\\lstset{\n")
+    .append("belowcaptionskip=1\\baselineskip,\n")
+    .append("breaklines=true,\n")
+    .append("frame=single,\n")
+    .append("comment=[l]{//},\n")
+    .append("morecomment=[s]{/**}{*/},\n")
+    .append("commentstyle=\\color{comments},\n")
+    .append("xleftmargin=\\parindent,\n")
+    .append("showstringspaces=false,\n")
+    .append("basicstyle=\\footnotesize\\ttfamily,\n")
+    .append("keywordstyle=\\bfseries,\n")
+    .append("stringstyle=\\ttfamily,\n")
+    .append("numbers=left,\n")
+    .append("numbersep=7pt,\n")
+    .append("numberstyle=\\tiny,\n")
+    .append("rulecolor=\\color{black},\n")
+    .append("lineskip={-1.5pt}\n")
+    .append("}\n");
+
+    return preamble.toString();
+}

@@ -1,0 +1,11 @@
+namespace neio.lang;
+
+abstract class Container extends Content;
+
+<T extends Content> T appendContent(T c) {
+    if (! contains(c)) {
+        return addContent(c);
+     }
+     
+     return c;
+}

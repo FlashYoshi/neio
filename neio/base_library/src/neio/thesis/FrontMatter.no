@@ -1,0 +1,11 @@
+namespace neio.thesis;
+
+import neio.lang.Content;
+
+class FrontMatter extends Content;
+
+String toTex() {
+    return new StringBuilder("\\frontmatter\n")
+        .append("\\pagestyle{empty}\n")
+        .toString();
+}

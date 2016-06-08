@@ -1,0 +1,181 @@
+namespace neio.stdlib.music;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.List;
+
+import neio.io.LilyToPDFBuilder;
+import neio.lang.Content;
+import neio.stdlib.Image;
+
+class Score extends Content;
+
+public static final Integer C = 0;
+public static final Integer D = 1;
+public static final Integer E = 2;
+public static final Integer F = 3;
+public static final Integer G = 4;
+public static final Integer A = 5;
+public static final Integer B = 6;
+public static final List<String> NOTES = new ArrayList<String>();
+
+List<Note> notes;
+
+Score() {
+    notes = new ArrayList<Note>();
+    NOTES.add("c");
+    NOTES.add("d");
+    NOTES.add("e");
+    NOTES.add("f");
+    NOTES.add("g");
+    NOTES.add("a");
+    NOTES.add("b");
+}
+
+Score(Score s) {
+    this();
+    for (int i = 0; i < s.notes().size(); i = i + 1) {
+        Note n = s.notes().get(i);
+        notes.add(new Note(n.noteNr(), n.octaveNr(), this));
+    }
+}
+
+Score(Score s, Note note) {
+    this(s);
+    notes.add(note);
+}
+
+Score shift(Integer shift) {
+    Score s = new Score(this);
+    List<Note> n = s.notes();
+    for (int i = 0; i < n.size(); i = i + 1) {
+        Note note = n.get(i);
+        note.shift(shift);
+    }
+    return s;
+}
+
+Score reverse() {
+    Score s = new Score(this);
+    Collections.reverse(s.notes());
+    return s;
+}
+
+Note get(Integer i) {
+    return notes.get(i);
+}
+
+List<Note> notes() {
+    return notes;
+}
+
+Score add(Integer note) {
+    return add(note, 0);
+}
+
+Score add(Integer note, Integer octave) {
+    return new Score(this, new Note(note, octave, this));
+}
+
+String print() {
+    if (notes.isEmpty()) {
+        return "";
+    }
+
+    StringBuilder sb = new StringBuilder(get(0).toString());
+    for (int i = 1; i < notes.size(); i = i + 1) {
+        sb.append(", ").append(notes.get(i).toString());
+    }
+
+    return sb.toString();
+}
+
+Score a() {
+    return add(A);
+}
+
+Score a(Integer octave) {
+    return add(A, octave);
+}
+
+Score b() {
+    return add(B);
+}
+
+Score b(Integer octave) {
+    return add(B, octave);
+}
+
+Score c() {
+    return add(C);
+}
+
+Score c(Integer octave) {
+    return add(C, octave);
+}
+
+Score d() {
+    return add(D);
+}
+
+Score d(Integer octave) {
+    return add(D, octave);
+}
+
+Score e() {
+    return add(E);
+}
+
+Score e(Integer octave) {
+    return add(E, octave);
+}
+
+Score f() {
+    return add(F);
+}
+
+Score f(Integer octave) {
+    return add(F, octave);
+}
+
+Score g() {
+    return add(G);
+}
+
+Score g(Integer octave) {
+    return add(G, octave);
+}
+
+String toLilypond() {
+    StringBuilder result = new StringBuilder("\\version \"2.18.2\"\n");
+    result.append("\\paper{\n" +
+            "  indent=0\\mm\n" +
+            "  line-width=120\\mm\n" +
+            "  oddFooterMarkup=##f\n" +
+            "  oddHeaderMarkup=##f\n" +
+            "  bookTitleMarkup = ##f\n" +
+            "  scoreTitleMarkup = ##f\n" +
+            "}\n{");
+    for (int i = 0; i < notes.size(); i = i + 1) {
+        result.append(notes.get(i).toLilypond());
+    }
+    result.append("}");
+
+    return result.toString();
+}
+
+String toTex() {
+    String l = toLilypond();
+    LilyToPDFBuilder builder = new LilyToPDFBuilder(l);
+
+    Calendar cal = Calendar.getInstance();
+    SimpleDateFormat sdf = new SimpleDateFormat("HH-mm-ss-SSS");
+    String name = sdf.format(cal.getTime());
+    builder.build(name);
+
+    Image img = new Image(name + ".pdf").scale(100);
+    return img.toTex();
+}
+

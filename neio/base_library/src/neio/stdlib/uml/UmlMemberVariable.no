@@ -1,0 +1,38 @@
+namespace neio.stdlib.uml;
+
+import be.kuleuven.cs.distrinet.jnome.core.language.Java7;
+import org.aikodi.chameleon.oo.variable.VariableDeclaration;
+
+class UmlMemberVariable;
+
+Boolean showPrivate;
+Boolean showProtected;
+String name;
+String type;
+UmlAccessModifier access;
+
+UmlMemberVariable(Java7 lang, VariableDeclaration var, Boolean showPrivate, Boolean showProtected) {
+    this.showPrivate = showPrivate;
+    this.showProtected = showProtected;
+    this.type = var.variable().getTypeReference().toString();
+    this.name = var.name();
+    this.access = new UmlAccessModifier(lang, var);
+}
+
+Boolean show() {
+    return ((access.priv() && showPrivate)
+        || (access.prot() && showProtected)
+        || (access.pub()));
+}
+
+String toMetaUML() {
+    StringBuilder result = new StringBuilder();
+    result.append('"')
+        .append(name)
+        .append(": ")
+        .append(type)
+        .append(access.toMetaUML())
+        .append('"');
+
+    return result.toString();
+}

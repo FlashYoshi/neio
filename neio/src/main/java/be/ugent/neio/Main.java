@@ -1,7 +1,20 @@
 package be.ugent.neio;
 
+import static be.ugent.neio.util.Constants.AUTO_GEN_DIR;
+import static be.ugent.neio.util.Constants.EXTENSION;
+
+import java.io.File;
+
+import org.aikodi.chameleon.input.ModelFactory;
+import org.aikodi.chameleon.plugin.build.BuildException;
+import org.aikodi.chameleon.plugin.build.LanguageBuilder;
+import org.aikodi.chameleon.workspace.DirectoryScanner;
+import org.aikodi.chameleon.workspace.ExtensionPredicate;
+import org.aikodi.chameleon.workspace.InputException;
+import org.aikodi.chameleon.workspace.ProjectException;
+import org.aikodi.chameleon.workspace.View;
+
 import be.kuleuven.cs.distrinet.jnome.workspace.JavaView;
-import be.ugent.chameleonsupport.build.LanguageBuilder;
 import be.ugent.neio.builder.NeioClassBuilder;
 import be.ugent.neio.builder.NeioProjectBuilder;
 import be.ugent.neio.builder.NeioScriptBuilder;
@@ -11,14 +24,6 @@ import be.ugent.neio.industry.NeioDocumentModelFactory;
 import be.ugent.neio.model.io.CopyBuilder;
 import be.ugent.neio.model.io.CopyDocumentFactory;
 import be.ugent.neio.model.util.NotExtensionPredicate;
-import org.aikodi.chameleon.input.ModelFactory;
-import org.aikodi.chameleon.plugin.build.BuildException;
-import org.aikodi.chameleon.workspace.*;
-
-import java.io.File;
-
-import static be.ugent.neio.util.Constants.AUTO_GEN_DIR;
-import static be.ugent.neio.util.Constants.EXTENSION;
 
 public class Main {
 

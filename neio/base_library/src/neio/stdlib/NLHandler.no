@@ -1,0 +1,48 @@
+namespace neio.stdlib;
+
+import neio.lang.Content;
+import neio.lang.Text;
+
+/**
+ * The default newline handler
+ */
+class NLHandler;
+
+Content parent; 
+
+/**
+ * Creates a new NLHandler and keeps a reference to the object that created it
+ */
+NLHandler(Content parent) {
+    this.parent = parent;
+}
+
+/**
+ * Returns the object that created this
+ *
+ * @return The object that created this
+ */
+Content parent() {
+    return parent;
+}
+
+/**
+ * Creates a Paragraph and adds it to the parent.
+ *
+ * @param text The text for the Paragraph
+ * @return        The newly created Paragraph
+ */
+Paragraph text(Text text) {
+    new Paragraph(text) par;
+    parent().addContent(par);
+    return par;
+}
+
+/**
+ * Returns this
+ *
+ * @return this
+ */
+NLHandler newline() {
+    return this;
+}

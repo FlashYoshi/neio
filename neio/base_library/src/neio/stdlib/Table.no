@@ -1,0 +1,65 @@
+namespace neio.stdlib;
+
+import java.util.List;
+import java.util.ArrayList;
+
+import neio.lang.Content;
+
+/**
+ * Represents a table
+ */
+class Table extends Content;
+
+/**
+ * Initialises the Table
+ */
+Table() {
+}
+
+/**
+ * Initialises the Table with a given header row and an hline beneath it
+ *
+ * @param row The row to use as header for this table
+ */
+Table(TableRow row) {
+    appendHline();
+    addContent(row);
+    row.setBold();
+}
+
+/**
+ * Appends a TableRow to this Table
+ *
+ * @param row The TableRow to append
+ * @return The appended TableRow
+ */
+TableRow appendRow(TableRow row) {
+    return addContent(row);
+}
+
+/**
+ * Appends a horizontal line to this Table
+ *
+ * @return The appended Hline
+ */
+Hline appendHline() {
+    return addContent(new Hline());
+}
+
+/**
+ * Build the TeX representation of this table
+ *
+ * @return The TeX representation of this table
+ */
+String toTex() {
+    // hline and row
+    if (contentSize() > 2) {
+        appendHline();
+    }
+    StringBuilder begin = new StringBuilder("\n\\begin{tabular}");
+    if (contentSize() > 2) {
+        begin.append("{ | ").append(((TableRow) content(1)).header()).append("}");
+    }
+
+    return begin.toString() + super.toTex() + "\\end{tabular}\n";
+}

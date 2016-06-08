@@ -1,0 +1,11 @@
+namespace neio.stdlib;
+
+class Hline extends TableRow;
+
+TableNLHandler newline() {
+    return new TableNLHandler(this);
+}
+
+String toTex() {
+    return "\n\\hline\n";
+}

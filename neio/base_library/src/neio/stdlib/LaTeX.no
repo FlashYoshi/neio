@@ -1,0 +1,9 @@
+namespace neio.stdlib;
+
+import neio.lang.Text;
+
+class LaTeX extends Text;
+
+String thisToTex() {
+    return "\\LaTeX{}";
+}

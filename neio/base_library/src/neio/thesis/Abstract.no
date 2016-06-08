@@ -1,0 +1,153 @@
+namespace neio.thesis;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import neio.lang.Text;
+import neio.stdlib.Chapter;
+import neio.stdlib.NewPage;
+import neio.stdlib.TextContainer;
+
+class Abstract extends TextContainer;
+
+List<String> supervisors = null;
+List<String> counsellors = null;
+String title = null;
+String author = null;
+String program = null;
+String faculty = null;
+String department = null;
+String chairman = null;
+String university = null;
+
+Abstract() {
+    this.supervisors = new ArrayList<String>();
+    this.counsellors = new ArrayList<String>();
+    addClassMapping(Chapter.class, Chapter.class);
+}
+
+Chapter #(Text title) {
+    Chapter chapter = new Chapter(title, 1).nonu();
+    addContent(chapter);
+
+    return chapter;
+}
+
+void title(String title) {
+    this.title = title;
+}
+
+String title() {
+    return title;
+}
+
+void author(String author) {
+    this.author = author;
+}
+
+String author() {
+    return author;
+}
+
+void program(String program) {
+    this.program = program;
+}
+
+String program() {
+    return program;
+}
+
+void supervisor(String supervisor) {
+    supervisors.add(supervisor);
+}
+
+void counsellor(String counsellor) {
+    counsellors.add(counsellor);
+}
+
+void faculty(String faculty) {
+    this.faculty = faculty;
+}
+
+String faculty() {
+    return faculty;
+}
+
+void university(String university) {
+    this.university = university;
+}
+
+String university() {
+    return university;
+}
+
+void department(String department) {
+    this.department = department;
+}
+
+String department() {
+    return department;
+}
+
+void chairman(String chairman) {
+    this.chairman = chairman;
+}
+
+String chairman() {
+    return chairman;
+}
+
+AbstractNLHandler newline() {
+    return new AbstractNLHandler(this);
+}
+
+String toTex() {
+    StringBuilder result = new StringBuilder();
+    result.append(new NewPage().toTex())
+        .append("{\n")
+        .append("\\setlength{\\baselineskip}{14pt}\n")
+        .append("\\setlength{\\parindent}{0pt}\n")
+        .append("\\setlength{\\parskip}{8pt}\n")
+        .append("\\begin{center}\n\n\\noindent\\textbf{\\large\n")
+        .append(title)
+        .append("\\\\}\nby\n\n")
+        .append(author)
+        .append("\n\nMaster's dissertation submitted in order to obtain the academic degree of \\\\\n Master of ")
+        .append(program)
+        .append("\n\nAcademic year 2015--2016\n\nSupervisor");
+
+    if (supervisors.size() > 1) {
+        result.append("s");
+    }
+    result.append(": ")
+        .append(supervisors.get(0));
+    for (int i = 1; i < supervisors.size(); i = i + 1) {
+        result.append(", ")
+            .append(supervisors.get(i));
+    }
+
+    result.append("\\\\\nCounsellor");
+    if (counsellors.size() > 1) {
+        result.append("s");
+    }
+    result.append(": ")
+        .append(counsellors.get(0));
+    for (int i = 1; i < counsellors.size(); i = i + 1) {
+        result.append(", ")
+            .append(counsellors.get(i));
+    }
+
+    result.append("\n\nFaculty of ")
+        .append(faculty)
+        .append(", ")
+        .append(university)
+        .append("\n\nDepartment of ")
+        .append(department)
+        .append(", Chair: ")
+        .append(chairman)
+        .append("\n\n\\end{center}")
+        .append(super.toTex())
+        .append("}\n\n");
+    result.append(new NewPage().toTex());
+    return result.toString();
+}

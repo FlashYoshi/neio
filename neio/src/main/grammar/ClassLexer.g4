@@ -3,7 +3,7 @@ lexer grammar ClassLexer;
 COMMENT : '//' ~[\r\n]* -> channel(HIDDEN);
 MULTILINE_COMMENT : '/*' .*? '*/' -> channel(HIDDEN);
 
-WS : [\t ] -> channel(HIDDEN);
+WS : [ \r\t\u000C\n ] -> channel(HIDDEN);
 NEWLINE : '\r'? '\n' -> skip;
 
 ////////////START KEYWORDS////////////

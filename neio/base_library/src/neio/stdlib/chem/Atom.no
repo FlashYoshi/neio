@@ -1,0 +1,147 @@
+namespace neio.stdlib.chem;
+
+import neio.lang.Texable;
+import neio.lang.Text;
+
+class Atom implements Texable;
+
+String atom;
+String link;
+Integer angle;
+Integer ring;
+Structure structure;
+Atom next;
+ChemName name;
+Boolean allowedToTex;
+
+Atom(String atom) {
+    this.atom = atom;
+    next = null;
+    structure = null;
+    ring = null;
+    angle = null;
+    name = null;
+    allowedToTex = true;
+    link = "";
+}
+
+void setParent(Structure structure) {
+    this.structure = structure;
+}
+
+Structure parent() {
+    return structure;
+}
+
+Atom setAngle(Integer angle) {
+    this.angle = angle;
+    return this;
+}
+
+Atom setLink(String link) {
+    this.link = link;
+    return this;
+}
+
+void setName(ChemName name) {
+    this.name = name;
+    this.allowedToTex = false;
+}
+
+ChemName name() {
+    return name;
+}
+
+void allowToTex() {
+    allowedToTex = true;
+}
+
+Boolean isRing() {
+    return ring != null;
+}
+
+StructureNLHandler newline() {
+    return new StructureNLHandler(structure);
+}
+
+Atom -(Text text) {
+    return createNext(text.realText(), "-");
+}
+
+Atom -() {
+    return createNext("", "-");
+}
+
+Atom =(Text text) {
+    return createNext(text.realText(), "=");
+}
+
+Atom =() {
+    return createNext("", "=");
+}
+
+private Atom createNext(String atomText, String link) {
+    Atom a = new Atom(atomText);
+    a.setParent(structure);
+    next = a.setLink(link);
+    return a;
+}
+
+private Atom createNext(String atomText, String l, Integer a) {
+    Atom at = createNext(atomText, l);
+    return at.setAngle(a);
+}
+
+Atom *(Text text){
+    this.ring = Integer.parseInt(text.realText());
+    return this;
+}
+
+Atom ^(Text text) {
+    return createNext(text.realText(), "-", 90);
+}
+
+Atom ^() {
+    return createNext("", "-", 90);
+}
+
+Atom _(Text text) {
+    return createNext(text.realText(), "-", - 90);
+}
+
+Atom _() {
+    return createNext("", "-", - 90);
+}
+
+void preTex() {
+}
+
+String toTex() {
+    if (!allowedToTex) {
+        name.preTex();
+        return name.toTex();
+    }
+    
+    String result = "";
+    if (angle != null) {
+        result = "([:" + angle + "]" + link + atom + ")";
+        return addNext(result);
+    }
+    if (ring == null) {
+        result = result + link + atom;
+        result = addNext(result);
+    } else { 
+        result = result + atom + "*" + ring + "(" + link;
+        result = addNext(result) + ")";
+    }
+    
+    return result;
+}
+
+private String addNext(String base) {
+        if (next != null) {
+            return base + next.toTex();
+        } else {
+            return base;
+        }
+}
