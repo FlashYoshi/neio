@@ -1,16 +1,20 @@
 package be.ugent.neio.parsing;
 
-import static be.ugent.neio.util.Constants.ASSIGNMENT;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-
+import be.kuleuven.cs.distrinet.jnome.core.expression.ClassLiteral;
+import be.kuleuven.cs.distrinet.jnome.core.expression.invocation.ConstructorInvocation;
+import be.kuleuven.cs.distrinet.jnome.core.expression.invocation.JavaMethodInvocation;
+import be.kuleuven.cs.distrinet.jnome.core.expression.invocation.SuperConstructorDelegation;
+import be.kuleuven.cs.distrinet.jnome.core.expression.invocation.ThisConstructorDelegation;
+import be.kuleuven.cs.distrinet.jnome.core.modifier.Implements;
+import be.kuleuven.cs.distrinet.jnome.core.type.BasicJavaTypeReference;
+import be.kuleuven.cs.distrinet.jnome.core.type.JavaTypeReference;
+import be.kuleuven.cs.distrinet.jnome.workspace.JavaView;
+import be.ugent.neio.industry.NeioExpressionFactory;
+import be.ugent.neio.industry.NeioFactory;
+import be.ugent.neio.language.Neio;
+import be.ugent.neio.model.modifier.Nested;
+import be.ugent.neio.model.modifier.Surround;
+import be.ugent.neio.util.Constants;
 import org.aikodi.chameleon.core.document.Document;
 import org.aikodi.chameleon.core.element.Element;
 import org.aikodi.chameleon.core.modifier.Modifier;
@@ -22,12 +26,7 @@ import org.aikodi.chameleon.core.tag.TagImpl;
 import org.aikodi.chameleon.exception.ChameleonProgrammerException;
 import org.aikodi.chameleon.input.InputProcessor;
 import org.aikodi.chameleon.input.PositionMetadata;
-import org.aikodi.chameleon.oo.expression.Expression;
-import org.aikodi.chameleon.oo.expression.ExpressionFactory;
-import org.aikodi.chameleon.oo.expression.Literal;
-import org.aikodi.chameleon.oo.expression.MethodInvocation;
-import org.aikodi.chameleon.oo.expression.NameExpression;
-import org.aikodi.chameleon.oo.expression.ParExpression;
+import org.aikodi.chameleon.oo.expression.*;
 import org.aikodi.chameleon.oo.method.Method;
 import org.aikodi.chameleon.oo.method.MethodHeader;
 import org.aikodi.chameleon.oo.plugin.ObjectOrientedFactory;
@@ -45,122 +44,26 @@ import org.aikodi.chameleon.support.expression.AssignmentExpression;
 import org.aikodi.chameleon.support.expression.ClassCastExpression;
 import org.aikodi.chameleon.support.expression.SuperTarget;
 import org.aikodi.chameleon.support.member.simplename.variable.MemberVariableDeclarator;
-import org.aikodi.chameleon.support.modifier.Abstract;
-import org.aikodi.chameleon.support.modifier.Constructor;
-import org.aikodi.chameleon.support.modifier.Final;
-import org.aikodi.chameleon.support.modifier.Interface;
-import org.aikodi.chameleon.support.modifier.Private;
-import org.aikodi.chameleon.support.modifier.Protected;
-import org.aikodi.chameleon.support.modifier.Public;
-import org.aikodi.chameleon.support.modifier.Static;
-import org.aikodi.chameleon.support.statement.ForControl;
-import org.aikodi.chameleon.support.statement.ForStatement;
-import org.aikodi.chameleon.support.statement.ReturnStatement;
-import org.aikodi.chameleon.support.statement.StatementExprList;
-import org.aikodi.chameleon.support.statement.WhileStatement;
+import org.aikodi.chameleon.support.modifier.*;
+import org.aikodi.chameleon.support.statement.*;
 import org.aikodi.chameleon.support.variable.LocalVariableDeclarator;
-import org.antlr.v4.runtime.ANTLRInputStream;
-import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.Lexer;
-import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.Token;
-import org.antlr.v4.runtime.TokenStream;
+import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.TerminalNode;
-import org.neio.antlr.ClassParser.AmpersandExpressionContext;
-import org.neio.antlr.ClassParser.AndExpressionContext;
-import org.neio.antlr.ClassParser.AssignmentExpressionContext;
-import org.neio.antlr.ClassParser.AssignmentStatementContext;
-import org.neio.antlr.ClassParser.BlockContext;
-import org.neio.antlr.ClassParser.BodyContext;
-import org.neio.antlr.ClassParser.BoolLiteralContext;
-import org.neio.antlr.ClassParser.BoundedTypeArgumentContext;
-import org.neio.antlr.ClassParser.BoundedTypeParameterContext;
-import org.neio.antlr.ClassParser.CastExpressionContext;
-import org.neio.antlr.ClassParser.ChainExpressionContext;
-import org.neio.antlr.ClassParser.CharLiteralContext;
-import org.neio.antlr.ClassParser.ClassDefContext;
-import org.neio.antlr.ClassParser.ClassLiteralContext;
-import org.neio.antlr.ClassParser.ConstructorCallContext;
-import org.neio.antlr.ClassParser.DocumentContext;
-import org.neio.antlr.ClassParser.DoubleLiteralContext;
-import org.neio.antlr.ClassParser.EmptyArgumentsContext;
-import org.neio.antlr.ClassParser.EqualityExpressionContext;
-import org.neio.antlr.ClassParser.ExponentiationExpressionContext;
-import org.neio.antlr.ClassParser.ExpressionStatementContext;
-import org.neio.antlr.ClassParser.FieldAssignmentExpressionContext;
-import org.neio.antlr.ClassParser.FieldDeclContext;
-import org.neio.antlr.ClassParser.ForLoopContext;
-import org.neio.antlr.ClassParser.HighPriorityNumbericalExpressionContext;
-import org.neio.antlr.ClassParser.IdentifierContext;
-import org.neio.antlr.ClassParser.IdentifierExpressionContext;
-import org.neio.antlr.ClassParser.IfStatementContext;
-import org.neio.antlr.ClassParser.IfteStatementContext;
-import org.neio.antlr.ClassParser.ImportDeclarationContext;
-import org.neio.antlr.ClassParser.InheritanceContext;
-import org.neio.antlr.ClassParser.IntLiteralContext;
-import org.neio.antlr.ClassParser.LiteralExpressionContext;
-import org.neio.antlr.ClassParser.LowPriorityNumbericalExpressionContext;
-import org.neio.antlr.ClassParser.MethodContext;
-import org.neio.antlr.ClassParser.MethodExpressionContext;
-import org.neio.antlr.ClassParser.MethodHeaderContext;
-import org.neio.antlr.ClassParser.ModifierContext;
-import org.neio.antlr.ClassParser.NamespaceContext;
-import org.neio.antlr.ClassParser.NamespaceReferenceContext;
-import org.neio.antlr.ClassParser.NeioNewCallContext;
-import org.neio.antlr.ClassParser.NeioNewExpressionContext;
-import org.neio.antlr.ClassParser.NewExpressionContext;
-import org.neio.antlr.ClassParser.NotExpressionContext;
-import org.neio.antlr.ClassParser.NullLiteralContext;
-import org.neio.antlr.ClassParser.OrExpressionContext;
-import org.neio.antlr.ClassParser.OrderExpressionContext;
-import org.neio.antlr.ClassParser.ParExpressionContext;
-import org.neio.antlr.ClassParser.ParameterContext;
-import org.neio.antlr.ClassParser.ParametersContext;
-import org.neio.antlr.ClassParser.PipeExpressionContext;
-import org.neio.antlr.ClassParser.PostfixCrementExpressionContext;
-import org.neio.antlr.ClassParser.PrefixCrementExpressionContext;
-import org.neio.antlr.ClassParser.PrefixExpressionContext;
-import org.neio.antlr.ClassParser.QualifiedCallExpressionContext;
-import org.neio.antlr.ClassParser.ReturnStatementContext;
-import org.neio.antlr.ClassParser.SelfCallExpressionContext;
-import org.neio.antlr.ClassParser.SelfExpressionContext;
-import org.neio.antlr.ClassParser.ShiftExpressionContext;
-import org.neio.antlr.ClassParser.SomeArgumentsContext;
-import org.neio.antlr.ClassParser.StatementContext;
-import org.neio.antlr.ClassParser.StringLiteralContext;
-import org.neio.antlr.ClassParser.SuperDelegationContext;
-import org.neio.antlr.ClassParser.SuperExpressionContext;
-import org.neio.antlr.ClassParser.TextModeContext;
-import org.neio.antlr.ClassParser.TextModeStatementContext;
-import org.neio.antlr.ClassParser.ThisDelegationContext;
-import org.neio.antlr.ClassParser.TypeArgumentContext;
-import org.neio.antlr.ClassParser.TypeArgumentsContext;
-import org.neio.antlr.ClassParser.TypeContext;
-import org.neio.antlr.ClassParser.TypeParameterContext;
-import org.neio.antlr.ClassParser.TypeParametersContext;
-import org.neio.antlr.ClassParser.VariableDeclarationContext;
-import org.neio.antlr.ClassParser.VariableDeclarationStatementContext;
-import org.neio.antlr.ClassParser.WhileLoopContext;
+import org.neio.antlr.ClassParser.*;
 import org.neio.antlr.ClassParserBaseVisitor;
 import org.neio.antlr.DocumentLexer;
 import org.neio.antlr.DocumentParser;
 
-import be.kuleuven.cs.distrinet.jnome.core.expression.ClassLiteral;
-import be.kuleuven.cs.distrinet.jnome.core.expression.invocation.ConstructorInvocation;
-import be.kuleuven.cs.distrinet.jnome.core.expression.invocation.JavaMethodInvocation;
-import be.kuleuven.cs.distrinet.jnome.core.expression.invocation.SuperConstructorDelegation;
-import be.kuleuven.cs.distrinet.jnome.core.expression.invocation.ThisConstructorDelegation;
-import be.kuleuven.cs.distrinet.jnome.core.modifier.Implements;
-import be.kuleuven.cs.distrinet.jnome.core.type.BasicJavaTypeReference;
-import be.kuleuven.cs.distrinet.jnome.core.type.JavaTypeReference;
-import be.kuleuven.cs.distrinet.jnome.workspace.JavaView;
-import be.ugent.neio.industry.NeioExpressionFactory;
-import be.ugent.neio.industry.NeioFactory;
-import be.ugent.neio.language.Neio;
-import be.ugent.neio.model.modifier.Nested;
-import be.ugent.neio.model.modifier.Surround;
-import be.ugent.neio.util.Constants;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static be.ugent.neio.util.Constants.ASSIGNMENT;
 
 /**
  * @author Titouan Vervack
@@ -184,62 +87,63 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         contextType = false;
         isStringMain = true;
     }
-    
-		public List<InputProcessor> inputProcessors() {
-			if(view != null) {
-				return view.processors(InputProcessor.class);
-			} else {
-				throw new IllegalStateException();
-			}
-		}
-		protected void setAll(Element element, ParserRuleContext context) {
-			setAll(element, context.start, context.stop);
-		}
 
-		protected void setKeyword(Element element, Token token) {
-			setLocation(element, token, token, PositionMetadata.KEYWORD);
-		}
+    public List<InputProcessor> inputProcessors() {
+        if (view != null) {
+            return view.processors(InputProcessor.class);
+        } else {
+            throw new IllegalStateException();
+        }
+    }
 
-		protected void setAll(Element element, Token start, Token stop) {
-		  setLocation(element, start, stop, PositionMetadata.ALL);
-		}
+    protected void setAll(Element element, ParserRuleContext context) {
+        setAll(element, context.start, context.stop);
+    }
 
-		protected void setName(Element element, Token token) {
-		  setLocation(element, token, token, PositionMetadata.NAME);
-		}
+    protected void setKeyword(Element element, Token token) {
+        setLocation(element, token, token, PositionMetadata.KEYWORD);
+    }
 
-		protected void setCrossReference(Element element, ParserRuleContext context) {
-			setCrossReference(element, context.start, context.stop);
-		}
-		
-		protected void setCrossReference(Element element, Token start, Token stop) {
-			setLocation(element, start, stop, PositionMetadata.CROSSREFERENCE);
-		}
+    protected void setAll(Element element, Token start, Token stop) {
+        setLocation(element, start, stop, PositionMetadata.ALL);
+    }
 
-		protected void setLocation(Element element, Token start, Token stop, String tagType) {
-	     List<InputProcessor> processors = inputProcessors();
-	     if(processors.size() > 0) {
-	    	 if(start != null && stop != null) {
-	    		 int offset = offset(start);
-	    		 int length = length(start,stop);
-	    		 for(InputProcessor processor: processors) {
-	    			 processor.setLocation(element, offset, length, document, tagType);
-	    		 }
-	    	 }
-	     }
-	   }
+    protected void setName(Element element, Token token) {
+        setLocation(element, token, token, PositionMetadata.NAME);
+    }
 
-	   protected int lineNumber(Token token) {
-	  	 return token.getLine();
-	   }
-	   
-	   protected int offset(Token token) {
-	  	 return token.getStartIndex();
-	   }
-	   
-	   protected int length(Token start, Token stop) {
-	  	 return stop.getStopIndex() - offset(start);
-	   }
+    protected void setCrossReference(Element element, ParserRuleContext context) {
+        setCrossReference(element, context.start, context.stop);
+    }
+
+    protected void setCrossReference(Element element, Token start, Token stop) {
+        setLocation(element, start, stop, PositionMetadata.CROSSREFERENCE);
+    }
+
+    protected void setLocation(Element element, Token start, Token stop, String tagType) {
+        List<InputProcessor> processors = inputProcessors();
+        if (processors.size() > 0) {
+            if (start != null && stop != null) {
+                int offset = offset(start);
+                int length = length(start, stop);
+                for (InputProcessor processor : processors) {
+                    processor.setLocation(element, offset, length, document, tagType);
+                }
+            }
+        }
+    }
+
+    protected int lineNumber(Token token) {
+        return token.getLine();
+    }
+
+    protected int offset(Token token) {
+        return token.getStartIndex();
+    }
+
+    protected int length(Token start, Token stop) {
+        return stop.getStopIndex() - offset(start);
+    }
 
     protected NeioFactory ooFactory() {
         return (NeioFactory) neio.plugin(ObjectOrientedFactory.class);
@@ -258,36 +162,36 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     }
 
     public Document visitDocument(DocumentContext ctx) {
-    	NamespaceDeclaration ns = visitNamespace(ctx.namespace());
-    	if(ns != null) {
-    		for (ImportDeclarationContext importCtx : ctx.importDeclaration()) {
-    			ns.addImport(visitImportDeclaration(importCtx));
-    		}
+        NamespaceDeclaration ns = visitNamespace(ctx.namespace());
+        if (ns != null) {
+            for (ImportDeclarationContext importCtx : ctx.importDeclaration()) {
+                ns.addImport(visitImportDeclaration(importCtx));
+            }
 
-    		Type type = visitClassDef(ctx.classDef());
+            Type type = visitClassDef(ctx.classDef());
 
-    		for (InheritanceContext inheritance : ctx.classDef().inheritance()) {
-    			type.addInheritanceRelation(visitInheritance(inheritance));
-    		}
+            for (InheritanceContext inheritance : ctx.classDef().inheritance()) {
+                type.addInheritanceRelation(visitInheritance(inheritance));
+            }
 
-    		visitBody(ctx.body(), type);
+            visitBody(ctx.body(), type);
 
-    		ns.add(type);
-    	}
-    	document.add(ns);
+            ns.add(type);
+        }
+        document.add(ns);
 
         return document;
     }
 
     @Override
     public NamespaceDeclaration visitNamespace(@NotNull NamespaceContext ctx) {
-    	NamespaceDeclaration result = null;
+        NamespaceDeclaration result = null;
         if (ctx != null) {
             NamespaceReference namespaceReference = visitNamespaceReference(ctx.namespaceReference());
-            if(namespaceReference != null) {
-              result = ooFactory().createNamespaceDeclaration(namespaceReference);
-              setAll(result,ctx);
-              setKeyword(result,ctx.NAMESPACE().getSymbol());
+            if (namespaceReference != null) {
+                result = ooFactory().createNamespaceDeclaration(namespaceReference);
+                setAll(result, ctx);
+                setKeyword(result, ctx.NAMESPACE().getSymbol());
             }
         }
         return result;
@@ -295,19 +199,18 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     @Override
     public NamespaceReference visitNamespaceReference(@NotNull NamespaceReferenceContext ctx) {
-    	NamespaceReference result = null;
-    	if(ctx != null) {
-        NeioFactory ooFactory = ooFactory();
-				result = ooFactory.createNamespaceReference(ctx.getText());
-				setAll(result,ctx);
-				setCrossReference(result, ctx);
-    	}
-    	return result;
+        NamespaceReference result = null;
+        if (ctx != null) {
+            result = ooFactory().createNamespaceReference(ctx.getText());
+            setAll(result, ctx);
+            setCrossReference(result, ctx);
+        }
+        return result;
     }
 
     @Override
     public Import visitImportDeclaration(@NotNull ImportDeclarationContext ctx) {
-    	Import result;
+        Import result;
         if (ctx.STAR() != null) {
             result = ooFactory().createDemandImport(ctx.type().getText());
         } else {
@@ -321,24 +224,24 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     public Type visitClassDef(@NotNull ClassDefContext ctx) {
         TerminalNode nameToken = ctx.Identifier();
         Type type = null;
-        if(nameToken != null) {
-        	type = ooFactory().createRegularType(nameToken.getText());
-        	// Every class is allowed to be public for now
-        	type.addModifier(new Public());
-        	//FIXME Code duplication! The visit method of the modifier should do this.
-        	if (ctx.ABSTRACT() != null) {
-        		type.addModifier(new Abstract());
-        	}
+        if (nameToken != null) {
+            type = ooFactory().createRegularType(nameToken.getText());
+            // Every class is allowed to be public for now
+            type.addModifier(new Public());
+            //FIXME Code duplication! The visit method of the modifier should do this.
+            if (ctx.ABSTRACT() != null) {
+                type.addModifier(new Abstract());
+            }
 
-        	if (ctx.header().INTERFACE() != null) {
-        		type.addModifier(new Interface());
-        		setInterface();
-          	setKeyword(type, ctx.header().INTERFACE().getSymbol());
-        	} else {
-          	setKeyword(type, ctx.header().CLASS().getSymbol());
-        	}
-        	setName(type, nameToken.getSymbol());
-        	setAll(type, ctx);
+            if (ctx.header().INTERFACE() != null) {
+                type.addModifier(new Interface());
+                setInterface();
+                setKeyword(type, ctx.header().INTERFACE().getSymbol());
+            } else {
+                setKeyword(type, ctx.header().CLASS().getSymbol());
+            }
+            setName(type, nameToken.getSymbol());
+            setAll(type, ctx);
         }
         return type;
     }
@@ -350,9 +253,9 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
             relation.addModifier(new Implements());
             setKeyword(relation, ctx.IMPLEMENTS().getSymbol());
         } else {
-        	setKeyword(relation, ctx.EXTENDS().getSymbol());
+            setKeyword(relation, ctx.EXTENDS().getSymbol());
         }
-        setAll(relation,ctx);
+        setAll(relation, ctx);
         return relation;
     }
 
@@ -376,7 +279,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         for (MethodExpressionContext method : ctx.methodExpression()) {
             klass.add(visitMethodExpression(method));
         }
-        setAll(((ClassWithBody)klass).body(), ctx);
+        setAll(((ClassWithBody) klass).body(), ctx);
     }
 
 
@@ -398,7 +301,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     @Override
     public LocalVariableDeclarator visitVariableDeclaration(@NotNull VariableDeclarationContext ctx) {
-    	LocalVariableDeclarator result;
+        LocalVariableDeclarator result;
         if (ctx.neioNewCall() != null) {
             ConstructorInvocation ci = visitNeioNewCall(ctx.neioNewCall());
             result = ooFactory().createLocalVariable(ci.name(), ctx.neioNewCall().Identifier().getText(), ci);
@@ -413,9 +316,9 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     @Override
     public MemberVariableDeclarator visitFieldAssignmentExpression(@NotNull FieldAssignmentExpressionContext ctx) {
-    	MemberVariableDeclarator varDecl = visitFieldDecl(ctx.var);
-    	varDecl.variableDeclarations().get(0).setInitialization((Expression)visit(ctx.val));
-    	return varDecl;
+        MemberVariableDeclarator varDecl = visitFieldDecl(ctx.var);
+        varDecl.variableDeclarations().get(0).setInitialization((Expression) visit(ctx.val));
+        return varDecl;
     }
 
     @Override
@@ -427,8 +330,8 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     public Method visitMethod(@NotNull MethodContext ctx) {
         Method method = visitMethodExpression(ctx.methodExpression());
         method.setImplementation(ooFactory().createImplementation(visitBlock(ctx.block())));
-        setAll(method,ctx);
-        setName(method,ctx.methodExpression().methodHeader().name);
+        setAll(method, ctx);
+        setName(method, ctx.methodExpression().methodHeader().name);
         return method;
     }
 
@@ -469,7 +372,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         ReturnStatement result = ooFactory().createReturnStatement(e);
         setAll(result, ctx);
         setKeyword(result, ctx.RETURN().getSymbol());
-				return result;
+        return result;
     }
 
     @Override
@@ -494,7 +397,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         WhileStatement result = ooFactory().createWhileStatement((Expression) visit(ctx.expression()), statement);
         setAll(result, ctx);
         setKeyword(result, ctx.WHILE().getSymbol());
-				return result;
+        return result;
     }
 
     @Override
@@ -509,14 +412,14 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         ForStatement result = ooFactory().createForStatement(control, visitBlock(ctx.block()));
         setAll(result, ctx);
         setKeyword(result, ctx.FOR().getSymbol());
-				return result;
+        return result;
     }
 
     @Override
     public Statement visitIfStatement(@NotNull IfStatementContext ctx) {
         Statement statement = visitIfteStatement(ctx.ifteStatement());
         statement.setMetadata(new TagImpl(), ASSIGNMENT);
-        setAll(statement,ctx);
+        setAll(statement, ctx);
         setKeyword(statement, ctx.ifteStatement().IF().getSymbol());
         return statement;
     }
@@ -564,18 +467,18 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     public Expression visitNewExpression(@NotNull NewExpressionContext ctx) {
         ConstructorInvocation result = visitConstructorCall(ctx.constructorCall());
         setAll(result, ctx);
-        setCrossReference(result,ctx);
+        setCrossReference(result, ctx);
         setKeyword(result, ctx.constructorCall().NEW().getSymbol());
-				return result;
+        return result;
     }
 
     @Override
     public Object visitNeioNewExpression(@NotNull NeioNewExpressionContext ctx) {
         ConstructorInvocation result = visitNeioNewCall(ctx.neioNewCall());
         setAll(result, ctx);
-        setCrossReference(result,ctx);
+        setCrossReference(result, ctx);
         setKeyword(result, ctx.neioNewCall().NEW().getSymbol());
-				return result;
+        return result;
     }
 
     @Override
@@ -587,8 +490,8 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     public CrossReferenceTarget visitSuperExpression(@NotNull SuperExpressionContext ctx) {
         SuperTarget result = ooFactory().createSuper();
         setAll(result, ctx);
-        setKeyword(result,ctx.start);
-				return result;
+        setKeyword(result, ctx.start);
+        return result;
     }
 
     @Override
@@ -607,7 +510,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         Literal result = ooFactory().createThisLiteral();
         setAll(result, ctx);
         setKeyword(result, ctx.THIS().getSymbol());
-				return result;
+        return result;
     }
 
     @Override
@@ -624,7 +527,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         NameExpression result = eFactory().createNameExpression(contextType, ctx.Identifier().getText());
         setAll(result, ctx);
         setCrossReference(result, ctx);
-				return result;
+        return result;
     }
 
     @Override
@@ -635,10 +538,10 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     @Override
     public MethodInvocation visitSelfCallExpression(@NotNull SelfCallExpressionContext ctx) {
         Literal thisLiteral = ooFactory().createThisLiteral();
-				JavaMethodInvocation result = eFactory().createMethodInvocation(contextType, ctx.name.getText(), thisLiteral, (List<Expression>) visit(ctx.arguments()));
-				setAll(result, ctx);
-				setCrossReference(result, ctx);
-				return result;
+        JavaMethodInvocation result = eFactory().createMethodInvocation(contextType, ctx.name.getText(), thisLiteral, (List<Expression>) visit(ctx.arguments()));
+        setAll(result, ctx);
+        setCrossReference(result, ctx);
+        return result;
     }
 
     @Override
@@ -809,28 +712,28 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
 
     @Override
     public Modifier visitModifier(@NotNull ModifierContext ctx) {
-    	Modifier result;
-    	if (ctx.ABSTRACT() != null) {
-    		result = new Abstract();
-    	} else if (ctx.PRIVATE() != null) {
-    		result = new Private();
-    	} else if (ctx.PROTECTED() != null) {
-    		result = new Protected();
-    	} else if (ctx.PUBLIC() != null) {
-    		result = new Public();
-    	} else if (ctx.NESTED() != null) {
-    		result = new Nested();
-    	} else if (ctx.SURROUND() != null) {
-    		result = new Surround();
-    	} else if (ctx.FINAL() != null) {
-    		result = new Final();
-    	} else if (ctx.STATIC() != null) {
-    		result = new Static();
-    	} else {
-    		throw new ChameleonProgrammerException("Unknown modifier encountered: " + ctx.getText());
-    	}
-    	setKeyword(result, ctx.start);
-    	return result;
+        Modifier result;
+        if (ctx.ABSTRACT() != null) {
+            result = new Abstract();
+        } else if (ctx.PRIVATE() != null) {
+            result = new Private();
+        } else if (ctx.PROTECTED() != null) {
+            result = new Protected();
+        } else if (ctx.PUBLIC() != null) {
+            result = new Public();
+        } else if (ctx.NESTED() != null) {
+            result = new Nested();
+        } else if (ctx.SURROUND() != null) {
+            result = new Surround();
+        } else if (ctx.FINAL() != null) {
+            result = new Final();
+        } else if (ctx.STATIC() != null) {
+            result = new Static();
+        } else {
+            throw new ChameleonProgrammerException("Unknown modifier encountered: " + ctx.getText());
+        }
+        setKeyword(result, ctx.start);
+        return result;
     }
 
     @Override
@@ -843,7 +746,7 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
         FormalParameter createParameter = ooFactory().createParameter(ctx.Identifier().getText(), visitType(ctx.type()));
         setAll(createParameter, ctx);
         setName(createParameter, ctx.Identifier().getSymbol());
-				return createParameter;
+        return createParameter;
     }
 
     @Override
@@ -948,9 +851,9 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     @Override
     public ClassLiteral visitClassLiteral(@NotNull ClassLiteralContext ctx) {
         ClassLiteral result = ooFactory().createClassLiteral(ctx.Identifier().getText());
-        setAll(result.target(),ctx.Identifier().getSymbol(), ctx.Identifier().getSymbol());
-        setCrossReference(result.target(),ctx.Identifier().getSymbol(), ctx.Identifier().getSymbol());
-				return result;
+        setAll(result.target(), ctx.Identifier().getSymbol(), ctx.Identifier().getSymbol());
+        setCrossReference(result.target(), ctx.Identifier().getSymbol(), ctx.Identifier().getSymbol());
+        return result;
     }
 
     @Override
@@ -1003,14 +906,14 @@ public class ClassConverter extends ClassParserBaseVisitor<Object> {
     public Literal visitBoolLiteral(@NotNull BoolLiteralContext ctx) {
         Literal result = ooFactory().createBooleanLiteral(ctx.getText());
         setKeyword(result, ctx.start);
-				return result;
+        return result;
     }
 
     @Override
     public Literal visitNullLiteral(@NotNull NullLiteralContext ctx) {
         Literal result = ooFactory().createNullLiteral();
         setKeyword(result, ctx.start);
-				return result;
+        return result;
     }
 
     @Override
