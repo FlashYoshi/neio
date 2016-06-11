@@ -4,11 +4,12 @@
         <library language="Neio" load="true" />
     </baselibraries>
     <sourcepath>
-        <source root="../examples/0.8/lib" />
+        <source root="src" />
     </sourcepath>
     <binarypath>
-        <jar file="../neio/build/libs/chameleon.jar" />
-        <jar file="../neio/build/libs/jnome.jar" />
-        <jar file="../neio/build/libs/neio.jar" />
+        <jar file="../build/libs/chameleon.jar" />
+        <jar file="../build/libs/rejuse.jar" />
+        <jar file="../build/libs/jnome.jar" />
+        <jar file="../build/libs/neio.jar" />
     </binarypath>
 </project>
