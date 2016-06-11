@@ -35,10 +35,9 @@ public class Main {
      * args[3] = output path (optional)
      * <p>
      * Exit code 1: Invalid call to program
-     * Exit code 2: Input path can not be read or does not exist
-     * Exit code 3: Could not build everything in NEIO_HOME
-     * Exit code 4: Could not build all the resources in input path
-     * Exit code 5: Could not build all source files in input path
+     * Exit code 2: Could not build everything in NEIO_HOME
+     * Exit code 3: Could not build all the resources in input path
+     * Exit code 4: Could not build all source files in input path
      */
     public static void main(String[] args) {
         new Main().read(args);
@@ -60,7 +59,7 @@ public class Main {
             languageBuilder.buildAll(output, null);
         } catch (BuildException e) {
             e.printStackTrace();
-            System.exit(3);
+            System.exit(2);
         }
 
         translateDocuments(inputPath, output, (JavaView) view);
@@ -68,12 +67,12 @@ public class Main {
 
     private String getInputPath(String[] args) {
         checkArgsLength(args, 2);
-        return getArg(args, 0);
+        return args[0];
     }
 
     private String getProjectXml(String[] args) {
         checkArgsLength(args, 2);
-        return getArg(args, 1);
+        return args[1];
     }
 
     private String getOutputPath(String[] args) {
@@ -81,7 +80,7 @@ public class Main {
             return null;
         }
 
-        return getArg(args, 2);
+        return args[2];
     }
 
     private void checkArgsLength(String[] args, int length) {
@@ -89,17 +88,6 @@ public class Main {
             printHelp("neio.jar");
             System.exit(1);
         }
-    }
-
-    private String getArg(String[] args, int position) {
-        String path = args[position];
-        File inputFile = new File(path);
-        if (!inputFile.canRead()) {
-            System.err.println(path + " isn't a valid folder or it isn't readable.");
-            System.exit(2);
-        }
-
-        return path;
     }
 
     private void printHelp(String programName) {
@@ -110,14 +98,14 @@ public class Main {
         try {
             DirectoryScanner resourceScanner = new DirectoryScanner(inputPath,
                     new NotExtensionPredicate(EXTENSION), new CopyDocumentFactory());
-            view.addSource(resourceScanner);
+            view.addBinary(resourceScanner);
 
             CopyBuilder lb = new CopyBuilder(view, new CopyDocumentWriterFactory());
             try {
                 lb.buildAll(resourceScanner.documents(), output, null);
             } catch (BuildException | InputException e) {
                 e.printStackTrace();
-                System.exit(4);
+                System.exit(3);
             }
 
             // We're done scanning Neio class files, change the classparser to the documentparser
@@ -131,7 +119,7 @@ public class Main {
                 builder.buildAll(scanner.documents(), output, null);
             } catch (BuildException | InputException e) {
                 e.printStackTrace();
-                System.exit(5);
+                System.exit(4);
             }
         } catch (ProjectException e) {
             e.printStackTrace();
