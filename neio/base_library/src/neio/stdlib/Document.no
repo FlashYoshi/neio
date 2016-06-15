@@ -1,0 +1,153 @@
+namespace neio.stdlib;
+
+import java.util.List;
+
+import neio.lang.Text;
+
+/**
+ * Represents the most basic of Documents
+ */
+class Document extends TextContainer;
+
+Packages packages;
+Bibtex bibtex;
+String extraPreamble;
+
+/**
+ * Creates a Document and adds common LaTeX packages to it
+ */
+Document() {
+    packages = new Packages();
+    packages.add("a4wide")
+    .add("graphicx")
+    .add("amsmath")
+    .add("float");
+    
+    bibtex = null;
+    extraPreamble = "";
+}
+
+/**
+ * Creates a Chapter and adds it to this
+ *
+ * @param title The title to use for the new Chapter
+ * @return The newly created Chapter
+ */
+Chapter #(Text title) {
+    Chapter chapter = new Chapter(title, 1);
+    addContent(chapter);
+
+    return chapter;
+}
+
+/**
+ * Returns a list of Package's
+ *
+ * @return a list of used LaTeX packages
+ */
+Packages packages() {
+    return packages;
+}
+
+/**
+ * Adds a LaTeX package
+ *
+ * @param pkg The package to add
+ * @return The list of currently included packages
+ */
+Packages addPackage(String pkg) {
+    return packages.add(pkg);
+}
+
+/**
+ * Adds a LaTeX package with options
+ *
+ * @param options The options for the package
+ * @param pkg     The package to add
+ * @return The list of currently included packages
+ */
+Packages addPackage(List<String> options, String pkg) {
+    return packages.add(options, pkg);
+}
+
+/**
+ * Sets a BibTeX file for this Document
+ *
+ * @param The name of the BibTeX file
+ */
+void addBibtex(String name) {
+    this.bibtex = new Bibtex(name);
+}
+
+/**
+ * A proxy method for {@code BibTeX}'s {@code cite}
+ * Returns a Cite that is linked to {@code key}
+ *
+ * @param key The key to access the citation
+ * @return The Cite corresponding to {@code key}
+ */
+Citation cite(String key) {
+    if (bibtex != null) {
+        return bibtex.cite(key);
+    } else {
+        return null;
+    }
+}
+
+/**
+ * Creates the LaTeX preamble
+ *
+ * @return The LaTeX preamble
+ */
+String preamble() {
+    StringBuilder tex = new StringBuilder("\\documentclass{article}\n");
+    for (int i = 0; i < packages.size(); i = i + 1) {
+        tex.append(packages.get(i).toTex()).append("\n");
+    }
+    
+    tex.append("\\setlength{\\parindent}{0em}\n")
+         .append("\\setlength{\\parskip}{1em}\n")
+         .append(extraPreamble);
+         
+     return tex.toString();
+}
+
+/**
+ * Adds a newpage to the Document
+ */
+void newpage() {
+    addContent(new NewPage());
+}
+
+/**
+ * Adds a string to the preamble, checking if it is not yet
+ * included already.
+ *
+ * @param s The String to add to the preamble
+ */
+void addToPreamble(String s) {
+    if (!preamble().contains(s)) {
+        extraPreamble = extraPreamble + s;
+    }
+}
+
+String extraPreamble() {
+    return extraPreamble;
+}
+
+/**
+ * Creates a TeX representation of this object and its children
+ *
+ * @return The TeX representation of this object and its children
+ */
+String toTex() {
+    StringBuilder result = new StringBuilder(preamble()).append("\\begin{document}\n")
+    .append(super.toTex());
+    if (bibtex != null) {
+        result.append(bibtex.toTex());
+    }
+    
+    result.append("\n\\end{document}\n");
+    
+    return result.toString();
+}

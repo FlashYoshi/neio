@@ -1,0 +1,17 @@
+namespace neio.stdlib;
+
+import neio.lang.Text;
+
+class Href extends Text;
+
+Text text;
+String url;
+
+Href(Text text, String url) {
+    this.text = text;
+    this.url = url;
+}
+
+String thisToTex() {
+    return "\\href{" + url + "}{" + text.toTex() + "}";
+}

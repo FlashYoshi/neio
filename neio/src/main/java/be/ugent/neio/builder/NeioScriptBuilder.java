@@ -1,24 +1,26 @@
 package be.ugent.neio.builder;
 
-import be.kuleuven.cs.distrinet.jnome.core.language.Java7;
-import be.kuleuven.cs.distrinet.jnome.core.language.Java7LanguageFactory;
-import be.kuleuven.cs.distrinet.jnome.output.Java7Syntax;
-import be.kuleuven.cs.distrinet.jnome.output.JavaDocumentWriterFactory;
-import be.kuleuven.cs.distrinet.jnome.workspace.JavaView;
-import be.ugent.chameleonsupport.build.LanguageBuilder;
-import be.ugent.neio.language.Neio;
-import be.ugent.neio.translate.NeioToJava8Translator;
+import java.util.List;
+
+import java.io.File;
+
 import org.aikodi.chameleon.core.document.Document;
 import org.aikodi.chameleon.core.namespace.LazyRootNamespace;
 import org.aikodi.chameleon.exception.ChameleonProgrammerException;
 import org.aikodi.chameleon.plugin.ViewPlugin;
 import org.aikodi.chameleon.plugin.build.BuildException;
 import org.aikodi.chameleon.plugin.build.BuildProgressHelper;
+import org.aikodi.chameleon.plugin.build.LanguageBuilder;
 import org.aikodi.chameleon.plugin.output.Syntax;
 import org.aikodi.chameleon.workspace.View;
 
-import java.io.File;
-import java.util.List;
+import be.kuleuven.cs.distrinet.jnome.core.language.Java7;
+import be.kuleuven.cs.distrinet.jnome.core.language.Java7LanguageFactory;
+import be.kuleuven.cs.distrinet.jnome.output.Java7Syntax;
+import be.kuleuven.cs.distrinet.jnome.output.JavaDocumentWriterFactory;
+import be.kuleuven.cs.distrinet.jnome.workspace.JavaView;
+import be.ugent.neio.language.Neio;
+import be.ugent.neio.translate.NeioToJava8Translator;
 
 public class NeioScriptBuilder extends LanguageBuilder<Neio, Java7> {
 

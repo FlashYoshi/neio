@@ -1,0 +1,9 @@
+namespace neio.thesis;
+
+import neio.lang.Content;
+
+class MainMatter extends Content;
+
+String toTex() {
+    return new StringBuilder("\\mainmatter").toString();
+}

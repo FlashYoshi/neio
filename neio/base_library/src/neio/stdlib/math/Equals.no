@@ -1,0 +1,12 @@
+namespace neio.stdlib.math;
+
+import neio.lang.Content;
+
+class Equals extends Content;
+
+Equals() {
+}
+
+String toTex() {
+    return " = ";
+}

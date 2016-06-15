@@ -1,13 +1,17 @@
 package be.ugent.neio.language;
 
+import static be.ugent.neio.util.Constants.EXTENSION;
+
+import org.aikodi.chameleon.core.language.Language;
+import org.aikodi.chameleon.workspace.BaseLibraryConfiguration;
+import org.aikodi.chameleon.workspace.ConfigException;
+import org.aikodi.chameleon.workspace.ExtensionPredicate;
+import org.aikodi.chameleon.workspace.View;
+import org.aikodi.chameleon.workspace.Workspace;
+
 import be.kuleuven.cs.distrinet.jnome.input.LazyJavaFileInputSourceFactory;
-import be.kuleuven.cs.distrinet.jnome.workspace.BaseLibraryJavaProjectConfigurator;
 import be.kuleuven.cs.distrinet.jnome.workspace.JavaProjectConfiguration;
 import be.kuleuven.cs.distrinet.rejuse.predicate.SafePredicate;
-import org.aikodi.chameleon.core.language.Language;
-import org.aikodi.chameleon.workspace.*;
-
-import static be.ugent.neio.util.Constants.EXTENSION;
 
 public class NeioProjectConfigurator extends BaseLibraryJavaProjectConfigurator {
 
@@ -27,10 +31,13 @@ public class NeioProjectConfigurator extends BaseLibraryJavaProjectConfigurator 
         return new NeioProjectConfiguration(view, new LazyJavaFileInputSourceFactory(), langName);
     }
 
-    @Override
-    protected void addBaseLibraries(View view, BaseLibraryConfiguration baseLibraryConfiguration) {
-        super.addBaseLibraries(view, baseLibraryConfiguration);
-    }
+  	@Override
+  	protected void addBaseLibraries(View view, BaseLibraryConfiguration baseLibraryConfiguration) {
+  		super.addBaseLibraries(view, baseLibraryConfiguration);
+
+  		LanguageBaseLibraryConfigurator neioBaseLibraryConfigurator = new LanguageBaseLibraryConfigurator(language(), "base_library/src");
+  		neioBaseLibraryConfigurator.process(view, baseLibraryConfiguration);
+  	}
 
     @Override
     public SafePredicate<? super String> sourceFileFilter() {

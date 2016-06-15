@@ -1,0 +1,120 @@
+namespace neio.stdlib;
+
+import neio.lang.Container;
+import neio.lang.Text;
+import neio.stdlib.math.*;
+
+/**
+ * Represents a Container that can hold Text, such as a Document or Chapter.
+ */
+class TextContainer extends Container;
+
+/**
+ * Handles newlines
+ *
+ * @return Returns a new NLHandler
+ */
+NLHandler newline() {
+    return new NLHandler(this);
+}
+
+/**
+ * Creates a new Itemize and adds an ItemizeItem to it
+ * The Itemize is added to this.
+ *
+ * @param text The text to use for the ItemizeItem
+ * @return The created ItemizeItem
+ */
+Itemize *(Text text) {
+    Itemize itemize = new Itemize();
+    ItemizeItem item = new ItemizeItem(text, itemize, 1);
+    itemize.*(item);
+
+    addContent(itemize);
+    return itemize;
+}
+
+/**
+ * Creates a new Enumerate and adds an EnumerateItem to it.
+ * The Enumerate is added to this.
+ *
+ * @param text The text to use for the EnumerateItem
+ * @return The created EnumerateItem
+ */
+Enumerate -(Text text) {
+    Enumerate enumerate = new Enumerate();
+    EnumerateItem item = new EnumerateItem(text, enumerate, 1);
+    enumerate.-(item);
+    addContent(enumerate);
+
+    return enumerate;
+}
+
+/**
+ * Creates a new Image and adds it to this.
+ *
+ * @param imageName The name of the Image
+ * @return The created Image
+ */
+Image image(String imageName) {
+    return image(null, imageName);
+}
+
+/**
+ * Creates a new Image with a caption and adds it to this.
+ *
+ * @param caption   The caption to use for the Image
+ * @param imageName The name of the Image
+ * @return The created Image
+ */
+Image image(Text caption, String imageName) {
+    Image image = new Image(caption, imageName);
+    addContent(image);
+    
+    return image;
+}
+
+/**
+ * Creates a new Eq and adds it to this.
+ *
+ * @return The new Eq
+ */
+Eq eq() {
+    Eq eq = new Eq();
+    return addContent(eq);
+}
+
+/**
+ * Creates a new InlineEq and adds it to this.
+ *
+ * @return The created InlineEq
+ */
+InlineEq ieq() {
+    return new InlineEq();
+}
+
+/**
+ * Creates a new Href
+ *
+ * @param text The text to show instead of the url
+ * @param url  The url we are referring to
+ * @return the new Href
+ */
+Href href(Text text, String url) {
+    return new Href(text, url);
+}
+
+/**
+ * Creates a new Table and adds a new TableRow to it.
+ * The Table is added to this.
+ *
+ * @param text The text to use in the first element of the TableRow
+ * @return The created TableRow
+ */
+TableRow |(Text text) {
+    new TableRow(text) row;
+    new Table(row) table;
+    addContent(table);
+    
+    return row;
+}

@@ -1,0 +1,15 @@
+namespace neio.stdlib;
+
+import neio.lang.Content;
+
+class Pdf extends Content;
+
+String name;
+
+Pdf(String name) {
+    this.name = name;
+}
+
+String toTex() {
+    return "\\includepdf{" + name + "}\n";
+}

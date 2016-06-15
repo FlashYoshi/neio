@@ -1,0 +1,42 @@
+namespace neio.stdlib.math;
+
+import neio.lang.Content;
+import neio.lang.Text;
+
+/**
+ * Represents an inline math equation
+ */
+class InlineEq extends Text;
+
+/**
+ * Intialises the InlineEq
+ */
+InlineEq() {
+}
+
+/**
+ * Creates a square root and adds it to this equation, returning this to allow further chaining
+ *
+ * @param root The base of the square root
+ * @param arg  The value to take the square root of
+ * @return This equation
+ */
+InlineEq sqrt(Content root, Content arg) {
+    content().add(new Sqrt(root, arg));
+    return this;
+}
+
+/**
+ * Creates the TeX representation of this
+ *
+ * @return The TeX representation of this
+ */
+String thisToTex() {
+    StringBuilder result = new StringBuilder("$");
+    for (int i = 0; i < contentSize(); i = i + 1) {
+        result.append(content(i).toTex());
+    }
+    result.append("$");
+    
+    return result.toString();
+}

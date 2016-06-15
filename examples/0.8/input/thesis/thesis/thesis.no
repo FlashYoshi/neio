@@ -1229,7 +1229,7 @@ Inline code blocks can be used anywhere that text can be used.
 In the example below we show how inline code blocks can be used in combination with non-scoped code blocks to create a template for a letter.
 {{
     image("The rendered form of the example to the left.", '''inlineCode''')
-    .rightOf(new LstInputListing('''../../examples/0.8/input/variablesInput/template/template.no'''))
+    .rightOf(new LstInputListing('''../../examples/0.8/input/varInput/template/template.no'''))
 }}
 
 An inline code block returns a text and is appended to the rest of the document by calling the `text` method on `this`.
@@ -1252,7 +1252,7 @@ Since we can also use text mode in code mode, this means we can endlessly nest t
 An example demonstrating the strength of this nesting, is shown below.
 {{
     image("The rendered form of the example to the left.", '''dice''')
-    .rightOf(new LstInputListing('''../../examples/0.8/input/variablesInput/dice/dice.no'''))
+    .rightOf(new LstInputListing('''../../examples/0.8/input/varInput/dice/dice.no'''))
 }}
 
 In this example we play a game where we roll two dice.

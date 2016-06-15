@@ -1,0 +1,35 @@
+namespace neio.stdlib.chem;
+
+import neio.lang.Text;
+import neio.stdlib.NLHandler;
+import neio.stdlib.NLHandler;
+import neio.stdlib.TextContainer;
+
+class StructureNLHandler extends NLHandler;
+
+StructureNLHandler(Structure parent) {
+    super(parent);
+}
+
+NLHandler newline() {
+    return (TextContainer) (parent().parent()).newline();
+}
+
+Atom $(Text text) {
+    Atom a = new Atom(text.realText());
+    a.setParent(parent());
+    parent().addAtom(a);
+    return a;
+}
+
+ChemName |(Text text) {
+    Atom a = parent().lastAtom();
+    ChemName cn = new ChemName(a, text);
+    a.setName(cn);
+
+    return cn;
+}
+
+Structure parent() {
+    return (Structure) (super.parent());
+}

@@ -1,0 +1,41 @@
+namespace neio.stdlib;
+
+import neio.lang.Content;
+
+/**
+ * Implements a binding to the LaTeX's BibTeX
+ */
+class Bibtex extends Content;
+
+String name;
+
+/**
+ * Initializes the BibTeX
+ *
+ * @param name The path to the BibTeX file
+ */
+Bibtex(String name) {
+    this.name = name;
+}
+
+/**
+ * Cites something defined in this BibTeX
+ *
+ * @param cname The keyword of the citation
+ * @return A Citation object representing the citation of {@code cname}
+ */
+Citation cite(String cname) {
+    return new Citation(cname);
+}
+
+/**
+ * Creates a TeX representation of this BibTeX, without citations
+ *
+ * @return The TeX representation of this
+ */
+String toTex() {
+    StringBuilder result = new StringBuilder("\n\\bibliographystyle{plain}\n");
+    result.append("\\bibliography{").append(name).append("}\n");
+    
+    return result.toString();
+}

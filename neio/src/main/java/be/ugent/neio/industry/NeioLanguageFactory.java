@@ -24,7 +24,6 @@ public class NeioLanguageFactory implements LanguageFactory {
         result.setPlugin(ExpressionFactory.class, new NeioExpressionFactory());
         result.setPlugin(ProjectConfigurator.class, new NeioProjectConfigurator());
         result.setPlugin(Syntax.class, new NeioSyntax());
-
         return result;
     }
 }

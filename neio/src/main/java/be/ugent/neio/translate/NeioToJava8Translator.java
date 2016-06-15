@@ -197,5 +197,8 @@ public class NeioToJava8Translator extends IncrementalTranslator<Neio, Java7> {
 
         ns.addImport(oFactory.createDemandImport("java.util"));
         document.add(ns);
+        // Activate is needed to load the namespaces. It is normally called in the DocumentLoader, but at that point
+        // the document does not yet have namespaces.
+        ns.activate();
     }
 }

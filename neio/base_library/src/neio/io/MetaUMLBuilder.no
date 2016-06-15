@@ -1,0 +1,18 @@
+namespace neio.io;
+
+import java.util.List;
+import java.util.ArrayList;
+
+class MetaUMLBuilder implements Builder;
+
+void build(String name) {
+    Process p = null;
+    List<String> command = new ArrayList<String>();
+    command.add("mpost");
+    command.add(name);
+    ProcessBuilder pb = new ProcessBuilder(command);
+    pb.redirectOutput(ProcessBuilder.Redirect.INHERIT);
+    pb.redirectError(ProcessBuilder.Redirect.INHERIT);
+    p = pb.start();
+    p.waitFor();
+}

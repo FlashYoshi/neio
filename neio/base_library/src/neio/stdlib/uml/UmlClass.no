@@ -1,0 +1,160 @@
+namespace neio.stdlib.uml;
+
+import be.kuleuven.cs.distrinet.jnome.core.language.Java7;
+import be.kuleuven.cs.distrinet.jnome.workspace.JavaView;
+import org.aikodi.chameleon.oo.method.Method;
+import org.aikodi.chameleon.oo.type.Type;
+import org.aikodi.chameleon.oo.variable.VariableDeclaration;
+import org.aikodi.chameleon.oo.variable.VariableDeclarator;
+import org.aikodi.chameleon.support.member.simplename.variable.MemberVariableDeclarator;
+
+import java.util.ArrayList;
+import java.util.List;
+
+class UmlClass;
+
+JavaView view;
+Java7 lang;
+Type type;
+String name;
+List<UmlMemberVariable> vars;
+List<UmlMethod> methods;
+Boolean showPrivate;
+Boolean showProtected;
+Boolean methodsShown;
+Boolean varsShown;
+
+UmlClass(Type type, Boolean showPrivate, Boolean showProtected) {
+    this.type = type;
+    this.showPrivate = showPrivate;
+    this.showProtected = showProtected;
+    this.name = type.getFullyQualifiedName();
+    this.view = (JavaView) (type.view());
+    this.lang = (Java7) (view.language());
+    vars = new ArrayList<UmlMemberVariable>();
+    methods = new ArrayList<UmlMethod>();
+    gatherVars();
+    gatherMethods();
+    this.methodsShown = false;
+    this.varsShown = false;
+}
+
+void gatherVars() {
+    List<VariableDeclarator> variableDeclarators = new ArrayList<VariableDeclarator>();
+    variableDeclarators.addAll(type.nearestDescendants(MemberVariableDeclarator.class));
+
+    for (int i = 0; i < variableDeclarators.size(); i = i + 1) {
+        List<VariableDeclaration> decls = variableDeclarators.get(i).variableDeclarations();
+        for (int j = 0; j < decls.size(); j = j + 1) {
+            VariableDeclaration decl = decls.get(j);
+            vars.add(new UmlMemberVariable(lang, decl, showPrivate, showProtected));
+        }
+    }
+}
+
+void gatherMethods() {
+    List<Method> rawMethods = type.nearestDescendants(Method.class);
+    for (int i = 0; i < rawMethods.size(); i = i + 1) {
+        Method m = rawMethods.get(i);
+        methods.add(new UmlMethod(lang, m, showPrivate, showProtected));
+    }
+}
+
+Type type() {
+    return type;
+}
+
+String name() {
+    return name;
+}
+
+String toMetaUML() {
+    StringBuilder result = new StringBuilder("Class.")
+            .append(Uml.id(this))
+            .append("(\"")
+            .append(type.name())
+            .append('"')
+            .append(")\n\t(")
+            .append(variablesToUml(type))
+            .append(")\n\t(")
+            .append(methodsToUml(type))
+            .append(");\n")
+            .append(stereotypeToUml());
+
+    if (!varsShown) {
+        result.append(Uml.id(this))
+            .append(".info.iAttributeStack.top := 0;\n")
+            .append(Uml.id(this))
+            .append(".info.iAttributeStack.bottom := 0;\n");
+    }
+    
+    if (!methodsShown) {
+        result.append(Uml.id(this))
+            .append(".info.iMethodStack.top := 0;\n")
+            .append(Uml.id(this))
+            .append(".info.iMethodStack.bottom := 0;\n");
+    }
+
+    return result.toString();
+}
+
+private String stereotypeToUml() {
+    StringBuilder result = new StringBuilder();
+
+    if (type.isTrue(lang.INTERFACE) || type.isTrue(lang.ABSTRACT)) {
+        result.append("classStereotypes.").append(Uml.id(this))
+                .append("(")
+                .append('"')
+                .append("<<");
+
+        if (type.isTrue(lang.INTERFACE)) {
+            result.append("interface");
+        } else {
+            result.append("abstract");
+        }
+
+        result.append(">>\");\n");
+    }
+
+    return result.toString();
+}
+
+private String methodsToUml(Type type) {
+    StringBuilder result = new StringBuilder();
+
+    for (int i = 0; i < methods.size(); i = i + 1) {
+        if (methods.get(i).show()) {
+            methodsShown = true;
+            if (i != 0) {
+                result.append("\t");
+            }
+
+            result.append(methods.get(i).toMetaUML());
+
+            if (i != (methods.size() - 1)) {
+                result.append(",\n");
+            }
+        }
+    }
+
+    return result.toString();
+}
+
+private String variablesToUml(Type type) {
+    StringBuilder result = new StringBuilder();
+
+    for (int i = 0; i < vars.size(); i = i + 1) {
+        if (vars.get(i).show()) {
+            varsShown = true;
+            if (i != 0) {
+                result.append("\t");
+            }
+            result.append(vars.get(i).toMetaUML());
+            if (i != (vars.size() - 1)) {
+                result.append(",\n");
+            }
+        }
+    }
+
+    return result.toString();
+}

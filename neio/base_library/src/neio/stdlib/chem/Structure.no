@@ -1,0 +1,51 @@
+namespace neio.stdlib.chem;
+
+import neio.lang.Content;
+import neio.stdlib.Document;
+
+import java.util.ArrayList;
+import java.util.List;
+
+class Structure extends Content;
+
+List<Atom> atoms;
+
+Structure() {
+    atoms = new ArrayList<Atom>();
+}
+
+StructureNLHandler newline() {
+    return new StructureNLHandler(this);
+}
+
+Structure addAtom(Atom a) {
+    atoms.add(a);
+    return this;
+}
+
+Atom lastAtom() {
+    return atoms.get(atoms.size() - 1);
+}
+
+void preTex() {
+    nearestAncestor(Document.class).addPackage("chemfig");
+}
+
+String toTex() {
+    StringBuilder result = new StringBuilder();
+    for (int i = 0; i < atoms.size(); i = i + 1) {
+        Atom a = atoms.get(i);
+        if (a.name() == null) {
+            result.append("\n\\chemfig{");
+        }
+        if ((a.name() == null) && (a.isRing())) {
+            result.append("[:90]");
+        }
+        result.append(a.toTex());
+        if (a.name() == null) {
+            result.append("}\n");
+        }
+    }
+
+    return result.toString();
+}

@@ -1,0 +1,80 @@
+namespace neio.stdlib.music;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import neio.lang.Content;
+
+class Note extends Content;
+
+Integer octave;
+Integer note;
+Score score;
+
+Note(Integer note, Score score) {
+    this.note = note;
+    this.octave = 0;
+    this.score = score;
+}
+
+Note(Integer note, Integer octave, Score score) {
+    this(note, score);
+    this.octave = octave;
+}
+
+Note shift(Integer s) {
+    Integer current = ((octave * 7) + note);
+    // Positive shift
+    if ((s + note) > Score.B) {
+        octave = (octave + ((int) (Math.floor((current + s) / 7)) - (int) (Math.floor(current / 7))));
+    }
+    // Negative shift
+    else if ((s + note) < Score.C) {
+        octave = octave + ((int) (Math.floor(current / 7)) - (int) (Math.floor((current + s) / 7)));
+    }
+    note = (note + 1) % 7;
+
+    return this;
+}
+
+String toLilypond() {
+    return note() + octave() + " ";
+}
+
+String note() {
+    return score.NOTES.get(note);
+}
+
+Integer noteNr() {
+    return note;
+}
+
+String toString() {
+	return note();
+}
+
+void setOctave(Integer octave) {
+    this.octave = octave;
+}
+
+String octave() {
+    Integer current = octave;
+    return octave(current);
+}
+
+String octave(Integer current) {
+    if (current == 0) {
+        return "";
+    }
+
+    if (current > 0) {
+        return "'" + octave(current - 1);
+    } else {
+        return "," + octave(current + 1);
+    }
+}
+
+Integer octaveNr() {
+    return octave;
+}
+

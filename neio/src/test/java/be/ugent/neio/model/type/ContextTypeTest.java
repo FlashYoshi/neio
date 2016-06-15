@@ -65,15 +65,15 @@ public class ContextTypeTest {
             Type chapter = view.findType(cha);
 
             ContextType ctx = new ContextType(chapter, document);
-            assert (ctx.getDirectSuperTypes() != null && ctx.getDirectSuperTypes().size() == 2);
-            assert (ctx.getDirectSuperTypes().get(0).getFullyQualifiedName().equals(cha));
-            assert (ctx.getDirectSuperTypes().get(1).getFullyQualifiedName().equals(doc));
+            assert (ctx.getProperDirectSuperTypes() != null && ctx.getProperDirectSuperTypes().size() == 2);
+            assert (ctx.getProperDirectSuperTypes().get(0).getFullyQualifiedName().equals(cha));
+            assert (ctx.getProperDirectSuperTypes().get(1).getFullyQualifiedName().equals(doc));
 
             ContextType ctx2 = new ContextType(paragraph, ctx);
-            assert (ctx2.getDirectSuperTypes() != null && ctx2.getDirectSuperTypes().size() == 2);
-            assert (ctx2.getDirectSuperTypes().get(0).getFullyQualifiedName().equals(par));
-            assert (ctx2.getDirectSuperTypes().get(1).getDirectSuperTypes().get(0).getFullyQualifiedName().equals(cha));
-            assert (ctx2.getDirectSuperTypes().get(1).getDirectSuperTypes().get(1).getFullyQualifiedName().equals(doc));
+            assert (ctx2.getProperDirectSuperTypes() != null && ctx2.getProperDirectSuperTypes().size() == 2);
+            assert (ctx2.getProperDirectSuperTypes().get(0).getFullyQualifiedName().equals(par));
+            assert (ctx2.getProperDirectSuperTypes().get(1).getProperDirectSuperTypes().get(0).getFullyQualifiedName().equals(cha));
+            assert (ctx2.getProperDirectSuperTypes().get(1).getProperDirectSuperTypes().get(1).getFullyQualifiedName().equals(doc));
         } catch (LookupException e) {
             e.printStackTrace();
         }

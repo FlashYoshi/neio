@@ -1,17 +1,18 @@
 package be.ugent.neio.builder;
 
+import org.aikodi.chameleon.core.namespace.LazyRootNamespace;
+import org.aikodi.chameleon.exception.ChameleonProgrammerException;
+import org.aikodi.chameleon.plugin.ViewPlugin;
+import org.aikodi.chameleon.plugin.build.LanguageBuilder;
+import org.aikodi.chameleon.plugin.output.Syntax;
+import org.aikodi.chameleon.workspace.View;
+
 import be.kuleuven.cs.distrinet.jnome.core.language.Java7;
 import be.kuleuven.cs.distrinet.jnome.core.language.Java7LanguageFactory;
 import be.kuleuven.cs.distrinet.jnome.output.JavaDocumentWriterFactory;
 import be.kuleuven.cs.distrinet.jnome.workspace.JavaView;
-import be.ugent.chameleonsupport.build.LanguageBuilder;
 import be.ugent.neio.language.Neio;
 import be.ugent.neio.translate.NeioClassTranslator;
-import org.aikodi.chameleon.core.namespace.LazyRootNamespace;
-import org.aikodi.chameleon.exception.ChameleonProgrammerException;
-import org.aikodi.chameleon.plugin.ViewPlugin;
-import org.aikodi.chameleon.plugin.output.Syntax;
-import org.aikodi.chameleon.workspace.View;
 
 public class NeioClassBuilder extends LanguageBuilder<Neio, Java7> {
 

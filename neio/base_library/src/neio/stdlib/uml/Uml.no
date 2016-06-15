@@ -1,0 +1,312 @@
+namespace neio.stdlib.uml;
+
+import be.kuleuven.cs.distrinet.jnome.workspace.JavaView;
+import be.ugent.neio.builder.NeioProjectBuilder;
+import neio.io.MetaUMLBuilder;
+import neio.io.MetaUMLWriter;
+import neio.lang.Content;
+import neio.stdlib.Document;
+import neio.stdlib.Image;
+import org.aikodi.chameleon.core.namespace.Namespace;
+import org.aikodi.chameleon.oo.type.Type;
+
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+class Uml extends Content;
+
+JavaView view;
+String ns;
+Boolean showPrivate;
+Boolean showProtected;
+List<String> show;
+List<UmlClass> classes;
+Map<Integer, List<UmlClass> > levels;
+Integer scale;
+
+/*Uml() {
+    Config.setCaching(true);
+    LanguageRepository repo = new LanguageRepository();
+    Workspace workspace = new Workspace(repo);
+
+    // CALLING THIS JAVA WILL CAUSE A LOOKUPEXCEPTION
+    Java7 arst = new Java7LanguageFactory().create();
+    repo.add(arst);
+
+    File configFile = new File("project.xml");
+    XMLProjectLoader config = new XMLProjectLoader(workspace);
+    Project project = config.project(configFile, null);
+    View view = project.views().get(0);
+}*/
+
+Uml(String projectXml, String ns) {
+    NeioProjectBuilder projectBuilder = new NeioProjectBuilder();
+    this.view = (JavaView) (projectBuilder.build(projectXml));
+    showPrivate = false;
+    showProtected = false;
+    show = null;
+    this.ns = ns;
+    classes = new ArrayList<UmlClass>();
+    gatherClasses();
+    levels = new HashMap<Integer, List<UmlClass> >();
+    scale = null;
+}
+
+void gatherClasses() {
+    List<String> list = Arrays.asList(ns.split("\\."));
+    Namespace subNamespace = view.namespace();
+    for (int i = 0; i < list.size(); i = i + 1) {
+        subNamespace = subNamespace.getSubNamespace(list.get(i));
+    }
+    
+    List<Type> types = subNamespace.nearestDescendants(Type.class);
+    for (int i = 0; i < types.size(); i = i + 1) {
+        Type type = types.get(i);
+        UmlClass uc = new UmlClass(type, showPrivate, showProtected);
+        classes.add(uc);
+    }
+}
+
+Uml show(List<String> show) {
+    this.show = show;
+    return this;
+}
+
+Uml showPrivate() {
+    this.showPrivate = true;
+    return this;
+}
+
+Uml showProtected() {
+    this.showProtected = true;
+    return this;
+}
+
+Uml showAll() {
+    this.showPrivate = true;
+    this.showProtected = true;
+    return this;
+}
+
+Uml scale(Integer scale) {
+    this.scale = scale;
+    return this;
+}
+
+void preTex() {
+    nearestAncestor(Document.class).addToPreamble("\\DeclareGraphicsRule{*}{mps}{*}{}\n");
+    super.preTex();
+}
+
+String toTex() {
+    String metaUML = toMetaUML();
+    MetaUMLWriter writer = new MetaUMLWriter(metaUML);
+
+    Calendar cal = Calendar.getInstance();
+    SimpleDateFormat sdf = new SimpleDateFormat("HH-mm-ss-SSS");
+    String name = sdf.format(cal.getTime());
+
+    writer.write(name);
+
+    MetaUMLBuilder builder = new MetaUMLBuilder();
+    builder.build(name + ".mp");
+
+    Image i = new Image(name + ".1");
+    if (scale != null) {
+        i.scale(scale);
+    }
+
+    return i.toTex();
+}
+
+String toMetaUML() {
+    StringBuilder result = new StringBuilder();
+    for (int i = 0; i < classes.size(); i = i + 1) {
+        UmlClass c = classes.get(i);
+        if (shouldShow(c.name())) {
+            result.append(c.toMetaUML()).append("\n");
+            if (notDrawnYet(getId(c.name()))) {
+                Integer d = determineDepth(c.type());
+                addToLevels(d, c);
+            }
+        }
+    }
+
+    result.append(createGroups())
+            .append(createPositioning())
+            .append(drawObjects())
+            .append(createLinks());
+
+    return result.toString();
+}
+
+private String createLinks() {
+    StringBuilder result = new StringBuilder();
+    for (int i = levels.size(); i > 1; i = i - 1) {
+        List<UmlClass> list = levels.get(i);
+        for (int j = 0; j < list.size(); j = j + 1) {
+            String id = id(list.get(j));
+            List<UmlClass> supers = levels.get(i - 1);
+            for (int k = 0; k < supers.size(); k = k + 1) {
+                Boolean b = false;
+                b = list.get(j).type().assignableTo(supers.get(k).type());
+                if (b) {
+                    result.append("clink(inheritance)(")
+                            .append(id)
+                            .append(", ")
+                            .append(id(supers.get(k)))
+                            .append(");\n");
+                }
+            }
+        }
+    }
+
+    return result.toString();
+}
+
+private String drawObjects() {
+    StringBuilder result = new StringBuilder("drawObjects(");
+    
+    for (int i = 0; i < levels.size(); i = i + 1) {
+        result.append(id(levels.get(i + 1)))
+            .append(", ");
+    }
+    result.append(");\n");
+    return result.toString();
+}
+
+private String createPositioning() {
+    StringBuilder result = new StringBuilder();
+    for (int i = 0; i < levels.size(); i = i + 1) {
+        List<UmlClass> list = levels.get(i + 1);
+        if (list.size() > 1) {
+            result.append("leftToRight.bottom(50)(")
+                    .append(getCsv(list))
+                    .append(");\n");
+        }
+    }
+
+    if (levels.size() > 1) {
+        result.append("topToBottom(50)(")
+        .append(id(levels.get(1)));
+        for (int i = 1; i < levels.size(); i = i + 1) {
+            List<UmlClass> list = levels.get(i + 1);
+            result.append(", ").append(id(list));
+        }
+        result.append(");\n");
+    }
+
+    return result.toString();
+}
+
+private String getCsv(List<UmlClass> list) {
+    if (list.isEmpty()) {
+        return "";
+    } else {
+        StringBuilder result = new StringBuilder(id(list.get(0)));
+        for (int i = 1; i < list.size(); i = i + 1) {
+            result.append(", ").append(id(list.get(i)));
+        }
+        return result.toString();
+    }
+}
+
+private String createGroups() {
+    StringBuilder result = new StringBuilder();
+    for (int i = 0; i < levels.size(); i = i + 1) {
+        List<UmlClass> list = levels.get(i + 1);
+        result.append("Group.")
+                .append(id(list))
+                .append("(")
+                .append(getCsv(list))
+                .append(");\n");
+    }
+
+    return result.toString();
+}
+
+private void addToLevels(Integer d, UmlClass c) {
+    if (!levels.containsKey(d)) {
+        List<UmlClass> list = new ArrayList<UmlClass>();
+        list.add(c);
+        levels.put(d, list);
+    } else {
+        levels.get(d).add(c);
+    }
+}
+
+private Boolean shouldShow(String cname) {
+    return ((show == null) || (show.contains(cname))) && cname.startsWith(ns);
+}
+
+private Integer determineDepth(Type t) {
+    Integer max = 0;
+    Integer level = 0;
+
+    if (shouldShow(t.getFullyQualifiedName())) {
+        level = level + 1;
+        List<Type> supers = new ArrayList<Type>();
+        supers = t.getDirectSuperTypes();
+        
+        for (int i = 0; i < supers.size(); i = i + 1) {
+            Type st = supers.get(i);
+            Integer temp = determineDepth(st);
+            if (temp > max) {
+                max = temp;
+            }
+        }
+        level = level + max;
+    }
+
+    return level;
+}
+
+private String getId(String name) {
+    for (int i = 0; i < classes.size(); i = i + 1) {
+        if (classes.get(i).name().equals(name)) {
+            return id(classes.get(i));
+        }
+    }
+
+    return null;
+}
+
+private Boolean notDrawnYet(String id) {
+    for (int i = 0; i < levels.values().size(); i = i + 1) {
+        Iterator<List<UmlClass> > it = levels.values().iterator();
+        while (it.hasNext()) {
+            List<UmlClass> level = it.next();
+            for (int j = 0; j < level.size(); j = j + 1) {
+                if (id(level.get(j)).equals(id)) {
+                    return false;
+                }
+            }
+        }
+    }
+
+    return true;
+    }
+
+/**
+ * Writes out the hashcode of {@code o} as readable text.
+ * This allows us to use the hashcode as a unique identifier as MetaUML does
+ * not accept names that have such big numbers.
+ *
+ * @param o The object to uniquely identify
+ * @return The human readable hashcode of {@code o}
+ */
+public static String id(Object o) {
+    String s = ("") + (o.hashCode());
+    s = s.replaceAll("-", "minus");
+    s = s.replaceAll("0", "zero");
+    s = s.replaceAll("1", "one");
+    s = s.replaceAll("2", "two");
+    s = s.replaceAll("3", "three");
+    s = s.replaceAll("4", "four");
+    s = s.replaceAll("5", "five");
+    s = s.replaceAll("6", "six");
+    s = s.replaceAll("7", "seven");
+    s = s.replaceAll("8", "eight");
+    s = s.replaceAll("9", "nine");
+    return s;
+}

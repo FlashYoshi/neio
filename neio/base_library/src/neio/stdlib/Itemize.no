@@ -1,0 +1,23 @@
+namespace neio.stdlib;
+
+import neio.lang.Text;
+import neio.lang.Content;
+
+class Itemize extends Content;
+
+String toTex() {
+	return "\\begin{itemize}\n" + super.toTex() + "\\end{itemize}\n";
+}
+
+ItemizeItem *(ItemizeItem item) {
+	addContent(item);
+	
+	return item;
+}
+
+ItemizeItem *(Text text) {
+	ItemizeItem item = new ItemizeItem(text, 1);
+	addContent(item);
+	
+	return item;
+}

@@ -1,58 +1,76 @@
-plugins {
-    id 'me.champeau.gradle.antlr4' version '0.1'
-    id 'antlr'
-    id 'groovy'
-    id 'java'
-}
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'me.champeau.gradle.antlr4'
 
-group 'be.ugent'
-version '0.1'
-
-allprojects {
-    sourceCompatibility = 1.8
-
-    apply plugin: "java"
-
+// antlr 4 plugin
+buildscript {
     repositories {
-        mavenCentral()
         maven {
             url 'http://users.ugent.be/~mcvdoore/repository'
         }
     }
-}
 
-jar {
-    manifest {
-        attributes 'Main-class': 'be.ugent.neio.Main'
+    dependencies {
+        classpath 'by.github.frenchie16:antlr4-gradle-plugin:0.1.2'
     }
 }
 
-dependencies {
-    antlr "org.antlr:antlr4:4.5"
-
-    compile project(':chameleon')
-    compile project(':ChameleonSupport')
-    compile project(':jnome')
-    compile fileTree(dir: 'build/libs', include: '**/*.jar')
+repositories {
+    mavenCentral()
+    maven {
+        url 'http://users.ugent.be/~mcvdoore/repository'
+    }
 }
 
-// Antlr4 Configuration
+
+// end antlr 4 plugin
+def eclipsePlugin = 'be/ugent/neio/eclipse/**'
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src/main/java'
+            srcDir 'src/test/java'
+            exclude eclipsePlugin
+        }
+        //antlr {
+        //  srcDir 'src'
+        //}
+    }
+}
+
+
+dependencies {
+    //compile project(':rejuse')
+    //compile project(':chameleon')
+    //compile project(':jnome')
+    compile group: 'markovandooren', name: 'rejuse', version: '1.3.11'
+    compile group: 'markovandooren', name: 'chameleon', version: '1.2.21'
+    compile group: 'markovandooren', name: 'jnome', version: '1.2.21'
+
+
+    compile 'org.ow2.asm:asm:5.0.3'
+    compile 'com.lexicalscope.jewelcli:jewelcli:0.8.5'
+    compile 'org.antlr:antlr4:4.5'
+    compile 'org.apache.ant:ant:1.9.4'
+}
+
+compileJava.dependsOn antlr4
+
+configurations {
+    compile.extendsFrom antlr4
+}
+
 antlr4 {
     source = file('src/main/grammar')
-    output = file('build/tmp/compileJava/antlr/org/neio/antlr')
+    output = file('src/main/java/org/neio/antlr')
     extraArgs = ['-package', 'org.neio.antlr']
 }
 
-task compileAntlr (type: JavaCompile, dependsOn: antlr4) {
-    source = 'build/tmp/compileJava/antlr/org/neio/antlr'
-    classpath = sourceSets.main.compileClasspath
-    destinationDir = file('build/classes/antlr')
+antlr4Options {
+    antlr4Version = '4.5'
 }
-
-task antlrJar(type: Jar, dependsOn: compileAntlr) {
-    baseName = 'org.neio.antlr'
-    version = '0.6'
-    from 'build/classes/antlr'
+task copyRuntimeLibs(type: Copy) {
+    into "lib"
+    from configurations.runtime
 }
-
-assemble.dependsOn 'antlrJar'

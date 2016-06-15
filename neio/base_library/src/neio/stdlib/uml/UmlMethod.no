@@ -1,0 +1,69 @@
+namespace neio.stdlib.uml;
+
+import be.kuleuven.cs.distrinet.jnome.core.language.Java7;
+import org.aikodi.chameleon.oo.method.Method;
+import org.aikodi.chameleon.oo.variable.FormalParameter;
+
+import java.util.List;
+
+class UmlMethod;
+
+Method method;
+Boolean showPrivate;
+Boolean showProtected;
+UmlAccessModifier access;
+String name;
+String type;
+
+UmlMethod(Java7 lang, Method method, Boolean showPrivate, Boolean showProtected) {
+    this.method = method;
+    this.showPrivate = showPrivate;
+    this.showProtected = showProtected;
+    this.access = new UmlAccessModifier(lang, method);
+    this.name = method.name();
+    this.type = method.returnTypeReference().toString();
+}
+
+Boolean show() {
+    return ((access.priv() && showPrivate)
+        || (access.prot() && showProtected)
+        || (access.pub()));
+}
+
+String toMetaUML() {
+    StringBuilder result = new StringBuilder();
+    result.append('"')
+        .append(access.toMetaUML())
+        .append(name)
+        .append(parametersToUml(method.formalParameters()))
+        .append(": ")
+        .append(type)
+        .append('"');
+
+    return result.toString();
+}
+
+private String parametersToUml(List<FormalParameter> formalParameters) {
+    StringBuilder result = new StringBuilder("(");
+
+    for (int i = 0; i < formalParameters.size(); i = i + 1) {
+        result.append(parameterToUml(formalParameters.get(i)));
+        if (i != (formalParameters.size() - 1)) {
+            result.append(", ");
+        }
+    }
+
+    result.append(")");
+    return result.toString();
+}
+
+private String parameterToUml(FormalParameter formalParameter) {
+    String typeName = formalParameter.getTypeReference().toString();
+    
+    StringBuilder result = new StringBuilder()
+            .append(formalParameter.name())
+            .append(": ")
+            .append(typeName);
+
+    return result.toString();
+}

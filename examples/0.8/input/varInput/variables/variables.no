@@ -5,7 +5,7 @@
 {
 	String ug = '''University of Ghent''';
     // return is optional, can make the return clearer in some cases
-    return new FibEnumerate();
+    return new Enumerate();
 }
 - First
 - Second

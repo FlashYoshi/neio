@@ -167,13 +167,13 @@ public class Java8Generator {
         }
     }
 
-    private boolean subtypeOf(Type sub, String superType) throws LookupException {
-        return subtypeOf(sub, new RegularType(superType));
+    private boolean subtypeOf(Type sub, Type superType) throws LookupException {
+        return subtypeOf(sub, getName(superType));
     }
 
-    private boolean subtypeOf(Type sub, Type superType) throws LookupException {
+    private boolean subtypeOf(Type sub, String superType) throws LookupException {
         for (Type t : sub.getSelfAndAllSuperTypesView()) {
-            if (getName(t).equals(getName(superType))) {
+            if (getName(t).equals(superType)) {
                 return true;
             }
         }
