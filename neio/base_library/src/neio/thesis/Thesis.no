@@ -28,6 +28,7 @@ Thesis() {
     .add("listings")
     .add("tocloft")
     .add("color")
+    .add("epstopdf")
     .add("pdfpages")
     .add("hyperref");
 
@@ -112,5 +113,5 @@ String preamble() {
     .append("lineskip={-1.5pt}\n")
     .append("}\n");
 
-    return preamble.toString();
+    return preamble.append(extraPreamble()).toString();
 }

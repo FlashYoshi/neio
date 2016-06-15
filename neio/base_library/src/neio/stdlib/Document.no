@@ -131,6 +131,10 @@ void addToPreamble(String s) {
     }
 }
 
+String extraPreamble() {
+    return extraPreamble;
+}
+
 /**
  * Creates a TeX representation of this object and its children
  *
