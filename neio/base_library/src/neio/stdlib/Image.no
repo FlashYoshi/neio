@@ -12,6 +12,7 @@ String name;
 // Scale in percent
 Integer scale;
 String mode;
+String width;
 
 Image(String name) {
     this(null, name);
@@ -22,6 +23,7 @@ Image(Text caption, String name) {
     this.name = name;
     this.scale = null;
     this.mode = "H";
+    this.width = "\\linewidth";
 }
 
 Image floating() {
@@ -39,6 +41,11 @@ Text caption() {
 
 Image scale(Integer scale) {
     this.scale = scale;
+    return this;
+}
+
+Image textWidth() {
+    width = "\\textWidth";
     return this;
 }
 

@@ -1,0 +1,14 @@
+namespace neio.stdlib;
+
+import neio.lang.Content;
+import neio.lang.Text;
+
+class Columns extends Content;
+
+String toTex() {
+    StringBuilder tex = new StringBuilder("\\begin{columns}[t]\n")
+        .append(super.toTex())
+        .append("\n\\end{columns}");
+
+    return tex.toString();
+}

@@ -6,6 +6,7 @@ import neio.io.MetaUMLBuilder;
 import neio.io.MetaUMLWriter;
 import neio.lang.Content;
 import neio.stdlib.Document;
+import neio.stdlib.Slideshow;
 import neio.stdlib.Image;
 import org.aikodi.chameleon.core.namespace.Namespace;
 import org.aikodi.chameleon.oo.type.Type;
@@ -94,7 +95,13 @@ Uml scale(Integer scale) {
 }
 
 void preTex() {
-    nearestAncestor(Document.class).addToPreamble("\\DeclareGraphicsRule{*}{mps}{*}{}\n");
+    Document d = nearestAncestor(Document.class);
+    if (d != null){
+        d.addToPreamble("\\DeclareGraphicsRule{*}{mps}{*}{}\n");
+    } else {
+        Slideshow s = nearestAncestor(Slideshow.class);
+        s.addToPreamble("\\DeclareGraphicsRule{*}{mps}{*}{}\n");
+    }
     super.preTex();
 }
 

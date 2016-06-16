@@ -1,0 +1,27 @@
+namespace neio.stdlib;
+
+import java.util.List;
+import neio.lang.Text;
+import neio.lang.Content;
+
+class TitleSlide extends Content;
+
+Text title;
+List<Text> authors;
+
+TitleSlide(Text title, List<Text> authors) {
+    this.title = title;
+    this.authors = authors;
+}
+
+String toTex() {
+    StringBuilder tex = new StringBuilder("\\title{")
+        .append(title.toTex())
+        .append("}\n\\author{");
+    for (int i = 0; i < authors.size(); i = i + 1) {
+        tex.append(authors.get(i).toTex()).append("\\\\");
+    }
+    tex.append("}\n\\frame{\\titlepage}\n");
+
+    return tex.toString();
+}

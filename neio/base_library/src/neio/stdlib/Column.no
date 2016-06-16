@@ -1,0 +1,22 @@
+namespace neio.stdlib;
+
+import neio.lang.Text
+
+class Column extends TextContainer;
+
+Column $() {
+    Columns cs = nearestAncestor(Columns.class);
+    Column c = new Column();
+    cs.addContent(c);
+    return c;
+}
+
+String toTex() {
+    Integer columns = siblings(Column.class).size();
+    StringBuilder tex = new StringBuilder("\\column{");
+    tex.append(new Double(1) / (columns + 1))
+        .append("\\textwidth}\n")
+        .append(super.toTex());
+
+    return tex.toString();
+}

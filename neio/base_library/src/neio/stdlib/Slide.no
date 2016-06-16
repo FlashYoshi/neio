@@ -1,0 +1,40 @@
+namespace neio.stdlib;
+
+import neio.lang.Text
+
+class Slide extends TextContainer;
+
+Text title;
+Boolean fragile;
+
+Slide(Text title) {
+    this.title = title;
+    this.fragile = false;
+}
+
+Slide fragile() {
+    this.fragile = true;
+    return this;
+}
+
+Column $() {
+    Columns cs = new Columns();
+    Column c = new Column();
+    cs.addContent(c);
+    addContent(cs);
+    return c;
+}
+
+String toTex() {
+    StringBuilder tex = new StringBuilder("\\begin{frame}");
+    if ((descendants(LstInputListing.class).size() > 0)
+        || (descendants(LstListing.class).size() > 0)
+        || (fragile)) {
+        tex.append("[fragile]");
+    }
+    tex.append("\n\\frametitle{").append(title.toTex()).append("}\n")
+        .append(super.toTex())
+        .append("\n\\end{frame}");
+
+    return tex.toString();
+}

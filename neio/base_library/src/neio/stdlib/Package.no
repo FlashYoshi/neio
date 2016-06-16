@@ -19,6 +19,10 @@ Package(List<String> options, String name) {
     this.options = options;
 }
 
+String name() {
+    return name;
+}
+
 void preTex() {
 }
 
