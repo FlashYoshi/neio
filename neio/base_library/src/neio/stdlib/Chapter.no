@@ -43,9 +43,9 @@ nested Chapter #(Text title, Integer level) {
     if (level <= this.level) {
         Chapter c = nearestAncestor(Chapter.class);
         if (c != null) {
-            return c.hash(title, level);
+            return c.#(title, level);
         } else {
-            return nearestAncestor(Document.class).hash(title);
+            return nearestAncestor(Document.class).#(title);
         }
     }
     Chapter chapter = new Chapter(title, level);
@@ -83,7 +83,7 @@ String toTex() {
 }
 
 /**
- * Returns the TeX implementation of this Chapter and adds labels
+ * Returns the TeX implementation of this Chapter and adds labels to
  * it to be able to reference to this Chapter later on.
  *
  * @param lvl The level of nesting of this Chapter

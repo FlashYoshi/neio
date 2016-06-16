@@ -1,0 +1,14 @@
+<project name="Thesis">
+    <language name="neio" />
+    <baselibraries>
+        <library language="Neio" load="true" />
+    </baselibraries>
+    <sourcepath>
+        <source root="../base_library/src" />
+    </sourcepath>
+    <binarypath>
+        <jar file="../build/libs/chameleon.jar" />
+        <jar file="../build/libs/jnome.jar" />
+        <jar file="../build/libs/neio.jar" />
+    </binarypath>
+</project>

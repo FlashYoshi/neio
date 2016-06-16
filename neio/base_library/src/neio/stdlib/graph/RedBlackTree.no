@@ -4,6 +4,7 @@ import java.util.List;
 
 import neio.lang.Content;
 import neio.stdlib.Document;
+import neio.stdlib.Slideshow;
 
 class RedBlackTree extends Content;
 
@@ -171,10 +172,7 @@ void rotateRight(RedBlackNode node) {
  * Makes sure the TikZ library is used and that everything is prepared to typeset a red black tree in LaTeX
  */
 void preTex() {
-    Document d = nearestAncestor(Document.class);
-    d.addPackage("tikz");
-
-    StringBuilder header = new StringBuilder("\\usetikzlibrary{arrows}")
+    StringBuilder header = new StringBuilder("\\usetikzlibrary{arrows}\n")
     .append("\\tikzset{treenode/.style = {align=center, inner sep=0pt, text centered, font=\\sffamily},\n")
     .append("arn_n/.style = {treenode, circle, white, font=\\sffamily\\bfseries, draw=black,\n")
     .append("fill=black, text width=1.5em},% arbre rouge noir, noeud noir\n")
@@ -184,8 +182,15 @@ void preTex() {
     .append("minimum width=0.5em, minimum height=0.5em}% arbre rouge noir, nil\n")
     .append("}\n");
 
-    d.addToPreamble(header.toString());
-    
+    Document d = nearestAncestor(Document.class);
+    if (d != null) {
+        d.addPackage("tikz");
+        d.addToPreamble(header.toString());
+    } else {
+        Slideshow s = nearestAncestor(Slideshow.class);
+        s.addPackage("tikz");
+        s.addToPreamble(header.toString());
+    }
     super.preTex();
 }
 

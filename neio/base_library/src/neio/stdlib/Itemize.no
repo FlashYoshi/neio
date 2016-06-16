@@ -5,19 +5,29 @@ import neio.lang.Content;
 
 class Itemize extends Content;
 
+String bullet;
+
+Itemize() {
+    this(null);
+}
+
+Itemize(String bullet) {
+    this.bullet = bullet;
+}
+
 String toTex() {
-	return "\\begin{itemize}\n" + super.toTex() + "\\end{itemize}\n";
+    return "\\begin{itemize}\n" + super.toTex() + "\\end{itemize}\n";
 }
 
 ItemizeItem *(ItemizeItem item) {
-	addContent(item);
-	
-	return item;
+    addContent(item);
+    
+    return item;
 }
 
 ItemizeItem *(Text text) {
-	ItemizeItem item = new ItemizeItem(text, 1);
-	addContent(item);
-	
-	return item;
+    ItemizeItem item = new ItemizeItem(text, 1).bullet(bullet);
+    addContent(item);
+    
+    return item;
 }

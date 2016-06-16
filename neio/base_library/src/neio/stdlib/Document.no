@@ -41,11 +41,22 @@ Chapter #(Text title) {
 }
 
 /**
- * Returns a list of Package's
+ * Returns a list of Packages
  *
- * @return a list of used LaTeX packages
+ * @return A list of used LaTeX packages
  */
 Packages packages() {
+    return packages;
+}
+
+/**
+ * Removes a packages from the list of Packages
+ *
+ * @param pkg The name of the package to remove
+ * @return A list of used LaTeX packages
+ */
+Packages removePackage(String pkg) {
+    packages.remove(pkg);
     return packages;
 }
 

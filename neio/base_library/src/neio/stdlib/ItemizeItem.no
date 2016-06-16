@@ -8,15 +8,21 @@ class ItemizeItem extends Content;
 Text text;
 Integer level;
 Itemize itemize;
+String bullet = null;
 
 ItemizeItem(Text text, Integer level) {
-	this.text = text;
-	this.level = level;
+    this.text = text;
+    this.level = level;
 }
 
 ItemizeItem(Text text, Itemize itemize, Integer level) {
-	this(text, level);
-	this.itemize = itemize;
+    this(text, level);
+    this.itemize = itemize;
+}
+
+ItemizeItem bullet(String bullet) {
+    this.bullet = bullet;
+    return this;
 }
 
 Text text() {
@@ -24,25 +30,31 @@ Text text() {
 }
 
 nested ItemizeItem *(Text text, Integer level) {
-	ItemizeItem item = null;
-	if (level > this.level) {
-		Itemize list = new Itemize();
-		item = new ItemizeItem(text, list, level);
-		list.*(item);
-		addContent(list);
-	} else {
-		item = new ItemizeItem(text, level);
-		itemize.*(item);
-	}
-	
-	return item;
+    ItemizeItem item = null;
+    if (level > this.level) {
+        Itemize list = new Itemize();
+        item = new ItemizeItem(text, list, level).bullet(bullet);
+        list.*(item);
+        addContent(list);
+    } else {
+        item = new ItemizeItem(text, level).bullet(bullet);
+        itemize.*(item);
+    }
+    
+    return item;
 }
 
 String toTex() {
-	String result = "\\item " + text.toTex();
-	if (contentSize() > 0) {
-		result = result + "\n" + super.toTex();
-	}
-	
-	return result;
+    String result = "\\item";
+    if (bullet == null) {
+        result = result + " ";
+    } else {
+        result = result + "[" + bullet + "] ";
+    }
+    result = result + text.toTex();
+    if (contentSize() > 0) {
+        result = result + "\n" + super.toTex();
+    }
+    
+    return result;
 }

@@ -20,6 +20,15 @@ Packages add(List<String> options, String name) {
     return this;
 }
 
+Packages remove(String name) {
+    for (int i = 0; i < size(); i = i + 1) {
+        if (get(i).name().equals(name)) {
+            remove(i);
+        }
+    }
+    return this;
+}
+
 void preTex() {
 }
 

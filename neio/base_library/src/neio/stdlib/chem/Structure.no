@@ -2,6 +2,7 @@ namespace neio.stdlib.chem;
 
 import neio.lang.Content;
 import neio.stdlib.Document;
+import neio.stdlib.Slideshow;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +29,13 @@ Atom lastAtom() {
 }
 
 void preTex() {
-    nearestAncestor(Document.class).addPackage("chemfig");
+    Document d = nearestAncestor(Document.class);
+    if (d != null) {
+        d.addPackage("chemfig");
+    } else {
+        Slideshow s = nearestAncestor(Slideshow.class);
+        s.addPackage("chemfig");
+    }
 }
 
 String toTex() {

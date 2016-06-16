@@ -1,0 +1,132 @@
+namespace neio.stdlib;
+
+import neio.lang.Text;
+
+/**
+ * Represents a presentation
+ */
+class Slideshow extends TextContainer;
+
+Packages packages;
+String extraPreamble;
+
+Slideshow() {
+    packages = new Packages();
+    packages.add("graphicx")
+    .add("amsmath")
+    .add("listings")
+    .add("float");
+
+    extraPreamble = "";
+}
+
+/**
+ * Creates a Slide and adds it to this
+ *
+ * @param title The title to use for the new Slide
+ * @return The newly created Slide
+ */
+Slide #(Text title) {
+    Slide slide = new Slide(title);
+    addContent(slide);
+
+    return slide;
+}
+
+/**
+ * Returns a list of Packages
+ *
+ * @return A list of used LaTeX packages
+ */
+Packages packages() {
+    return packages;
+}
+
+/**
+ * Adds a LaTeX package
+ *
+ * @param pkg The package to add
+ * @return The list of currently included packages
+ */
+Packages addPackage(String pkg) {
+    return packages.add(pkg);
+}
+
+/**
+ * Creates a new Image with a caption and adds it to this.
+ *
+ * @param caption   The caption to use for the Image
+ * @param imageName The name of the Image
+ * @return The created Image
+ */
+Image image(Text caption, String imageName) {
+    Image image = super.image(caption, imageName);
+    return image.textWidth();
+}
+
+/**
+ * Adds a string to the preamble, checking if it is not yet
+ * included already.
+ *
+ * @param s The String to add to the preamble
+ */
+void addToPreamble(String s) {
+    if (!preamble().contains(s)) {
+        extraPreamble = extraPreamble + s;
+    }
+}
+
+String extraPreamble() {
+    return extraPreamble;
+}
+
+/**
+ * Creates the LaTeX preamble
+ *
+ * @return The LaTeX preamble
+ */
+String preamble() {
+    StringBuilder tex = new StringBuilder("\\documentclass{beamer}\n");
+    for (int i = 0; i < packages().size(); i = i + 1) {
+        tex.append(packages().get(i).toTex()).append("\n");
+    }
+    tex.append("\\setlength{\\parindent}{0em}\n")
+        .append("\\setlength{\\parskip}{1em}\n")
+        .append("\\usetheme[faculty=tw,language=english,framenumber, totalframenumber]{UniversiteitGent}")
+        .append("\\definecolor{comments}{RGB}{98, 151, 85}\n")
+        .append("\\lstset{\n")
+        .append("belowcaptionskip=1\\baselineskip,\n")
+        .append("breaklines=true,\n")
+        .append("frame=single,\n")
+        .append("comment=[l]{//},\n")
+        .append("morecomment=[s]{/**}{*/},\n")
+        .append("commentstyle=\\color{comments},\n")
+        .append("xleftmargin=\\parindent,\n")
+        .append("showstringspaces=false,\n")
+        .append("basicstyle=\\footnotesize\\ttfamily,\n")
+        .append("keywordstyle=\\bfseries,\n")
+        .append("stringstyle=\\ttfamily,\n")
+        .append("numbers=left,\n")
+        .append("numbersep=7pt,\n")
+        .append("basicstyle=\\tiny,\n")
+        .append("numberstyle=\\tiny,\n")
+        .append("rulecolor=\\color{black},\n")
+        .append("lineskip={-1.5pt}\n")
+        .append("}\n")
+        .append(extraPreamble());
+         
+     return tex.toString();
+}
+
+/**
+ * Creates a TeX representation of this object and its children
+ *
+ * @return The TeX representation of this object and its children
+ */
+String toTex() {
+    StringBuilder result = new StringBuilder(preamble()).append("\\begin{document}\n")
+    .append(super.toTex())
+    .append("\n\\end{document}\n");
+    
+    return result.toString();
+}

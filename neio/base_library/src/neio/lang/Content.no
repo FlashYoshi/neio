@@ -276,16 +276,17 @@ List<Content> ancestors() {
  * @param c The class of the siblings
  * @return The list of siblings of {@code c}
  */
-List<Content> siblings(Class c) {
+<T extends Content> List<T> siblings(Class<T> c) {
     Content p = parent();
-    List<Content> siblings = new ArrayList<Content>();
+    List<T> siblings = new ArrayList<T>();
     if (p != null) {
-        siblings = p.descendants();
+        siblings = p.directDescendants(c);
         siblings.remove(this);
     }
-    
+
     return siblings;
 }
+
 
 /**
  * Recursively gathers all the children Content of this Content
@@ -293,7 +294,16 @@ List<Content> siblings(Class c) {
  * @return A list of al the children of this Content
  */
 List<Content> descendants() {
-    return descendants(content());
+    return descendants(content(), null);
+}
+
+/**
+ * Recursively gathers all the children Content of this Content
+ *
+ * @return A list of al the children of this Content
+ */
+<T extends Content> List<T> descendants(Class<T> k) {
+    return (List<T>) descendants(content(), k);
 }
 
 /**
@@ -302,13 +312,15 @@ List<Content> descendants() {
  * @param input The list of current children
  * @return A list of al the children of this Content
  */
-protected List<Content> descendants(List<Content> input) {
+protected <T extends Content> List<Content> descendants(List<Content> input, Class<T> k) {
     List<Content> list = new ArrayList<Content>();
     
     for (int i = 0; i < input.size(); i = i + 1) {
         Content current = input.get(i);
-        list.add(current);
-        list.addAll(descendants(current.content()));
+        if ((k == null) || (k.isInstance(current))) {
+            list.add(current);
+        }
+        list.addAll(descendants(current.content(), k));
     }
     
     return list;

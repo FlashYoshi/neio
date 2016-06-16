@@ -1,0 +1,590 @@
+[Slideshow]
+// TODO show a slide?
+{
+    Text lat = new LaTeX();
+    List<Text> authors = new ArrayList<Text>();
+    authors.add("Titouan Vervack");
+    authors.add("Promotor: Prof. dr. ir. Marko van Dooren");
+    authors.add("Counsellor: Dr. ir. Benoit Desouter");
+    new TitleSlide("The design and implementation of a userfriendly object-oriented markup language: Neio", authors);
+}
+
+# Neio
+{{
+    image('''colemakO''')
+}}
+
+# What is it
+* Markup language
+* Improves on {lat} and Markdown
+
+# The good and bad: Markdown
+$ 
+{new Itemize('''--''')}
+* Not extensible
+* Too simple
+* No programming model
+
+$ 
+{new Itemize('''$+$''')}
+* Easy to read/write
+* Very easy to get started
+
+# The good and bad: {lat}
+$ 
+{new Itemize('''--''')}
+* Steep initial learning curve
+* Overly complex
+* Not statically typed
+
+$ 
+{new Itemize('''$+$''')}
+* Well suited for complex documents
+* Has a programming model
+* Lots of packages
+
+# The good and bad: WYSIWYG
+$ 
+{new Itemize('''--''')}
+* Corruptable fileformat
+* Not well suited for very complex documents
+* No full control through programming model
+
+$ 
+{new Itemize('''$+$''')}
+* Very well known
+* Easy to use for anyone
+* Immediately see the final document
+
+# Goals
+* Easy to get started with
+* Has to use a modern programming model
+* As simple as Markdown
+* As powerful as TeX
+
+# Neio document
+{
+    new LstListing('''
+// This is a Neio document
+[Document]
+
+/* Below we define a chapter
+ * and a paragraph
+ */
+# Chapter 1
+This is the first paragraph
+''')
+}
+{{
+    image('''simpleDocument''').scale(20)
+}}
+
+# Neio code file
+{
+    new LstListing('''
+namespace neio.stdlib;
+
+import neio.lang.*;
+
+class Paragraph extends Content;
+
+// Private
+Text text;
+
+Paragraph(Text text) {
+    this.text = text;
+}
+
+// Public
+Paragraph appendLine(Text t) {
+    return appendText(new Text("\\n").appendText(t));
+}
+
+ParNLHandler newline() {
+    return new ParNLHandler(this);
+}
+
+String toTex() {
+    if (text != null) {
+        return "\\par " + text.toTex();
+    } else {
+        return "";
+    }
+}
+    ''')
+}
+Fully compatible with Java
+
+# Process flow
+{{
+    image('''CompileFlow''').scale(25)
+}}
+
+# Symbol methods
+{
+    new LstListing('''
+Chapter #(Text title) {
+    Chapter chapter = new Chapter(title, 1);
+    addContent(chapter);
+
+    return chapter;
+}
+    ''')
+}
+
+{
+    new LstListing('''
+ParNLHandler newline() {
+    return new ParNLHandler(this);
+}
+    ''')
+}
+
+{
+    new LstListing('''
+Paragraph text(Text text) {
+    new Paragraph(text) par;
+    parent().addContent(par);
+    return par;
+}
+    ''')
+}
+
+Usable symbols: \#, \-, \*, \_, \$, `\|`, \=, \^, \`, *text* and *newline*
+
+# Call chain
+{
+    new LstListing('''
+[Document]
+
+# Chapter 1
+This is the first paragraph.
+This is the second line.
+
+This is a second paragraph.
+''')
+}
+{
+    new LstListing('''
+new Document()
+    .newline()
+    .newline()
+    .#("Chapter 1")
+        .newline
+        .text("This is the first paragraph.");
+        .newline()
+        .text("This is the second line.")
+        .newline()
+        .newline()
+        .text("This is a second paragraph.")
+    ''')
+}
+
+# Surround methods
+{
+    new LstListing('''
+public surround Text *(Text t) {
+    return appendText(new BoldText(t));
+}
+
+public surround Text _(Text t) {
+    return appendText(new ItalicText(t));
+}
+
+public surround Text `(Text t) {
+    return appendText(new MonospaceText(t));
+}
+    ''')
+}
+
+{
+    new LstListing('''
+[Document]
+# `_Chapter 1_`
+This *Chapter* is written in _italic_ and `monospace` font.
+    ''')
+}
+
+{{image('''surroundEx''').scale(20)}}
+
+# Nested methods
+{
+    new LstListing('''
+nested Chapter #(Text title, Integer level) {
+    Chapter chapter = new Chapter(title, level);
+    addContent(chapter);
+
+    return chapter;
+}
+    ''')
+}
+{
+    new LstListing('''
+[Document]
+# Chapter 1
+## Chapter 1.1
+# Chapter 2
+    ''')
+}
+
+{{image('''nestedEx''').scale(15)}}
+
+# Context types
+{{image('''ct6''').scale(33)}}
+
+# Code blocks
+{
+    new LstListing("Neio document", '''
+[Document]
+# Chapter 1
+{
+    Chapter chapter2 = new Chapter("Chapter 2")
+}
+    ''')
+}
+
+{
+    new LstListing("Call chain", '''
+new Document()
+    .#("Chapter 1");
+Chapter chapter2 = new Chapter("Chapter 2");
+    ''')
+}
+
+# Code blocks
+{
+    new LstListing('''
+[Document]
+{
+    new Itemize()
+}
+* Item 1
+* Item 2
+* Item 3
+    ''')
+}
+
+{
+    new LstListing('''
+[Document]
+{
+    Itemize itemize = new Itemize();
+    return itemize;
+}
+* Item 1
+* Item 2
+* Item 3
+    ''')
+}
+
+# This
+$ 
+{
+    LstListing l1 = new LstListing("Neio document", '''
+[Document]
+{
+    new Itemize()
+}
+* Item 1
+* Item 2
+* Item 3
+    ''');
+    return l1;
+}
+$ 
+{
+    new LstListing("Call chain", '''
+new Document();
+Itemize itemize = new Itemize();
+this.appendContent(itemize);
+// itemize is now the new "this"
+this.*("Item 1")
+    .*("Item 2")
+    .*("Item 3")
+    ''')
+}
+{{
+    nearestAncestor(Slide.class).appendContent(new LstListing("Java code", '''
+Document $var0 = new Document();
+
+Itemize $var1 = new Itemize();
+Itemize $var2 = $var0.appendContent($var1);
+
+ItemizeItem $var3 = $var2.minus("Item 1");
+ItemizeItem $var4 = $var2.minus("Item 2");
+ItemizeItem $var5 = $var2.minus("Item 3");
+    '''))
+}}
+
+# Code blocks: scoped
+{
+    new LstListing('''
+[Document]
+# Chapter 1
+{{
+    List<String> l = new ArrayList<String>();
+    l.add("upquote");
+    l.add("pdfpages");
+    l.add("url");
+    for (int i = 0; i < l.size(); i = i + 1) {
+        addPackage(l.get(i));
+    }
+}}
+    ''')
+}
+{
+    new LstListing('''
+new Document()
+    .#("Chapter 1");
+{
+    List<String> l = new ArrayList<String>();
+    l.add("upquote");
+    l.add("pdfpages");
+    l.add("pdfpages");
+    for (int i = 0; i < l.size(); i = i + 1) {
+        this.addPackage(l.get(i));
+    }
+}
+    ''')
+}
+
+# Inline code
+$ 
+{
+    new LstListing('''
+[Document]
+{
+    Text addressee = "Thomas Vanhaskel";
+    Text help = "my math class";
+    Text helpSubject = "math test";
+    Text closings = "Kind regards,";
+    Text name = "Titouan Vervack";
+}
+
+Dear {addressee},
+
+Thank you for helping me out with {help}.
+
+I was able to do great at the {helpSubject} thanks to you.
+
+{closings}
+
+{name}
+    ''')
+}
+
+$ 
+{{image('''inlineCode''')}}
+
+// TODO: dice?
+# Table
+{
+    new LstListing('''
+| Student club  | Rounds | Seconds/Round | Dist (km) | 
+------------------------------------------------------ 
+| HILOK         |  1030  |      42       |   298,70  | 
+| VTK           |  1028  |      42       |   298.12  | 
+| VLK           |   841  |      51       |   243.89  | 
+| VGK           |   810  |      53       |   234.90  | 
+| HK            |   771  |      56       |   223.59  | 
+| VRG           |   764  |      57       |   221.56  | 
+| VEK           |   757  |      57       |   219.53  | 
+| VPPK          |   689  |      63       |   199.81  | 
+| SK            |   647  |      67       |   187.63  | 
+| Zeus WPI      |   567  |      76       |   164.43  | 
+| VBK           |   344  |     126       |    99.76  | 
+    ''')
+}
+# Table
+| Student club  | Rounds | Seconds/Round | Dist (km) | 
+------------------------------------------------------ 
+| HILOK         |  1030  |      42       |   298,70  | 
+| VTK           |  1028  |      42       |   298.12  | 
+| VLK           |   841  |      51       |   243.89  | 
+| VGK           |   810  |      53       |   234.90  | 
+| HK            |   771  |      56       |   223.59  | 
+| VRG           |   764  |      57       |   221.56  | 
+| VEK           |   757  |      57       |   219.53  | 
+| VPPK          |   689  |      63       |   199.81  | 
+| SK            |   647  |      67       |   187.63  | 
+| Zeus WPI      |   567  |      76       |   164.43  | 
+| VBK           |   344  |     126       |    99.76  | 
+
+# Red black tree
+{
+    new LstListing('''
+[Document]
+{
+    List<Integer> tree = new ArrayList<Integer>();
+    tree.add(33);
+    tree.add(15);
+    tree.add(10);
+    tree.add(5);
+    tree.add(20);
+    tree.add(18);
+    tree.add(47);
+    tree.add(38);
+    tree.add(36);
+    tree.add(39);
+
+    String numbers = String.valueOf(tree.get(0));
+    for (int i = 1; i < tree.size(); i = i + 1) {
+        numbers = numbers + \u0027'', \u0027'' + tree.get(i);
+    }
+}
+
+Given the red black tree of {numbers}
+{
+    RedBlackTree rbt = new RedBlackTree().insert(tree);
+    return rbt;
+}
+    ''')
+}
+
+# Red black tree
+{{fragile()}}
+{
+    List<Integer> tree = new ArrayList<Integer>();
+    tree.add(33);
+    tree.add(15);
+    tree.add(10);
+    tree.add(5);
+    tree.add(20);
+    tree.add(18);
+    tree.add(47);
+    tree.add(38);
+    tree.add(36);
+    tree.add(39);
+
+    String numbers = '''''' + tree.get(0);
+    for (int i = 1; i < tree.size(); i = i + 1) {
+        numbers = numbers + ''', ''' + tree.get(i);
+    }
+    Integer dumpStub = 0;
+}
+
+Given the red black tree of {numbers}
+{
+    RedBlackTree rbt = new RedBlackTree().insert(tree);
+    return rbt;
+}
+
+# Red black tree
+{
+    new LstListing('''
+Add 37
+{
+    RedBlackTree rbt2 = rbt.insert(37);
+    return rbt2;
+}
+    ''')
+}
+
+Add 37
+{
+    RedBlackTree rbt2 = rbt.insert(37);
+    return rbt2;
+}
+
+# Structural formulas
+{
+    new LstListing('''
+[Document]
+{
+    new Structure()
+}
+
+$ C * 6 _ OH ^ - C _ ^ OH - O - C _ ^ CH2OH - C _ HO ^ - C _ ^ OH - 
+| Glucose
+    ''')
+}
+{
+    new Structure()
+}
+
+$ C * 6 _ OH ^ - C _ ^ OH - O - C _ ^ CH2OH - C _ HO ^ - C _ ^ OH - 
+| Glucose
+
+# Musical scores
+{
+    new LstListing('''
+[Document]
+{
+    Score ss = new Score().c().d().e().f().g().a().b();
+    return ss;
+}
+
+This score is read as {ss.print()}.
+{
+    Score sss = ss.shift(1);
+    return sss;
+}
+    ''')
+}
+
+# Musical scores
+{
+    Score ss = new Score().c().d().e().f().g().a().b();
+    return ss;
+}
+
+This score is read as {ss.print()}.
+{
+    Score sss = ss.shift(1);
+    return sss;
+}
+
+We can shift every note by one, doing so yields the following notes: {sss.print()}.
+
+# Musical scores
+{
+    new LstListing('''
+{
+    Score s4 = ss.reverse();
+    return s4;
+}
+
+Reversing the score results in the following sequence of nodes: {s4.print()}
+    ''')
+}
+{
+    Score s4 = ss.reverse();
+    return s4;
+}
+
+Reversing the score results in the following sequence of nodes: {s4.print()}
+
+# UML diagram
+{
+    new LstListing('''
+[Document]
+{
+    List<String> list = new ArrayList<String>();
+    list.add(\u0027''neio.stdlib.Slideshow''\u0027);
+    list.add(\u0027''neio.stdlib.Slide''\u0027);
+    list.add(\u0027''neio.stdlib.TextContainer''\u0027);
+    new Uml(\u0027''project.xml\u0027'', \u0027''neio.stdlib\u0027'').scale(20).show(list).showAll();
+}
+    ''')
+}
+
+{
+    List<String> list = new ArrayList<String>();
+    list.add('''neio.stdlib.Slideshow''');
+    list.add('''neio.stdlib.Slide''');
+    list.add('''neio.stdlib.TextContainer''');
+    new Uml('''./project.xml''', '''neio.stdlib''').scale(45).show(list).showAll();
+}
+
+// TODO show in figure how everything is read
+
+# IDE
+{{image('''ide''').scale(28)}}
+
+# Future work
+* Checks on static typing
+* Use
+* Compiler improvement
+* Better error messages
+
+# Questions
